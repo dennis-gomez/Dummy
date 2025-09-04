@@ -2,17 +2,17 @@ import React, { useState } from "react";
 import { login } from "../../routes/userService";
 
 function AuthPage() {
-    const [user, setUser] = useState({ email: "", password: "" });
+    const [user, setUser] = useState({ user_email: "", user_password: "" });
     const [error, setError] = useState(null);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { token } = await login(user.email, user.password);
-            localStorage.setItem("token", token);
+            const { data } = await login(user.user_email, user.user_password);
+            localStorage.setItem("token", data.token);
             setError(null);
         } catch (error) {
-            setError("Correo o contraseña incorrectos.");
+            setError(error.message);
         }
     }
 
@@ -26,16 +26,16 @@ function AuthPage() {
                 <form onSubmit={handleSubmit}>
                     <input
                         type="email"
-                        name="email"
+                        name="user_email"
                         placeholder="Email"
-                        value={user.email}
+                        value={user.user_email}
                         onChange={handleChange}
                     />
                     <input
                         type="password"
-                        name="password"
+                        name="user_password"
                         placeholder="Password"
-                        value={user.password}
+                        value={user.user_password}
                         onChange={handleChange}
                     />
                     {error && <p style={{ color: "red" }}>{error}</p>}
