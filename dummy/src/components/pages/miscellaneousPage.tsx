@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import TableOptionServices from "../tableOptionServices";
 function MiscellaneousPage() {
 
 const [boolean, setBoolean] = useState(false);
@@ -25,7 +25,7 @@ const [boolean, setBoolean] = useState(false);
                         text-align: left;
                     }
                     .custom-table th {
-                        background: #1976d2;
+                        background: #1976d2ff;
                         color: #fff;
                         font-weight: 600;
                     }
@@ -68,14 +68,9 @@ const [boolean, setBoolean] = useState(false);
 
 {boolean && (
 <div>
-
-hola Xd inserte tabla aqui
-
+     <TableOptionServices />
 </div>
-
-
 )}
-
         </div>
         </>
     );

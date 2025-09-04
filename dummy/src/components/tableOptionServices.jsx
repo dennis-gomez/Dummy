@@ -2,6 +2,17 @@ import { useState } from "react";
 
 function TableOptionServices() {
   const [boolean, setBoolean] = useState(false);
+  const [text, setText] = useState("");
+
+  const gestionarOpciones = (id) => {
+    if (id !== 1) {
+      setText("Muestro areas");
+      setBoolean(true);
+    } else {
+      setText("Muestro categorias");
+      setBoolean(true);
+    }
+  };
 
   const areas = [
     { id: 1, nombre: "Areas" },
@@ -19,6 +30,7 @@ function TableOptionServices() {
           background: #fff;
           border-radius: 8px;
           overflow: hidden;
+          color: #000; /* Aplica texto negro a toda la tabla */
         }
         .custom-table th, .custom-table td {
           border: 1px solid #e0e0e0;
@@ -27,7 +39,7 @@ function TableOptionServices() {
         }
         .custom-table th {
           background: #1976d2;
-          color: #fff;
+          color: #fff; /* Cambié el texto del encabezado a blanco para que contraste */
           font-weight: 600;
         }
         .custom-table tr:nth-child(even) {
@@ -48,6 +60,9 @@ function TableOptionServices() {
         .custom-btn:hover {
           background: #1565c0;
         }
+        .centered {
+          text-align: center;
+        }
       `}</style>
 
       <table className="custom-table">
@@ -55,28 +70,27 @@ function TableOptionServices() {
           <tr>
             <th>#</th>
             <th>Área</th>
-            <th>Acción</th>
           </tr>
         </thead>
         <tbody>
           {areas.map((area, index) => (
             <tr key={area.id}>
-              <td>{index + 1}</td>
-              <td>{area.nombre}</td>
-              <td>
+              <td className="centered">{index + 1}</td>
+              <td className="centered">
                 <button
                   className="custom-btn"
-                  onClick={() => setBoolean(!boolean)}
+                  onClick={() => gestionarOpciones(index)}
                 >
-                  Seleccionar
+                  {area.nombre}
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
       <div style={{ textAlign: "center", marginTop: "20px" }}>
-        {boolean && <p>¡Botón presionado!</p>}
+        {boolean && <p>{text}</p>}
       </div>
     </div>
   );
