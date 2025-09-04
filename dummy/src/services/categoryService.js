@@ -7,10 +7,10 @@ export const getCategorys = async () => {
     try {
         const token = localStorage.getItem("token");
 
-        const response = await axios(API_URL, {
-            method: 'GET',
+        const response = await axios.get(API_URL, {
             headers: {
-                'Content-Type': `Barer ${token}`, 
+                'Content-Type': 'application/json', 
+                'Authorization': `Barer ${token}`, 
             }
         });
         return response.data;
@@ -28,7 +28,8 @@ export const createCategory = async ( category ) => {
             category_name: category.category_name
         }, {
             headers: {
-                'Content-Type': `Barer ${token}`,
+                'Content-Type': 'application/json', 
+                'Authorization': `Barer ${token}`,
             },
         });
         return response.data;
@@ -47,7 +48,8 @@ export const updateCategory = async ( category ) => {
             category_name: category.category_name
         }, {
             headers: {
-                'Content-Type': `Barer ${token}`,
+                'Content-Type': 'application/json', 
+                'Authorization': `Barer ${token}`,
             },
         });
         return response.data;
@@ -63,7 +65,8 @@ export const deleteCategory = async ( id_category ) => {
         const response = await axios.delete(API_URL + `delete`, { 
             id_category: id_category,
             headers: {
-                'Content-Type': `Barer ${token}`,   
+                'Content-Type': 'application/json', 
+                'Authorization': `Barer ${token}`,   
             },
         });
         return response.data;
