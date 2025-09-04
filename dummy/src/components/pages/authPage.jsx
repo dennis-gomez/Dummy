@@ -15,9 +15,7 @@ function AuthPage() {
     const handle_submit = async (e) => {
         e.preventDefault();
         try {
-
-            console.log(user);
-            const { data } = await login(user.user_email, user.user_password);
+            const data = await login(user);
             localStorage.setItem("token", data.token);
             setError(null);
             navigate("/start_page");
