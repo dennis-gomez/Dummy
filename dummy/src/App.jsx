@@ -8,6 +8,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<AuthPage />} />
+          <ProtectedRoute>
+            <Route path='/start_page' element={<MiscellaneousPage />} />
+          </ProtectedRoute>
         </Routes>
       </BrowserRouter>
     </>
