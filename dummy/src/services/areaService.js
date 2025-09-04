@@ -9,7 +9,8 @@ export const getAreas = async () => {
         const response = await axios(API_URL, {
             method: 'GET',
             headers: {
-                'Content-Type': `Bearer ${token}`,
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${token}`,
             }
         });
         return response.data;
@@ -22,7 +23,7 @@ export const getAreas = async () => {
 export const addArea = async (area) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await axios.post(API_URL + `/area`, area, {
+        const response = await axios.post(API_URL + `area`, area, {
             headers: {
                 'Content-Type': 'application/json', 
                 'Authorization': `Bearer ${token}`,
