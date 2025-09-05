@@ -23,11 +23,13 @@ export const getAreas = async () => {
 export const addArea = async (area) => {
     try {
         const token = localStorage.getItem("token");
-        const response = await axios.post(API_URL + `area`, area, {
+        const response = await axios.post(API_URL + `add`, {
+            area_name: area.area_name
+        }, {
             headers: {
                 'Content-Type': 'application/json', 
                 'Authorization': `Bearer ${token}`,
-            }
+            },
         });
         return response.data;
     } catch (error) {
@@ -45,7 +47,7 @@ export const updateArea = async (area) => {
         }, {
             headers: {
                 'Content-Type': 'application/json', 
-                'Authorization': `Barer ${token}`,
+                'Authorization': `Bearer ${token}`,
             },
         });
         return response.data;
@@ -62,7 +64,7 @@ export const deleteArea = async (id_area) => {
             id_area: id_area,
             headers: {
                 'Content-Type': 'application/json', 
-                'Authorization': `Barer ${token}`,   
+                'Authorization': `Bearer ${token}`,   
             },
         });
         return response.data;

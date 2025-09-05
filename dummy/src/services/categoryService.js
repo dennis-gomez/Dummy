@@ -20,7 +20,7 @@ export const getCategorys = async () => {
 }
 
 // Create a new category
-export const createCategory = async ( category ) => {
+export const addCategory = async ( category ) => {
     try {
         const token = localStorage.getItem("token");
         const response = await axios.post(API_URL + `add`, {
