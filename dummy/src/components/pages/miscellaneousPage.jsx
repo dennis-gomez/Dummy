@@ -1,68 +1,80 @@
-import React, { useMemo, useState, useEffect } from "react";
-import TableMiscellaneousPage from "../tableMiscellaneousPage";
+import React, { useState, useEffect } from "react";
+import TableMiscellaneousPage from "../TableMiscellaneousPage";
 import TableOptionServices from "../tableOptionService";
 import TableSubcategorie from "../tableSubCategorie";
 import { getServices } from "../../services/Service_service";
 import { getCategorys } from "../../services/categoryService";
-import { getItems } from "../../services/itemService";
+import { getItems, addItem } from "../../services/itemService";
 
-// ------------------ Tipos ------------------
-// (No interfaces, solo objetos JS)
 function MiscellaneousPage() {
-// ------------------ Componente principal ------------------
-  // --- Categorías (tabla 1)
-  const [services, setServices] = useState([])
-  const [categories, setCategories] = useState([])
-  const [items, setItems] = useState([])
+  const [services, setServices] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [items, setItems] = useState([]);
 
-  // --- Estados de selección
   const [selectedServCod, setSelectedServCod] = useState(null);
   const [selectedCatCod, setSelectedSubCod] = useState(null);
 
-  // Reset subcategoría al cambiar categoría
+  // Cargar servicios SOLO una vez al montar
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const services = await getServices();
-       
-        setServices(services);
-        
-        console.log('services:', services);
-    
+        const servicesResp = await getServices();
+        setServices(servicesResp);
+        console.log("services:", servicesResp);
       } catch (error) {
-        console.error('Error al obtener datos:', error);
+        console.error("Error al obtener datos:", error);
       }
-      setSelectedSubCod(null);
     };
     fetchData();
-  }, [selectedServCod]);
+  }, []);
 
-  // Derivados
+  // Seleccionar servicio -> limpiar dependencias y cargar categorías
+  const setSelectedServiceId = async (id) => {
+    try {
+      setSelectedServCod(id);
+      // Limpiar dependencias inmediatamente (evita el “doble click”)
+      setSelectedSubCod(null);
+      setItems([]);
+      setCategories([]);
 
-const setSelectedServiceId = async (id) => {
-  try{
-setSelectedServCod(id);
- console.log('Selected service ID:', id);
-const categories = await getCategorys(id);
-setCategories(categories);
-console.log('categories:', categories);
+      console.log("Selected service ID:", id);
+      const cats = await getCategorys(id);
+      setCategories(cats);
+      console.log("categories:", cats);
+    } catch (error) {
+      console.log("Error fetching categories:", error);
+    }
+  };
 
-  }catch(error){
-console.log('Error fetching categories:', error);
-  }
-}
+  // Seleccionar categoría -> cargar items
+  const setSelectedCategoryId = async (id_category, id_service) => {
+    try {
+      setSelectedSubCod(id_category);
+      console.log("Selected Category ID:", id_category);
+      const its = await getItems(id_service, id_category);
+      setItems(its);
+      console.log("items:", its);
+    } catch (error) {
+      console.log("Error fetching categories:", error);
+    }
+  };
 
-const setSelectedCategoryId = async (id_category, id_service) => {
-  try{
-setSelectedSubCod(id_category);
-  console.log('Selected Category ID:', id_category);
-const items = await getItems(id_service, id_category);
-setItems(items);
-console.log('items:', items);
-  }catch(error){
-console.log('Error fetching categories:', error);
-  }
-}
+  // Agregar item y refrescar lista
+  const handleAddItem = async (itemName) => {
+    if (!selectedServCod || !selectedCatCod) return;
+    try {
+      await addItem(
+        Number(selectedServCod),
+        Number(selectedCatCod),
+        itemName.trim()
+      );
+      const updated = await getItems(selectedServCod, selectedCatCod);
+      setItems(updated);
+    } catch (err) {
+      console.error("No se pudo agregar el item:", err);
+    }
+  };
+
   return (
     <div style={{ padding: 24 }}>
       <style>{`
@@ -72,14 +84,11 @@ console.log('Error fetching categories:', error);
           align-items: flex-start;
           overflow-x: auto;
         }
-        .panel {
-          flex: 1;
-          min-width: 340px;
-        }
+        .panel { flex: 1; min-width: 340px; }
       `}</style>
 
       <div className="tables-flex">
-        {/* Panel 1: Categorías */}
+        {/* Panel 1: Servicios */}
         <div className="panel">
           <TableMiscellaneousPage
             services={services}
@@ -88,29 +97,29 @@ console.log('Error fetching categories:', error);
           />
         </div>
 
-        {/* Panel 2: Subcategorías */}
+        {/* Panel 2: Categorías */}
         {selectedServCod && (
           <div className="panel">
-          <TableOptionServices
-            categoria={categories}
-            onClose={() => setSelectedServCod(null)}
-            onSelectSub={setSelectedCategoryId}
-            selectedService={selectedServCod}
-            selectedCatCod={selectedCatCod}   
-          />
+            <TableOptionServices
+              categoria={categories}
+              onClose={() => setSelectedServCod(null)}
+              onSelectSub={setSelectedCategoryId}
+              selectedService={selectedServCod}
+              selectedCatCod={selectedCatCod}
+            />
           </div>
         )}
 
-        {/* Panel 3: Detalles */}
+        {/* Panel 3: Items */}
         {selectedCatCod && (
           <div className="panel">
             <TableSubcategorie
               items={items}
               onClose={() => setSelectedSubCod(null)}
+              onAddItem={handleAddItem}
             />
           </div>
         )}
-          
       </div>
     </div>
   );
