@@ -5,10 +5,10 @@ const API_URL = "http://localhost:3000/items/";
 // Obtener items por cod_service y cod_category
 export const getItems = async (cod_service, cod_category) => {
   try {
-    const response = await axios.post(
-      API_URL + "get",
-      { cod_service, cod_category },
+    const response = await axios.get(
+      API_URL,
       {
+        params: { cod_service, cod_category },
         headers: {
           "Content-Type": "application/json"
         },

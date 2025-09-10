@@ -26,7 +26,7 @@ const styles = `
   .titulo { margin: 0 0 8px; font-weight: 600; }
 `;
 
-function TableMiscellaneousPage({ categorias, onSelect, selectedId }) {
+function TableMiscellaneousPage({ services, onSelect, selectedId }) {
   return (
     <>
       <style>{styles}</style>
@@ -40,15 +40,15 @@ function TableMiscellaneousPage({ categorias, onSelect, selectedId }) {
           </tr>
         </thead>
         <tbody>
-          {categorias.map((cat) => (
+          {services.map((cat) => (
             <tr
-              key={cat.cod_abue}
-              className={`fila ${selectedId === cat.cod_abue ? "selected" : ""}`}
-              onClick={() => onSelect(cat.cod_abue)}
-              aria-selected={selectedId === cat.cod_abue}
+              key={cat.cod_service}
+              className={`fila ${selectedId === cat.cod_service ? "selected" : ""}`}
+              onClick={() => onSelect(cat.cod_service)}
+              aria-selected={selectedId === cat.cod_service}
             >
-              <td>{cat.cod_abue}</td>
-              <td>{cat.nom_abue}</td>
+              <td>{cat.cod_service}</td>
+              <td>{cat.service_name}</td>
             </tr>
           ))}
         </tbody>
