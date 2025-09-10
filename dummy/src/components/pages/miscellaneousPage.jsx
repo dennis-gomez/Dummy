@@ -96,11 +96,13 @@ console.log('Error fetching categories:', error);
         {/* Panel 2: Subcategorías */}
         {selectedServCod && (
           <div className="panel">
-            <TableOptionServices
-              categoria={categories}
-              onClose={() => setSelectedServCod(null)}
-              onSelectSub={setSelectedSubCod}
-            />
+          <TableOptionServices
+  categoria={categories}
+  onClose={() => setSelectedServCod(null)}
+  onSelectSub={setSelectedCategoryId} // <-- aquí
+  selectedService={selectedServCod}
+  selectedCatCod={selectedCatCod}   // <-- pásale el id del servicio actual
+/>
           </div>
         )}
 
