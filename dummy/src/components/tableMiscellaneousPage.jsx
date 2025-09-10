@@ -30,13 +30,13 @@ function TableMiscellaneousPage({ services, onSelect, selectedId }) {
   return (
     <>
       <style>{styles}</style>
-      <div className="titulo">Services</div>
+      <div className="titulo">Servicios</div>
 
       <table className="tabla" aria-label="Tabla de Categorías">
         <thead>
           <tr>
-            <th className="th-yellow" style={{ width: 110 }}>codigo</th>
-            <th>abuelo</th>
+            <th className="th-yellow" style={{ width: 110 }}>codigo servicio</th>
+            <th>servicio</th>
           </tr>
         </thead>
         <tbody>
@@ -44,7 +44,7 @@ function TableMiscellaneousPage({ services, onSelect, selectedId }) {
             <tr
               key={cat.cod_service}
               className={`fila ${selectedId === cat.cod_service ? "selected" : ""}`}
-              onClick={() => onSelect(cat.cod_service)}
+              onClick={() => {onSelect(cat.cod_service)}}
               aria-selected={selectedId === cat.cod_service}
             >
               <td>{cat.cod_service}</td>

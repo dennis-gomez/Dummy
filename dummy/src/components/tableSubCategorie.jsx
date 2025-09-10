@@ -36,8 +36,8 @@ const styles = `
   .btn:hover { background: #1565c0; }
 `;
 
-function TableSubcategorie({ subcategoria, onClose }) {
-  if (!subcategoria) return null;
+function TableSubcategorie({ items, onClose }) {
+  if (!items) return null;
 
   return (
     <>
@@ -52,18 +52,18 @@ function TableSubcategorie({ subcategoria, onClose }) {
             <th style={{ width: 120 }}>codigo servicio</th>
             <th style={{ width: 120 }}>codigo categoria</th>
             <th style={{ width: 120 }}>codigo item</th>
-            <th>hijos</th>
+            <th>items</th>
           </tr>
         </thead>
         <tbody>
-          {subcategoria.length === 0 ? (
+          {items.length === 0 ? (
             <tr><td colSpan={2}>Sin detalles</td></tr>
           ) : (
-            subcategoria.map((det) => (
+            items.map((det) => (
               <tr key={det.cod_item}>
                 <td>{det.cod_service}</td>
                 <td>{det.cod_category}</td>
-                <td>{det.nom_item}</td>
+                <td>{det.cod_item}</td>
                 <td>{det.item_name}</td>
               </tr>
             ))
