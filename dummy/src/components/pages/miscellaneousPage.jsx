@@ -63,11 +63,6 @@ console.log('items:', items);
 console.log('Error fetching categories:', error);
   }
 }
-
-
-  
-
-
   return (
     <div style={{ padding: 24 }}>
       <style>{`
@@ -97,12 +92,12 @@ console.log('Error fetching categories:', error);
         {selectedServCod && (
           <div className="panel">
           <TableOptionServices
-  categoria={categories}
-  onClose={() => setSelectedServCod(null)}
-  onSelectSub={setSelectedCategoryId} // <-- aquí
-  selectedService={selectedServCod}
-  selectedCatCod={selectedCatCod}   // <-- pásale el id del servicio actual
-/>
+            categoria={categories}
+            onClose={() => setSelectedServCod(null)}
+            onSelectSub={setSelectedCategoryId}
+            selectedService={selectedServCod}
+            selectedCatCod={selectedCatCod}   
+          />
           </div>
         )}
 

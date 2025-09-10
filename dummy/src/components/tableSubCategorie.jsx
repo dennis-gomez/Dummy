@@ -1,3 +1,6 @@
+import ModalElimination from "./modalElimination";
+import { deleteItem } from "../services/itemService";
+
 const styles = `
   .tabla {
     border-collapse: collapse;
@@ -53,6 +56,7 @@ function TableSubcategorie({ items, onClose }) {
             <th style={{ width: 120 }}>codigo categoria</th>
             <th style={{ width: 120 }}>codigo item</th>
             <th>items</th>
+            <th style={{ width: 120 }}>acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -65,6 +69,12 @@ function TableSubcategorie({ items, onClose }) {
                 <td>{det.cod_category}</td>
                 <td>{det.cod_item}</td>
                 <td>{det.item_name}</td>
+                <td>
+                  <ModalElimination 
+                    message={'¿Quieres eliminar este item?'} 
+                    onClick={ () =>  deleteItem(det.cod_category, det.cod_service, det.cod_item) }
+                  />
+                </td>
               </tr>
             ))
           )}

@@ -39,12 +39,12 @@ export const addItem = async (cod_service, cod_category, item_name) => {
 };
 
 // Eliminar item
-export const deleteItem = async (cod_service, cod_category, cod_item) => {
+export const deleteItem = async (cod_category, cod_service, cod_item) => {
   try {
-    const response = await axios.post(
+    const response = await axios.delete(
       API_URL + "delete",
-      { cod_service, cod_category, cod_item },
       {
+        params: { cod_category, cod_service, cod_item },
         headers: {
           "Content-Type": "application/json"
         },
@@ -59,7 +59,7 @@ export const deleteItem = async (cod_service, cod_category, cod_item) => {
 // Actualizar item
 export const updateItem = async (cod_service, cod_category, cod_item, item_name) => {
   try {
-    const response = await axios.post(
+    const response = await axios.put(
       API_URL + "update",
       { cod_service, cod_category, cod_item, item_name },
       {
