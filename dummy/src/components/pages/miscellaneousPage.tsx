@@ -3,6 +3,7 @@ import TableMiscellaneousPage from "../TableMiscellaneousPage";
 import TableOptionServices from "../tableOptionService";
 import TableSubcategorie from "../tableSubCategorie";
 
+
 // ------------------ Tipos ------------------
 interface Categoria {
   cod_abue: number;
