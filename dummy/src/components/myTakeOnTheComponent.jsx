@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAreas, addArea } from "../services/areaService";
 import { getCategorys, addCategory } from "../services/categoryService";
+import {getServices} from "../services/Service_service"
 
 function TableOptionServices() {
   const [areas, setAreas] = useState([]);
@@ -10,6 +11,7 @@ function TableOptionServices() {
 
   useEffect(() => {
     loadAreas();
+    console.log(getServices());
   }, []);
 
   const loadAreas = async () => {

@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import {getServices} from "../services/Service_service"
+
 const styles = `
   .tabla {
     border-collapse: collapse;
@@ -27,6 +30,14 @@ const styles = `
 `;
 
 function TableMiscellaneousPage({ categorias, onSelect, selectedId }) {
+
+useEffect(() => {
+
+    const prueba = async () => {
+        await console.log(getServices());
+    };
+  }, []);
+
   return (
     <>
       <style>{styles}</style>
