@@ -36,32 +36,33 @@ const styles = `
   .btn:hover { background: #1565c0; }
 `;
 
-function TableOptionServices({ categoria, subcategorias, onClose, onSelectSub }) {
+function TableOptionServices({ categoria, onClose, onSelectSub }) {
   if (!categoria) return null;
 
   return (
     <>
       <style>{styles}</style>
       <div className="toolbar">
-        <div><strong>Subcategorías de:</strong> {categoria.nom_abue}</div>
         <button className="btn" onClick={onClose}>Cerrar</button>
       </div>
 
       <table className="tabla">
         <thead>
           <tr>
-            <th style={{ width: 110 }}>codigo</th>
-            <th>papas</th>
+             <th style={{ width: 110 }}>codigo servicio</th>
+            <th style={{ width: 110 }}>codigo categoria</th>
+            <th>categorias</th>
           </tr>
         </thead>
         <tbody>
-          {subcategorias.length === 0 ? (
+          {categoria.length === 0 ? (
             <tr><td colSpan={2}>Sin subcategorías</td></tr>
           ) : (
-            subcategorias.map((sub) => (
-              <tr key={sub.cod_sub} onClick={() => onSelectSub(sub.cod_sub)} style={{ cursor: "pointer" }}>
-                <td>{sub.cod_sub}</td>
-                <td>{sub.nom_sub}</td>
+            categoria.map((sub) => (
+              <tr key={sub.cod_category} onClick={() => onSelectSub(sub.cod_sub)} style={{ cursor: "pointer" }}>
+                <td>{sub.cod_service}</td>
+                <td>{sub.cod_category}</td>
+                <td>{sub.category_name}</td>
               </tr>
             ))
           )}

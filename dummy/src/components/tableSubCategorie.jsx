@@ -36,32 +36,35 @@ const styles = `
   .btn:hover { background: #1565c0; }
 `;
 
-function TableSubcategorie({ subcategoria, detalles, onClose }) {
+function TableSubcategorie({ subcategoria, onClose }) {
   if (!subcategoria) return null;
 
   return (
     <>
       <style>{styles}</style>
       <div className="toolbar">
-        <div><strong>Detalles de:</strong> {subcategoria.nom_sub}</div>
         <button className="btn" onClick={onClose}>Cerrar</button>
       </div>
 
       <table className="tabla">
         <thead>
           <tr>
-            <th style={{ width: 120 }}>codigo</th>
+            <th style={{ width: 120 }}>codigo servicio</th>
+            <th style={{ width: 120 }}>codigo categoria</th>
+            <th style={{ width: 120 }}>codigo item</th>
             <th>hijos</th>
           </tr>
         </thead>
         <tbody>
-          {detalles.length === 0 ? (
+          {subcategoria.length === 0 ? (
             <tr><td colSpan={2}>Sin detalles</td></tr>
           ) : (
-            detalles.map((det) => (
-              <tr key={det.cod_det}>
-                <td>{det.cod_det}</td>
-                <td>{det.nom_det}</td>
+            subcategoria.map((det) => (
+              <tr key={det.cod_item}>
+                <td>{det.cod_service}</td>
+                <td>{det.cod_category}</td>
+                <td>{det.nom_item}</td>
+                <td>{det.item_name}</td>
               </tr>
             ))
           )}
