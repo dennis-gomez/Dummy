@@ -3,6 +3,9 @@ import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   Button, Typography, TextField
 } from "@mui/material";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -106,12 +109,19 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField
-                        value={editData.extinguisher_last_date_inspection || ""}
-                        onChange={(e) =>
-                          setEditData({ ...editData, extinguisher_last_date_inspection: e.target.value })
-                        }
-                      />
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="Fecha de inspección"
+                          value={editData.extinguisher_last_date_inspection ? dayjs(editData.extinguisher_last_date_inspection) : null}
+                          onChange={(newValue) =>
+                            setEditData({
+                              ...editData,
+                              extinguisher_last_date_inspection: newValue ? newValue.format("YYYY-MM-DD") : "",
+                            })
+                          }
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
                     </TableCell>
                     <TableCell>
                       <TextField
