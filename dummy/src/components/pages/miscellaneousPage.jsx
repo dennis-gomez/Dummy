@@ -86,16 +86,43 @@ function MiscellaneousPage() {
     setItems(updated);
   }
 
+  // Refs para focus
+  const serviciosRef = React.useRef(null);
+  const categoriasRef = React.useRef(null);
+  const itemsRef = React.useRef(null);
+
+  // Focus en tabla de servicios al montar
+  React.useEffect(() => {
+    if (serviciosRef.current) serviciosRef.current.focus();
+  }, []);
+
+  // Focus en tabla de categorías cuando se selecciona servicio
+  React.useEffect(() => {
+    if (selectedServCod && categoriasRef.current) categoriasRef.current.focus();
+  }, [selectedServCod]);
+
+  // Focus en tabla de items cuando se selecciona categoría
+  React.useEffect(() => {
+    if (selectedCatCod && itemsRef.current) itemsRef.current.focus();
+  }, [selectedCatCod]);
+
   return (
     <div style={{ padding: 24 }}>
       <style>{`
         .tables-flex {
           display: flex;
+          flex-direction: column;
           gap: 24px;
-          align-items: flex-start;
-          overflow-x: auto;
+          align-items: center;
+          justify-content: center;
+          min-height: 80vh;
         }
-        .panel { flex: 1; min-width: 340px; }
+        .panel {
+          width: 100%;
+          max-width: 600px;
+          min-width: 340px;
+          margin: 0 auto;
+        }
       `}</style>
 
       <div className="tables-flex">
@@ -105,6 +132,7 @@ function MiscellaneousPage() {
             services={services}
             selectedId={selectedServCod}
             onSelect={setSelectedServiceId}
+            tableRef={serviciosRef}
           />
         </div>
 
@@ -117,6 +145,7 @@ function MiscellaneousPage() {
               onSelectSub={setSelectedCategoryId}
               selectedService={selectedServCod}
               selectedCatCod={selectedCatCod}
+              tableRef={categoriasRef}
             />
           </div>
         )}
@@ -130,6 +159,7 @@ function MiscellaneousPage() {
               onDeleteItem={handleDeleteItem}
               onEditItem={handleSaveEdit}
               onAddItem={handleAddItem}
+              tableRef={itemsRef}
             />
           </div>
         )}

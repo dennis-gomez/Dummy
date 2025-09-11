@@ -6,7 +6,7 @@ const styles = `
   .tabla { border-collapse: collapse; width: 100%; margin: 0; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
   .tabla th, .tabla td { border: 1px solid #e0e0e0; padding: 10px 14px; text-align: left; color: #000; }
   .tabla thead th { background: #1976d2; color: #fff; font-weight: 600; }
-  .toolbar { margin: 0 0 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+  .toolbar { margin: 0 0 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; justify-content: flex-end; }
   .btn { background: #1976d2; color: #fff; border: none; border-radius: 4px; padding: 8px 16px; cursor: pointer; flex-shrink: 0; }
   .btn:disabled { opacity: .5; cursor: not-allowed; }
   .btn:hover { background: #1565c0; }
@@ -56,7 +56,6 @@ function TableSubcategorie({ items, onClose, onDeleteItem, onAddItem, onEditItem
       <style>{styles}</style>
 
       <div className="toolbar">
-        <button className="btn" onClick={onClose}>Cerrar</button>
         <div className="input-group">
           <label>Nombre de item:</label>
           <input
@@ -69,6 +68,8 @@ function TableSubcategorie({ items, onClose, onDeleteItem, onAddItem, onEditItem
           <button className="btn" onClick={handleAdd} disabled={!name.trim()}>
             Agregar
           </button>
+
+            <button className="btn" onClick={onClose}>Cerrar</button>
         </div>
       </div>
 
@@ -107,7 +108,7 @@ function TableSubcategorie({ items, onClose, onDeleteItem, onAddItem, onEditItem
 
                 <td>
                   {editingId === det.cod_item ? (
-                    <>
+                    <div style={{ display: 'flex', gap: 8 }}>
                       <Button
                         text="Guardar"
                         onClick={() =>
@@ -115,9 +116,9 @@ function TableSubcategorie({ items, onClose, onDeleteItem, onAddItem, onEditItem
                         }
                       />
                       <Button text="Cancelar" onClick={handleCancel} />
-                    </>
+                    </div>
                   ) : (
-                    <>
+                    <div style={{ display: 'flex', gap: 8 }}>
                       <ModalElimination
                         message={"¿Quieres eliminar este item?"}
                         onClick={() =>
@@ -128,7 +129,7 @@ function TableSubcategorie({ items, onClose, onDeleteItem, onAddItem, onEditItem
                         text="Editar"
                         onClick={() => handleEditClick(det)}
                       />
-                    </>
+                    </div>
                   )}
                 </td>
               </tr>
