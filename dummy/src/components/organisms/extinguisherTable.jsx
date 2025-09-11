@@ -102,10 +102,13 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                     </TableCell>
                     <TableCell>
                       <TextField
-                        value={editData.extinguisher_location}
+                        value={editData.extinguisher_location || ""}
                         onChange={(e) =>
                           setEditData({ ...editData, extinguisher_location: e.target.value })
                         }
+                        multiline
+                        rows={2}
+                        variant="outlined"
                       />
                     </TableCell>
                     <TableCell>
@@ -129,8 +132,12 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                         onChange={(e) =>
                           setEditData({ ...editData, extinguisher_observations: e.target.value })
                         }
+                        multiline
+                        rows={4}
+                        variant="outlined"
                       />
                     </TableCell>
+
                     <TableCell>
                       <Button variant="contained" color="primary" onClick={handleSaveEdit} sx={{ mr: 1 }}>
                         Guardar
