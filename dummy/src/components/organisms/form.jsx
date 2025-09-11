@@ -5,7 +5,6 @@ import Input from "../atoms/input";
 import { useState } from "react";
 
 function Form({ fields, onSubmit, titleBtn }) {
-
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
@@ -21,42 +20,36 @@ function Form({ fields, onSubmit, titleBtn }) {
   };
 
   return (
-    <Box 
-        sx={{ flexGrow: 1, p: 3, maxWidth: 800, margin: "0 auto" }}
-        color={"red"}
-    >
+    <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
       <form onSubmit={handleSubmit}>
-        <Grid 
-            container spacing={2}
-        >
-            {fields.map((field, index) => {
-                const isLastSingle = fields.length % 2 !== 0 && index === fields.length - 1;
-                return (
-                    <Grid 
-                        item xs={12} 
-                        sm={isLastSingle ? 12 : 6} 
-                        key={field.name}
-                    >
-                        <Input
-                            name={field.name}
-                            type={field.type || "text"}
-                            placeholder={field.placeholder}
-                            value={formData[field.name]}
-                            onChange={handleChange}
-                        />
-                    </Grid>
-                );
-            })}
-            <Grid item xs={12}>
-                <Button 
-                    type="submit" 
-                    variant="contained" 
-                    color="primary"
-                >
-                    {titleBtn}
-                </Button>
-            </Grid>
+        <Grid container spacing={2}>
+          {fields.map((field, index) => {
+            const isLastSingle =
+              fields.length % 2 !== 0 && index === fields.length - 1;
+            return (
+              <Grid
+                item
+                xs={12}
+                sm={isLastSingle ? 12 : 6}
+                key={field.name}
+              >
+                <Input
+                  name={field.name}
+                  type={field.type || "text"}
+                  placeholder={field.placeholder}
+                  value={formData[field.name]}
+                  onChange={handleChange}
+                />
+              </Grid>
+            );
+          })}
         </Grid>
+        
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+          <Button type="submit" variant="contained" color="primary">
+            {titleBtn}
+          </Button>
+        </Box>
       </form>
     </Box>
   );
