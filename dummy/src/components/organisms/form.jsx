@@ -5,7 +5,7 @@ import Input from "../atoms/input";
 import { useState } from "react";
 
 function Form({ fields, onSubmit, titleBtn }) {
-
+  
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
@@ -22,8 +22,7 @@ function Form({ fields, onSubmit, titleBtn }) {
 
   return (
     <Box 
-        sx={{ flexGrow: 1, p: 3, maxWidth: 800, margin: "0 auto" }}
-        color={"red"}
+        sx={{ p: 3, margin: "0 auto", contentt: "center", mt: 3 }}
     >
       <form onSubmit={handleSubmit}>
         <Grid 

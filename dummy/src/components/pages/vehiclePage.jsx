@@ -1,8 +1,11 @@
-import Container from "@mui/material/Container";
 import Form from "../organisms/form";
-import {addVehicle, getVehicles} from "../../services/vehicleService";
+import {addVehicle, getVehicles, updateVehicle, deleteVehicle} from "../../services/vehicleService";
+import { useEffect, useState } from "react";
+import VehicleTable from "../organisms/vehicleTable";
 
 function VehiclePage() {
+
+    const [vehicles, setVehicles] = useState([]);
 
     //estructura de los campos del formulario
     const fields = [
@@ -21,26 +24,60 @@ function VehiclePage() {
         { name: "vehicle_color", placeholder: "Color" }
     ];
 
-    const handleSubmit = async (formData) => {
+    const handleSubmit = async ( formData ) => {
         try {
             const vehicles = await addVehicle(formData);
+            fetchVehicles();
         }catch (error) {
             console.error("Error adding vehicle:", error);
         }
     };
 
-    const handleVehicles = async () => {
-
+    const handleEdit = async ( updatedData ) => {
+        try {
+            const updatedVehicles = await updateVehicle(updatedData);
+            fetchVehicles();
+        }catch (error) {
+            console.error("Error editing vehicle:", error);
+        }
     };
 
+    const handleDelete = async (id) => {
+        try {
+            const deletedVehicles = await deleteVehicle(id);
+            fetchVehicles();
+        }catch (error) {
+            console.error("Error deleting vehicle:", error);
+        }
+    }
+
+    const fetchVehicles = async () => {
+        try {
+            const data = await getVehicles();
+            setVehicles(data);
+        }catch (error) {
+            console.error("Error fetching vehicles:", error);
+        }
+    };
+
+    useEffect(() => { 
+        fetchVehicles();
+    }, []);
+
     return(
-        <Container maxWidth="sm">
+        <>
             <Form 
                 fields={fields}
                 onSubmit={handleSubmit}
                 titleBtn={"Agregar vehículo"}
             />
-        </Container>
+            <VehicleTable
+                fields={fields}
+                vehicles={vehicles}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+            />
+        </>
     );
 }
 
