@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, TextField, Button, Typography, Grid } from "@mui/material";
+import { Box, TextField, Button, Typography, Grid, Paper } from "@mui/material";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
@@ -16,22 +16,11 @@ const fieldLabels = {
   extinguisher_observations: "Observaciones",
 };
 
-// Definimos qué campos son fechas
-const dateFields = [
-  "extinguisher_manufacturing_date",
-  "extinguisher_installation_date",
-  "extinguisher_last_date_inspection",
-];
-
 const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel }) => {
-  const normalFields = Object.keys(extinguisher).filter(
-    (key) => key !== "extinguisher_observations"
-  );
-
   return (
-    <Box
+    <Paper
       sx={{
-        maxWidth: 800,
+        maxWidth: 730,
         margin: "20px auto",
         p: 3,
         borderRadius: 3,
@@ -44,57 +33,124 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
       </Typography>
 
       <LocalizationProvider dateAdapter={AdapterDayjs}>
-<Grid container spacing={2}>
-  {normalFields.map((key) => {
-    const gridSize = 4; // 3 columnas
+        <Grid container spacing={2}>
+          {/* Fila 1 */}
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label={fieldLabels.extinguisher_serial_number}
+              value={extinguisher.extinguisher_serial_number}
+              onChange={(e) =>
+                setExtinguisher({ ...extinguisher, extinguisher_serial_number: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <DatePicker
+              label={fieldLabels.extinguisher_manufacturing_date}
+              value={extinguisher.extinguisher_manufacturing_date || null}
+              onChange={(newValue) =>
+                setExtinguisher({ ...extinguisher, extinguisher_manufacturing_date: newValue })
+              }
+              slotProps={{ textField: { fullWidth: true } }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label={fieldLabels.extinguisher_brand}
+              value={extinguisher.extinguisher_brand}
+              onChange={(e) =>
+                setExtinguisher({ ...extinguisher, extinguisher_brand: e.target.value })
+              }
+            />
+          </Grid>
 
-    if (dateFields.includes(key)) {
-      return (
-        <Grid key={key} xs={{ span: gridSize }}>
-          <DatePicker
-            label={fieldLabels[key]}
-            value={extinguisher[key] || null}
-            onChange={(newValue) =>
-              setExtinguisher({ ...extinguisher, [key]: newValue })
-            }
-            slotProps={{ textField: { fullWidth: true } }}
-          />
+          {/* Fila 2 */}
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label={fieldLabels.extinguisher_agent}
+              value={extinguisher.extinguisher_agent}
+              onChange={(e) =>
+                setExtinguisher({ ...extinguisher, extinguisher_agent: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <DatePicker
+              label={fieldLabels.extinguisher_installation_date}
+              value={extinguisher.extinguisher_installation_date || null}
+              onChange={(newValue) =>
+                setExtinguisher({ ...extinguisher, extinguisher_installation_date: newValue })
+              }
+              slotProps={{ textField: { fullWidth: true } }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label={fieldLabels.extinguisher_type}
+              value={extinguisher.extinguisher_type}
+              onChange={(e) =>
+                setExtinguisher({ ...extinguisher, extinguisher_type: e.target.value })
+              }
+            />
+          </Grid>
+
+          {/* Fila 3 */}
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label={fieldLabels.extinguisher_capacity}
+              value={extinguisher.extinguisher_capacity}
+              onChange={(e) =>
+                setExtinguisher({ ...extinguisher, extinguisher_capacity: e.target.value })
+              }
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <DatePicker
+              label={fieldLabels.extinguisher_last_date_inspection}
+              value={extinguisher.extinguisher_last_date_inspection || null}
+              onChange={(newValue) =>
+                setExtinguisher({ ...extinguisher, extinguisher_last_date_inspection: newValue })
+              }
+              slotProps={{ textField: { fullWidth: true } }}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
+              fullWidth
+              label={fieldLabels.extinguisher_location}
+              value={extinguisher.extinguisher_location}
+              onChange={(e) =>
+                setExtinguisher({ ...extinguisher, extinguisher_location: e.target.value })
+              }
+            />
+          </Grid>
+
+          {/* Observaciones ocupa toda la fila */}
+          <Grid item xs={12}>
+            <TextField
+              style={{ width: '720px' }}
+              fullWidth
+              multiline
+              rows={4}
+              label={fieldLabels.extinguisher_observations}
+              value={extinguisher.extinguisher_observations}
+              onChange={(e) =>
+                setExtinguisher({
+                  ...extinguisher,
+                  extinguisher_observations: e.target.value,
+                })
+              }
+            />
+          </Grid>
         </Grid>
-      );
-    }
-
-    return (
-      <Grid key={key} xs={{ span: gridSize }}>
-        <TextField
-          fullWidth
-          label={fieldLabels[key]}
-          value={extinguisher[key]}
-          onChange={(e) =>
-            setExtinguisher({ ...extinguisher, [key]: e.target.value })
-          }
-        />
-      </Grid>
-    );
-  })}
-
-  {/* Observaciones ocupa toda la fila */}
-  <Grid xs={{ span: 12 }}>
-    <TextField
-      fullWidth
-      multiline
-      rows={4}
-      label={fieldLabels.extinguisher_observations}
-      value={extinguisher.extinguisher_observations}
-      onChange={(e) =>
-        setExtinguisher({ ...extinguisher, extinguisher_observations: e.target.value })
-      }
-    />
-  </Grid>
-</Grid>
-
       </LocalizationProvider>
 
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
         <Button onClick={onCancel} sx={{ mr: 2 }}>
           Cancelar
         </Button>
@@ -102,7 +158,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
           Guardar
         </Button>
       </Box>
-    </Box>
+    </Paper>
   );
 };
 

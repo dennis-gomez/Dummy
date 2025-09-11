@@ -6,26 +6,10 @@ import {
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
 
-import ExtinguisherForm from "./extinguisherForm"; // Asegúrate de importar tu formulario
-
-const ExtinguisherTable = ({ extinguishers, onDelete, onEdit, onAdd }) => {
+const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
-  const [showAddForm, setShowAddForm] = useState(false); // Controla visibilidad del formulario
-  const [newExtinguisher, setNewExtinguisher] = useState({
-    extinguisher_serial_number: "",
-    extinguisher_brand: "",
-    extinguisher_agent: "",
-    extinguisher_type: "",
-    extinguisher_capacity: "",
-    extinguisher_manufacturing_date: "",
-    extinguisher_installation_date: "",
-    extinguisher_location: "",
-    extinguisher_last_date_inspection: "",
-    extinguisher_observations: ""
-  });
 
   // Activar edición
   const handleEditClick = (ext) => {
@@ -46,50 +30,11 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit, onAdd }) => {
     setEditData({});
   };
 
-  // Guardar nuevo extintor desde el formulario
-  const handleAdd = () => {
-    onAdd(newExtinguisher);
-    setNewExtinguisher({
-      extinguisher_serial_number: "",
-      extinguisher_brand: "",
-      extinguisher_agent: "",
-      extinguisher_type: "",
-      extinguisher_capacity: "",
-      extinguisher_manufacturing_date: "",
-      extinguisher_installation_date: "",
-      extinguisher_location: "",
-      extinguisher_last_date_inspection: "",
-      extinguisher_observations: ""
-    });
-    setShowAddForm(false); // Oculta el formulario luego de agregar
-  };
-
   return (
     <Paper sx={{ p: 2, mt: 3 }}>
-      <Typography variant="h6" gutterBottom>
-        Lista de Extintores ({extinguishers.length})
+      <Typography variant="h6" align="center" gutterBottom>
+        Lista de Extintores
       </Typography>
-
-      {/* Botón para mostrar el formulario */}
-      <Button
-        variant="contained"
-        startIcon={<AddIcon />}
-        sx={{ mb: 2 }}
-        onClick={() => setShowAddForm(true)}
-      >
-        Agregar Extintor
-      </Button>
-
-      {/* Formulario visible solo cuando showAddForm es true */}
-      {showAddForm && (
-        <ExtinguisherForm
-          extinguisher={newExtinguisher}
-          setExtinguisher={setNewExtinguisher}
-          onSubmit={handleAdd}
-          onCancel={() => setShowAddForm(false)}
-        />
-      )}
-
       <TableContainer>
         <Table>
           <TableHead>
