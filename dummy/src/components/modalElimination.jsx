@@ -22,7 +22,7 @@ function ModalElimination({ message, onClick }) {
 
     return (
         <>
-            <Button text="Eliminar" onClick={handleDelete} color="primary" />
+            <Button text="Eliminar" onClick={handleDelete} />
         </>
     );
 }

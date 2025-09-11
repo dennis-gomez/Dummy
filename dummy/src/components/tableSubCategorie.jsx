@@ -1,5 +1,4 @@
 import ModalElimination from "./modalElimination";
-import { deleteItem } from "../services/itemService";
 import React, { useState } from "react";
 
 const styles = `
@@ -15,7 +14,7 @@ const styles = `
   .input-group input { border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; min-width: 160px; flex: 1; }
 `;
 
-function TableSubcategorie({ items, onClose, onAddItem }) {
+function TableSubcategorie({ items, onClose, onDeleteItem ,onAddItem }) {
   const [name, setName] = useState("");
 
   if (!items) return null;
@@ -23,7 +22,7 @@ function TableSubcategorie({ items, onClose, onAddItem }) {
   const handleAdd = async () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    await onAddItem(trimmed);    // <- el padre se encarga de llamar a la API y refrescar
+    await onAddItem(trimmed);
     setName("");
   };
 
@@ -75,7 +74,7 @@ function TableSubcategorie({ items, onClose, onAddItem }) {
                 <td>
                   <ModalElimination 
                     message={'¿Quieres eliminar este item?'} 
-                    onClick={ () =>  deleteItem(det.cod_category, det.cod_service, det.cod_item) }
+                    onClick={() => onDeleteItem(det.cod_category, det.cod_service, det.cod_item)}
                   />
                 </td>
               </tr>

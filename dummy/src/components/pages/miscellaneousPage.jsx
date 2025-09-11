@@ -4,7 +4,7 @@ import TableOptionServices from "../tableOptionService";
 import TableSubcategorie from "../tableSubCategorie";
 import { getServices } from "../../services/Service_service";
 import { getCategorys } from "../../services/categoryService";
-import { getItems, addItem } from "../../services/itemService";
+import { getItems, addItem, deleteItem } from "../../services/itemService";
 
 function MiscellaneousPage() {
   const [services, setServices] = useState([]);
@@ -37,10 +37,9 @@ function MiscellaneousPage() {
       setItems([]);
       setCategories([]);
 
-      console.log("Selected service ID:", id);
       const cats = await getCategorys(id);
       setCategories(cats);
-      console.log("categories:", cats);
+
     } catch (error) {
       console.log("Error fetching categories:", error);
     }
@@ -74,6 +73,12 @@ function MiscellaneousPage() {
       console.error("No se pudo agregar el item:", err);
     }
   };
+
+  const handleDeleteItem = async (cod_category, cod_service, cod_item) => {
+    await deleteItem(cod_category, cod_service, cod_item) 
+    const updated = await getItems(selectedServCod, selectedCatCod);
+    setItems(updated);
+  }
 
   return (
     <div style={{ padding: 24 }}>
@@ -116,6 +121,7 @@ function MiscellaneousPage() {
             <TableSubcategorie
               items={items}
               onClose={() => setSelectedSubCod(null)}
+              onDeleteItem={handleDeleteItem}
               onAddItem={handleAddItem}
             />
           </div>
