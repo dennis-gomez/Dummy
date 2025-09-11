@@ -63,7 +63,7 @@ const navConfig = [
   {
     label: 'Salud ocupacional',
     sub: [
-      { label: 'botiquines', path: '/salud/botiquines' },
+      { label: 'botiquines', path: '/salud/botiquin' },
     ],
   },
   {
