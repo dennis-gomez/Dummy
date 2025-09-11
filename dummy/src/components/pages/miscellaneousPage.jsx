@@ -4,7 +4,7 @@ import TableOptionServices from "../tableOptionService";
 import TableSubcategorie from "../tableSubCategorie";
 import { getServices } from "../../services/Service_service";
 import { getCategorys } from "../../services/categoryService";
-import { getItems, addItem, deleteItem } from "../../services/itemService";
+import { getItems, addItem, deleteItem, updateItem } from "../../services/itemService";
 
 function MiscellaneousPage() {
   const [services, setServices] = useState([]);
@@ -80,6 +80,12 @@ function MiscellaneousPage() {
     setItems(updated);
   }
 
+  const handleSaveEdit = async (cod_category, cod_service, cod_item, editValue) => {
+    await updateItem(cod_category, cod_service, cod_item, editValue);
+    const updated = await getItems(selectedServCod, selectedCatCod);
+    setItems(updated);
+  }
+
   return (
     <div style={{ padding: 24 }}>
       <style>{`
@@ -122,6 +128,7 @@ function MiscellaneousPage() {
               items={items}
               onClose={() => setSelectedSubCod(null)}
               onDeleteItem={handleDeleteItem}
+              onEditItem={handleSaveEdit}
               onAddItem={handleAddItem}
             />
           </div>

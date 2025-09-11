@@ -1,5 +1,6 @@
 import ModalElimination from "./modalElimination";
 import React, { useState } from "react";
+import Button from "../components/atoms/button";
 
 const styles = `
   .tabla { border-collapse: collapse; width: 100%; margin: 0; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -14,8 +15,11 @@ const styles = `
   .input-group input { border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; min-width: 160px; flex: 1; }
 `;
 
-function TableSubcategorie({ items, onClose, onDeleteItem ,onAddItem }) {
+function TableSubcategorie({ items, onClose, onDeleteItem, onAddItem, onEditItem }) {
   const [name, setName] = useState("");
+
+  const [editingId, setEditingId] = useState(null);
+  const [editValue, setEditValue] = useState("");
 
   if (!items) return null;
 
@@ -28,6 +32,23 @@ function TableSubcategorie({ items, onClose, onDeleteItem ,onAddItem }) {
 
   const onKeyDown = (e) => {
     if (e.key === "Enter") handleAdd();
+  };
+
+  const handleEditClick = (item) => {
+    setEditingId(item.cod_item);
+    setEditValue(item.item_name);
+  };
+
+  // aqui EDITAR
+  const handleSaveEdit = async (cod_category, cod_service, cod_item) => {
+    onEditItem(cod_category, cod_service, cod_item, editValue);
+    setEditingId(null);
+    setEditValue("");
+  }
+
+  const handleCancel = () => {
+    setEditingId(null);
+    setEditValue("");
   };
 
   return (
@@ -63,19 +84,52 @@ function TableSubcategorie({ items, onClose, onDeleteItem ,onAddItem }) {
         </thead>
         <tbody>
           {items.length === 0 ? (
-            <tr><td colSpan={4}>Sin detalles</td></tr>
-          ) : (
+            <tr><td colSpan={5}>Sin detalles</td></tr>
+            ) : (
             items.map((det) => (
               <tr key={det.cod_item}>
                 <td>{det.cod_service}</td>
                 <td>{det.cod_category}</td>
                 <td>{det.cod_item}</td>
-                <td>{det.item_name}</td>
+
+                {/* aqui EDITAR */}
                 <td>
-                  <ModalElimination 
-                    message={'¿Quieres eliminar este item?'} 
-                    onClick={() => onDeleteItem(det.cod_category, det.cod_service, det.cod_item)}
-                  />
+                {editingId === det.cod_item ? (
+                    <input
+                      type="text"
+                      value={editValue}
+                      onChange={(e) => setEditValue(e.target.value)}
+                    />
+                  ) : (
+                    det.item_name
+                )}
+                </td>
+
+                <td>
+                  {editingId === det.cod_item ? (
+                    <>
+                      <Button
+                        text="Guardar"
+                        onClick={() =>
+                          handleSaveEdit(det.cod_category, det.cod_service, det.cod_item, editValue )
+                        }
+                      />
+                      <Button text="Cancelar" onClick={handleCancel} />
+                    </>
+                  ) : (
+                    <>
+                      <ModalElimination
+                        message={"¿Quieres eliminar este item?"}
+                        onClick={() =>
+                          onDeleteItem(det.cod_category, det.cod_service, det.cod_item)
+                        }
+                      />
+                      <Button
+                        text="Editar"
+                        onClick={() => handleEditClick(det)}
+                      />
+                    </>
+                  )}
                 </td>
               </tr>
             ))
