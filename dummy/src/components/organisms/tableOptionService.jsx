@@ -26,12 +26,7 @@ const styles = `
     outline-offset: -2px;
     background: #e3f2fd;
   }
-  .toolbar {
-    margin: 0 0 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  .toolbar { margin: 0 0 8px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; justify-content: flex-end; }
   .btn {
     background: #1976d2;
     color: #fff;
