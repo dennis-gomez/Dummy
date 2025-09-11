@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import CollapsibleTable from "../organisms/collapsibleTable";
-import { getMedicKits,deleteMedicKit } from "../../services/medicKitService";
-import { getSuppliesById, deleteSupply } from "../../services/medicKitSuppliesService";
+import { getMedicKits,deleteMedicKit,updateMedicKit } from "../../services/medicKitService";
+import { getSuppliesById, deleteSupply, updateSupply } from "../../services/medicKitSuppliesService";
 
 function MedicKitPage() {
   const [medicKitsList, setMedicKitsList] = useState([]);
@@ -52,6 +52,36 @@ function MedicKitPage() {
     }
   };
 
+  const handleEditMedicKit = async (formData) => {
+
+   
+    console.log("Datos del formulario para editar el kit médico:", formData);
+    
+    try {
+        await updateMedicKit(formData);
+        // Actualizar la lista de kits médicos después de la edición
+        const updatedMedicKits = await getMedicKits();
+        setMedicKitsList(updatedMedicKits);
+    } catch (error) {
+        console.error("Error al actualizar el kit médico:", error);
+    }
+       
+    };
+
+    const handleEditSupply = async (formData) => {
+        console.log("Datos del formulario para editar el suplemento:", formData);
+
+        try {
+            await updateSupply(formData);
+            // Actualizar la lista de suplementos después de la edición
+            const updatedSupplies = await getSuppliesById(medicKitSelectedId);
+            setSuppliesList(updatedSupplies);
+        } catch (error) {
+            console.error("Error al actualizar el suplemento médico:", error);
+        }
+
+    }
+
   const handleEliminateMedicKit = async (cod_MedicKit) => {
 
     try {
@@ -91,6 +121,8 @@ function MedicKitPage() {
           onSelect={(id) => getSuppliesByMedicKitId(id)}
         onDeleteMedicKit={(id) => handleEliminateMedicKit(id)}
         onDeleteSupply={(id) => handleEliminateSupply(medicKitSelectedId,id)}
+        onEditMedicKit={(formData) => handleEditMedicKit(formData)}
+        onEditSupply={(formData) => handleEditSupply(formData)}
         />
       )}
     </>
