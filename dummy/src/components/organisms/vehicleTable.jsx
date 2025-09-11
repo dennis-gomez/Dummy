@@ -34,7 +34,7 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
   return (
     <Paper sx={{ p: 2, mt: 3 }}>
       <Typography variant="h6" gutterBottom>
-        Lista de Vehículos ({vehicles.length})
+        Lista de Vehículos
       </Typography>
 
       <TableContainer>
