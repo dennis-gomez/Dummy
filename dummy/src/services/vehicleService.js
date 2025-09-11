@@ -58,7 +58,10 @@ export const deleteVehicle = async ( cod_vehicle ) => {
 
 
 // Actualizar vehiculo
-export const updateVehicle = async (formData) => {
+export const updateVehicle = async ( formData ) => {
+
+    console.log("Updating vehicle with data:", formData);
+
     try {
         const response = await axios.put(
             API_URL + "update",
