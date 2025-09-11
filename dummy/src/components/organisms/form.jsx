@@ -4,23 +4,8 @@ import Button from "@mui/material/Button";
 import Input from "../atoms/input";
 import { useState } from "react";
 
-const fields = [
-  { name: "vehicle_brand", placeholder: "Marca" },
-  { name: "vehicle_model", placeholder: "Modelo" },
-  { name: "vehicle_year", placeholder: "Año", type: "number" },
-  { name: "vehicle_plate", placeholder: "Placa" },
-  { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number" },
-  { name: "vehicle_last_km_maintenance", placeholder: "Último mantenimiento (km)", type: "number" },
-  { name: "vehicle_type_of_oil", placeholder: "Tipo de aceite" },
-  { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia de cambio (km)", type: "number" },
-  { name: "vehicle_spark_plug_model", placeholder: "Bujía" },
-  { name: "vehicle_tires_front", placeholder: "Llantas delanteras" },
-  { name: "vehicle_tires_back", placeholder: "Llantas traseras" },
-  { name: "bike_brake_pad", placeholder: "Pastillas de freno" },
-  { name: "vehicle_color", placeholder: "Color" }
-];
+function Form({ fields, onSubmit, titleBtn }) {
 
-function FormVehicle({ onSubmit }) {
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
@@ -68,7 +53,7 @@ function FormVehicle({ onSubmit }) {
                     variant="contained" 
                     color="primary"
                 >
-                    Guardar Vehículo
+                    {titleBtn}
                 </Button>
             </Grid>
         </Grid>
@@ -77,4 +62,4 @@ function FormVehicle({ onSubmit }) {
   );
 }
 
-export default FormVehicle;
+export default Form;
