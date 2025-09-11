@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import TableMiscellaneousPage from "../organisms/tableMiscellaneousPage";
 import TableOptionServices from "../organisms/tableOptionService";
 import TableSubcategorie from "../organisms/tableSubCategorie";
-import { getServices } from "../../services/Service_service";
-import { getCategorys } from "../../services/categoryService";
+import { getCategorys, addCategory, deleteCategory, updateCategory } from "../../services/categoryService";
+import { getServices, addService, deleteService, updateService } from "../../services/Service_service";
 import { getItems, addItem, deleteItem, updateItem } from "../../services/itemService";
+
 
 function MiscellaneousPage() {
   const [services, setServices] = useState([]);
@@ -39,7 +40,6 @@ function MiscellaneousPage() {
 
       const cats = await getCategorys(id);
       setCategories(cats);
-
     } catch (error) {
       console.log("Error fetching categories:", error);
     }
@@ -75,16 +75,30 @@ function MiscellaneousPage() {
   };
 
   const handleDeleteItem = async (cod_category, cod_service, cod_item) => {
-    await deleteItem(cod_category, cod_service, cod_item) 
+    await deleteItem(cod_category, cod_service, cod_item);
     const updated = await getItems(selectedServCod, selectedCatCod);
     setItems(updated);
-  }
+  };
 
   const handleSaveEdit = async (cod_category, cod_service, cod_item, editValue) => {
     await updateItem(cod_category, cod_service, cod_item, editValue);
     const updated = await getItems(selectedServCod, selectedCatCod);
     setItems(updated);
-  }
+  };
+
+  // ==== AÑADIDO: crear servicio y refrescar lista de servicios ====
+  const handleAddService = async (serviceName) => {
+    const name = serviceName.trim();
+    if (!name) return;
+    try {
+      await addService(name);
+      const refreshed = await getServices();
+      setServices(refreshed);
+      // opcional: podrías seleccionar el nuevo servicio si tu API lo devuelve
+    } catch (e) {
+      console.error("No se pudo agregar el servicio:", e);
+    }
+  };
 
   // Refs para focus
   const serviciosRef = React.useRef(null);
@@ -133,6 +147,9 @@ function MiscellaneousPage() {
             selectedId={selectedServCod}
             onSelect={setSelectedServiceId}
             tableRef={serviciosRef}
+            onAddItem={handleAddService}
+            onEditService={async (cod, nombre) => { await updateService(cod, nombre); setServices(await getServices()); }}
+            onDeleteService={async (cod) => { await deleteService(cod); setServices(await getServices()); }}
           />
         </div>
 
@@ -146,7 +163,17 @@ function MiscellaneousPage() {
               selectedService={selectedServCod}
               selectedCatCod={selectedCatCod}
               tableRef={categoriasRef}
+              addCategory={async (cod_service, name) => {
+                await addCategory(cod_service, name); setCategories(await getCategorys(cod_service));
+              }}
+              updateCategory={async (cod_category, cod_service, name) => {
+                await updateCategory(cod_category, cod_service, name); setCategories(await getCategorys(cod_service));
+              }}
+              deleteCategory={async (cod_category, cod_service) => {
+                await deleteCategory(cod_category, cod_service); setCategories(await getCategorys(cod_service));
+              }}
             />
+
           </div>
         )}
 
