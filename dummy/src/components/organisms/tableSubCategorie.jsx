@@ -1,6 +1,6 @@
-import ModalElimination from "./modalElimination";
+import ModalElimination from "../molecules/modalElimination";
 import React, { useState } from "react";
-import Button from "../components/atoms/button";
+import Button from "../atoms/button";
 
 const styles = `
   .tabla { border-collapse: collapse; width: 100%; margin: 0; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }

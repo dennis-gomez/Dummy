@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import TableMiscellaneousPage from "../TableMiscellaneousPage";
-import TableOptionServices from "../tableOptionService";
-import TableSubcategorie from "../tableSubCategorie";
+import TableMiscellaneousPage from "../organisms/tableMiscellaneousPage";
+import TableOptionServices from "../organisms/tableOptionService";
+import TableSubcategorie from "../organisms/tableSubCategorie";
 import { getServices } from "../../services/Service_service";
 import { getCategorys } from "../../services/categoryService";
 import { getItems, addItem, deleteItem, updateItem } from "../../services/itemService";
