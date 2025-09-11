@@ -1,6 +1,6 @@
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Button from "./atoms/buttons";
+import Button from "./atoms/button";
 
 function ModalElimination({ message, onClick }) {
     const handleDelete = async () => {
