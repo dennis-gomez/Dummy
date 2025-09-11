@@ -11,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
         <Route path="/vehiculos" element={<VehiclePage />} />
+        <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
         {/* aquí más rutas */}
       </Routes>
     </BrowserRouter>
