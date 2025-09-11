@@ -1,3 +1,4 @@
+import ModalElimination from "./modalElimination";
 import React, { useState } from "react";
 
 const styles = `
@@ -13,7 +14,7 @@ const styles = `
   .input-group input { border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; min-width: 160px; flex: 1; }
 `;
 
-function TableSubcategorie({ items, onClose, onAddItem }) {
+function TableSubcategorie({ items, onClose, onDeleteItem ,onAddItem }) {
   const [name, setName] = useState("");
 
   if (!items) return null;
@@ -21,7 +22,7 @@ function TableSubcategorie({ items, onClose, onAddItem }) {
   const handleAdd = async () => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    await onAddItem(trimmed);    // <- el padre se encarga de llamar a la API y refrescar
+    await onAddItem(trimmed);
     setName("");
   };
 
@@ -57,6 +58,7 @@ function TableSubcategorie({ items, onClose, onAddItem }) {
             <th style={{ width: 120 }}>codigo categoria</th>
             <th style={{ width: 120 }}>codigo item</th>
             <th>items</th>
+            <th style={{ width: 120 }}>acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +71,12 @@ function TableSubcategorie({ items, onClose, onAddItem }) {
                 <td>{det.cod_category}</td>
                 <td>{det.cod_item}</td>
                 <td>{det.item_name}</td>
+                <td>
+                  <ModalElimination 
+                    message={'¿Quieres eliminar este item?'} 
+                    onClick={() => onDeleteItem(det.cod_category, det.cod_service, det.cod_item)}
+                  />
+                </td>
               </tr>
             ))
           )}
