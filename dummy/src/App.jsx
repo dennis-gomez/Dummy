@@ -3,6 +3,7 @@ import './App.css'
 import MiscellaneousPage from './components/pages/miscellaneousPage'
 import ExtinguisherPage from './components/pages/extinguisherPage'
 import Navbar from './components/organisms/navbar'
+import MedicKitPage from './components/pages/medicKitPage'
 import VehiclePage from './components/pages/vehiclePage'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
+        <Route path="/salud/botiquin" element={<MedicKitPage />} />
         <Route path="/vehiculos" element={<VehiclePage />} />
         <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
         {/* aquí más rutas */}
