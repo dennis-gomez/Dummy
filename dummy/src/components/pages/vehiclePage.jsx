@@ -5,7 +5,6 @@ import VehicleTable from "../organisms/vehicleTable";
 import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import ModalAlert from "../molecules/modalAlert";
-import ModalElimination from "../molecules/modalElimination";
 
 function VehiclePage() {
 
