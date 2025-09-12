@@ -1,7 +1,6 @@
-// InputValidated.jsx
 import TextField from "@mui/material/TextField";
 import { useState, useEffect } from "react";
-import { ValidateValues } from "../../utils/validateValues";
+import { ValidateValues } from "../../utils/validateValues"; // 👈 importas tu validador
 
 function InputValidated({
   name,
@@ -11,7 +10,7 @@ function InputValidated({
   placeholder,
   validations = [],
   onError,
-  required = true,
+  required = true, // 👈 por defecto obligatorio
 }) {
   const [error, setError] = useState("");
 
@@ -23,23 +22,15 @@ function InputValidated({
   };
 
   const handleChange = (e) => {
-    let val = e.target.value;
-
-    // 🔹 Si es fecha, la formateamos a YYYY-MM-DD
-    if (type?.toLowerCase().includes("date") && val) {
-      val = new Date(val).toISOString().split("T")[0];
-    }
-
+    const val = e.target.value;
     runValidation(val);
-    if (onChange) onChange({ target: { name, value: val } });
+    if (onChange) onChange(e);
   };
 
+  // 🔹 Validación inicial y cada vez que cambie el `value` desde fuera
   useEffect(() => {
     runValidation(value);
   }, [value]);
-
-  // Fecha mínima: hoy
-  const minDate = new Date().toISOString().split("T")[0];
 
   return (
     <TextField
@@ -47,18 +38,15 @@ function InputValidated({
       id={name + "-outlined-basic"}
       label={type?.toLowerCase().includes("date") ? placeholder || "Fecha" : placeholder}
       variant="outlined"
-      type={type?.toLowerCase().includes("date") ? "date" : type || "text"}
+      type={type === "DateCanBefore" ? "date" : type || "text"}
       name={name}
-      value={value || ""}
+      value={value}
       onChange={handleChange}
       placeholder={placeholder}
       error={!!error}
       helperText={error}
       InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
-      inputProps={{
-        ...(type?.toLowerCase().includes("date") && { min: minDate }),
-        ...(type === "number" ? { min: 1 } : {}),
-      }}
+      inputProps={type === "number" ? { min: 1 } : {}}
     />
   );
 }

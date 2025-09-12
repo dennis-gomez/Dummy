@@ -246,7 +246,7 @@ export default function CollapsibleTable({
       // cerrar el formulario de añadir suplemento al cerrar la fila
       isCreatingSupply(false);
     }
-
+    
     if (!closing && typeof onSelect === "function") {
       onSelect(id);
     }
