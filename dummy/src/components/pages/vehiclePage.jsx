@@ -65,7 +65,6 @@ function VehiclePage() {
             }
         } catch (error) {
             const message = error.response?.data?.message || "Error al eliminar vehículo.";
-            console.log(message);
             ModalAlert("Error", message, "error");
         } finally {
             fetchVehicles();
