@@ -212,6 +212,4 @@ function MedicKitPage() {
   );
 }
 
-export default MedicKitPage;
-
-      
+export default MedicKitPage;      
