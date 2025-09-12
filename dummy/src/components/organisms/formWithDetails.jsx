@@ -16,7 +16,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-function formWithDetails({ fields, subfields, title, onSubmit, titleBtn }) {
+function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittle }) {
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
@@ -173,7 +173,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn }) {
                   onClick={handleAddItem}
                   disabled={Object.values(subInputErrors).some(Boolean)}
                 >
-                  Agregar
+                  {subTittle}
                 </Button>
               )}
             </Box>
