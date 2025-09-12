@@ -14,10 +14,34 @@ export const getSuppliesById = async (cod_medic_kit) => {
                 },
             }
         );
+        console.log("Respuesta de getSuppliesById:", response.data);  
         return response.data;
     } catch (error) {
         throw error;
     }
+};
+
+export const addManySupplies = async (cod_medic_kit, formDataArray) => {
+  try {
+    console.log("cod_medic_kit en el servicio addManySupplies:", cod_medic_kit);
+    console.log("formDataArray en el servicio addManySupplies:", formDataArray);
+
+    const response = await axios.post(
+      API_URL + "addMany",
+      {
+        cod_medic_kit: cod_medic_kit,
+        supplies: formDataArray
+      },
+      {
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 // Agregar kitMedico
