@@ -178,6 +178,7 @@ function MedicKitPage() {
           title={"Registro de suministros"}
           onSubmit={handleAddKitWithSupplies}
           titleBtn={"Añadir"}
+          subTittle={"añadir suplemento"}
         />
       )}
 
@@ -188,7 +189,7 @@ function MedicKitPage() {
         />
       </div>
 
-      {medicKitsList && medicKitsList.length > 0 && (
+      {medicKitsList && medicKitsList.length > 0 ? (
         <CollapsibleTable
           list={medicKitsList}
           tittles={tittles}
@@ -201,11 +202,16 @@ function MedicKitPage() {
           onDeleteSupply={(id) => handleEliminateSupply(medicKitSelectedId, id)}
           onEditMedicKit={handleEditMedicKit}
           onEditSupply={handleEditSupply}
-          isCreatingSupply={setIsCreatingSupply} // <-- clave para cerrar form al cerrar fila
+          changeStateSupply={setIsCreatingSupply} // <-- clave para cerrar form al cerrar fila
         />
-      )}
+      ): (
+       <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
+      )
+      }
     </>
   );
 }
 
 export default MedicKitPage;
+
+      
