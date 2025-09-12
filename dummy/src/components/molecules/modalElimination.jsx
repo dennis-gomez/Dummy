@@ -17,7 +17,6 @@ function ModalElimination({ message, onClick }) {
 
         if (result.isConfirmed) {
             onClick();
-            Swal.fire("Eliminado", "El elemento ha sido eliminado.", "success");
         }
     };
 
