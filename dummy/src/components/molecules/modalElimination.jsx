@@ -1,6 +1,7 @@
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Button from "../atoms/button";
+import Button from "@mui/material/Button";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function ModalElimination({ message, onClick }) {
     const handleDelete = async () => {
@@ -22,7 +23,9 @@ function ModalElimination({ message, onClick }) {
 
     return (
         <>
-            <Button text="Eliminar" onClick={handleDelete} />
+            <Button color="error" onClick={handleDelete} >
+                <DeleteIcon />
+            </Button>
         </>
     );
 }
