@@ -1,25 +1,36 @@
 import * as React from "react";
 import {
   Box, Collapse, IconButton, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Typography, Paper, Button, TextField
+  TableHead, TableRow, Typography, Paper, Button
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ModalElimination from "../molecules/modalElimination";
-import dayjs from "dayjs";
+import InputValidated from "../atoms/inputValidated"; // 👈 tu input validado
 
 function Row({
   item, tittles, subTitle, subTittles, onExpand, isOpen, suppliesList,
-  onDeleteMedicKit, onDeleteSupply, onEditMedicKit, onEditSupply, setIsCreatingSupply
+  onDeleteMedicKit, onDeleteSupply, onEditMedicKit, onEditSupply, changeStateSupply, onRowClose
 }) {
+
+
+React.useEffect(() => {
+  if (!isOpen) {
+    setEditingKit(false);
+    setEditingSupplyId(null);
+    setSupplyFormData({});
+    setSupplyErrors({});
+    changeStateSupply(false);
+  }
+}, [isOpen]);
+
+
   const idKey = tittles[0]?.key; // ID del kit
   const [editingKit, setEditingKit] = React.useState(false);
   const [kitFormData, setKitFormData] = React.useState({ ...item });
   const [editingSupplyId, setEditingSupplyId] = React.useState(null);
   const [supplyFormData, setSupplyFormData] = React.useState({});
+  const [supplyErrors, setSupplyErrors] = React.useState({});
 
   // Guardar kit editado
   const handleSaveKit = () => {
@@ -27,8 +38,12 @@ function Row({
     setEditingKit(false);
   };
 
-  // Guardar suplemento editado
+  // Guardar suplemento editado con validación
   const handleSaveSupply = () => {
+    if (Object.values(supplyErrors).some((e) => e)) {
+      alert("Corrige los errores antes de guardar");
+      return;
+    }
     onEditSupply(supplyFormData);
     setEditingSupplyId(null);
   };
@@ -50,12 +65,14 @@ function Row({
         {tittles.map((col, index) => (
           <TableCell key={col.key} align="right">
             {editingKit && index !== 0 ? (
-              <TextField
+              <InputValidated
+                name={col.key}
+                type="text"
                 value={kitFormData[col.key]}
+                placeholder={col.label}
                 onChange={(e) =>
                   setKitFormData({ ...kitFormData, [col.key]: e.target.value })
                 }
-                size="small"
               />
             ) : (
               item[col.key]
@@ -119,7 +136,7 @@ function Row({
                   <Button
                     variant="contained"
                     size="small"
-                    onClick={() => setIsCreatingSupply(true)}
+                    onClick={() => changeStateSupply(item[idKey])}
                   >
                     Agregar Suplemento
                   </Button>
@@ -127,99 +144,95 @@ function Row({
               </Typography>
 
               {suppliesList && suppliesList.length > 0 ? (
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <Table size="small" aria-label="supplies">
-                    <TableHead>
-                      <TableRow>
-                        {subTittles.map((col) => (
-                          <TableCell key={col.key}>{col.label}</TableCell>
-                        ))}
-                        <TableCell>Acciones</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {suppliesList.map((supply) => (
-                        <TableRow key={supply[subTittles[0].key]}>
-                          {subTittles.map((col, index) => (
-                            <TableCell key={col.key}>
-                              {editingSupplyId === supply[subTittles[1].key] ? (
-                                col.key === "supply_expiration_date" ? (
-                                  <DatePicker
-                                    value={dayjs(supplyFormData[col.key])}
-                                    onChange={(newValue) =>
-                                      setSupplyFormData({
-                                        ...supplyFormData,
-                                        [col.key]: newValue ? newValue.toDate() : null,
-                                      })
-                                    }
-                                    slotProps={{ textField: { size: "small" } }}
-                                  />
-                                ) : index !== 0 && index !== 1 ? (
-                                  <TextField
-                                    value={supplyFormData[col.key]}
-                                    size="small"
-                                    onChange={(e) =>
-                                      setSupplyFormData({
-                                        ...supplyFormData,
-                                        [col.key]: e.target.value,
-                                      })
-                                    }
-                                  />
-                                ) : (
-                                  supply[col.key]
-                                )
-                              ) : (
-                                supply[col.key]
-                              )}
-                            </TableCell>
-                          ))}
-                          <TableCell>
+                <Table size="small" aria-label="supplies">
+                  <TableHead>
+                    <TableRow>
+                      {subTittles.map((col) => (
+                        <TableCell key={col.key}>{col.label}</TableCell>
+                      ))}
+                      <TableCell>Acciones</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {suppliesList.map((supply) => (
+                      <TableRow key={supply[subTittles[0].key]}>
+                        {subTittles.map((col, index) => (
+                          <TableCell key={col.key}>
                             {editingSupplyId === supply[subTittles[1].key] ? (
-                              <>
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  size="small"
-                                  sx={{ mr: 1 }}
-                                  onClick={handleSaveSupply}
-                                >
-                                  Guardar
-                                </Button>
-                                <Button
-                                  variant="outlined"
-                                  color="secondary"
-                                  size="small"
-                                  onClick={() => setEditingSupplyId(null)}
-                                >
-                                  Cancelar
-                                </Button>
-                              </>
+                            <InputValidated
+  name={col.key}
+  type={
+    col.key === "supply_quantity"
+      ? "number"
+      : col.key === "supply_expiration_date"
+      ? "DateCanBefore"
+      : "text"
+  }
+  value={supplyFormData[col.key]}
+  placeholder={col.label}
+  validations={[]} // no hace falta pasar objetos
+  onChange={(e) =>
+    setSupplyFormData({
+      ...supplyFormData,
+      [col.key]: e.target.value,
+    })
+  }
+  onError={(name, err) =>
+    setSupplyErrors((prev) => ({ ...prev, [name]: err }))
+  }
+/>
+
                             ) : (
-                              <>
-                                <Button
-                                  variant="contained"
-                                  color="warning"
-                                  size="small"
-                                  sx={{ mr: 1 }}
-                                  onClick={() => {
-                                    setEditingSupplyId(supply[subTittles[1].key]);
-                                    setSupplyFormData({ ...supply });
-                                  }}
-                                >
-                                  Editar
-                                </Button>
-                                <ModalElimination
-                                  message={"¿Quieres eliminar este suplemento medico?"}
-                                  onClick={() => onDeleteSupply(supply[subTittles[1].key])}
-                                />
-                              </>
+                              supply[col.key]
                             )}
                           </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </LocalizationProvider>
+                        ))}
+                        <TableCell>
+                          {editingSupplyId === supply[subTittles[1].key] ? (
+                            <>
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                size="small"
+                                sx={{ mr: 1 }}
+                                onClick={handleSaveSupply}
+                              >
+                                Guardar
+                              </Button>
+                              <Button
+                                variant="outlined"
+                                color="secondary"
+                                size="small"
+                                onClick={() => setEditingSupplyId(null)}
+                              >
+                                Cancelar
+                              </Button>
+                            </>
+                          ) : (
+                            <>
+                              <Button
+                                variant="contained"
+                                color="warning"
+                                size="small"
+                                sx={{ mr: 1 }}
+                                onClick={() => {
+                                  setEditingSupplyId(supply[subTittles[1].key]);
+                                  setSupplyFormData({ ...supply });
+                                }}
+                              >
+                                Editar
+                              </Button>
+                              <ModalElimination
+                                message={"¿Quieres eliminar este suplemento medico?"}
+                                onClick={() => onDeleteSupply(supply[subTittles[1].key])}
+                              />
+                            </>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               ) : (
                 <Typography variant="body2">No hay suplementos</Typography>
               )}
@@ -234,23 +247,22 @@ function Row({
 export default function CollapsibleTable({
   list, tittles, subTitle, subTittles, suppliesList,
   medicKitSelectedId, onSelect, onDeleteMedicKit, onDeleteSupply,
-  onEditMedicKit, onEditSupply, isCreatingSupply
-}) {
+  onEditMedicKit, onEditSupply, changeStateSupply }) {
   const [openRowId, setOpenRowId] = React.useState(null);
 
-  const handleExpand = (id) => {
-    const closing = openRowId === id; // si se está cerrando la fila
-    setOpenRowId(closing ? null : id);
+const handleExpand = (id) => {
+  const closing = openRowId === id;
+  setOpenRowId(closing ? null : id);
 
-    if (closing) {
-      // cerrar el formulario de añadir suplemento al cerrar la fila
-      isCreatingSupply(false);
-    }
-    
-    if (!closing && typeof onSelect === "function") {
-      onSelect(id);
-    }
-  };
+  // Aviso al Row que se está cerrando para cancelar edición
+  if (typeof onRowClose === "function" && closing) {
+    onRowClose(id);
+  }
+
+  if (!closing && typeof onSelect === "function") {
+    onSelect(id);
+  }
+};
 
   return (
     <TableContainer component={Paper}>
@@ -268,21 +280,22 @@ export default function CollapsibleTable({
         </TableHead>
         <TableBody>
           {list.map((item) => (
-            <Row
-              key={item[tittles[0].key]}
-              item={item}
-              tittles={tittles}
-              subTitle={subTitle}
-              subTittles={subTittles}
-              onExpand={handleExpand}
-              isOpen={item[tittles[0].key] === openRowId}
-              suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
-              onDeleteMedicKit={onDeleteMedicKit}
-              onDeleteSupply={onDeleteSupply}
-              onEditMedicKit={onEditMedicKit}
-              onEditSupply={onEditSupply}
-              setIsCreatingSupply={isCreatingSupply}
-            />
+           <Row
+  key={item[tittles[0].key]}
+  item={item}
+  tittles={tittles}
+  subTitle={subTitle}
+  subTittles={subTittles}
+  onExpand={handleExpand}
+  isOpen={item[tittles[0].key] === openRowId}
+  suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
+  onDeleteMedicKit={onDeleteMedicKit}
+  onDeleteSupply={onDeleteSupply}
+  onEditMedicKit={onEditMedicKit}
+  onEditSupply={onEditSupply}
+  changeStateSupply={changeStateSupply}
+  onRowClose={() => {}} // 👈 lo usamos dentro del Row
+/>
           ))}
         </TableBody>
       </Table>

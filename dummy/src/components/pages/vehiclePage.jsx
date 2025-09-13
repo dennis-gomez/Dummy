@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import VehicleTable from "../organisms/vehicleTable";
 import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
+import ModalAlert from "../molecules/modalAlert";
 
 function VehiclePage() {
 
@@ -33,7 +34,8 @@ function VehiclePage() {
             fetchVehicles();
             setShowForm(false);
         }catch (error) {
-            console.error("Error adding vehicle:", error);
+            const messege = error.response?.data?.message || "Error al agregar vehículo.";
+            ModalAlert("Error", messege, "error");
         }
     };
 
@@ -42,7 +44,8 @@ function VehiclePage() {
             const updatedVehicles = await updateVehicle(updatedData);
             fetchVehicles();
         }catch (error) {
-            console.error("Error editing vehicle:", error);
+            const message = error.response?.data?.message || "Error al editar vehículo.";
+            ModalAlert("Error", message, "error");
         }
     };
 
@@ -51,7 +54,8 @@ function VehiclePage() {
             const deletedVehicles = await deleteVehicle(id);
             fetchVehicles();
         }catch (error) {
-            console.error("Error deleting vehicle:", error);
+            const message = error.response?.data?.message || "Error al eliminar vehículo.";
+            ModalAlert("Error", message, "error");
         }
     }
 

@@ -4,8 +4,8 @@ import {
   Button, Typography, TextField
 } from "@mui/material";
 
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import ModalElimination from "../molecules/modalElimination";
 
 const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
     
@@ -37,7 +37,10 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
         Lista de Vehículos
       </Typography>
 
-      <TableContainer>
+      {vehicles.length === 0 ? (
+        <Typography variant="body1">No hay vehículos disponibles. Haz clic en "Agregar vehículo" para crear uno nuevo.</Typography>
+      ):(
+        <TableContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -93,9 +96,10 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
                       </TableCell>
                     ))}
                     <TableCell>
-                      <Button color="error" onClick={() => onDelete(vehicle.cod_vehicle)}>
-                        <DeleteIcon />
-                      </Button>
+                      <ModalElimination
+                        message={`¿Estás seguro de eliminar el vehículo?`}
+                        onClick={() => onDelete(vehicle.cod_vehicle)}
+                      />
                       <Button color="primary" onClick={() => handleEditClick(vehicle)}>
                         <EditIcon />
                       </Button>
@@ -106,7 +110,8 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+        </TableContainer>
+      )}  
     </Paper>
   );
 };
