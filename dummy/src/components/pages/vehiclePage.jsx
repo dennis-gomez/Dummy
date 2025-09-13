@@ -11,7 +11,7 @@ function VehiclePage() {
     const [vehicles, setVehicles] = useState([]);
     const [showForm, setShowForm] = useState(false);
 
-    //estructura de los campos del formulario
+    //estructuras de los campos del formularos
     const fields = [
         { name: "vehicle_brand", placeholder: "Marca" },
         { name: "vehicle_model", placeholder: "Modelo" },
