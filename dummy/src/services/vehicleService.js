@@ -13,7 +13,7 @@ export const getVehicles = async () => {
                 },
             }
         );
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
@@ -31,12 +31,11 @@ export const addVehicle = async (formData) => {
                 },
             }
         );
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
 };
-
 
 // Eliminar vehiculo
 export const deleteVehicle = async ( cod_vehicle ) => {
@@ -50,18 +49,14 @@ export const deleteVehicle = async ( cod_vehicle ) => {
                 },
             }
         );
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
 };
 
-
 // Actualizar vehiculo
 export const updateVehicle = async ( formData ) => {
-
-    console.log("Updating vehicle with data:", formData);
-
     try {
         const response = await axios.put(
             API_URL + "update",
@@ -72,7 +67,7 @@ export const updateVehicle = async ( formData ) => {
                 },
             }
         );
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }  

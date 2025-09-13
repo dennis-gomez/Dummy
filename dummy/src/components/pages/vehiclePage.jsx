@@ -11,7 +11,7 @@ function VehiclePage() {
     const [vehicles, setVehicles] = useState([]);
     const [showForm, setShowForm] = useState(false);
 
-    //estructura de los campos del formulario
+    //estructuras de los campos del formularos
     const fields = [
         { name: "vehicle_brand", placeholder: "Marca" },
         { name: "vehicle_model", placeholder: "Modelo" },
@@ -30,41 +30,55 @@ function VehiclePage() {
 
     const handleSubmit = async ( formData ) => {
         try {
-            const vehicles = await addVehicle(formData);
-            fetchVehicles();
-            setShowForm(false);
-        }catch (error) {
+            const response = await addVehicle(formData);
+            if(response.status === 201){
+                ModalAlert("Éxito", "Vehículo agregado exitosamente.", "success");
+            }
+        } catch (error) {
             const messege = error.response?.data?.message || "Error al agregar vehículo.";
             ModalAlert("Error", messege, "error");
+        } finally {
+            fetchVehicles();
+            setShowForm(false);
         }
     };
 
     const handleEdit = async ( updatedData ) => {
         try {
-            const updatedVehicles = await updateVehicle(updatedData);
-            fetchVehicles();
-        }catch (error) {
+            const response = await updateVehicle(updatedData);
+            if(response.status === 200){
+                ModalAlert("Éxito", "Vehículo editado exitosamente.", "success");
+            }
+        } catch (error) {
             const message = error.response?.data?.message || "Error al editar vehículo.";
             ModalAlert("Error", message, "error");
+        } finally {
+            fetchVehicles();
         }
     };
 
     const handleDelete = async (id) => {
         try {
-            const deletedVehicles = await deleteVehicle(id);
-            fetchVehicles();
-        }catch (error) {
+            const response = await deleteVehicle(id);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message, "success");
+            }
+        } catch (error) {
             const message = error.response?.data?.message || "Error al eliminar vehículo.";
             ModalAlert("Error", message, "error");
+        } finally {
+            fetchVehicles();
+            setShowForm(false);
         }
     }
 
     const fetchVehicles = async () => {
         try {
-            const data = await getVehicles();
-            setVehicles(data);
-        }catch (error) {
-            console.error("Error fetching vehicles:", error);
+            const response = await getVehicles();
+            setVehicles(response.data);
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al obtener los vehículos.";
+            ModalAlert("Error", message, "error");
         }
     };
 
