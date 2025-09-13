@@ -1,0 +1,50 @@
+/* tables.css */
+.tablas {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.tablas th,
+.tablas td {
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  text-align: left;
+  color: #000;
+}
+
+.tablas thead th {
+  background: #1976d2;
+  color: #fff;
+  font-weight: 600;
+}
+
+.fila { cursor: default; }
+.fila:hover { background: #e3f2fd; }
+.selected { outline: 2px solid #1976d2; background: #e3f2fd; }
+
+.titulo { margin: 0 0 8px; font-weight: 600; }
+
+.toolbar { 
+  margin: 0 0 8px; 
+  display: flex; 
+  align-items: center; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+  justify-content: space-between; 
+}
+
+.input-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.input-group label { font-size: 14px; color: #333; white-space: nowrap; }
+.input-group input { border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; min-width: 200px; }
+
+.btn { background: #1976d2; color: #fff; border: none; border-radius: 4px; padding: 8px 14px; cursor: pointer; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn:hover { background: #1565c0; }
+
+.acciones { display: flex; gap: 8px; }
+.inline-input { width: 100%; max-width: 280px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 4px; }
