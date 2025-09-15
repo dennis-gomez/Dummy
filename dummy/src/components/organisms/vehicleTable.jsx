@@ -19,10 +19,12 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
   };
 
   // Guardar edición
-  const handleSaveEdit = () => {
-    onEdit(editData);
-    setEditingId(null);
-    setEditData({});
+  const handleSaveEdit = async () => {
+    const isSaved = await onEdit(editData);
+    if(isSaved){
+      setEditingId(null);
+      setEditData({});
+    }
   };
 
   // Cancelar edición
@@ -46,7 +48,15 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
             <TableRow>
               <TableCell>#</TableCell>
               {fields.map((f) => (
-                <TableCell key={f.name}>{f.placeholder}</TableCell>
+                editingId !== null && f.name !== "vehicle_initial_km" ? (
+                  <TableCell key={f.name}>
+                    {f.placeholder} {/* cuando hay edición y no es vehicle_initial_km */}
+                  </TableCell>
+                ) : editingId === null ? (
+                  <TableCell key={f.name}>
+                    {f.placeholder} {/* cuando no hay edición */}
+                  </TableCell>
+                ) : null
               ))}
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -60,15 +70,20 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
                 {editingId === vehicle.cod_vehicle ? (
                   <>
                     {fields.map((f) => (
-                      <TableCell key={f.name}>
-                        <TextField
-                          type={f.type || "text"}
-                          value={editData[f.name] || ""}
-                          onChange={(e) =>
-                            setEditData({ ...editData, [f.name]: e.target.value })
-                          }
-                        />
-                      </TableCell>
+                      f.name !== "vehicle_initial_km" && (
+                        <TableCell 
+                          key={f.name}
+                        > 
+                          <TextField
+                            type={f.type || "text"}
+                            value={editData[f.name] || ""}
+                            onChange={(e) =>
+                              setEditData({ ...editData, [f.name]: e.target.value })
+                            }
+                            sx={{ width: "120px" }}
+                          />
+                        </TableCell>
+                      )
                     ))}
                     <TableCell>
                       <Button
