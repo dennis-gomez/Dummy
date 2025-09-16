@@ -12,7 +12,7 @@ const fieldLabels = {
   extinguisher_manufacturing_date: "Fecha de Fabricación",
   extinguisher_installation_date: "Fecha de Instalación",
   extinguisher_location: "Ubicación",
-  extinguisher_last_date_inspection: "Última Inspección",
+  extinguisher_next_date_inspection: "Próxima Inspección",
   extinguisher_observations: "Observaciones",
 };
 
@@ -111,10 +111,10 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
           </Grid>
           <Grid item xs={4}>
             <DatePicker
-              label={fieldLabels.extinguisher_last_date_inspection}
-              value={extinguisher.extinguisher_last_date_inspection || null}
+              label={fieldLabels.extinguisher_next_date_inspection}
+              value={extinguisher.extinguisher_next_date_inspection || null}
               onChange={(newValue) =>
-                setExtinguisher({ ...extinguisher, extinguisher_last_date_inspection: newValue })
+                setExtinguisher({ ...extinguisher, extinguisher_next_date_inspection: newValue })
               }
               slotProps={{ textField: { fullWidth: true } }}
             />

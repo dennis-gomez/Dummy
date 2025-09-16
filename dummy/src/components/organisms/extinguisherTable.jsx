@@ -43,7 +43,7 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
               <TableCell>Tipo</TableCell>
               <TableCell>Capacidad</TableCell>
               <TableCell>Ubicación</TableCell>
-              <TableCell>Última Inspección</TableCell>
+              <TableCell>Siguiente Inspección</TableCell>
               <TableCell>Observaciones</TableCell>
               <TableCell>Acciones</TableCell>
             </TableRow>
@@ -87,10 +87,10 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                     </TableCell>
                     <TableCell>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker label="Fecha de inspección"
-                          value={editData.extinguisher_last_date_inspection ? dayjs(editData.extinguisher_last_date_inspection) : null}
+                        <DatePicker label="Fecha de la próxima inspección"
+                          value={editData.extinguisher_next_date_inspection ? dayjs(editData.extinguisher_next_date_inspection) : null}
                           onChange={(newValue) => setEditData({ ...editData,
-                            extinguisher_last_date_inspection: newValue ? newValue.format("YYYY-MM-DD") : "",})}
+                            extinguisher_next_date_inspection: newValue ? newValue.format("YYYY-MM-DD") : "",})}
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>
@@ -120,7 +120,7 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                     <TableCell>{ext.extinguisher_type}</TableCell>
                     <TableCell>{ext.extinguisher_capacity}</TableCell>
                     <TableCell>{ext.extinguisher_location}</TableCell>
-                    <TableCell>{ext.extinguisher_last_date_inspection || "-"}</TableCell>
+                    <TableCell>{ext.extinguisher_next_date_inspection || "-"}</TableCell>
                     <TableCell>{ext.extinguisher_observations || "-"}</TableCell>
                     <TableCell>
                       <Button color="error" onClick={() => onDelete(ext.cod_extinguisher)}>
