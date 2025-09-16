@@ -32,21 +32,38 @@ function InputValidated({
     runValidation(value);
   }, [value]);
 
+  // 🔹 Configuración especial para textarea
+  const isTextArea = type === "textarea";
+
   return (
     <TextField
       fullWidth
       id={name + "-outlined-basic"}
-      label={type?.toLowerCase().includes("date") ? placeholder || "Fecha" : placeholder}
+      label={
+        type?.toLowerCase().includes("date")
+          ? placeholder || "Fecha"
+          : placeholder
+      }
       variant="outlined"
-      type={type === "DateCanBefore" ? "date" : type || "text"}
+      type={
+        isTextArea
+          ? undefined // 👈 los textarea no llevan type
+          : type === "DateCanBefore"
+          ? "date"
+          : type || "text"
+      }
       name={name}
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
       error={!!error}
       helperText={error}
-      InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
+      InputLabelProps={
+        type?.toLowerCase().includes("date") ? { shrink: true } : {}
+      }
       inputProps={type === "number" ? { min: 1 } : {}}
+      multiline={isTextArea}
+      rows={isTextArea ? 4 : undefined} // 👈 configurable
     />
   );
 }
