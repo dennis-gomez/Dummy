@@ -13,19 +13,92 @@ function VehiclePage() {
     const [error, setError] = useState("");
 
     const fields = [
-    { name: "vehicle_brand", placeholder: "Marca" },
-    { name: "vehicle_model", placeholder: "Modelo" },
-    { name: "vehicle_year", placeholder: "Año", type: "number", restriction: "onlyPastAndCurrentYear" },
-    { name: "vehicle_plate", placeholder: "Placa"},
-    { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number"},
-    { name: "vehicle_last_km_maintenance", placeholder: "Último mantenimiento (km)", type: "number"},
-    { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia de cambio (km)", type: "number"},
-    { name: "vehicle_type_of_oil", placeholder: "Tipo de aceite"},
-    { name: "vehicle_spark_plug_model", placeholder: "Bujía"},
-    { name: "vehicle_tires_front", placeholder: "Llantas delanteras"},
-    { name: "vehicle_tires_back", placeholder: "Llantas traseras"},
-    { name: "bike_brake_pad", placeholder: "Pastillas de freno"},
-    { name: "vehicle_color", placeholder: "Color"}
+    { 
+        name: "vehicle_brand", 
+        placeholder: "Marca", 
+        validations: [ 
+            (value) => value && value.length > 20 ? "La marca no puede superar los 20 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_model", 
+        placeholder: "Modelo", 
+        validations: [ 
+            (value) => value && value.length > 50 ? "El modelo no puede superar los 50 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_year", 
+        placeholder: "Año", 
+        type: "number", 
+        restriction: "vehicle_year_restrictions", 
+    },
+    { 
+        name: "vehicle_plate", 
+        placeholder: "Placa", 
+        validations: [ 
+            (value) => value && value.length > 10 ? "La placa no puede superar los 10 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_initial_km", 
+        placeholder: "Kilometraje inicial", 
+        type: "number", 
+        restriction: "vehicle_initial_km_restrictions", 
+    },
+    { 
+        name: "vehicle_last_km_maintenance", 
+        placeholder: "Último mantenimiento (km)", 
+        type: "number", 
+        restriction: "vehicle_last_km_maintenance_restrictions", 
+    },
+    { 
+        name: "vehicle_frecuency_of_change", 
+        placeholder: "Frecuencia de cambio (km)", 
+        type: "number", 
+    },
+    { 
+        name: "vehicle_type_of_oil", 
+        placeholder: "Tipo de aceite", 
+        validations: [ 
+            (value) => value && value.length > 50 ? "El tipo de aceite no puede superar los 50 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_spark_plug_model", 
+        placeholder: "Bujía", 
+        validations: [ 
+            (value) => value && value.length > 50 ? "La bujía no puede superar los 50 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_tires_front", 
+        placeholder: "Llantas delanteras", 
+        validations: [ 
+            (value) => value && value.length > 50 ? "Las llantas delanteras no puede superar los 50 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_tires_back", 
+        placeholder: "Llantas traseras", 
+        validations: [ 
+            (value) => value && value.length > 50 ? "Las llantas traseras no puede superar los 50 caracteres" : null
+        ]
+    },
+    { 
+        name: "bike_brake_pad", 
+        placeholder: "Pastillas de freno", 
+        validations: [ 
+            (value) => value && value.length > 50 ? "Las pastillas de freno no puede superar los 50 caracteres" : null
+        ]
+    },
+    { 
+        name: "vehicle_color", 
+        placeholder: "Color",
+        validations: [ 
+            (value) => value && value.length > 30 ? "El color no puede superar los 30 caracteres" : null
+        ]
+    }
     ];
 
     const handleSubmit = async ( formData ) => {
@@ -80,7 +153,6 @@ function VehiclePage() {
             setVehicles(response.data);
         } catch (error) {
             const message = error.response?.data?.message || "Error al obtener los vehículos.";
-            ModalAlert("Error", message, "error");
         }
     };
 

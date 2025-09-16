@@ -60,6 +60,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       sx={field.width ? { width: field.width } : {}}
                       required={field.required ?? true}
                       restriction={field.restriction || ""}
+                      validations={field.validations}
                     />
                   )}
                 </Grid>
