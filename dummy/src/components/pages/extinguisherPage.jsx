@@ -17,13 +17,13 @@ const ExtinguisherPage = () => {
 
 const fields = [
   { name: "extinguisher_serial_number", placeholder: "Número de Serie", grid: 4 },
-  { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", grid: 4 },
+  { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", grid: 4, restriction :"cantAfterToday"},
   { name: "extinguisher_brand", placeholder: "Marca", grid: 4 },
   { name: "extinguisher_agent", placeholder: "Agente", grid: 4 },
-  { name: "extinguisher_installation_date", placeholder: "Fecha de Instalación", type: "date", grid: 4 },
+  { name: "extinguisher_installation_date", placeholder: "Fecha de Instalación", type: "date", grid: 4, restriction :"betweenManufactureAndToday"},
   { name: "extinguisher_type", placeholder: "Tipo", grid: 4 },
   { name: "extinguisher_capacity", placeholder: "Capacidad", grid: 4 },
-  { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", grid: 4 },
+  { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", grid: 4, restriction :"cantBeforeToday"},
   { name: "extinguisher_location", placeholder: "Ubicación", grid: 4 },
 
   { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 720, required: false },

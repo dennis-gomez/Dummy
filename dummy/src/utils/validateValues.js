@@ -1,5 +1,5 @@
 
-export function ValidateValues({ type, value, required = true, validations = [] }) {
+export function ValidateValues({ type, value, required = true, validations = [], restriction }) {
   let err = "";
 
   // 🔹 Requerido
@@ -9,12 +9,22 @@ export function ValidateValues({ type, value, required = true, validations = [] 
 
   // 🔹 Validaciones base
   if (type === "number") {
+
+    console.log();
     if (value !== "" && isNaN(Number(value))) {
       err = "Debe ser un número";
     } else if (Number(value) < 1) {
       err = "No se permiten valores negativos o cero";
     }
-  } else if (type === "date" || type === "DateCanBefore") {
+
+if(restriction === "onlyPastAndCurrentYear" && value !== ""){
+  const currentYear = new Date().getFullYear();
+  if (Number(value) > currentYear) {
+    err = "El año no puede ser en el futuro";
+  }
+}
+
+  } else if (type === "date") {
     if (value !== "" && isNaN(Date.parse(value))) {
       err = "Fecha inválida";
     } else if (type === "date" && value !== "") {
@@ -25,6 +35,15 @@ export function ValidateValues({ type, value, required = true, validations = [] 
         err = "Solo se permiten fechas futuras";
       }
     }
+
+if(restriction === "cantAfterToday" && value !== ""){
+  const inputDate = new Date(value);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  if (inputDate > today) {
+    err = "No se permiten fechas futuras";
+  }
+}
   }
 
   // 🔹 Validaciones personalizadas

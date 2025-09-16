@@ -12,11 +12,12 @@ function InputValidated({
   onError,
   required = true,
   sx, // 🔹 para poder pasar ancho u otros estilos
+  restriction = ""
 }) {
   const [error, setError] = useState("");
 
   const runValidation = (val) => {
-    const err = ValidateValues({ type, value: val, required, validations });
+    const err = ValidateValues({ type, value: val, required, validations, restriction });
     setError(err);
     if (onError) onError(name, err);
     return err;

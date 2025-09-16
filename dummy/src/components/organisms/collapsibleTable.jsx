@@ -4,13 +4,13 @@ import {
   TableHead, TableRow, Paper } from "@mui/material";
 import Row from "./Row"
 
-
 export default function CollapsibleTable({
   list, tittles, subTitle, subTittles, suppliesList,
   medicKitSelectedId, onSelect, onDeleteMedicKit, onDeleteSupply,
   onEditMedicKit, onEditSupply, changeStateSupply }) {
   const [openRowId, setOpenRowId] = React.useState(null);
 
+  //controla la fila abierta
 const handleExpand = (id) => {
   const closing = openRowId === id;
   setOpenRowId(closing ? null : id);
@@ -19,13 +19,13 @@ const handleExpand = (id) => {
   if (typeof onRowClose === "function" && closing) {
     onRowClose(id);
   }
-
   if (!closing && typeof onSelect === "function") {
     onSelect(id);
   }
 };
 
   return (
+    //crea la tabla
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
@@ -41,6 +41,7 @@ const handleExpand = (id) => {
         </TableHead>
         <TableBody>
           {list.map((item) => (
+            // cada fila
            <Row
   key={item[tittles[0].key]}
   item={item}
@@ -55,7 +56,7 @@ const handleExpand = (id) => {
   onEditMedicKit={onEditMedicKit}
   onEditSupply={onEditSupply}
   changeStateSupply={changeStateSupply}
-  onRowClose={() => {}} // 👈 lo usamos dentro del Row
+  onRowClose={() => {}} 
 />
           ))}
         </TableBody>

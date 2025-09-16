@@ -15,7 +15,7 @@ function VehiclePage() {
     const fields = [
     { name: "vehicle_brand", placeholder: "Marca" },
     { name: "vehicle_model", placeholder: "Modelo" },
-    { name: "vehicle_year", placeholder: "Año", type: "number"},
+    { name: "vehicle_year", placeholder: "Año", type: "number", restriction: "onlyPastAndCurrentYear" },
     { name: "vehicle_plate", placeholder: "Placa"},
     { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number"},
     { name: "vehicle_last_km_maintenance", placeholder: "Último mantenimiento (km)", type: "number"},
