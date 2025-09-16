@@ -59,6 +59,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       rows={field.type === "textarea" ? 4 : undefined}
                       sx={field.width ? { width: field.width } : {}}
                       required={field.required ?? true}
+                      restriction={field.restriction || ""}
                     />
                   )}
                 </Grid>
