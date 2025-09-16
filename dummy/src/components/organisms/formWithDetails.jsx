@@ -3,27 +3,17 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import InputValidated from "../atoms/inputValidated";
 import { useState } from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Typography,
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittle }) {
-  const [formData, setFormData] = useState(
+  const [formData, setFormData] =  fields && fields.length!==0 ? useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
-  );
+  ): useState(null);
 
-  const emptySubform = subfields
-    ? subfields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
-    : {};
+  const emptySubform = subfields ? subfields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {}) : {};
 
   const [subformData, setSubformData] = useState([]);
   const [editIdx, setEditIdx] = useState(null);
@@ -32,7 +22,6 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
   const [inputErrors, setInputErrors] = useState({});
   const [subInputErrors, setSubInputErrors] = useState({});
 
-  // ------------------ Handlers ------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -96,7 +85,9 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
     <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         {/* Formulario principal */}
+          { fields && fields.length !== 0 && (
         <Grid container spacing={2}>
+        
           {fields.map((field, index) => {
             const isLastSingle =
               fields.length % 2 !== 0 && index === fields.length - 1;
@@ -118,7 +109,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
             );
           })}
         </Grid>
-
+          )}
         {/* Subformulario */}
         {title && <h2>{title}</h2>}
         {subfields && (
@@ -154,7 +145,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
                     color="primary"
                     onClick={handleSaveEditItem}
                     sx={{ mr: 1 }}
-                    disabled={Object.values(subInputErrors).some(Boolean)}
+                    disabled={Object.values(subInputErrors).some(Boolean) }
                   >
                     Guardar
                   </Button>
@@ -275,7 +266,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
             type="submit"
             variant="contained"
             color="primary"
-            disabled={Object.values(inputErrors).some(Boolean)}
+            disabled={Object.values(inputErrors).some(Boolean) || (!fields && subformData.length===0)}
           >
             {titleBtn}
           </Button>
