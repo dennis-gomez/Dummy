@@ -9,7 +9,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
 
   // 🔹 Validaciones base
   if (type === "number") {
-    console.log("no entras ")
+
     if (value !== "" && isNaN(Number(value)) && restriction === "") {
       err = "Debe ser un número";
     } else if (Number(value) < 1 && restriction === "") {
@@ -29,7 +29,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
 
     //Validacion del valores minimos (Vehiculos)
     if((restriction === "vehicle_initial_km_restrictions" || restriction === "vehicle_last_km_maintenance_restrictions") 
-      && value !== "" && Number(value)<0){
+      && Number(value) < 0){
       err = "No se permiten valores negativos";
     }
 
