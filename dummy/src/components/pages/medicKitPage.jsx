@@ -77,47 +77,64 @@ function MedicKitPage() {
   };
 
   // Agregar kit con sus suplementos
-  const handleAddKitWithSupplies = async (formData) => {
-    const kitData = {
-      medic_kit_location: formData.medic_kit_location,
-      medic_kit_details: formData.medic_kit_details,
-    };
+const handleAddKitWithSupplies = async (formData) => {
+  const {
+    medic_kit_location,
+    medic_kit_details,
+    supplements
+  } = formData || {};
 
-    const suppliesToAdd = formData.supplements.map((supply) => ({
-      supply_quantity: supply.supply_quantity,
-      supply_description: supply.supply_description,
-      supply_expiration_date: supply.supply_expiration_date,
-    }));
+  // Normalizar suplementos
+  const suppliesToAdd = Array.isArray(supplements) && supplements.length > 0
+    ? supplements.map(({ supply_quantity, supply_description, supply_expiration_date }) => ({
+        supply_quantity,
+        supply_description,
+        supply_expiration_date,
+      }))
+    : [];
 
-    try {
-      const newMedicKit = await addMedicKit(kitData);
-      const newMedicKitId = newMedicKit.cod_medic_kit;
-      await addManySupplies(newMedicKitId, suppliesToAdd);
-      const updatedMedicKits = await getMedicKits();
-      setMedicKitsList(updatedMedicKits);
-      setIsCreatingMedicKit(false);
-    } catch (error) {
-      console.error("Error al agregar el kit médico:", error);
+  try {
+    let targetMedicKitId = null;
+
+    if (medic_kit_location && medic_kit_details) {
+      // Crear nuevo botiquín
+      const kitPayload = { medic_kit_location, medic_kit_details };
+      const newMedicKit = await addMedicKit(kitPayload);
+      // Extraer ID del botiquín creado
+      targetMedicKitId =
+        newMedicKit?.cod_medic_kit ?? newMedicKit?.id ?? newMedicKit;
+
+      // Si vinieron suplementos, agregarlos al botiquín creado
+      if (suppliesToAdd.length > 0) {
+        await addManySupplies(targetMedicKitId, suppliesToAdd);
+      }
+    } else if (suppliesToAdd.length > 0) {
+      // Caso: solo suplementos
+      if (medicKitSelectedId) {
+        targetMedicKitId = medicKitSelectedId;
+      } else if (medicKitsList.length > 0) {
+        // Si no hay seleccionado, usar el último botiquín de la lista
+        targetMedicKitId = medicKitsList[medicKitsList.length - 1].cod_medic_kit;
+      }
+
+      if (!targetMedicKitId) {
+        throw new Error("No existe un botiquín al que agregar los suplementos.");
+      }
+      await addManySupplies(targetMedicKitId, suppliesToAdd);
     }
-  };
 
-  const handleAddSupply = async (formData) => {
-    const supplyData = {
-      cod_medic_kit: medicKitSelectedId,
-      supply_quantity: formData.supply_quantity,
-      supply_description: formData.supply_description,
-      supply_expiration_date: formData.supply_expiration_date,
-    };
+    // Actualizar la lista de botiquines
+    const updatedMedicKits = await getMedicKits();
+    setMedicKitsList(updatedMedicKits);
+    setIsCreatingMedicKit(false);
+    setIsCreatingSupply(false);
+    getSuppliesByMedicKitId(targetMedicKitId);
+  } catch (error) {
+    console.error("Error al agregar el kit médico o suministros:", error);
+  }
+};
 
-    try {
-      await addSupply(supplyData);
-      const updatedSupplies = await getSuppliesById(medicKitSelectedId);
-      setSuppliesList(updatedSupplies);
-      setIsCreatingSupply(false);
-    } catch (error) {
-      console.error("Error al agregar el suplemento médico:", error);
-    }
-  };
+
 
   const handleEditMedicKit = async (formData) => {
     try {
@@ -164,10 +181,11 @@ function MedicKitPage() {
       <h2 style={{ textAlign: "center" }}>Registro de botiquines</h2>
 
       {isCreatingSupply && medicKitSelectedId && (
-        <Form
-          fields={subfields}
-          onSubmit={handleAddSupply}
+        <FormWithDetails
+          subfields={subfields}
+          onSubmit={handleAddKitWithSupplies}
           titleBtn={"Añadir"}
+          subTittle={"añadir suplemento"}
         />
       )}
 
@@ -183,10 +201,19 @@ function MedicKitPage() {
       )}
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
-        <Button
-          text={isCreatingMedicKit || isCreatingSupply ? "Cancelar" : "Agregar botiquín"}
-          onClick={changeStateMedicKit}
-        />
+       <Button
+    text={isCreatingMedicKit || isCreatingSupply ? "Cancelar" : "Agregar botiquín"}
+    onClick={() => {
+      if (isCreatingMedicKit || isCreatingSupply) {
+        // Si estoy creando algo -> cerrar ambos
+        setIsCreatingMedicKit(false);
+        setIsCreatingSupply(false);
+      } else {
+        // Si no estoy creando nada -> abrir formulario de botiquín
+        setIsCreatingMedicKit(true);
+      }
+    }}
+  />
       </div>
 
       {medicKitsList && medicKitsList.length > 0 ? (
