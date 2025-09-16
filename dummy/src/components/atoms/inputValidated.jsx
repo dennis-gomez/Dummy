@@ -47,8 +47,8 @@ function InputValidated({
       helperText={error}
       InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
       inputProps={type === "number" ? { min: 1 } : {}}
-      multiline={type === "textarea"} // 🔹 esto es lo que activa el textarea
-      rows={type === "textarea" ? 4 : undefined} // 🔹 filas si es textarea
+      multiline={type === "textarea"}
+      rows={type === "textarea" ? 4 : undefined}
 
     />
   );
