@@ -1,91 +1,151 @@
 import React, { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import Form from "../organisms/form";
 import ExtinguisherTable from "../organisms/ExtinguisherTable";
-import ExtinguisherForm from "../organisms/extinguisherForm";
-import { getAllExtinguishers, deleteExtinguisher, addExtinguisher, updateExtinguisher } from "../../services/extinguisherService";
+import {
+  getAllExtinguishers,
+  deleteExtinguisher,
+  addExtinguisher,
+  updateExtinguisher,
+} from "../../services/extinguisherService";
+import ModalAlert from "../molecules/modalAlert"; // 👈 si quieres mismo estilo de alertas
 
 const ExtinguisherPage = () => {
   const [extinguishers, setExtinguishers] = useState([]);
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [newExtinguisher, setNewExtinguisher] = useState({
-    extinguisher_serial_number: "",
-    extinguisher_brand: "",
-    extinguisher_agent: "",
-    extinguisher_type: "",
-    extinguisher_capacity: "",
-    extinguisher_manufacturing_date: "",
-    extinguisher_installation_date: "",
-    extinguisher_location: "",
-    extinguisher_last_date_inspection: "",
-    extinguisher_observations: ""
-  });
+  const [showForm, setShowForm] = useState(false);
+  const [error, setError] = useState(""); // 👈 faltaba este estado
+
+const fields = [
+  { name: "extinguisher_serial_number", placeholder: "Número de Serie", grid: 4 },
+  { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", grid: 4 },
+  { name: "extinguisher_brand", placeholder: "Marca", grid: 4 },
+  { name: "extinguisher_agent", placeholder: "Agente", grid: 4 },
+  { name: "extinguisher_installation_date", placeholder: "Fecha de Instalación", type: "date", grid: 4 },
+  { name: "extinguisher_type", placeholder: "Tipo", grid: 4 },
+  { name: "extinguisher_capacity", placeholder: "Capacidad", grid: 4 },
+  { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", grid: 4 },
+  { name: "extinguisher_location", placeholder: "Ubicación", grid: 4 },
+
+  { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 720, required: false },
+];
+
 
   const fetchData = async () => {
-    const data = await getAllExtinguishers();
-    setExtinguishers(data);
+    try {
+      const data = await getAllExtinguishers();
+      setExtinguishers(data);
+    } catch (err) {
+      const message = err.response?.data?.message || "Error al obtener extintores.";
+      setError(message);
+      ModalAlert("Error", message, "error");
+    }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
-    await deleteExtinguisher(id);
-    setExtinguishers(extinguishers.filter(e => e.cod_extinguisher !== id));
+  const handleAdd = async (formData) => {
+    try {
+      setError(null);
+      await addExtinguisher(formData);
+      ModalAlert("Éxito", "Extintor agregado exitosamente.", "success");
+      fetchData();
+      setShowForm(false);
+    } catch (err) {
+      const message = err.response?.data?.message || "Error al agregar extintor.";
+      setError(message);
+      ModalAlert("Error", message, "error");
+    }
   };
 
   const handleEdit = async (id, updatedData) => {
-    await updateExtinguisher(id, updatedData);
-    setExtinguishers(extinguishers.map(e => e.cod_extinguisher === id ? updatedData : e));
+    try {
+      setError(null);
+      await updateExtinguisher(id, updatedData);
+      ModalAlert("Éxito", "Extintor editado exitosamente.", "success");
+      fetchData();
+      return true;
+    } catch (err) {
+      const message = err.response?.data?.message || "Error al editar extintor.";
+      setError(message);
+      ModalAlert("Error", message, "error");
+      return false;
+    }
   };
 
-  const handleAdd = async () => {
-    await addExtinguisher(newExtinguisher);
-    setNewExtinguisher({
-      extinguisher_serial_number: "",
-      extinguisher_brand: "",
-      extinguisher_agent: "",
-      extinguisher_type: "",
-      extinguisher_capacity: "",
-      extinguisher_manufacturing_date: "",
-      extinguisher_installation_date: "",
-      extinguisher_location: "",
-      extinguisher_last_date_inspection: "",
-      extinguisher_observations: ""
-    });
-    setShowAddForm(false);
-    fetchData();
+  const handleDelete = async (id) => {
+    try {
+      await deleteExtinguisher(id);
+      ModalAlert("Éxito", "Extintor eliminado exitosamente.", "success");
+      setExtinguishers((prev) => prev.filter((e) => e.cod_extinguisher !== id));
+    } catch (err) {
+      const message = err.response?.data?.message || "Error al eliminar extintor.";
+      setError(message);
+      ModalAlert("Error", message, "error");
+    }
   };
 
   return (
     <div style={{ padding: 24 }}>
       <h1>Gestión de Extintores</h1>
 
-      {/* Formulario de agregar extintor */}
-      {showAddForm && (
-        <ExtinguisherForm
-          extinguisher={newExtinguisher}
-          setExtinguisher={setNewExtinguisher}
-          onSubmit={handleAdd}
-          onCancel={() => setShowAddForm(false)}
-        />
-      )}
-
-      {/* Botón para mostrar el formulario de agregar */}
-      {!showAddForm && (
-        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setShowAddForm(true)}
-          >
+      {showForm && (
+        <Box
+sx={{
+        maxWidth: 800,
+        margin: "20px auto",
+        p: 3,
+        borderRadius: 3,
+        boxShadow: 3,
+        backgroundColor: "#fff",
+      }}
+        >
+          <Typography variant="h6" gutterBottom color="textPrimary">
             Agregar Extintor
-          </Button>
-        </div>
+          </Typography>
+          <Form
+            fields={fields}
+            onSubmit={handleAdd}
+            titleBtn="Guardar Extintor"
+          />
+        </Box>     
       )}
 
+      {/* 🔹 Bloque de errores como en VehiclePage */}
+      {error && (
+        <Box
+          sx={{
+            p: 2,
+            mt: 3,
+            maxWidth: 800,
+            margin: "0 auto",
+            borderRadius: 2,
+            backgroundColor: "#fdecea",
+            border: "1px solid #f5c2c7",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+          }}
+        >
+          <span style={{ color: "#b71c1c", fontWeight: "bold" }}>Error: </span>
+          <Typography sx={{ color: "#b71c1c" }}>{error}.</Typography>
+        </Box>
+      )}
 
-      {/* Tabla de extintores */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Button
+          color="primary"
+          variant="contained"
+          onClick={() => {
+            setShowForm(!showForm);
+            setError(null); // 🔹 limpia el error al abrir/cerrar el form
+          }}
+        >
+          {showForm ? "Cancelar" : "Agregar Extintor"}
+        </Button>
+      </Box>
+
       <ExtinguisherTable
         extinguishers={extinguishers}
         onDelete={handleDelete}

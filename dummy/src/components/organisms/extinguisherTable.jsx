@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead,
-         TableRow, Paper, Button, Typography, TextField } from "@mui/material";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow, Paper, Button, Typography, TextField
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
@@ -27,6 +26,13 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
     setEditData({});
   };
 
+const formatDateDDMMYYYY = (dateStr) => {
+  if (!dateStr) return "-";
+  const [year, month, day] = dateStr.split("-");
+  return `${day}/${month}/${year}`;
+};
+
+
   return (
     <Paper sx={{ p: 2, mt: 3 }}>
       <Typography variant="h6" align="center" gutterBottom>
@@ -42,6 +48,8 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
               <TableCell>Agente</TableCell>
               <TableCell>Tipo</TableCell>
               <TableCell>Capacidad</TableCell>
+              <TableCell>Fecha Fabricación</TableCell>
+              <TableCell>Fecha Instalación</TableCell>
               <TableCell>Ubicación</TableCell>
               <TableCell>Siguiente Inspección</TableCell>
               <TableCell>Observaciones</TableCell>
@@ -55,55 +63,108 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                   <>
                     <TableCell>{index + 1}</TableCell>
                     <TableCell>
-                      <TextField value={editData.extinguisher_serial_number}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_serial_number: e.target.value })}
+                      <TextField
+                        value={editData.extinguisher_serial_number || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_serial_number: e.target.value })
+                        }
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField value={editData.extinguisher_brand}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_brand: e.target.value })}
+                      <TextField
+                        value={editData.extinguisher_brand || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_brand: e.target.value })
+                        }
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField value={editData.extinguisher_agent}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_agent: e.target.value })}
+                      <TextField
+                        value={editData.extinguisher_agent || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_agent: e.target.value })
+                        }
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField value={editData.extinguisher_type}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_type: e.target.value })}
+                      <TextField
+                        value={editData.extinguisher_type || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_type: e.target.value })
+                        }
                       />
                     </TableCell>
                     <TableCell>
-                      <TextField value={editData.extinguisher_capacity}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_capacity: e.target.value })}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <TextField value={editData.extinguisher_location || ""}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_location: e.target.value })}
-                        multiline rows={2} variant="outlined"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker label="Fecha de la próxima inspección"
-                          value={editData.extinguisher_next_date_inspection ? dayjs(editData.extinguisher_next_date_inspection) : null}
-                          onChange={(newValue) => setEditData({ ...editData,
-                            extinguisher_next_date_inspection: newValue ? newValue.format("YYYY-MM-DD") : "",})}
-                          renderInput={(params) => <TextField {...params} />}
-                        />
-                      </LocalizationProvider>
-                    </TableCell>
-                    <TableCell>
-                      <TextField value={editData.extinguisher_observations || ""}
-                        onChange={(e) => setEditData({ ...editData, extinguisher_observations: e.target.value })}
-                        multiline rows={4} variant="outlined"
+                      <TextField
+                        value={editData.extinguisher_capacity || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_capacity: e.target.value })
+                        }
                       />
                     </TableCell>
 
                     <TableCell>
-                      <Button variant="contained" color="primary" onClick={handleSaveEdit} sx={{ mr: 1 }}>
+                      <TextField
+                        type="date"
+                        value={editData.extinguisher_manufacturing_date || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_manufacturing_date: e.target.value })
+                        }
+                      />
+                    </TableCell>
+
+                    <TableCell>
+<TextField
+  type="date"
+  value={editData.extinguisher_installation_date || ""}
+  onChange={(e) =>
+    setEditData({ ...editData, extinguisher_installation_date: e.target.value })
+  }
+/>
+
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_location || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_location: e.target.value })
+                        }
+                        multiline
+                        rows={2}
+                        variant="outlined"
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        type="date"
+                        value={editData.extinguisher_next_date_inspection || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_next_date_inspection: e.target.value })
+                        }
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_observations || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_observations: e.target.value })
+                        }
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSaveEdit}
+                        sx={{ mr: 1 }}
+                      >
                         Guardar
                       </Button>
                       <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>
@@ -119,8 +180,16 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
                     <TableCell>{ext.extinguisher_agent}</TableCell>
                     <TableCell>{ext.extinguisher_type}</TableCell>
                     <TableCell>{ext.extinguisher_capacity}</TableCell>
+                    <TableCell>
+                      {formatDateDDMMYYYY(ext.extinguisher_manufacturing_date)}
+                    </TableCell>
+                    <TableCell>
+                      {formatDateDDMMYYYY(ext.extinguisher_installation_date)}
+                    </TableCell>
                     <TableCell>{ext.extinguisher_location}</TableCell>
-                    <TableCell>{ext.extinguisher_next_date_inspection || "-"}</TableCell>
+                    <TableCell>
+                      {formatDateDDMMYYYY(ext.extinguisher_next_date_inspection)}
+                    </TableCell>
                     <TableCell>{ext.extinguisher_observations || "-"}</TableCell>
                     <TableCell>
                       <Button color="error" onClick={() => onDelete(ext.cod_extinguisher)}>

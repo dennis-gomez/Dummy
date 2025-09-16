@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { useState, useEffect } from "react";
-import { ValidateValues } from "../../utils/validateValues"; // 👈 importas tu validador
+import { ValidateValues } from "../../utils/validateValues";
 
 function InputValidated({
   name,
@@ -10,7 +10,8 @@ function InputValidated({
   placeholder,
   validations = [],
   onError,
-  required = true, // 👈 por defecto obligatorio
+  required = true,
+  sx, // 🔹 para poder pasar ancho u otros estilos
 }) {
   const [error, setError] = useState("");
 
@@ -27,13 +28,12 @@ function InputValidated({
     if (onChange) onChange(e);
   };
 
-  // 🔹 Validación inicial y cada vez que cambie el `value` desde fuera
   useEffect(() => {
     runValidation(value);
   }, [value]);
 
   return (
-    <TextField
+ <TextField
       fullWidth
       id={name + "-outlined-basic"}
       label={type?.toLowerCase().includes("date") ? placeholder || "Fecha" : placeholder}
@@ -47,6 +47,9 @@ function InputValidated({
       helperText={error}
       InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
       inputProps={type === "number" ? { min: 1 } : {}}
+      multiline={type === "textarea"}
+      rows={type === "textarea" ? 4 : undefined}
+      sx={sx}
     />
   );
 }
