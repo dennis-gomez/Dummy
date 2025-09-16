@@ -49,7 +49,7 @@ function InputValidated({
       inputProps={type === "number" ? { min: 1 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
-
+      sx={sx}
     />
   );
 }

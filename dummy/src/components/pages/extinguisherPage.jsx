@@ -26,7 +26,7 @@ const fields = [
   { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", grid: 4 },
   { name: "extinguisher_location", placeholder: "Ubicación", grid: 4 },
 
-  { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 650, required: false },
+  { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 720, required: false },
 ];
 
 

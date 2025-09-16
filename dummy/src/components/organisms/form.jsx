@@ -12,15 +12,9 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
 
-  const [inputErrors, setInputErrors] = useState({});
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  };
-
-  const handleInputError = (name, error) => {
-    setInputErrors((prev) => ({ ...prev, [name]: error }));
   };
 
   const handleSubmit = (e) => {
@@ -31,7 +25,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
   return (
     <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
       <form onSubmit={handleSubmit}>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <LocalizationProvider dateAdapter={AdapterDayjs} localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}>
           <Grid container spacing={2}>
             {fields.map((field) => {
               const xs = field.grid || (field.type === "textarea" ? 12 : 4);
@@ -39,22 +33,21 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
               return (
                 <Grid item xs={xs} key={field.name}>
                   {field.type === "date" ? (
-
-                    <LocalizationProvider dateAdapter={AdapterDayjs} localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}>
-                      <DatePicker
-                        label="Fecha de Fabricación"
-                        value={formData.fechaFabricacion || null}
-                        onChange={(newValue) =>
-                          setFormData({ ...formData, fechaFabricacion: newValue })
-                        }
-                        format="DD/MM/YYYY"
-                        slotProps={{
-                          textField: { fullWidth: true },
-                          actionBar: { actions: ["today", "clear"] },
-                        }}
-                      />
-                    </LocalizationProvider>
-
+                    <DatePicker
+                      label={field.placeholder}
+                      value={formData[field.name] || null}
+                      onChange={(newValue) =>
+                        setFormData({ ...formData, [field.name]: newValue })
+                      }
+                      format="DD/MM/YYYY"
+                      slotProps={{
+                        textField: { 
+                          fullWidth: true, 
+                          sx: field.width ? { width: field.width } : {} 
+                        },
+                        actionBar: { actions: ["today", "clear"] },
+                      }}
+                    />
                   ) : (
                     <InputValidated
                       name={field.name}
@@ -62,11 +55,10 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       placeholder={field.placeholder}
                       value={formData[field.name]}
                       onChange={handleChange}
-                      validations={field.validations || []}
-                      onError={handleInputError}
-                      required={field.required ?? true}
                       multiline={field.type === "textarea"}
                       rows={field.type === "textarea" ? 4 : undefined}
+                      sx={field.width ? { width: field.width } : {}}
+                      required={field.required ?? true}
                     />
                   )}
                 </Grid>
@@ -81,12 +73,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
               Cancelar
             </Button>
           )}
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            disabled={Object.values(inputErrors).some(Boolean)}
-          >
+          <Button type="submit" variant="contained" color="primary">
             {titleBtn}
           </Button>
         </Box>
