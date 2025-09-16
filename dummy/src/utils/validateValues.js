@@ -4,27 +4,37 @@ export function ValidateValues({ type, value, required = true, validations = [],
 
   // 🔹 Requerido
   if (required && (value === "" || value === null || value === undefined)) {
-    return "Este campo es obligatorio";
+    err = "Este campo es obligatorio";
   }
 
   // 🔹 Validaciones base
   if (type === "number") {
 
-    console.log();
-    if (value !== "" && isNaN(Number(value))) {
+    if (value !== "" && isNaN(Number(value)) && restriction === "") {
       err = "Debe ser un número";
-    } else if (Number(value) < 1) {
+    } else if (Number(value) < 1 && restriction === "") {
       err = "No se permiten valores negativos o cero";
     }
 
-if(restriction === "onlyPastAndCurrentYear" && value !== ""){
-  const currentYear = new Date().getFullYear();
-  if (Number(value) > currentYear) {
-    err = "El año no puede ser en el futuro";
-  }
-}
+    //Validacion del año (Vehiculos)
+    if(restriction === "vehicle_year_restrictions" && value !== ""){
+      const currentYear = new Date().getFullYear();
+      if (Number(value) > currentYear) { 
+        err = "El año del vehículo no puede ser mayor al actual.";
+      }
+      if (Number(value) < 1900) {
+        err = "El año del vehículo es inválido debe ser de 1900 o posterior.";
+      }
+    }
+
+    //Validacion del valores minimos (Vehiculos)
+    if((restriction === "vehicle_initial_km_restrictions" || restriction === "vehicle_last_km_maintenance_restrictions") 
+      && Number(value) < 0){
+      err = "No se permiten valores negativos";
+    }
 
   } else if (type === "date") {
+
     if (value !== "" && isNaN(Date.parse(value))) {
       err = "Fecha inválida";
     } else if (type === "date" && value !== "") {
@@ -36,14 +46,14 @@ if(restriction === "onlyPastAndCurrentYear" && value !== ""){
       }
     }
 
-if(restriction === "cantAfterToday" && value !== ""){
-  const inputDate = new Date(value);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  if (inputDate > today) {
-    err = "No se permiten fechas futuras";
-  }
-}
+    if(restriction === "cantAfterToday" && value !== ""){
+      const inputDate = new Date(value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (inputDate > today) {
+        err = "No se permiten fechas futuras";
+      }
+    }
   }
 
   // 🔹 Validaciones personalizadas
@@ -52,6 +62,7 @@ if(restriction === "cantAfterToday" && value !== ""){
       const vErr = validate(value);
       if (vErr) {
         err = vErr;
+        console.log(err)
         break;
       }
     }
