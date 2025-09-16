@@ -9,7 +9,7 @@ class Extinguisher {
     extinguisher_manufacturing_date,
     extinguisher_installation_date,
     extinguisher_location,
-    extinguisher_last_date_inspection = null,
+    extinguisher_next_date_inspection = null,
     extinguisher_observations = null
   ) {
     this.cod_extinguisher = cod_extinguisher;
@@ -21,7 +21,7 @@ class Extinguisher {
     this.extinguisher_manufacturing_date = extinguisher_manufacturing_date;
     this.extinguisher_installation_date = extinguisher_installation_date;
     this.extinguisher_location = extinguisher_location;
-    this.extinguisher_last_date_inspection = extinguisher_last_date_inspection;
+    this.extinguisher_next_date_inspection = extinguisher_next_date_inspection;
     this.extinguisher_observations = extinguisher_observations;
   }
 }
