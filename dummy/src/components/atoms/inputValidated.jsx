@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import { useState, useEffect } from "react";
-import { ValidateValues } from "../../utils/validateValues"; // 👈 importas tu validador
+import { ValidateValues } from "../../utils/validateValues";
 
 function InputValidated({
   name,
@@ -10,7 +10,8 @@ function InputValidated({
   placeholder,
   validations = [],
   onError,
-  required = true, // 👈 por defecto obligatorio
+  required = true,
+  sx, // 🔹 para poder pasar ancho u otros estilos
 }) {
   const [error, setError] = useState("");
 
@@ -27,43 +28,28 @@ function InputValidated({
     if (onChange) onChange(e);
   };
 
-  // 🔹 Validación inicial y cada vez que cambie el `value` desde fuera
   useEffect(() => {
     runValidation(value);
   }, [value]);
 
-  // 🔹 Configuración especial para textarea
-  const isTextArea = type === "textarea";
-
   return (
-    <TextField
+ <TextField
       fullWidth
       id={name + "-outlined-basic"}
-      label={
-        type?.toLowerCase().includes("date")
-          ? placeholder || "Fecha"
-          : placeholder
-      }
+      label={type?.toLowerCase().includes("date") ? placeholder || "Fecha" : placeholder}
       variant="outlined"
-      type={
-        isTextArea
-          ? undefined // 👈 los textarea no llevan type
-          : type === "DateCanBefore"
-          ? "date"
-          : type || "text"
-      }
+      type={type === "DateCanBefore" ? "date" : type || "text"}
       name={name}
       value={value}
       onChange={handleChange}
       placeholder={placeholder}
       error={!!error}
       helperText={error}
-      InputLabelProps={
-        type?.toLowerCase().includes("date") ? { shrink: true } : {}
-      }
+      InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
       inputProps={type === "number" ? { min: 1 } : {}}
-      multiline={isTextArea}
-      rows={isTextArea ? 4 : undefined} // 👈 configurable
+      multiline={type === "textarea"} // 🔹 esto es lo que activa el textarea
+      rows={type === "textarea" ? 4 : undefined} // 🔹 filas si es textarea
+
     />
   );
 }
