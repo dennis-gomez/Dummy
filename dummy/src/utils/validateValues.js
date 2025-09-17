@@ -10,9 +10,9 @@ export function ValidateValues({ type, value, required = true, validations = [],
   // 🔹 Validaciones base
   if (type === "number") {
 
-    if (value !== "" && isNaN(Number(value)) && restriction === "") {
+    if (value !== "" && isNaN(Number(value))) {
       err = "Debe ser un número";
-    } else if (Number(value) < 1 && restriction === "") {
+    } else if (Number(value) < 1 && !restriction) {
       err = "No se permiten valores negativos o cero";
     }
 

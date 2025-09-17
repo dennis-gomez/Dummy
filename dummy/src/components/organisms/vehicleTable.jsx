@@ -7,7 +7,12 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import ModalElimination from "../molecules/modalElimination";
 
-const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
+const VehicleTable = ({ 
+  fields, 
+  vehicles, 
+  onDelete, 
+  onEdit 
+}) => {
     
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
@@ -39,92 +44,96 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
         Lista de Vehículos
       </Typography>
 
+      {/* visualizacion de tabla vehiculo */}
       {vehicles.length === 0 ? (
-        <Typography variant="body1">No hay vehículos disponibles. Haz clic en "Agregar vehículo" para crear uno nuevo.</Typography>
+        <Typography variant="body1">
+          No hay vehículos disponibles. Haz clic en "Agregar vehículo" para crear uno nuevo.
+        </Typography>
       ):(
         <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>#</TableCell>
-              {fields.map((f) => (
-                editingId !== null && f.name !== "vehicle_initial_km" ? (
-                  <TableCell key={f.name}>
-                    {f.placeholder} {/* cuando hay edición y no es vehicle_initial_km */}
-                  </TableCell>
-                ) : editingId === null ? (
-                  <TableCell key={f.name}>
-                    {f.placeholder} {/* cuando no hay edición */}
-                  </TableCell>
-                ) : null
-              ))}
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {vehicles.map((vehicle, index) => (
-              <TableRow key={vehicle.cod_vehicle}>
-                <TableCell>{index + 1}</TableCell>
-
-                {editingId === vehicle.cod_vehicle ? (
-                  <>
-                    {fields.map((f) => (
-                      f.name !== "vehicle_initial_km" && (
-                        <TableCell 
-                          key={f.name}
-                        > 
-                          <TextField
-                            type={f.type || "text"}
-                            value={editData[f.name] || ""}
-                            onChange={(e) =>
-                              setEditData({ ...editData, [f.name]: e.target.value })
-                            }
-                            sx={{ width: "120px" }}
-                          />
-                        </TableCell>
-                      )
-                    ))}
-                    <TableCell>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSaveEdit}
-                        sx={{ mr: 1 }}
-                      >
-                        Guardar
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="secondary"
-                        onClick={handleCancelEdit}
-                      >
-                        Cancelar
-                      </Button>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                {fields.map((f) => (
+                  editingId !== null && f.name !== "vehicle_initial_km" ? (
+                    <TableCell key={f.name}>
+                      {f.placeholder} {/* Cuando hay edición y no es vehicle_initial_km */}
                     </TableCell>
-                  </>
-                ) : (
-                  <>
-                    {fields.map((f) => (
-                      <TableCell key={f.name}>
-                        {vehicle[f.name] || "-"}
-                      </TableCell>
-                    ))}
-                    <TableCell>
-                      <ModalElimination
-                        message={`¿Estás seguro de eliminar el vehículo?`}
-                        onClick={() => onDelete(vehicle.cod_vehicle)}
-                      />
-                      <Button color="primary" onClick={() => handleEditClick(vehicle)}>
-                        <EditIcon />
-                      </Button>
+                  ) : editingId === null ? (
+                    <TableCell key={f.name}>
+                      {f.placeholder} {/* cuando no hay edición */}
                     </TableCell>
-                  </>
-                )}
+                  ) : null // Caundo hay edicion y es vehicle_initial_km: no se muestra
+                ))}
+                <TableCell>Acciones</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+
+            <TableBody>
+              {vehicles.map((vehicle, index) => (
+                <TableRow key={vehicle.cod_vehicle}>
+                  <TableCell>{index + 1}</TableCell>
+
+                  {/*Muestra textfield para editar cuando se selecciona un vehiculo para editar*/}
+                  {editingId === vehicle.cod_vehicle ? (
+                    <>
+                      {fields.map((f) => (
+                        f.name !== "vehicle_initial_km" && (
+                          <TableCell 
+                            key={f.name}
+                          > 
+                            <TextField
+                              type={f.type || "text"}
+                              value={editData[f.name] || ""}
+                              onChange={(e) =>
+                                setEditData({ ...editData, [f.name]: e.target.value })
+                              }
+                              sx={{ width: "120px" }}
+                            />
+                          </TableCell>
+                        )
+                      ))}
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={handleSaveEdit}
+                          sx={{ mr: 1 }}
+                        >
+                          Guardar
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={handleCancelEdit}
+                        >
+                          Cancelar
+                        </Button>
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      {fields.map((f) => (
+                        <TableCell key={f.name}>
+                          {vehicle[f.name] || "-"}
+                        </TableCell>
+                      ))}
+                      <TableCell>
+                        <ModalElimination
+                          message={`¿Estás seguro de eliminar el vehículo?`}
+                          onClick={() => onDelete(vehicle.cod_vehicle)}
+                        />
+                        <Button color="primary" onClick={() => handleEditClick(vehicle)}>
+                          <EditIcon />
+                        </Button>
+                      </TableCell>
+                    </>
+                  )}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </TableContainer>
       )}  
     </Paper>
