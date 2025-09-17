@@ -12,12 +12,20 @@ function InputValidated({
   onError,
   required = true,
   sx,
-  restriction = ""
+  restriction = "", 
+  formValues,
 }) {
   const [error, setError] = useState("");
 
   const runValidation = (val) => {
-    const err = ValidateValues({ type, value: val, required, validations, restriction });
+    const err = ValidateValues({ 
+      type, 
+      value: val, 
+      required, 
+      validations, 
+      restriction, 
+      allValues: formValues
+    });
     setError(err);
     if (onError) onError(name, err);
     return err;
@@ -47,7 +55,7 @@ function InputValidated({
       error={!!error}
       helperText={error}
       InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
-      inputProps={type === "number" ? { min: 1 } : {}}
+      inputProps={type === "number" ? { min: 0 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
       sx={sx}
