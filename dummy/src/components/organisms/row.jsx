@@ -2,6 +2,7 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidated";
+import ModalAlert from "../molecules/modalAlert";
 import { Box, Collapse, IconButton, Typography, Button, TableRow, TableCell, Table, TableHead, TableBody } from "@mui/material";
 import * as React from "react";
 
@@ -41,14 +42,15 @@ export default function Row({
     setEditingKit(false);
   };
 
-  const handleSaveSupply = () => {
-    if (Object.values(supplyErrors).some((e) => e)) {
-      alert("Corrige los errores antes de guardar");
-      return;
-    }
-    onEditSupply(supplyFormData);
-    setEditingSupplyId(null);
-  };
+ const handleSaveSupply = () => {
+  if (Object.values(supplyErrors).some((e) => e)) {
+    ModalAlert("Errores en el formulario", "Corrige los errores antes de guardar", "error");
+    return;
+  }
+
+  onEditSupply(supplyFormData);
+  setEditingSupplyId(null);
+};
 
   return (
     <React.Fragment>

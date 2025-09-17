@@ -7,6 +7,10 @@ export function ValidateValues({ type, value, required = true, validations = [],
     err = "Este campo es obligatorio";
   }
 
+ if (!required && (value === "" || value === null || value === undefined || value === "Sin fecha")) {
+    return null;
+  }
+
   // 🔹 Validaciones base
   if (type === "number") {
 
@@ -34,7 +38,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
     }
 
   } else if (type === "date") {
-  if (value !== "") {
+  if (value !== "" && value !== "Sin fecha") {
     const inputDate = new Date(value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
