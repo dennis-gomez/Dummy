@@ -72,6 +72,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       required={field.required ?? true}
                       restriction={field.restriction || ""}
                       validations={field.validations}
+                      formValues={formData}
                     />
                   )}
 

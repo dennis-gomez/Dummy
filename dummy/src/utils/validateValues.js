@@ -1,5 +1,5 @@
 
-export function ValidateValues({ type, value, required = true, validations = [], restriction }) {
+export function ValidateValues({ type, value, required = true, validations = [], restriction, allValues}) {
   let err = "";
 
   // 🔹 Requerido
@@ -60,7 +60,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
   // 🔹 Validaciones personalizadas
   if (!err && validations.length > 0) {
     for (const validate of validations) {
-      const vErr = validate(value);
+      const vErr = validate(value, allValues);
       if (vErr) {
         err = vErr;
         console.log(err)
