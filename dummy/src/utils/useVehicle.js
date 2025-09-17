@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { addVehicle, getVehicles, updateVehicle, deleteVehicle } from "../../services/vehicleService";
-import ModalAlert from "../molecules/modalAlert";
+import { addVehicle, getVehicles, updateVehicle, deleteVehicle } from "../services/vehicleService";
+import ModalAlert from "../components/molecules/modalAlert";
 
 export const useVehicles = () => {
     const [vehicles, setVehicles] = useState([]); // manejo de listado de vehiculos  
