@@ -42,13 +42,39 @@ export const useVehicles = () => {
             name: "vehicle_initial_km", 
             placeholder: "Kilometraje inicial", 
             type: "number", 
-            restriction: "vehicle_initial_km_restrictions" 
+            restriction: "vehicle_initial_km_restrictions", 
+
+            //validacion
+            validations: [
+                (value, allValues) => {
+                if (
+                    allValues.vehicle_last_km_maintenance &&
+                    Number(value) < Number(allValues.vehicle_last_km_maintenance)
+                ) {
+                    return "El kilometraje inicial no puede ser menor al último mantenimiento";
+                }
+                return null;
+                },
+            ],
         },
         { 
             name: "vehicle_last_km_maintenance", 
             placeholder: "Último mantenimiento (km)", 
             type: "number", 
-            restriction: "vehicle_last_km_maintenance_restrictions" 
+            restriction: "vehicle_last_km_maintenance_restrictions", 
+
+            //validacion cruzada
+            validations: [
+                (value, allValues) => {
+                if (
+                    allValues.vehicle_initial_km &&
+                    Number(value) > Number(allValues.vehicle_initial_km)
+                ) {
+                    return "El último mantenimiento no puede ser mayor al kilometraje inicial";
+                }
+                return null;
+                },
+            ],
         },
         { 
             name: "vehicle_frecuency_of_change", 
