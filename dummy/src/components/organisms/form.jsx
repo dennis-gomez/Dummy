@@ -2,8 +2,9 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import InputValidated from "../atoms/inputValidated";
+import InputValidatedDate from "../atoms/inputValidatedDate";
 import { useState } from "react";
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { esES } from '@mui/x-date-pickers/locales';
 
@@ -44,20 +45,18 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
               return (
                 <Grid item xs={xs} key={field.name}>
                   {field.type === "date" ? (
-                    <DatePicker
-                      label={field.placeholder}
-                      value={formData[field.name] || null}
-                      onChange={(newValue) =>
-                        setFormData({ ...formData, [field.name]: newValue })
-                      }
-                      format="DD/MM/YYYY"
-                      slotProps={{
-                        textField: { 
-                          fullWidth: true, 
-                          sx: field.width ? { width: field.width } : {} 
-                        },
-                        actionBar: { actions: ["today", "clear"] },
+                    
+                    <InputValidatedDate
+                      name={field.name}
+                      placeholder={field.placeholder}
+                      value={formData[field.name]}
+                      onChange={(e) => {
+                        const { name, value } = e.target;
+                        setFormData({ ...formData, [name]: value });
                       }}
+                      restriction={field.restriction || ""}
+                      validations={field.validations}
+                      sx={field.width ? { width: field.width } : {}}
                     />
                   ) : (
                     <InputValidated
@@ -75,6 +74,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       validations={field.validations}
                     />
                   )}
+
                 </Grid>
               );
             })}

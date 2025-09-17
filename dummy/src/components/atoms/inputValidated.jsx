@@ -11,7 +11,7 @@ function InputValidated({
   validations = [],
   onError,
   required = true,
-  sx, // 🔹 para poder pasar ancho u otros estilos
+  sx,
   restriction = ""
 }) {
   const [error, setError] = useState("");
