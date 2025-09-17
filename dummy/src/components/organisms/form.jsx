@@ -12,15 +12,26 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
 
+  const [errors, setErrors] = useState({}); 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleError = (name, errorMessage) => {
+    setErrors(prev => ({ ...prev, [name]: errorMessage }));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    // solo enviar si no hay errores
+    if (Object.values(errors).every(err => !err)) {
+      onSubmit(formData);
+    }
   };
+
+  const hasError = Object.values(errors).some(err => !!err);
 
   return (
     <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
@@ -55,6 +66,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       placeholder={field.placeholder}
                       value={formData[field.name]}
                       onChange={handleChange}
+                      onError={handleError}
                       multiline={field.type === "textarea"}
                       rows={field.type === "textarea" ? 4 : undefined}
                       sx={field.width ? { width: field.width } : {}}
@@ -75,7 +87,12 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
               Cancelar
             </Button>
           )}
-          <Button type="submit" variant="contained" color="primary">
+          <Button 
+            type="submit" 
+            variant="contained" 
+            color="primary"
+            disabled={hasError}
+          >
             {titleBtn}
           </Button>
         </Box>
@@ -83,5 +100,6 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
     </Box>
   );
 }
+
 
 export default Form;
