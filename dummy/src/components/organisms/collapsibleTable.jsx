@@ -1,31 +1,36 @@
 import * as React from "react";
-import {
-   Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, Paper } from "@mui/material";
-import Row from "./Row"
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import Row from "./Row";
 
 export default function CollapsibleTable({
-  list, tittles, subTitle, subTittles, suppliesList,
-  medicKitSelectedId, onSelect, onDeleteMedicKit, onDeleteSupply,
-  onEditMedicKit, onEditSupply, changeStateSupply }) {
+  list,
+  tittles,       // ahora es el arreglo unificado de fields
+  subTitle,
+  subfields,     // ahora contiene la info combinada de suplementos
+  suppliesList,
+  medicKitSelectedId,
+  onSelect,
+  onDeleteMedicKit,
+  onDeleteSupply,
+  onEditMedicKit,
+  onEditSupply,
+  changeStateSupply
+}) {
   const [openRowId, setOpenRowId] = React.useState(null);
 
-  //controla la fila abierta
-const handleExpand = (id) => {
-  const closing = openRowId === id;
-  setOpenRowId(closing ? null : id);
+  const handleExpand = (id) => {
+    const closing = openRowId === id;
+    setOpenRowId(closing ? null : id);
 
-  // Aviso al Row que se está cerrando para cancelar edición
-  if (typeof onRowClose === "function" && closing) {
-    onRowClose(id);
-  }
-  if (!closing && typeof onSelect === "function") {
-    onSelect(id);
-  }
-};
+    if (!closing && typeof onSelect === "function") {
+      onSelect(id);
+    }
+    if (closing) {
+      changeStateSupply(false);
+    }
+  };
 
   return (
-    //crea la tabla
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
@@ -41,23 +46,21 @@ const handleExpand = (id) => {
         </TableHead>
         <TableBody>
           {list.map((item) => (
-            // cada fila
-           <Row
-  key={item[tittles[0].key]}
-  item={item}
-  tittles={tittles}
-  subTitle={subTitle}
-  subTittles={subTittles}
-  onExpand={handleExpand}
-  isOpen={item[tittles[0].key] === openRowId}
-  suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
-  onDeleteMedicKit={onDeleteMedicKit}
-  onDeleteSupply={onDeleteSupply}
-  onEditMedicKit={onEditMedicKit}
-  onEditSupply={onEditSupply}
-  changeStateSupply={changeStateSupply}
-  onRowClose={() => {}} 
-/>
+            <Row
+              key={item[tittles[0].key]}
+              item={item}
+              tittles={tittles}
+              subTitle={subTitle}
+              subfields={subfields} // usamos solo el combinado
+              onExpand={handleExpand}
+              isOpen={item[tittles[0].key] === openRowId}
+              suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
+              onDeleteMedicKit={onDeleteMedicKit}
+              onDeleteSupply={onDeleteSupply}
+              onEditMedicKit={onEditMedicKit}
+              onEditSupply={onEditSupply}
+              changeStateSupply={changeStateSupply}
+            />
           ))}
         </TableBody>
       </Table>

@@ -2,26 +2,23 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidated";
-import {Box, Collapse, IconButton,Typography, Button, TableRow,
-    TableCell,Table, TableHead, TableBody} from "@mui/material";
+import { Box, Collapse, IconButton, Typography, Button, TableRow, TableCell, Table, TableHead, TableBody } from "@mui/material";
 import * as React from "react";
 
 export default function Row({
-  item, tittles, subTitle, subTittles, onExpand, isOpen, suppliesList,
-  onDeleteMedicKit, onDeleteSupply, onEditMedicKit, onEditSupply, changeStateSupply
+  item,
+  tittles,      // fields unificado
+  subTitle,
+  subfields,    // subfields unificado
+  onExpand,
+  isOpen,
+  suppliesList,
+  onDeleteMedicKit,
+  onDeleteSupply,
+  onEditMedicKit,
+  onEditSupply,
+  changeStateSupply
 }) {
-
-    // Al cerrar la fila, resetea estados de edición
-React.useEffect(() => {
-  if (!isOpen) {
-    setEditingKit(false);
-    setEditingSupplyId(null);
-    setSupplyFormData({});
-    setSupplyErrors({});
-    changeStateSupply(false);
-  }
-}, [isOpen]);
-
   const idKey = tittles[0]?.key; // ID del kit
   const [editingKit, setEditingKit] = React.useState(false);
   const [kitFormData, setKitFormData] = React.useState({ ...item });
@@ -29,13 +26,21 @@ React.useEffect(() => {
   const [supplyFormData, setSupplyFormData] = React.useState({});
   const [supplyErrors, setSupplyErrors] = React.useState({});
 
-  // Guardar kit editado
+  React.useEffect(() => {
+    if (!isOpen) {
+      setEditingKit(false);
+      setEditingSupplyId(null);
+      setSupplyFormData({});
+      setSupplyErrors({});
+      changeStateSupply(false);
+    }
+  }, [isOpen]);
+
   const handleSaveKit = () => {
     onEditMedicKit(kitFormData);
     setEditingKit(false);
   };
 
-  // Guardar suplemento editado con validación
   const handleSaveSupply = () => {
     if (Object.values(supplyErrors).some((e) => e)) {
       alert("Corrige los errores antes de guardar");
@@ -50,26 +55,20 @@ React.useEffect(() => {
       {/* fila principal */}
       <TableRow sx={{ "& > *": { borderBottom: "unset" } }}>
         <TableCell>
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => onExpand(item[idKey])}
-          >
+          <IconButton aria-label="expand row" size="small" onClick={() => onExpand(item[idKey])}>
             {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
 
         {tittles.map((col, index) => (
           <TableCell key={col.key} align="right">
-            {editingKit && index !== 0 ? (
+            {editingKit && index !== 0 ? ( // deshabilitamos el primer campo (código)
               <InputValidated
                 name={col.key}
-                type="text"
+                type={col.type || "text"}
                 value={kitFormData[col.key]}
-                placeholder={col.label}
-                onChange={(e) =>
-                  setKitFormData({ ...kitFormData, [col.key]: e.target.value })
-                }
+                placeholder={col.placeholder || col.label}
+                onChange={(e) => setKitFormData({ ...kitFormData, [col.key]: e.target.value })}
               />
             ) : (
               item[col.key]
@@ -77,25 +76,13 @@ React.useEffect(() => {
           </TableCell>
         ))}
 
-        {/* acciones de kit */}
         <TableCell align="right">
           {editingKit ? (
             <>
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                sx={{ mr: 1 }}
-                onClick={handleSaveKit}
-              >
+              <Button variant="contained" color="primary" size="small" sx={{ mr: 1 }} onClick={handleSaveKit}>
                 Guardar
               </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                size="small"
-                onClick={() => setEditingKit(false)}
-              >
+              <Button variant="outlined" color="secondary" size="small" onClick={() => setEditingKit(false)}>
                 Cancelar
               </Button>
             </>
@@ -113,10 +100,7 @@ React.useEffect(() => {
               >
                 Editar
               </Button>
-              <ModalElimination
-                message={"¿Quieres eliminar este kit médico?"}
-                onClick={() => onDeleteMedicKit(item[idKey])}
-              />
+              <ModalElimination message={"¿Quieres eliminar este kit médico?"} onClick={() => onDeleteMedicKit(item[idKey])} />
             </>
           )}
         </TableCell>
@@ -130,11 +114,7 @@ React.useEffect(() => {
               <Typography variant="h6" gutterBottom component="div">
                 {subTitle}
                 <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
-                  <Button
-                    variant="contained"
-                    size="small"
-                    onClick={() => changeStateSupply(item[idKey])}
-                  >
+                  <Button variant="contained" size="small" onClick={() => changeStateSupply(item[idKey])}>
                     Agregar Suplemento
                   </Button>
                 </div>
@@ -144,57 +124,50 @@ React.useEffect(() => {
                 <Table size="small" aria-label="supplies">
                   <TableHead>
                     <TableRow>
-                      {subTittles.map((col) => (
-                        <TableCell key={col.key}>{col.label}</TableCell>
-                      ))}
+                      {subfields.map((col) =>
+                        col.key === "cod_medic_kit" || col.key === "cod_supply" ? null : ( // ocultamos los códigos
+                          <TableCell key={col.key}>{col.label}</TableCell>
+                        )
+                      )}
                       <TableCell>Acciones</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
                     {suppliesList.map((supply) => (
-                      <TableRow key={supply[subTittles[0].key]}>
-                        {subTittles.map((col, index) => (
-                          <TableCell key={col.key}>
-                            {editingSupplyId === supply[subTittles[1].key] ? (
-                            <InputValidated
-                              name={col.key}
-                              type={col.type || "text"}
-                              value={supplyFormData[col.key]}
-                              placeholder={col.label}
-                              validations={[]}
-                              onChange={(e) =>
-                                setSupplyFormData({
-                                  ...supplyFormData,
-                                  [col.key]: e.target.value,
-                                })
-                              }
-                              onError={(name, err) =>
-                                setSupplyErrors((prev) => ({ ...prev, [name]: err }))
-                              }
-                            />
-                            ) : (
-                              supply[col.key]
-                            )}
-                          </TableCell>
-                        ))}
+                      <TableRow key={supply[subfields[1].key]}>
+                        {subfields.map((col) =>
+                          col.key === "cod_medic_kit" || col.key === "cod_supply" ? null : (
+                            <TableCell key={col.key}>
+                              {editingSupplyId === supply[subfields[1].key] ? (
+                                <InputValidated
+                                  name={col.key}
+                                  type={col.type || "text"}
+                                  value={supplyFormData[col.key]}
+                                  placeholder={col.placeholder || col.label}
+                                  validations={[]}
+                                  required={col.required || false}
+                                  onChange={(e) =>
+                                    setSupplyFormData({ ...supplyFormData, [col.key]: e.target.value })
+                                  }
+                                  onError={(name, err) =>
+                                    setSupplyErrors((prev) => ({ ...prev, [name]: err }))
+                                  }
+                                />
+                              ) : col.key === "supply_expiration_date" ? (
+                                supply[col.key] && String(supply[col.key]).trim() !== "" ? supply[col.key] : "Sin fecha"
+                              ) : (
+                                supply[col.key] ?? ""
+                              )}
+                            </TableCell>
+                          )
+                        )}
                         <TableCell>
-                          {editingSupplyId === supply[subTittles[1].key] ? (
+                          {editingSupplyId === supply[subfields[1].key] ? (
                             <>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                size="small"
-                                sx={{ mr: 1 }}
-                                onClick={handleSaveSupply}
-                              >
+                              <Button variant="contained" color="primary" size="small" sx={{ mr: 1 }} onClick={handleSaveSupply}>
                                 Guardar
                               </Button>
-                              <Button
-                                variant="outlined"
-                                color="secondary"
-                                size="small"
-                                onClick={() => setEditingSupplyId(null)}
-                              >
+                              <Button variant="outlined" color="secondary" size="small" onClick={() => setEditingSupplyId(null)}>
                                 Cancelar
                               </Button>
                             </>
@@ -206,7 +179,7 @@ React.useEffect(() => {
                                 size="small"
                                 sx={{ mr: 1 }}
                                 onClick={() => {
-                                  setEditingSupplyId(supply[subTittles[1].key]);
+                                  setEditingSupplyId(supply[subfields[1].key]);
                                   setSupplyFormData({ ...supply });
                                 }}
                               >
@@ -214,7 +187,7 @@ React.useEffect(() => {
                               </Button>
                               <ModalElimination
                                 message={"¿Quieres eliminar este suplemento medico?"}
-                                onClick={() => onDeleteSupply(supply[subTittles[1].key])}
+                                onClick={() => onDeleteSupply(supply[subfields[1].key])}
                               />
                             </>
                           )}

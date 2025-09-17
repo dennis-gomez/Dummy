@@ -34,29 +34,28 @@ export function ValidateValues({ type, value, required = true, validations = [],
     }
 
   } else if (type === "date") {
-
-
-    if (restriction === "cantAfterToday" && value !== "") {
-      const inputDate = new Date(value);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (inputDate > today) {
-        err = "No se permiten fechas futuras";
-      }
-    }
-  
-
-  else if (value !== "" && isNaN(Date.parse(value))) {
-    err = "Fecha inválida";
-  } else if (type === "date" && value !== "") {
+  if (value !== "") {
     const inputDate = new Date(value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (inputDate < today) {
-      err = "Solo se permiten fechas futuras";
+
+    // Verificar si es una fecha válida
+    if (isNaN(inputDate.getTime())) {
+      err = "Fecha inválida";
+    } else {
+      // Restricción: no permitir fechas futuras
+      if (restriction === "cantAfterToday" && inputDate > today) {
+        err = "No se permiten fechas futuras";
+      }
+
+      // Restricción por defecto: solo permitir fechas futuras
+      else if (!restriction && inputDate < today) {
+        err = "Solo se permiten fechas futuras";
+      }
     }
   }
 }
+
 
   // 🔹 Validaciones personalizadas
   if (!err && validations.length > 0) {
