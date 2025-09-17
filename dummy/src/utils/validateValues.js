@@ -17,9 +17,9 @@ export function ValidateValues({ type, value, required = true, validations = [],
     }
 
     //Validacion del año (Vehiculos)
-    if(restriction === "vehicle_year_restrictions" && value !== ""){
+    if (restriction === "vehicle_year_restrictions" && value !== "") {
       const currentYear = new Date().getFullYear();
-      if (Number(value) > currentYear) { 
+      if (Number(value) > currentYear) {
         err = "El año del vehículo no puede ser mayor al actual.";
       }
       if (Number(value) < 1900) {
@@ -28,15 +28,15 @@ export function ValidateValues({ type, value, required = true, validations = [],
     }
 
     //Validacion del valores minimos (Vehiculos)
-    if((restriction === "vehicle_initial_km_restrictions" || restriction === "vehicle_last_km_maintenance_restrictions") 
-      && Number(value) < 0){
+    if ((restriction === "vehicle_initial_km_restrictions" || restriction === "vehicle_last_km_maintenance_restrictions")
+      && Number(value) < 0) {
       err = "No se permiten valores negativos";
     }
 
   } else if (type === "date") {
 
 
-    if(restriction === "cantAfterToday" && value !== ""){
+    if (restriction === "cantAfterToday" && value !== "") {
       const inputDate = new Date(value);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -44,18 +44,19 @@ export function ValidateValues({ type, value, required = true, validations = [],
         err = "No se permiten fechas futuras";
       }
     }
-  }
+  
 
-      else if (value !== "" && isNaN(Date.parse(value))) {
-      err = "Fecha inválida";
-    } else if (type === "date" && value !== "") {
-      const inputDate = new Date(value);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (inputDate < today) {
-        err = "Solo se permiten fechas futuras";
-      }
+  else if (value !== "" && isNaN(Date.parse(value))) {
+    err = "Fecha inválida";
+  } else if (type === "date" && value !== "") {
+    const inputDate = new Date(value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (inputDate < today) {
+      err = "Solo se permiten fechas futuras";
     }
+  }
+}
 
   // 🔹 Validaciones personalizadas
   if (!err && validations.length > 0) {
