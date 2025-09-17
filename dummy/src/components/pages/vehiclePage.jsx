@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Form from "../organisms/form";
 import VehicleTable from "../organisms/vehicleTable";
-import { useVehicles } from "../hooks/useVehicles";
+import { useVehicles } from "../../utils/useVehicle";
 
 function VehiclePage() {
 
