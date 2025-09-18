@@ -37,6 +37,7 @@ export default function useMiscellaneousPage() {
       setItems([]);
       setCategories([]);
 
+      
       const cats = await getCategorys(id);
       setCategories(cats);
     } catch (error) {
