@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import './App.css'
 import MiscellaneousPage from './components/pages/miscellaneousPage'
 import ExtinguisherPage from './components/pages/extinguisherPage'
 import Navbar from './components/organisms/navbar'
