@@ -26,7 +26,7 @@ function VehiclePage() {
             {showForm && (
                 <Box
                 sx={{
-                    maxWidth: 800,
+                    maxWidth: 900,
                     margin: "20px auto",
                     p: 3,
                     boxShadow: 3,
@@ -34,10 +34,10 @@ function VehiclePage() {
                     backgroundColor: "#fff",
                 }}
                 >
-                <Typography variant="h6" gutterBottom color="textPrimary">
-                    Agregar vehículo
-                </Typography>
-                <Form fields={fields} onSubmit={handleSubmit} titleBtn={"Guardar vehículo"} />
+                    <Typography variant="h6" gutterBottom color="textPrimary">
+                        Agregar vehículo
+                    </Typography>
+                    <Form fields={fields} onSubmit={handleSubmit} titleBtn={"Guardar vehículo"} />
                 </Box>
             )}
 
