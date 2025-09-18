@@ -1,3 +1,4 @@
+import React from "react";
 import ModalElimination from "../molecules/modalElimination";
 import Button from "../atoms/button";
 import useTableMiscellaneousPage from "/src/utils/useTableMiscellaneous";
@@ -12,6 +13,7 @@ function TableMiscellaneousPage({
   onEditService,
   onDeleteService,
   tableRef,
+  isVisible = true, // Controla la visibilidad con transición
 }) {
   const {
     name,
@@ -40,28 +42,32 @@ function TableMiscellaneousPage({
   };
 
   return (
-    <>
-      <h2 className="mb-2 font-semibold text-lg">Servicios</h2>
+    <div
+      className={`transition-all duration-500 ease-in-out transform origin-top ${
+        isVisible ? "opacity-100 scale-100 max-h-screen" : "opacity-0 scale-95 max-h-0 overflow-hidden"
+      }`}
+    >
+      <h2 className="mb-4 text-2xl font-bold text-gray-800">Servicios</h2>
 
-      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-1.5">
-          <label className="text-sm text-gray-800 whitespace-nowrap">Nuevo servicio:</label>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Nuevo servicio:</label>
           <input
             type="text"
             placeholder="Escribe un servicio"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
-            className="border border-gray-300 rounded py-1.5 px-2.5 min-w-[200px]"
+            className="border border-gray-300 rounded-md py-2 px-3 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
           <button
             onClick={handleValidatedAdd}
             disabled={!name.trim()}
-            className={`rounded py-2 px-3.5 text-white ${
+            className={`rounded-md py-2 px-5 text-white font-semibold transition ${
               name.trim()
-                ? "bg-blue-700 hover:bg-blue-800 cursor-pointer"
-                : "bg-blue-700 opacity-50 cursor-not-allowed"
-            } border-0`}
+                ? "bg-blue-600 hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-blue-300"
+                : "bg-blue-600 opacity-50 cursor-not-allowed"
+            }`}
           >
             Agregar
           </button>
@@ -71,25 +77,19 @@ function TableMiscellaneousPage({
       <table
         ref={tableRef}
         aria-label="Tabla de Servicios"
-        className="w-full border-collapse m-0 bg-white rounded-lg overflow-hidden shadow-md"
+        className="w-full border-collapse bg-white rounded-xl shadow-lg overflow-hidden"
       >
-        <thead>
+        <thead className="bg-gradient-to-r from-blue-700 to-blue-600 text-white">
           <tr>
-            <th className="w-[140px] border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
-              codigo servicio
-            </th>
-            <th className="border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
-              servicio
-            </th>
-            <th className="w-[180px] border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
-              acciones
-            </th>
+            <th className="w-[140px] py-3 px-6 text-left font-semibold tracking-wide">Código Servicio</th>
+            <th className="py-3 px-6 text-left font-semibold tracking-wide">Servicio</th>
+            <th className="w-[180px] py-3 px-6 text-left font-semibold tracking-wide">Acciones</th>
           </tr>
         </thead>
         <tbody>
           {services.length === 0 ? (
             <tr>
-              <td colSpan={3} className="border border-gray-300 py-2.5 px-3.5 text-center">
+              <td colSpan={3} className="py-4 px-6 text-center text-gray-500 italic">
                 Sin servicios
               </td>
             </tr>
@@ -101,34 +101,34 @@ function TableMiscellaneousPage({
               return (
                 <tr
                   key={srv.cod_service}
-                  className={`cursor-default hover:bg-blue-100 ${
-                    isSelected ? "outline outline-2 outline-blue-700 bg-blue-100" : ""
+                  className={`cursor-default transition-colors duration-300 ${
+                    isSelected ? "bg-blue-100 shadow-inner  outline-2 outline-blue-600" : "hover:bg-blue-50"
                   }`}
                 >
-                  <td className="border border-gray-300 py-2.5 px-3.5">{srv.cod_service}</td>
+                  <td className="py-4 px-6 border-b border-gray-200">{srv.cod_service}</td>
                   <td
                     onClick={() => !isEditing && onSelect(srv.cod_service)}
-                    className="border border-gray-300 py-2.5 px-3.5"
+                    className="py-4 px-6 border-b border-gray-200 select-none"
                   >
                     {isEditing ? (
                       <input
                         type="text"
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
-                        className="w-full max-w-[280px] py-1.5 px-2 border border-gray-300 rounded"
+                        className="w-full max-w-[280px] py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                       />
                     ) : (
                       srv.service_name
                     )}
                   </td>
-                  <td className="border border-gray-300 py-2.5 px-3.5">
+                  <td className="py-4 px-6 border-b border-gray-200">
                     {isEditing ? (
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <Button text="Guardar" onClick={() => saveEdit(srv)} />
                         <Button text="Cancelar" onClick={cancelEdit} />
                       </div>
                     ) : (
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <ModalElimination
                           message="¿Quieres eliminar este servicio?"
                           onClick={() => remove(srv.cod_service)}
@@ -143,7 +143,7 @@ function TableMiscellaneousPage({
           )}
         </tbody>
       </table>
-    </>
+    </div>
   );
 }
 
