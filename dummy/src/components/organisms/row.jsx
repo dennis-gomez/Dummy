@@ -6,6 +6,8 @@ import ModalAlert from "../molecules/modalAlert";
 import { Box, Collapse, IconButton, Typography, Button, TableRow, TableCell, Table, TableHead, TableBody } from "@mui/material";
 import * as React from "react";
 
+import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+
 export default function Row({
   item,
   tittles,      // fields unificado
@@ -140,26 +142,29 @@ export default function Row({
                         {subfields.map((col) =>
                           col.key === "cod_medic_kit" || col.key === "cod_supply" ? null : (
                             <TableCell key={col.key}>
-                              {editingSupplyId === supply[subfields[1].key] ? (
-                                <InputValidated
-                                  name={col.key}
-                                  type={col.type || "text"}
-                                  value={supplyFormData[col.key]}
-                                  placeholder={col.placeholder || col.label}
-                                  validations={[]}
-                                  required={col.required || false}
-                                  onChange={(e) =>
-                                    setSupplyFormData({ ...supplyFormData, [col.key]: e.target.value })
-                                  }
-                                  onError={(name, err) =>
-                                    setSupplyErrors((prev) => ({ ...prev, [name]: err }))
-                                  }
-                                />
-                              ) : col.key === "supply_expiration_date" ? (
-                                supply[col.key] && String(supply[col.key]).trim() !== "" ? supply[col.key] : "Sin fecha"
-                              ) : (
-                                supply[col.key] ?? ""
-                              )}
+                             {editingSupplyId === supply[subfields[1].key] ? (
+  <InputValidated
+    name={col.key}
+    type={col.type || "text"}
+    value={supplyFormData[col.key]}
+    placeholder={col.placeholder || col.label}
+    validations={[]}
+    required={col.required || false}
+    onChange={(e) =>
+      setSupplyFormData({ ...supplyFormData, [col.key]: e.target.value })
+    }
+    onError={(name, err) =>
+      setSupplyErrors((prev) => ({ ...prev, [name]: err }))
+    }
+  />
+) : col.key === "supply_expiration_date" ? (
+  supply[col.key] && String(supply[col.key]).trim() !== ""
+    ? formatDateDDMMYYYY(supply[col.key])
+    : "Sin fecha"
+) : (
+  supply[col.key] ?? ""
+)}
+
                             </TableCell>
                           )
                         )}

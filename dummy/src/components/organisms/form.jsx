@@ -13,7 +13,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
 
-  const [errors, setErrors] = useState({}); 
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,8 +44,8 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
 
               return (
                 <Grid item xs={xs} key={field.name}>
+
                   {field.type === "date" ? (
-                    
                     <InputValidatedDate
                       name={field.name}
                       placeholder={field.placeholder}
@@ -57,6 +57,18 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       restriction={field.restriction || ""}
                       validations={field.validations}
                       sx={field.width ? { width: field.width } : {}}
+                    />
+                  ) : field.type === "select" ? (
+                    <InputValidated
+                      name={field.name}
+                      type="select"
+                      placeholder={field.placeholder}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                      onError={handleError}
+                      options={field.options}
+                      sx={field.width ? { width: field.width } : {}}
+                      required={field.required ?? true}
                     />
                   ) : (
                     <InputValidated
@@ -76,6 +88,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                     />
                   )}
 
+
                 </Grid>
               );
             })}
@@ -88,9 +101,9 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
               Cancelar
             </Button>
           )}
-          <Button 
-            type="submit" 
-            variant="contained" 
+          <Button
+            type="submit"
+            variant="contained"
             color="primary"
             disabled={hasError}
           >

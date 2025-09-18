@@ -3,11 +3,12 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import InputValidated from "../atoms/inputValidated";
 import { useState } from "react";
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography,
+import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+
 
 function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTittle }) {
   // Filtramos los campos visibles (sin códigos)
@@ -22,11 +23,9 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
   const [subformData, setSubformData] = useState([]);
   const [editIdx, setEditIdx] = useState(null);
   const [editItem, setEditItem] = useState(emptySubform);
-
   const [inputErrors, setInputErrors] = useState({});
   const [subInputErrors, setSubInputErrors] = useState({});
 
-  // -------------------- Handlers --------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -82,24 +81,40 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
     onSubmit({ ...formData, supplements: subformData });
   };
 
-  // -------------------- Render --------------------
   return (
-    <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
+    <Box sx={{ border: "1px solid #eee", mb: 2, borderRadius: 2, p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         {/* Formulario principal */}
         {visibleFields.length > 0 && (
           <Grid container spacing={2}>
             {visibleFields.map((f, idx) => {
+              // Si es textarea, lo ponemos al final y largo
+              if (f.type === "textarea") {
+                return (
+                  <Grid item xs={12} key={f.key} sx={{ mt: 3 }}>
+                    <InputValidated
+                      name={f.key}
+                      type="text"
+                      placeholder={f.placeholder}
+                      value={formData[f.key]}
+                      onChange={handleChange}
+                      validations={f.validations || []}
+                      onError={(key, error) => handleInputError(key, error)}
+                      required={f.required ?? true}
+                      multiline
+                      rows={5} // más largo
+                      fullWidth
+                    />
+                  </Grid>
+                );
+              }
+
               const isLastSingle = visibleFields.length % 2 !== 0 && idx === visibleFields.length - 1;
               return (
                 <Grid item xs={12} sm={isLastSingle ? 12 : 6} key={f.key}>
-                  <InputValidated
-                    name={f.key}
-                    type={f.type || "text"}
-                    placeholder={f.placeholder}
-                    value={formData[f.key]}
-                    onChange={handleChange}
-                    validations={f.validations || []}
+                  <InputValidated name={f.key} type={f.type || "text"}
+                    placeholder={f.placeholder} value={formData[f.key]}
+                    onChange={handleChange}validations={f.validations || []}
                     onError={(key, error) => handleInputError(key, error)}
                     required={f.required ?? true}
                   />
@@ -110,9 +125,10 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
         )}
 
         {/* Subformulario */}
-        {title && <h2>{title}</h2>}
         {visibleSubfields.length > 0 && (
-          <Box sx={{ border: "1px solid #eee", p: 2, mb: 2, borderRadius: 2 }}>
+          <Box sx={{ border: "1px solid #eee", p: 2, mb: 2, borderRadius: 2, marginTop: "30px" }}>
+            {title && <h2 style={{ paddingBottom: "30px" }}>{title}</h2>}
+
             <Grid container spacing={2}>
               {visibleSubfields.map((f, idx) => {
                 const isLastSingle = visibleSubfields.length % 2 !== 0 && idx === visibleSubfields.length - 1;
@@ -136,29 +152,21 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
               {editIdx !== null ? (
                 <>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSaveEditItem}
-                    sx={{ mr: 1 }}
+                  <Button variant="contained" color="primary"
+                    onClick={handleSaveEditItem} sx={{ mr: 1 }}
                     disabled={Object.values(subInputErrors).some(Boolean)}
                   >
                     Guardar
                   </Button>
-                  <Button
-                    variant="outlined"
-                    color="secondary"
+                  <Button variant="outlined" color="secondary"
                     onClick={handleCancelEditItem}
                   >
                     Cancelar
                   </Button>
                 </>
               ) : (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={handleAddItem}
-                  disabled={Object.values(subInputErrors).some(Boolean)}
+                <Button variant="outlined" color="primary"
+                  onClick={handleAddItem} disabled={Object.values(subInputErrors).some(Boolean)}
                 >
                   {subTittle}
                 </Button>
@@ -185,62 +193,68 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {subformData.map((item, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell>{idx + 1}</TableCell>
-                      {editIdx === idx ? (
-                        <>
-                          {visibleSubfields.map((f) => (
-                            <TableCell key={f.key}>
-                              <InputValidated
-                                name={f.key}
-                                type={f.type || "text"}
-                                placeholder={f.placeholder}
-                                value={editItem[f.key]}
-                                onChange={handleEditItemChange}
-                                validations={f.validations || []}
-                                onError={(key, error) => handleInputError(key, error, true)}
-                                required={f.required ?? true}
-                              />
-                            </TableCell>
-                          ))}
-                          <TableCell>
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={handleSaveEditItem}
-                              sx={{ mr: 1 }}
-                              disabled={Object.values(subInputErrors).some(Boolean)}
-                            >
-                              Guardar
-                            </Button>
-                            <Button
-                              variant="outlined"
-                              color="secondary"
-                              onClick={handleCancelEditItem}
-                            >
-                              Cancelar
-                            </Button>
-                          </TableCell>
-                        </>
-                      ) : (
-                        <>
-                          {visibleSubfields.map((f) => (
-                            <TableCell key={f.key}>{item[f.key] || "-"}</TableCell>
-                          ))}
-                          <TableCell>
-                            <Button color="error" onClick={() => handleRemoveItem(idx)}>
-                              <DeleteIcon />
-                            </Button>
-                            <Button color="primary" onClick={() => handleEditItem(idx)}>
-                              <EditIcon />
-                            </Button>
-                          </TableCell>
-                        </>
-                      )}
-                    </TableRow>
-                  ))}
-                </TableBody>
+  {subformData.map((item, idx) => (
+    <TableRow key={idx}>
+      <TableCell>{idx + 1}</TableCell>
+      {editIdx === idx ? (
+        <>
+          {visibleSubfields.map((f) => (
+            <TableCell key={f.key}>
+              <InputValidated
+                name={f.key}
+                type={f.type || "text"}
+                placeholder={f.placeholder}
+                value={editItem[f.key]}
+                onChange={handleEditItemChange}
+                validations={f.validations || []}
+                onError={(key, error) => handleInputError(key, error, true)}
+                required={f.required ?? true}
+              />
+            </TableCell>
+          ))}
+          <TableCell>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleSaveEditItem}
+              sx={{ mr: 1 }}
+              disabled={Object.values(subInputErrors).some(Boolean)}
+            >
+              Guardar
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={handleCancelEditItem}
+            >
+              Cancelar
+            </Button>
+          </TableCell>
+        </>
+      ) : (
+        <>
+          {visibleSubfields.map((f) => (
+            <TableCell key={f.key}>
+              {f.type === "date"
+                ? (item[f.key] && String(item[f.key]).trim() !== ""
+                    ? formatDateDDMMYYYY(item[f.key])
+                    : "-")
+                : (item[f.key] || "-")}
+            </TableCell>
+          ))}
+          <TableCell>
+            <Button color="error" onClick={() => handleRemoveItem(idx)}>
+              <DeleteIcon />
+            </Button>
+            <Button color="primary" onClick={() => handleEditItem(idx)}>
+              <EditIcon />
+            </Button>
+          </TableCell>
+        </>
+      )}
+    </TableRow>
+  ))}
+</TableBody>
               </Table>
             </TableContainer>
           </Paper>
@@ -248,10 +262,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
 
         {/* Submit */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
+          <Button type="submit" variant="contained" color="primary"
             disabled={Object.values(inputErrors).some(Boolean) || (visibleFields.length === 0 && subformData.length === 0)}
           >
             {titleBtn}

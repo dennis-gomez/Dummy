@@ -8,25 +8,38 @@ import {
   addExtinguisher,
   updateExtinguisher,
 } from "../../services/extinguisherService";
-import ModalAlert from "../molecules/modalAlert"; // 👈 si quieres mismo estilo de alertas
+import ModalAlert from "../molecules/modalAlert";
 
 const ExtinguisherPage = () => {
   const [extinguishers, setExtinguishers] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [error, setError] = useState(""); // 👈 faltaba este estado
+  const [error, setError] = useState("");
+
+const extinguisherTypes = [
+  { value: "A",   label: "A — Para sólidos" },
+  { value: "B",   label: "B — Para líquidos/gases inflamables" },
+  { value: "C",   label: "C — Para equipos energizados" },
+  { value: "D",   label: "D — Para metales combustibles" },
+  { value: "K",   label: "K — Para cocina: grasas y aceites" },
+  { value: "ABC", label: "ABC — Para multipropósito (A+B+C)" },
+  { value: "BC",  label: "BC — Para líquidos y gases" },
+  { value: "AB",  label: "AB — Para sólidos y líquidos" },
+];
+
+
 
 const fields = [
-  { name: "extinguisher_serial_number", placeholder: "Número de Serie", grid: 4 },
-  { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", grid: 4, restriction :"cantAfterToday"},
-  { name: "extinguisher_brand", placeholder: "Marca", grid: 4 },
-  { name: "extinguisher_agent", placeholder: "Agente", grid: 4 },
-  { name: "extinguisher_installation_date", placeholder: "Fecha de Instalación", type: "date", grid: 4, restriction :"betweenManufactureAndToday"},
-  { name: "extinguisher_type", placeholder: "Tipo", grid: 4 },
-  { name: "extinguisher_capacity", placeholder: "Capacidad", grid: 4 },
-  { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", grid: 4, restriction :"cantBeforeToday"},
-  { name: "extinguisher_location", placeholder: "Ubicación", grid: 4 },
+  { name: "extinguisher_serial_number", placeholder: "Número de Serie", width: 250},
+  { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", width: 250, restriction :"cantAfterToday"},
+  { name: "extinguisher_brand", placeholder: "Marca", width: 250 },
+  { name: "extinguisher_agent", placeholder: "Agente", width: 250 },
+  { name: "extinguisher_installation_date", placeholder: "Fecha de Instalación", type: "date", width: 250, restriction :"betweenManufactureAndToday"},
+  { name: "extinguisher_type",  placeholder: "Tipo", type: "select",  width: 250, options: extinguisherTypes },
+  { name: "extinguisher_capacity", placeholder: "Capacidad", width: 250},
+  { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", width: 250, restriction :"cantBeforeToday"},
+  { name: "extinguisher_location", placeholder: "Ubicación", width: 250 },
 
-  { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 720, required: false },
+  { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 780, required: false },
 ];
 
 
@@ -93,7 +106,7 @@ const fields = [
       {showForm && (
         <Box
 sx={{
-        maxWidth: 800,
+        maxWidth: 900,
         margin: "20px auto",
         p: 3,
         borderRadius: 3,

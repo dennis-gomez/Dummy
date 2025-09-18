@@ -5,6 +5,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import { formatDateDDMMYYYY } from "../../utils/generalUtilities.js";
 
 const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
   const [editingId, setEditingId] = useState(null);
@@ -25,12 +26,6 @@ const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
     setEditingId(null);
     setEditData({});
   };
-
-const formatDateDDMMYYYY = (dateStr) => {
-  if (!dateStr) return "-";
-  const [year, month, day] = dateStr.split("-");
-  return `${day}/${month}/${year}`;
-};
 
 
   return (
@@ -114,14 +109,13 @@ const formatDateDDMMYYYY = (dateStr) => {
                     </TableCell>
 
                     <TableCell>
-<TextField
-  type="date"
-  value={editData.extinguisher_installation_date || ""}
-  onChange={(e) =>
-    setEditData({ ...editData, extinguisher_installation_date: e.target.value })
-  }
-/>
-
+                      <TextField
+                        type="date"
+                        value={editData.extinguisher_installation_date || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_installation_date: e.target.value })
+                        }
+                      />
                     </TableCell>
 
                     <TableCell>

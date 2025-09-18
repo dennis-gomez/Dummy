@@ -1,4 +1,5 @@
 import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import { useState, useEffect } from "react";
 import { ValidateValues } from "../../utils/validateValues";
 
@@ -14,6 +15,7 @@ function InputValidated({
   sx,
   restriction = "", 
   formValues,
+  options = [] // 👈 soporte para select
 }) {
   const [error, setError] = useState("");
 
@@ -42,10 +44,15 @@ function InputValidated({
   }, [value]);
 
   return (
- <TextField
+    <TextField
       fullWidth
+      select={type === "select"} 
       id={name + "-outlined-basic"}
-      label={type?.toLowerCase().includes("date") ? placeholder || "Fecha" : placeholder}
+      label={
+        type?.toLowerCase().includes("date")
+          ? placeholder || "Fecha"
+          : placeholder
+      }
       variant="outlined"
       type={type === "DateCanBefore" ? "date" : type || "text"}
       name={name}
@@ -54,12 +61,22 @@ function InputValidated({
       placeholder={placeholder}
       error={!!error}
       helperText={error}
-      InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
+      InputLabelProps={
+        type?.toLowerCase().includes("date") ? { shrink: true } : {}
+      }
       inputProps={type === "number" ? { min: 0 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
       sx={sx}
-    />
+      required={required}
+    >
+      {type === "select" &&
+        options.map((opt) => (
+          <MenuItem key={opt.value} value={opt.value}>
+            {opt.label}
+          </MenuItem>
+        ))}
+    </TextField>
   );
 }
 
