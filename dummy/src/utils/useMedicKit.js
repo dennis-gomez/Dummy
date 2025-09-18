@@ -43,8 +43,8 @@ export const useMedicKits = () => {
 const subfields = [
   { key: "cod_medic_kit", label: "Código de botiquín", type: "text", placeholder: "Código de botiquín", required: false },
   { key: "cod_supply", label: "Código de suplemento", type: "text", placeholder: "Código de suplemento", required: false },
-  { key: "supply_quantity", label: "Cantidad", type: "number", placeholder: "Cantidad", required: false },
-  { key: "supply_description", label: "Descripción", type: "text", placeholder: "Descripción", required: false },
+  { key: "supply_quantity", label: "Cantidad", type: "number", placeholder: "Cantidad", required: true },
+  { key: "supply_description", label: "Descripción", type: "text", placeholder: "Descripción", required: true },
   { key: "supply_expiration_date", label: "Fecha de Vencimiento", type: "date", placeholder: "Fecha de Vencimiento", required: false },
 ];
 
