@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import ModalElimination from "../molecules/modalElimination";
 
 const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
   const [editingId, setEditingId] = useState(null);
@@ -79,7 +79,7 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
                             onChange={(e) =>
                               setEditData({ ...editData, [f.name]: e.target.value })
                             }
-                            className="w-full py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+                            className="min-w-[100px] py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
                           />
                         </td>
                       ))}
@@ -114,13 +114,10 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
                       ))}
                       <td className="py-4 px-6 align-middle">
                         <div className="flex justify-center space-x-3">
-                          <button
+                          <ModalElimination
+                            message={'Eliminar vehículo'}
                             onClick={() => onDelete(vehicle.cod_vehicle)}
-                            aria-label="Eliminar vehículo"
-                            className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-                          >
-                            <DeleteIcon />
-                          </button>
+                          />
                           <button
                             onClick={() => handleEditClick(vehicle)}
                             aria-label="Editar vehículo"
