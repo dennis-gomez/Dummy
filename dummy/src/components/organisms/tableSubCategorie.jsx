@@ -1,6 +1,6 @@
+import React from "react";
 import ModalElimination from "../molecules/modalElimination";
 import Button from "../atoms/button";
-import "/src/styles/table.css";
 import useTableSubcategorie from "/src/utils/useTableSubcategorie";
 import { tableValidator } from "/src/utils/tableValidator";
 import Swal from "sweetalert2";
@@ -59,63 +59,104 @@ function TableSubcategorie({
 
   return (
     <>
-      <div className="toolbar">
-        <div className="input-group">
-          <label>Nombre de item:</label>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <label className="text-sm text-gray-800 whitespace-nowrap">Nombre de item:</label>
           <input
             type="text"
             placeholder="Escribe un item"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
+            className="border border-gray-300 rounded py-1.5 px-2.5 min-w-[200px]"
           />
-          <button className="btn" onClick={handleValidatedAdd} disabled={!name.trim()}>
+          <button
+            onClick={handleValidatedAdd}
+            disabled={!name.trim()}
+            className={`rounded py-2 px-3.5 text-white ${
+              name.trim()
+                ? "bg-blue-700 hover:bg-blue-800 cursor-pointer"
+                : "bg-blue-700 opacity-50 cursor-not-allowed"
+            } border-0`}
+          >
             Agregar
           </button>
-          <button className="btn" onClick={onClose}>Cerrar</button>
+          <button
+            onClick={onClose}
+            className="rounded py-2 px-3.5 bg-blue-700 hover:bg-blue-800 text-white cursor-pointer border-0"
+          >
+            Cerrar
+          </button>
         </div>
       </div>
 
-      <table ref={tableRef} className="tablas" aria-label="Tabla de Items">
+      <table
+        ref={tableRef}
+        aria-label="Tabla de Items"
+        className="w-full border-collapse m-0 bg-white rounded-lg overflow-hidden shadow-md"
+      >
         <thead>
           <tr>
-            <th style={{ width: 120 }}>codigo servicio</th>
-            <th style={{ width: 120 }}>codigo categoria</th>
-            <th style={{ width: 120 }}>codigo item</th>
-            <th>items</th>
-            <th style={{ width: 120 }}>acciones</th>
+            <th className="w-[120px] border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
+              codigo servicio
+            </th>
+            <th className="w-[120px] border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
+              codigo categoria
+            </th>
+            <th className="w-[120px] border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
+              codigo item
+            </th>
+            <th className="border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
+              items
+            </th>
+            <th className="w-[120px] border border-gray-300 py-2.5 px-3.5 text-left bg-blue-700 text-white font-semibold">
+              acciones
+            </th>
           </tr>
         </thead>
         <tbody>
           {items.length === 0 ? (
-            <tr><td colSpan={5}>Sin detalles</td></tr>
+            <tr>
+              <td colSpan={5} className="border border-gray-300 py-2.5 px-3.5 text-center">
+                Sin detalles
+              </td>
+            </tr>
           ) : (
             items.map((det) => {
               const isEditing = editingId === det.cod_item;
+
               return (
-                <tr key={det.cod_item}>
-                  <td>{det.cod_service}</td>
-                  <td>{det.cod_category}</td>
-                  <td>{det.cod_item}</td>
-                  <td>
+                <tr
+                  key={det.cod_item}
+                  className="cursor-default hover:bg-blue-100"
+                >
+                  <td className="border border-gray-300 py-2.5 px-3.5">{det.cod_service}</td>
+                  <td className="border border-gray-300 py-2.5 px-3.5">{det.cod_category}</td>
+                  <td className="border border-gray-300 py-2.5 px-3.5">{det.cod_item}</td>
+                  <td className="border border-gray-300 py-2.5 px-3.5">
                     {isEditing ? (
                       <input
-                        className="inline-input"
                         type="text"
                         value={editValue}
                         onChange={(e) => setEditValue(e.target.value)}
+                        className="w-full max-w-[280px] py-1.5 px-2 border border-gray-300 rounded"
                       />
-                    ) : det.item_name}
+                    ) : (
+                      det.item_name
+                    )}
                   </td>
-                  <td>
+                  <td className="border border-gray-300 py-2.5 px-3.5">
                     {isEditing ? (
-                      <div className="acciones">
+                      <div className="flex gap-2">
                         <Button text="Guardar" onClick={() => handleValidatedSave(det)} />
                         <Button text="Cancelar" onClick={handleCancel} />
                       </div>
                     ) : (
-                      <div className="acciones">
-                        <ModalElimination message="¿Quieres eliminar este item?" onClick={() => onDeleteItem(det.cod_category, det.cod_service, det.cod_item)} />
+                      <div className="flex gap-2">
+                        <ModalElimination
+                          message="¿Quieres eliminar este item?"
+                          onClick={() => onDeleteItem(det.cod_category, det.cod_service, det.cod_item)}
+                        />
                         <Button text="Editar" onClick={() => handleEditClick(det)} />
                       </div>
                     )}
@@ -129,4 +170,5 @@ function TableSubcategorie({
     </>
   );
 }
+
 export default TableSubcategorie;
