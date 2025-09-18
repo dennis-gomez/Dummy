@@ -1,12 +1,11 @@
-import * as React from "react";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { useState } from "react";
 import Row from "./Row";
 
 export default function CollapsibleTable({
   list,
-  tittles,       // ahora es el arreglo unificado de fields
+  tittles,
   subTitle,
-  subfields,     // ahora contiene la info combinada de suplementos
+  subfields,
   suppliesList,
   medicKitSelectedId,
   onSelect,
@@ -16,7 +15,7 @@ export default function CollapsibleTable({
   onEditSupply,
   changeStateSupply
 }) {
-  const [openRowId, setOpenRowId] = React.useState(null);
+  const [openRowId, setOpenRowId] = useState(null);
 
   const handleExpand = (id) => {
     const closing = openRowId === id;
@@ -31,39 +30,50 @@ export default function CollapsibleTable({
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            {tittles.map((col) => (
-              <TableCell key={col.key} align="right">
-                {col.label}
-              </TableCell>
+    <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Kits Médicos</h2>
+
+      <div className="overflow-x-auto rounded-xl">
+        <table className="min-w-full">
+          <thead>
+            <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
+                Expandir
+              </th>
+              {tittles.map((col) => (
+                <th
+                  key={col.key}
+                  className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
+                >
+                  {col.label}
+                </th>
+              ))}
+              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl">
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((item) => (
+              <Row
+                key={item[tittles[0].key]}
+                item={item}
+                tittles={tittles}
+                subTitle={subTitle}
+                subfields={subfields}
+                onExpand={handleExpand}
+                isOpen={item[tittles[0].key] === openRowId}
+                suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
+                onDeleteMedicKit={onDeleteMedicKit}
+                onDeleteSupply={onDeleteSupply}
+                onEditMedicKit={onEditMedicKit}
+                onEditSupply={onEditSupply}
+                changeStateSupply={changeStateSupply}
+              />
             ))}
-            <TableCell align="right">Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {list.map((item) => (
-            <Row
-              key={item[tittles[0].key]}
-              item={item}
-              tittles={tittles}
-              subTitle={subTitle}
-              subfields={subfields} // usamos solo el combinado
-              onExpand={handleExpand}
-              isOpen={item[tittles[0].key] === openRowId}
-              suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
-              onDeleteMedicKit={onDeleteMedicKit}
-              onDeleteSupply={onDeleteSupply}
-              onEditMedicKit={onEditMedicKit}
-              onEditSupply={onEditSupply}
-              changeStateSupply={changeStateSupply}
-            />
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
