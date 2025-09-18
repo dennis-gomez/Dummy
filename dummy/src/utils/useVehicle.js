@@ -91,7 +91,9 @@ export const useVehicles = () => {
                 (value) =>
                 value && value.length > 50 ? "El tipo de aceite debe tener máximo 50 caracteres." : null,
             ],
-            width: 250
+            width: 250, 
+            multiline: true,
+            rows: 2 
         },
         { 
             name: "vehicle_spark_plug_model", 
@@ -100,7 +102,9 @@ export const useVehicles = () => {
                 (value) =>
                 value && value.length > 50 ? "La bujía debe tener máximo 50 caracteres." : null,
             ],
-            width: 250
+            width: 250, 
+            multiline: true,
+            rows: 2 
         },
         { 
             name: "vehicle_tires_front", 
@@ -109,7 +113,9 @@ export const useVehicles = () => {
                 (value) =>
                 value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null,
             ],
-            width: 250
+            width: 250,
+            multiline: true,
+            rows: 2 
         },
         { 
             name: "vehicle_tires_back", 
@@ -118,7 +124,9 @@ export const useVehicles = () => {
                 (value) =>
                 value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null,
             ],
-            width: 250
+            width: 250,
+            multiline: true,
+            rows: 2 
         },
         { 
             name: "bike_brake_pad", 
@@ -127,7 +135,9 @@ export const useVehicles = () => {
                 (value) =>
                 value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null,
             ],
-            width: 250
+            width: 250, 
+            multiline: true,
+            rows: 2 
         },
         { 
             name: "vehicle_color", 
