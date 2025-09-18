@@ -1,22 +1,37 @@
 import { useState } from "react";
+import { tableValidator } from "/src/utils/tableValidator"; // ✅ validador centralizado
+import Swal from "sweetalert2"; // ✅ alertas bonitas
 
-export default function useTableMiscellaneous(services, onAddItem, onEditService, onDeleteService) {
+export default function useTableMiscellaneous(
+  services,
+  onAddItem,
+  onEditService,
+  onDeleteService
+) {
   const [name, setName] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
 
-  // Agregar servicio
+  // 🔹 Agregar servicio con validación
   const handleAdd = async () => {
     const trimmed = name.trim();
     if (!trimmed) return;
 
-    const exists = services.some(
-      (s) => s.service_name?.trim().toLowerCase() === trimmed.toLowerCase()
-    );
-    if (exists) {
-      alert("Ya existe un servicio con ese nombre.");
+    const error = tableValidator({
+      value: trimmed,
+      list: services.map((s) => s.service_name?.trim().toLowerCase()),
+    });
+
+    if (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Validación",
+        text: error,
+        confirmButtonColor: "#1976d2",
+      });
       return;
     }
+
     await onAddItem(trimmed);
     setName("");
   };
@@ -25,7 +40,7 @@ export default function useTableMiscellaneous(services, onAddItem, onEditService
     if (e.key === "Enter") handleAdd();
   };
 
-  // Editar inline
+  // 🔹 Editar inline con validación
   const startEdit = (srv) => {
     setEditingId(srv.cod_service);
     setEditValue(srv.service_name || "");
@@ -39,18 +54,27 @@ export default function useTableMiscellaneous(services, onAddItem, onEditService
   const saveEdit = async (srv) => {
     const trimmed = editValue.trim();
     if (!trimmed) return;
-    if (trimmed === (srv.service_name || "").trim()) {
+
+    // Evitar guardar si no cambió
+    if (trimmed.toLowerCase() === (srv.service_name || "").trim().toLowerCase()) {
       cancelEdit();
       return;
     }
 
-    const exists = services.some(
-      (s) =>
-        s.cod_service !== srv.cod_service &&
-        s.service_name?.trim().toLowerCase() === trimmed.toLowerCase()
-    );
-    if (exists) {
-      alert("Ya existe un servicio con ese nombre.");
+    const error = tableValidator({
+      value: trimmed,
+      list: services
+        .filter((s) => s.cod_service !== srv.cod_service)
+        .map((s) => s.service_name?.trim().toLowerCase()),
+    });
+
+    if (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Validación",
+        text: error,
+        confirmButtonColor: "#1976d2",
+      });
       return;
     }
 
@@ -58,7 +82,7 @@ export default function useTableMiscellaneous(services, onAddItem, onEditService
     cancelEdit();
   };
 
-  // Eliminar
+  // 🔹 Eliminar servicio
   const remove = async (cod_service) => {
     await onDeleteService?.(cod_service);
   };
@@ -68,7 +92,7 @@ export default function useTableMiscellaneous(services, onAddItem, onEditService
     setName,
     editingId,
     editValue,
-    setEditValue, // ✅ agregado para que el input funcione
+    setEditValue,
     handleAdd,
     onKeyDown,
     startEdit,
@@ -77,4 +101,3 @@ export default function useTableMiscellaneous(services, onAddItem, onEditService
     remove,
   };
 }
-

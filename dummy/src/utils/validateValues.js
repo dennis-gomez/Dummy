@@ -1,5 +1,5 @@
 
-export function ValidateValues({ type, value, required = true, validations = [], restriction }) {
+export function ValidateValues({ type, value, required = true, validations = [], restriction, allValues}) {
   let err = "";
 
   // 🔹 Requerido
@@ -7,12 +7,16 @@ export function ValidateValues({ type, value, required = true, validations = [],
     err = "Este campo es obligatorio";
   }
 
+ if (!required && (value === "" || value === null || value === undefined || value === "Sin fecha")) {
+    return null;
+  }
+
   // 🔹 Validaciones base
   if (type === "number") {
 
-    if (value !== "" && isNaN(Number(value)) && restriction === "") {
+    if (value !== "" && isNaN(Number(value))) {
       err = "Debe ser un número";
-    } else if (Number(value) < 1 && restriction === "") {
+    } else if (Number(value) < 1 && !restriction) {
       err = "No se permiten valores negativos o cero";
     }
 
@@ -23,7 +27,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
         err = "El año del vehículo no puede ser mayor al actual.";
       }
       if (Number(value) < 1900) {
-        err = "El año del vehículo es inválido debe ser de 1900 o posterior.";
+        err = "El año del vehículo debe ser 1900 o posterior.";
       }
     }
 
@@ -34,34 +38,33 @@ export function ValidateValues({ type, value, required = true, validations = [],
     }
 
   } else if (type === "date") {
-
-
-    if (restriction === "cantAfterToday" && value !== "") {
-      const inputDate = new Date(value);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (inputDate > today) {
-        err = "No se permiten fechas futuras";
-      }
-    }
-  
-
-  else if (value !== "" && isNaN(Date.parse(value))) {
-    err = "Fecha inválida";
-  } else if (type === "date" && value !== "") {
+  if (value !== "" && value !== "Sin fecha") {
     const inputDate = new Date(value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    if (inputDate < today) {
-      err = "Solo se permiten fechas futuras";
+
+    // Verificar si es una fecha válida
+    if (isNaN(inputDate.getTime())) {
+      err = "Fecha inválida";
+    } else {
+      // Restricción: no permitir fechas futuras
+      if (restriction === "cantAfterToday" && inputDate > today) {
+        err = "No se permiten fechas futuras";
+      }
+
+      // Restricción por defecto: solo permitir fechas futuras
+      else if (!restriction && inputDate < today) {
+        err = "Solo se permiten fechas futuras";
+      }
     }
   }
 }
 
+
   // 🔹 Validaciones personalizadas
   if (!err && validations.length > 0) {
     for (const validate of validations) {
-      const vErr = validate(value);
+      const vErr = validate(value, allValues);
       if (vErr) {
         err = vErr;
         console.log(err)

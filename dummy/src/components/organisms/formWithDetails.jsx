@@ -3,18 +3,22 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import InputValidated from "../atoms/inputValidated";
 import { useState } from "react";
-import {Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography,
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittle }) {
-  const [formData, setFormData] =  fields && fields.length!==0 ? useState(
-    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
-  ): useState(null);
+function formWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTittle }) {
+  // Filtramos los campos visibles (sin códigos)
+  const visibleFields = fields?.filter(f => f.key !== "cod_medic_kit") || [];
+  const visibleSubfields = subfields?.filter(f => f.key !== "cod_medic_kit" && f.key !== "cod_supply") || [];
 
-  const emptySubform = subfields ? subfields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {}) : {};
+  // Inicializamos formData y subformData
+  const initialFormData = visibleFields.reduce((acc, f) => ({ ...acc, [f.key]: "" }), {});
+  const [formData, setFormData] = useState(initialFormData);
 
+  const emptySubform = visibleSubfields.reduce((acc, f) => ({ ...acc, [f.key]: "" }), {});
   const [subformData, setSubformData] = useState([]);
   const [editIdx, setEditIdx] = useState(null);
   const [editItem, setEditItem] = useState(emptySubform);
@@ -22,6 +26,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
   const [inputErrors, setInputErrors] = useState({});
   const [subInputErrors, setSubInputErrors] = useState({});
 
+  // -------------------- Handlers --------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -32,12 +37,9 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
     setEditItem((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleInputError = (name, error, isSubform = false) => {
-    if (isSubform) {
-      setSubInputErrors((prev) => ({ ...prev, [name]: error }));
-    } else {
-      setInputErrors((prev) => ({ ...prev, [name]: error }));
-    }
+  const handleInputError = (key, error, isSubform = false) => {
+    if (isSubform) setSubInputErrors((prev) => ({ ...prev, [key]: error }));
+    else setInputErrors((prev) => ({ ...prev, [key]: error }));
   };
 
   const handleAddItem = () => {
@@ -80,57 +82,51 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
     onSubmit({ ...formData, supplements: subformData });
   };
 
-  // ------------------ Render ------------------
+  // -------------------- Render --------------------
   return (
     <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         {/* Formulario principal */}
-          { fields && fields.length !== 0 && (
-        <Grid container spacing={2}>
-        
-          {fields.map((field, index) => {
-            const isLastSingle =
-              fields.length % 2 !== 0 && index === fields.length - 1;
-            return (
-              <Grid item xs={12} sm={isLastSingle ? 12 : 6} key={field.name}>
-                <InputValidated
-                  name={field.name}
-                  type={field.type || "text"}
-                  placeholder={field.placeholder}
-                  value={formData[field.name]}
-                  onChange={handleChange}
-                  validations={field.validations || []}
-                  onError={(name, error) =>
-                    handleInputError(name, error, false)
-                  }
-                  required={field.required ?? true}
-                />
-              </Grid>
-            );
-          })}
-        </Grid>
-          )}
+        {visibleFields.length > 0 && (
+          <Grid container spacing={2}>
+            {visibleFields.map((f, idx) => {
+              const isLastSingle = visibleFields.length % 2 !== 0 && idx === visibleFields.length - 1;
+              return (
+                <Grid item xs={12} sm={isLastSingle ? 12 : 6} key={f.key}>
+                  <InputValidated
+                    name={f.key}
+                    type={f.type || "text"}
+                    placeholder={f.placeholder}
+                    value={formData[f.key]}
+                    onChange={handleChange}
+                    validations={f.validations || []}
+                    onError={(key, error) => handleInputError(key, error)}
+                    required={f.required ?? true}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        )}
+
         {/* Subformulario */}
         {title && <h2>{title}</h2>}
-        {subfields && (
+        {visibleSubfields.length > 0 && (
           <Box sx={{ border: "1px solid #eee", p: 2, mb: 2, borderRadius: 2 }}>
             <Grid container spacing={2}>
-              {subfields.map((field, index) => {
-                const isLastSingle =
-                  subfields.length % 2 !== 0 && index === subfields.length - 1;
+              {visibleSubfields.map((f, idx) => {
+                const isLastSingle = visibleSubfields.length % 2 !== 0 && idx === visibleSubfields.length - 1;
                 return (
-                  <Grid item xs={12} sm={isLastSingle ? 12 : 6} key={field.name}>
+                  <Grid item xs={12} sm={isLastSingle ? 12 : 6} key={f.key}>
                     <InputValidated
-                      name={field.name}
-                      type={field.type || "text"}
-                      placeholder={field.placeholder}
-                      value={editItem[field.name]}
+                      name={f.key}
+                      type={f.type || "text"}
+                      placeholder={f.placeholder}
+                      value={editItem[f.key]}
                       onChange={handleEditItemChange}
-                      validations={field.validations || []}
-                      onError={(name, error) =>
-                        handleInputError(name, error, true)
-                      }
-                      required={field.required ?? true}
+                      validations={f.validations || []}
+                      onError={(key, error) => handleInputError(key, error, true)}
+                      required={f.required ?? true}
                     />
                   </Grid>
                 );
@@ -145,7 +141,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
                     color="primary"
                     onClick={handleSaveEditItem}
                     sx={{ mr: 1 }}
-                    disabled={Object.values(subInputErrors).some(Boolean) }
+                    disabled={Object.values(subInputErrors).some(Boolean)}
                   >
                     Guardar
                   </Button>
@@ -172,7 +168,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
         )}
 
         {/* Tabla de subitems */}
-        {subfields && subformData.length > 0 && (
+        {visibleSubfields.length > 0 && subformData.length > 0 && (
           <Paper sx={{ p: 2, mt: 3 }}>
             <Typography variant="h6" gutterBottom>
               Lista de items
@@ -182,8 +178,8 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
                 <TableHead>
                   <TableRow>
                     <TableCell>#</TableCell>
-                    {subfields.map((f) => (
-                      <TableCell key={f.name}>{f.placeholder}</TableCell>
+                    {visibleSubfields.map((f) => (
+                      <TableCell key={f.key}>{f.placeholder}</TableCell>
                     ))}
                     <TableCell>Acciones</TableCell>
                   </TableRow>
@@ -194,28 +190,18 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
                       <TableCell>{idx + 1}</TableCell>
                       {editIdx === idx ? (
                         <>
-                          {subfields.map((f) => (
-                            <TableCell key={f.name}>
-                              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                                <InputValidated
-                                  name={f.name}
-                                  type={f.type || "text"}
-                                  placeholder={f.placeholder}
-                                  value={editItem[f.name]}
-                                  onChange={(e) =>
-                                    setEditItem({
-                                      ...editItem,
-                                      [f.name]: e.target.value,
-                                    })
-                                  }
-                                  validations={f.validations || []}
-                                  onError={(name, error) =>
-                                    handleInputError(name, error, true)
-                                  }
-                                  required={f.required ?? true}
-                                />
-                                <Box sx={{ minHeight: "1.5em" }} /> {/* espacio para error */}
-                              </Box>
+                          {visibleSubfields.map((f) => (
+                            <TableCell key={f.key}>
+                              <InputValidated
+                                name={f.key}
+                                type={f.type || "text"}
+                                placeholder={f.placeholder}
+                                value={editItem[f.key]}
+                                onChange={handleEditItemChange}
+                                validations={f.validations || []}
+                                onError={(key, error) => handleInputError(key, error, true)}
+                                required={f.required ?? true}
+                              />
                             </TableCell>
                           ))}
                           <TableCell>
@@ -239,8 +225,8 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
                         </>
                       ) : (
                         <>
-                          {subfields.map((f) => (
-                            <TableCell key={f.name}>{item[f.name] || "-"}</TableCell>
+                          {visibleSubfields.map((f) => (
+                            <TableCell key={f.key}>{item[f.key] || "-"}</TableCell>
                           ))}
                           <TableCell>
                             <Button color="error" onClick={() => handleRemoveItem(idx)}>
@@ -266,7 +252,7 @@ function formWithDetails({ fields, subfields, title, onSubmit, titleBtn,subTittl
             type="submit"
             variant="contained"
             color="primary"
-            disabled={Object.values(inputErrors).some(Boolean) || (!fields && subformData.length===0)}
+            disabled={Object.values(inputErrors).some(Boolean) || (visibleFields.length === 0 && subformData.length === 0)}
           >
             {titleBtn}
           </Button>
