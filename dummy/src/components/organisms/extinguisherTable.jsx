@@ -1,0 +1,207 @@
+import React, { useState } from "react";
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead,
+  TableRow, Paper, Button, Typography, TextField
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import { formatDateDDMMYYYY } from "../../utils/generalUtilities.js";
+
+const ExtinguisherTable = ({ extinguishers, onDelete, onEdit }) => {
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
+
+  const handleEditClick = (ext) => {
+    setEditingId(ext.cod_extinguisher);
+    setEditData({ ...ext });
+  };
+
+  const handleSaveEdit = () => {
+    onEdit(editingId, editData);
+    setEditingId(null);
+    setEditData({});
+  };
+
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setEditData({});
+  };
+
+
+  return (
+    <Paper sx={{ p: 2, mt: 3 }}>
+      <Typography variant="h6" align="center" gutterBottom>
+        Lista de Extintores
+      </Typography>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>#</TableCell>
+              <TableCell>Num. Serial</TableCell>
+              <TableCell>Marca</TableCell>
+              <TableCell>Agente</TableCell>
+              <TableCell>Tipo</TableCell>
+              <TableCell>Capacidad</TableCell>
+              <TableCell>Fecha Fabricación</TableCell>
+              <TableCell>Fecha Instalación</TableCell>
+              <TableCell>Ubicación</TableCell>
+              <TableCell>Siguiente Inspección</TableCell>
+              <TableCell>Observaciones</TableCell>
+              <TableCell>Acciones</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {extinguishers.map((ext, index) => (
+              <TableRow key={ext.cod_extinguisher}>
+                {editingId === ext.cod_extinguisher ? (
+                  <>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_serial_number || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_serial_number: e.target.value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_brand || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_brand: e.target.value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_agent || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_agent: e.target.value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_type || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_type: e.target.value })
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_capacity || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_capacity: e.target.value })
+                        }
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        type="date"
+                        value={editData.extinguisher_manufacturing_date || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_manufacturing_date: e.target.value })
+                        }
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        type="date"
+                        value={editData.extinguisher_installation_date || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_installation_date: e.target.value })
+                        }
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_location || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_location: e.target.value })
+                        }
+                        multiline
+                        rows={2}
+                        variant="outlined"
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        type="date"
+                        value={editData.extinguisher_next_date_inspection || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_next_date_inspection: e.target.value })
+                        }
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <TextField
+                        value={editData.extinguisher_observations || ""}
+                        onChange={(e) =>
+                          setEditData({ ...editData, extinguisher_observations: e.target.value })
+                        }
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                      />
+                    </TableCell>
+
+                    <TableCell>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSaveEdit}
+                        sx={{ mr: 1 }}
+                      >
+                        Guardar
+                      </Button>
+                      <Button variant="outlined" color="secondary" onClick={handleCancelEdit}>
+                        Cancelar
+                      </Button>
+                    </TableCell>
+                  </>
+                ) : (
+                  <>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{ext.extinguisher_serial_number}</TableCell>
+                    <TableCell>{ext.extinguisher_brand}</TableCell>
+                    <TableCell>{ext.extinguisher_agent}</TableCell>
+                    <TableCell>{ext.extinguisher_type}</TableCell>
+                    <TableCell>{ext.extinguisher_capacity}</TableCell>
+                    <TableCell>
+                      {formatDateDDMMYYYY(ext.extinguisher_manufacturing_date)}
+                    </TableCell>
+                    <TableCell>
+                      {formatDateDDMMYYYY(ext.extinguisher_installation_date)}
+                    </TableCell>
+                    <TableCell>{ext.extinguisher_location}</TableCell>
+                    <TableCell>
+                      {formatDateDDMMYYYY(ext.extinguisher_next_date_inspection)}
+                    </TableCell>
+                    <TableCell>{ext.extinguisher_observations || "-"}</TableCell>
+                    <TableCell>
+                      <Button color="error" onClick={() => onDelete(ext.cod_extinguisher)}>
+                        <DeleteIcon />
+                      </Button>
+                      <Button color="primary" onClick={() => handleEditClick(ext)}>
+                        <EditIcon />
+                      </Button>
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
+  );
+};
+
+export default ExtinguisherTable;
