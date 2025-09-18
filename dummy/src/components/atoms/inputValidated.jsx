@@ -68,7 +68,7 @@ function InputValidated({
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
       sx={sx}
-      required={required}
+      required={false}
     >
       {type === "select" &&
         options.map((opt) => (
