@@ -90,6 +90,8 @@ const VehicleTable = ({
                                 setEditData({ ...editData, [f.name]: e.target.value })
                               }
                               sx={{ width: "120px" }}
+                              multiline={f.multiline || false}
+                              rows={f.rows || 1}   
                             />
                           </TableCell>
                         )
