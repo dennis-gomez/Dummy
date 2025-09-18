@@ -103,9 +103,8 @@ function TableOptionServices({
               return (
                 <tr
                   key={sub.cod_category}
-                  className={`cursor-default transition-colors duration-300 ${
-                    isSelected ? "bg-blue-100 outline-2 outline-blue-700" : "hover:bg-blue-50"
-                  }`}
+                 className={`cursor-default transition-colors duration-300 ${
+                  isSelected ? "bg-blue-100" : "hover:bg-blue-50"}`}
                 >
                   <td className="py-4 px-6 border border-gray-300">{sub.cod_service}</td>
                   <td className="py-4 px-6 border border-gray-300">{sub.cod_category}</td>

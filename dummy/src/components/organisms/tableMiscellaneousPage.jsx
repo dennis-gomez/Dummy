@@ -102,7 +102,7 @@ function TableMiscellaneousPage({
                 <tr
                   key={srv.cod_service}
                   className={`cursor-default transition-colors duration-300 ${
-                    isSelected ? "bg-blue-100 shadow-inner  outline-2 outline-blue-600" : "hover:bg-blue-50"
+                    isSelected ? "bg-blue-100" : "hover:bg-blue-50"
                   }`}
                 >
                   <td className="py-4 px-6 border-b border-gray-200">{srv.cod_service}</td>
