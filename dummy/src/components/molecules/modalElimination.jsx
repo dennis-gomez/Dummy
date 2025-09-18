@@ -1,6 +1,5 @@
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
-import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 function ModalElimination({ message, onClick }) {
@@ -22,9 +21,13 @@ function ModalElimination({ message, onClick }) {
 
     return (
         <>
-            <Button color="error" onClick={handleDelete} >
+            <button
+                onClick={handleDelete}
+                aria-label="Eliminar vehículo"
+                className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
+            >
                 <DeleteIcon />
-            </Button>
+            </button>
         </>
     );
 }
