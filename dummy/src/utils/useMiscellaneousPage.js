@@ -37,6 +37,7 @@ export default function useMiscellaneousPage() {
       setItems([]);
       setCategories([]);
 
+      
       const cats = await getCategorys(id);
       setCategories(cats);
     } catch (error) {
@@ -114,8 +115,18 @@ export default function useMiscellaneousPage() {
   };
 
   const handleEditItem = async (cod_category, cod_service, cod_item, editValue) => {
-    await updateItem(cod_category, cod_service, cod_item, editValue);
-    setItems(await getItems(selectedServCod, selectedCatCod));
+    try {
+      // 🔹 Orden corregido: cod_service primero
+      await updateItem(
+        Number(cod_service),
+        Number(cod_category),
+        Number(cod_item),
+        editValue.trim()
+      );
+      setItems(await getItems(selectedServCod, selectedCatCod));
+    } catch (error) {
+      console.error("Error al actualizar item:", error);
+    }
   };
 
   const handleDeleteItem = async (cod_category, cod_service, cod_item) => {
