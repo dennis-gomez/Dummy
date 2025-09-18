@@ -35,7 +35,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
   const hasError = Object.values(errors).some(err => !!err);
 
   return (
-    <Box sx={{ p: 3, margin: "0 auto", maxWidth: 800, mt: 3 }}>
+    <Box sx={{ p: 3, margin: "0 auto", maxWidth: 850, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         <LocalizationProvider dateAdapter={AdapterDayjs} localeText={esES.components.MuiLocalizationProvider.defaultProps.localeText}>
           <Grid container spacing={2}>
