@@ -1,8 +1,16 @@
-function Button ({text, onClick}) {
+import { Button } from "@mui/material";
+
+function ButtonP ({text, onClick, color, colorText, colorMouseOver}) {
     return (
-        <button className="btn" onClick={onClick}>
+        <Button
+            onClick={onClick}
+            sx={{
+                backgroundColor: color, //color del fondo
+                color: colorText, //color del texto
+            }}
+        >
             {text}
-        </button>
+        </Button>
     );
 }
-export default Button;
+export default ButtonP;

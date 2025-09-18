@@ -13,121 +13,130 @@ export const useVehicles = () => {
             placeholder: "Marca", 
             validations: [
                 (value) =>
-                    value && value.length > 20 ? "La marca no puede superar los 20 caracteres" : null,
+                    value && value.length > 20 ? "La marca debe tener máximo 20 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_model", 
             placeholder: "Modelo", 
             validations: [
                 (value) =>
-                    value && value.length > 50 ? "El modelo no puede superar los 50 caracteres" : null,
+                    value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_year", 
             placeholder: "Año", 
             type: "number", 
-            restriction: "vehicle_year_restrictions" 
+            restriction: "vehicle_year_restrictions", 
+            width: 250
         },
         { 
             name: "vehicle_plate", 
             placeholder: "Placa", 
             validations: [
                 (value) =>
-                    value && value.length > 10 ? "La placa no puede superar los 10 caracteres" : null,
+                    value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_initial_km", 
             placeholder: "Kilometraje inicial", 
             type: "number", 
             restriction: "vehicle_initial_km_restrictions", 
-
-            //validacion
             validations: [
                 (value, allValues) => {
                 if (
                     allValues.vehicle_last_km_maintenance &&
                     Number(value) < Number(allValues.vehicle_last_km_maintenance)
                 ) {
-                    return "El kilometraje inicial no puede ser menor al último mantenimiento";
+                    return "El kilometraje inicial debe ser mayor o igual al del último mantenimiento.";
                 }
                 return null;
                 },
             ],
+            width: 250
         },
         { 
             name: "vehicle_last_km_maintenance", 
             placeholder: "Último mantenimiento (km)", 
             type: "number", 
             restriction: "vehicle_last_km_maintenance_restrictions", 
-
-            //validacion cruzada
             validations: [
                 (value, allValues) => {
                 if (
                     allValues.vehicle_initial_km &&
                     Number(value) > Number(allValues.vehicle_initial_km)
                 ) {
-                    return "El último mantenimiento no puede ser mayor al kilometraje inicial";
+                    return "El último mantenimiento no puede superar el kilometraje inicial.";
                 }
                 return null;
                 },
             ],
+            width: 250
         },
         { 
             name: "vehicle_frecuency_of_change", 
             placeholder: "Frecuencia de cambio (km)", 
-            type: "number" 
+            type: "number", 
+            width: 250
         },
         { 
             name: "vehicle_type_of_oil", 
             placeholder: "Tipo de aceite", 
             validations: [
                 (value) =>
-                value && value.length > 50 ? "El tipo de aceite no puede superar los 50 caracteres" : null,
+                value && value.length > 50 ? "El tipo de aceite debe tener máximo 50 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_spark_plug_model", 
             placeholder: "Bujía", 
             validations: [
                 (value) =>
-                value && value.length > 50 ? "La bujía no puede superar los 50 caracteres" : null,
+                value && value.length > 50 ? "La bujía debe tener máximo 50 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_tires_front", 
             placeholder: "Llantas delanteras", 
             validations: [
                 (value) =>
-                value && value.length > 50 ? "Las llantas delanteras no puede superar los 50 caracteres" : null,
+                value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_tires_back", 
             placeholder: "Llantas traseras", 
             validations: [
                 (value) =>
-                value && value.length > 50 ? "Las llantas traseras no puede superar los 50 caracteres" : null,
+                value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "bike_brake_pad", 
             placeholder: "Pastillas de freno", 
             validations: [
                 (value) =>
-                value && value.length > 50 ? "Las pastillas de freno no puede superar los 50 caracteres" : null,
+                value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null,
             ],
+            width: 250
         },
         { 
             name: "vehicle_color", 
             placeholder: "Color", 
             validations: [
                 (value) =>
-                value && value.length > 30 ? "El color no puede superar los 30 caracteres" : null,
+                value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,
             ],
+            width: 250
         },
     ];
 
