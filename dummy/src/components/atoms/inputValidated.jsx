@@ -15,7 +15,7 @@ function InputValidated({
   sx,
   restriction = "", 
   formValues,
-  options = [] // 👈 soporte para select
+  options = []
 }) {
   const [error, setError] = useState("");
 
@@ -67,7 +67,14 @@ function InputValidated({
       inputProps={type === "number" ? { min: 0 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
-      sx={sx}
+      sx={{
+        // Fondo blanco solo para el input, no para el texto de error
+        "& .MuiOutlinedInput-root": {
+          backgroundColor: "#ffffff",
+        },
+        // Mantener el estilo personalizado adicional si existe
+        ...sx,
+      }}
       required={false}
     >
       {type === "select" &&

@@ -31,7 +31,7 @@ function VehiclePage() {
                     p: 3,
                     boxShadow: 3,
                     borderRadius: 2,
-                    backgroundColor: "#fff",
+                    backgroundColor: "#d9d9d9",
                 }}
                 >
                     <Typography variant="h6" gutterBottom color="textPrimary">
