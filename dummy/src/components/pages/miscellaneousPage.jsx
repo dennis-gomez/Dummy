@@ -31,26 +31,10 @@ function MiscellaneousPage() {
   } = useMiscellaneousPage();
 
   return (
-    <div style={{ padding: 24 }}>
-      <style>{`
-        .tables-flex {
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-          align-items: center;
-          justify-content: center;
-          min-height: 80vh;
-        }
-        .panel {
-          width: 100%;
-          max-width: 600px;
-          min-width: 340px;
-          margin: 0 auto;
-        }
-      `}</style>
-
-      <div className="tables-flex">
-        <div className="panel">
+    <div className="p-6">
+      <div className="flex flex-col gap-6 items-center justify-center min-h-screen">
+        {/* Tabla de Servicios */}
+        <div className="w-full max-w-7xl min-w-[340px] mx-auto">
           <TableMiscellaneousPage
             services={services}
             selectedId={selectedServCod}
@@ -61,8 +45,10 @@ function MiscellaneousPage() {
             onDeleteService={handleDeleteService}
           />
         </div>
+
         {selectedServCod && (
-          <div className="panel">
+          /* Tabla de Categorías */
+          <div className="w-full max-w-7xl min-w-[340px] mx-auto">
             <TableOptionServices
               categoria={categories}
               onClose={() => {
@@ -80,8 +66,10 @@ function MiscellaneousPage() {
             />
           </div>
         )}
+
         {selectedCatCod && (
-          <div className="panel">
+          /* Tabla de Items */
+          <div className="w-full max-w-7xl min-w-[340px] mx-auto">
             <TableSubcategorie
               items={items}
               onClose={() => setSelectedSubCod(null)}
