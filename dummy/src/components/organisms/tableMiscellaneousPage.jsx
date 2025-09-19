@@ -1,12 +1,11 @@
 import React from "react";
-import ModalElimination from "../molecules/modalElimination";
-import Button from "../atoms/button";
 import useTableMiscellaneousPage from "/src/utils/useTableMiscellaneous";
 import { tableValidator } from "/src/utils/tableValidator";
 import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 function TableMiscellaneousPage({
   services,
@@ -31,6 +30,7 @@ function TableMiscellaneousPage({
     remove,
   } = useTableMiscellaneousPage(services, onAddItem, onEditService, onDeleteService);
 
+  // 🔹 Confirmación al Agregar
   const handleValidatedAdd = async () => {
     const error = tableValidator({
       value: name,
@@ -41,20 +41,79 @@ function TableMiscellaneousPage({
       Swal.fire({ icon: "error", title: "Validación", text: error });
       return;
     }
-    await handleAdd();
+
+    const result = await Swal.fire({
+      title: "¿Quieres agregar este servicio?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, agregar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#9ca3af",
+    });
+
+    if (result.isConfirmed) {
+      await handleAdd();
+      Swal.fire("Agregado", "El servicio fue agregado con éxito", "success");
+    }
+  };
+
+  // 🔹 Confirmación al Editar
+ const handleValidatedEdit = async (srv) => {
+  if (editValue.trim().length < 3) {
+    Swal.fire({
+      icon: "error",
+      title: "Validación",
+      text: "El nombre del servicio debe tener al menos 3 caracteres",
+    });
+    return;
+  }
+
+  const result = await Swal.fire({
+    title: "¿Quieres guardar los cambios?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Sí, guardar",
+    cancelButtonText: "Cancelar",
+    confirmButtonColor: "#2563eb",
+    cancelButtonColor: "#9ca3af",
+  });
+
+  if (result.isConfirmed) {
+    await saveEdit(srv);
+    Swal.fire("Actualizado", "El servicio fue modificado correctamente", "success");
+  }
+};
+
+
+  // 🔹 Confirmación al Eliminar
+  const handleValidatedDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "¿Quieres eliminar este servicio?",
+      text: "No podrás deshacer esta acción",
+      icon: "error",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#9ca3af",
+    });
+
+    if (result.isConfirmed) {
+      await remove(id);
+      Swal.fire("Eliminado", "El servicio fue borrado", "success");
+    }
   };
 
   return (
-    <div
-      className={`transition-all duration-500 ease-in-out transform origin-top ${
-        isVisible ? "opacity-100 scale-100 max-h-screen" : "opacity-0 scale-95 max-h-0 overflow-hidden"
-      }`}
-    >
+    <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Servicios</h2>
 
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <label className="text-sm font-medium text-gray-700 whitespace-nowrap">Nuevo servicio:</label>
+          <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+            Nuevo servicio:
+          </label>
           <input
             type="text"
             placeholder="Escribe un servicio"
@@ -66,18 +125,18 @@ function TableMiscellaneousPage({
           <button
             onClick={handleValidatedAdd}
             disabled={!name.trim()}
-            className={`rounded-lg py-2 px-5 text-white font-semibold transition ${
-              name.trim()
+            className={`rounded-lg py-2 px-5 text-white font-semibold transition ${name.trim()
                 ? "bg-blue-600 hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-blue-300"
                 : "bg-blue-600 opacity-50 cursor-not-allowed"
-            }`}
+              }`}
           >
             Agregar
           </button>
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl">
+      {/* Contenedor con altura máxima y scroll interno */}
+      <div className="overflow-x-auto rounded-xl mb-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <table
           ref={tableRef}
           aria-label="Tabla de Servicios"
@@ -111,16 +170,15 @@ function TableMiscellaneousPage({
                 return (
                   <tr
                     key={srv.cod_service}
-                    className={`transition-all duration-200 even:bg-gray-50 ${
-                      isSelected ? "bg-blue-100" : "hover:bg-blue-50"
-                    }`}
+                    className={`transition-all duration-200 even:bg-gray-50 ${isSelected ? "bg-blue-100" : "hover:bg-blue-50"
+                      }`}
                   >
                     <td className="py-4 px-6 align-middle font-medium text-gray-900">
                       {srv.cod_service}
                     </td>
                     <td
                       onClick={() => !isEditing && onSelect(srv.cod_service)}
-                      className="py-4 px-6 align-middle text-gray-700 select-none"
+                      className="py-4 px-6 align-middle text-gray-700 select-none cursor-pointer"
                     >
                       {isEditing ? (
                         <input
@@ -138,7 +196,7 @@ function TableMiscellaneousPage({
                         {isEditing ? (
                           <>
                             <button
-                              onClick={() => saveEdit(srv)}
+                              onClick={() => handleValidatedEdit(srv)}
                               className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center text-sm"
                             >
                               <SaveIcon className="mr-2" fontSize="small" />
@@ -161,10 +219,13 @@ function TableMiscellaneousPage({
                             >
                               <EditIcon fontSize="small" />
                             </button>
-                            <ModalElimination
-                              message="¿Quieres eliminar este servicio?"
-                              onClick={() => remove(srv.cod_service)}
-                            />
+                            <button
+                              onClick={() => handleValidatedDelete(srv.cod_service)}
+                              className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
+                              aria-label="Eliminar servicio"
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </button>
                           </>
                         )}
                       </div>
