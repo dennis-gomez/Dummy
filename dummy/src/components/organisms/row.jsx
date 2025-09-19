@@ -58,12 +58,11 @@ export default function Row({
 
   return (
     <>
-      {/* Fila principal */}
       <tr className="hover:bg-gray-50 transition-all duration-200 border-b border-gray-200">
-        <td className="py-3 px-4 text-center">
+        <td className="py-4 px-4 text-center">
           <button
             onClick={() => onExpand(item[idKey])}
-            className="p-1 rounded-full hover:bg-gray-200 transition"
+            className="p-2 rounded-full hover:bg-gray-200 transition"
             aria-label={isOpen ? "Contraer" : "Expandir"}
           >
             {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -71,7 +70,7 @@ export default function Row({
         </td>
 
         {tittles.map((col, index) => (
-          <td key={col.key} className="py-3 px-4 text-center text-gray-800">
+          <td key={col.key} className="py-4 px-4 text-center text-gray-800">
             {editingKit && index !== 0 ? (
               <div className="flex justify-center">
                 <InputValidated
@@ -88,22 +87,22 @@ export default function Row({
           </td>
         ))}
 
-        <td className="py-3 px-4 text-center">
-          <div className="flex justify-center space-x-2">
+        <td className="py-4 px-4 text-center">
+          <div className="flex justify-center space-x-3">
             {editingKit ? (
               <>
                 <button
                   onClick={handleSaveKit}
-                  className="bg-blue-600 text-white rounded-md px-3 py-1 hover:bg-blue-700 transition flex items-center text-xs"
+                  className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center text-sm"
                 >
-                  <SaveIcon className="mr-1" fontSize="small" />
+                  <SaveIcon className="mr-2" fontSize="small" />
                   Guardar
                 </button>
                 <button
                   onClick={() => setEditingKit(false)}
-                  className="border border-gray-300 rounded-md px-3 py-1 hover:bg-gray-100 transition flex items-center text-xs"
+                  className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition flex items-center text-sm"
                 >
-                  <CancelIcon className="mr-1" fontSize="small" />
+                  <CancelIcon className="mr-2" fontSize="small" />
                   Cancelar
                 </button>
               </>
@@ -114,7 +113,7 @@ export default function Row({
                     setEditingKit(true);
                     setKitFormData({ ...item });
                   }}
-                  className="text-blue-500 hover:text-blue-700 transition p-1 rounded-full hover:bg-blue-50"
+                  className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
                   aria-label="Editar kit médico"
                 >
                   <EditIcon fontSize="small" />
@@ -128,18 +127,17 @@ export default function Row({
           </div>
         </td>
       </tr>
-      {/* Subt tabla - Suplementos (se muestra cuando está expandido) */}
       {isOpen && (
         <tr>
-          <td colSpan={tittles.length + 2} className="px-6 py-4 bg-gray-50">
+          <td colSpan={tittles.length + 2} className="px-8 py-6 bg-gray-50">
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">{subTitle}</h3>
                 <button
                   onClick={() => changeStateSupply(item[idKey])}
-                  className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center"
+                  className="bg-blue-600 text-white rounded-lg px-5 py-3 hover:bg-blue-700 transition flex items-center"
                 >
-                  <AddIcon className="mr-1" fontSize="small" />
+                  <AddIcon className="mr-2" fontSize="small" />
                   Agregar Suplemento
                 </button>
               </div>
@@ -147,7 +145,6 @@ export default function Row({
               {suppliesList && suppliesList.length > 0 ? (
                 <div className="overflow-x-auto rounded-lg">
                   <table className="min-w-full">
-                    {/* ENCABEZADO AZUL MEJORADO PARA LA SUBTABLA */}
                     <thead>
                       <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                         {subfields.map((col) =>
@@ -197,21 +194,21 @@ export default function Row({
                             )
                           )}
                           <td className="py-4 px-6">
-                            <div className="flex justify-center space-x-2">
+                            <div className="flex justify-center space-x-3">
                               {editingSupplyId === supply[subfields[1].key] ? (
                                 <>
                                   <button
                                     onClick={handleSaveSupply}
-                                    className="bg-blue-600 text-white rounded-lg px-3 py-1.5 hover:bg-blue-700 transition flex items-center text-sm"
+                                    className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center text-sm"
                                   >
-                                    <SaveIcon className="mr-1" fontSize="small" />
+                                    <SaveIcon className="mr-2" fontSize="small" />
                                     Guardar
                                   </button>
                                   <button
                                     onClick={() => setEditingSupplyId(null)}
-                                    className="border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-100 transition flex items-center text-sm"
+                                    className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition flex items-center text-sm"
                                   >
-                                    <CancelIcon className="mr-1" fontSize="small" />
+                                    <CancelIcon className="mr-2" fontSize="small" />
                                     Cancelar
                                   </button>
                                 </>
@@ -222,7 +219,7 @@ export default function Row({
                                       setEditingSupplyId(supply[subfields[1].key]);
                                       setSupplyFormData({ ...supply });
                                     }}
-                                    className="text-blue-500 hover:text-blue-700 transition p-1.5 rounded-full hover:bg-blue-50"
+                                    className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
                                     aria-label="Editar suplemento"
                                   >
                                     <EditIcon />
@@ -243,13 +240,6 @@ export default function Row({
               ) : (
                 <div className="text-center py-8 bg-gray-50 rounded-lg">
                   <p className="text-gray-500">No hay suplementos registrados</p>
-                  <button
-                    onClick={() => changeStateSupply(item[idKey])}
-                    className="mt-4 bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition inline-flex items-center"
-                  >
-                    <AddIcon className="mr-1" fontSize="small" />
-                    Agregar primer suplemento
-                  </button>
                 </div>
               )}
             </div>

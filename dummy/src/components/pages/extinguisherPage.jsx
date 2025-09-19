@@ -101,7 +101,7 @@ const fields = [
 
   return (
     <div style={{ padding: 24 }}>
-      <h1>Gestión de Extintores</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Extintores</h1>
 
       {showForm && (
         <Box

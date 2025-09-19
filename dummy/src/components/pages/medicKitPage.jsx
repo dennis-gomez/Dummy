@@ -26,7 +26,7 @@ function MedicKitPage() {
 
   return (
     <>
-      <h2 style={{ textAlign: "center" }}>Registro de botiquines</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Registro de botiquines</h2>
 
       {isCreatingSupply && medicKitSelectedId && (
         <FormWithDetails

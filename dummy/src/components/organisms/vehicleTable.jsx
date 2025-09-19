@@ -33,7 +33,7 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Lista de Vehículos</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Vehículos</h2>
 
       {vehicles.length === 0 ? (
         <p className="text-gray-500 mt-2">
