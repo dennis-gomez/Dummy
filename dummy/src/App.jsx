@@ -9,15 +9,24 @@ import VehiclePage from './components/pages/vehiclePage'
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
-        <Route path="/salud/botiquin" element={<MedicKitPage />} />
-        <Route path="/vehiculos" element={<VehiclePage />} />
-        <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
-        {/* aquí más rutas */}
-      </Routes>
+      {/* Contenedor padre */}
+      <div className="flex flex-col min-h-screen">
+        
+        <Navbar />
+
+        {/* Main ocupa todo el espacio libre */}
+        <main className="flex-grow">
+          <Routes>
+            <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
+            <Route path="/salud/botiquin" element={<MedicKitPage />} />
+            <Route path="/vehiculos" element={<VehiclePage />} />
+            <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
+            {/* más rutas */}
+          </Routes>
+        </main>
+
         <Footer />
+      </div>
     </BrowserRouter>
   )
 }
