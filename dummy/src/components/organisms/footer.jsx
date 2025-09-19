@@ -18,26 +18,34 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="flex items-center mb-4">
-              <div className="bg-blue-600 p-2 rounded-lg mr-3">
-                <AdbIcon className="text-white text-2xl" />
-              </div>
-              <span className="text-xl font-bold">FleetManager</span>
+           <div className="flex items-center mb-4">
+  <img
+    src="/src/assets/logo.png"   // ajusta la ruta según donde pongas la imagen
+    alt="FleetManager Logo"
+    className="h-10 w-10 mr-3 rounded" // puedes jugar con tamaño y estilos
+  />
+  <span className="text-xl font-bold">NovaComp</span>
+</div>
             </div>
             <p className="text-gray-400 mb-4 text-sm">
-              Sistema integral de gestión de flota vehicular. Optimizamos el control y mantenimiento de tu parque automotor.
-            </p>
+              Creemos en el impacto humano detrás de cada tecnología implementada, lo que nos convierte en un verdadero acelerador de capacidades. No solo ofrecemos soluciones tecnológicas, sino que también construimos el futuro digital del continente con el poder del talento humano especializado y la innovación constante.   </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <FacebookIcon />
+          <a href="https://www.facebook.com/NovacompCR" target="_blank"
+  rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
+  <FacebookIcon />
+</a>
+
+               <a href="https://x.com/Novacomp" target="_blank"
+  rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
+  <TwitterIcon/>
+</a>
+               <a href="https://www.instagram.com/novacompcr/" target="_blank"
+  rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
+  <InstagramIcon />
               </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <TwitterIcon />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <InstagramIcon />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-blue-400 transition-colors">
-                <LinkedInIcon />
+               <a href="https://www.linkedin.com/company/novacomp/" target="_blank"
+  rel="noopener noreferrer" className="text-gray-400 hover:text-blue-400 transition-colors">
+  <LinkedInIcon />
               </a>
             </div>
           </div>
@@ -112,57 +120,24 @@ const Footer = () => {
             <div className="space-y-3">
               <div className="flex items-center">
                 <LocationOnIcon className="text-blue-400 mr-3 text-sm" />
-                <span className="text-gray-400 text-sm">Av. Principal #123, Ciudad, País</span>
+                <span className="text-gray-400 text-sm">Oficentro Momentum, San José, Curridabat</span>
               </div>
               <div className="flex items-center">
                 <PhoneIcon className="text-blue-400 mr-3 text-sm" />
-                <span className="text-gray-400 text-sm">+1 (555) 123-4567</span>
+                <span className="text-gray-400 text-sm">+506 4000-2521 (CR)</span>
               </div>
               <div className="flex items-center">
                 <EmailIcon className="text-blue-400 mr-3 text-sm" />
-                <span className="text-gray-400 text-sm">info@fleetmanager.com</span>
+                <span className="text-gray-400 text-sm">marketing@crnova.com</span>
               </div>
             </div>
             
-            {/* Newsletter Subscription */}
-            <div className="mt-6">
-              <h4 className="text-sm font-semibold mb-2 text-blue-400">Suscríbete</h4>
-              <div className="flex">
-                <input
-                  type="email"
-                  placeholder="Tu correo electrónico"
-                  className="px-3 py-2 bg-gray-800 text-white text-sm rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-400 w-full"
-                />
-                <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-lg text-sm font-medium transition-colors">
-                  OK
-                </button>
-              </div>
-            </div>
+      
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">
-              © 2024 FleetManager. Todos los derechos reservados.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Términos de Servicio
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Política de Privacidad
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-                Cookies
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+     
     </footer>
   );
 };
