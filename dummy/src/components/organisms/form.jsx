@@ -56,7 +56,12 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       }}
                       restriction={field.restriction || ""}
                       validations={field.validations}
-                      sx={field.width ? { width: field.width } : {}}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          backgroundColor: "#fff !important",
+                        },
+                        ...(field.width ? { width: field.width } : {})
+                      }}
                     />
                   ) : field.type === "select" ? (
                     <InputValidated
@@ -67,7 +72,12 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       onChange={handleChange}
                       onError={handleError}
                       options={field.options}
-                      sx={field.width ? { width: field.width } : {}}
+                      sx={{
+                        "& .MuiInputBase-input": {
+                          backgroundColor: "#fff !important",
+                        },
+                        ...(field.width ? { width: field.width } : {})
+                      }}
                       required={field.required ?? true}
                     />
                   ) : (
@@ -80,7 +90,12 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                       onError={handleError}
                       multiline={field.type === "textarea"}
                       rows={field.type === "textarea" ? 4 : undefined}
-                      sx={field.width ? { width: field.width } : {}}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          backgroundColor: "#fff !important",
+                        },
+                        ...(field.width ? { width: field.width } : {})
+                      }}
                       required={field.required ?? true}
                       restriction={field.restriction || ""}
                       validations={field.validations}
@@ -114,6 +129,5 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
     </Box>
   );
 }
-
 
 export default Form;

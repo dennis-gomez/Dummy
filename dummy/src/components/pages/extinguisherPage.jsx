@@ -23,6 +23,14 @@ const ExtinguisherPage = () => {
 
       {showForm && (
         <Box
+sx={{
+        maxWidth: 900,
+        margin: "20px auto",
+        p: 3,
+        borderRadius: 3,
+        boxShadow: 3,
+        backgroundColor: "#d9d9d9",
+      }}
           sx={{
             maxWidth: 900,
             margin: "20px auto",
