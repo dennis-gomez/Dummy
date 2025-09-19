@@ -40,28 +40,28 @@ function InputValidatedDate({
     }, [value]);
 
     return (
-<DatePicker
-  label={placeholder || "Fecha"}
-  value={value || null}
-  onChange={handleChange}
-  format="DD/MM/YYYY"
-  minDate={restriction === "cantBeforeToday" ? dayjs() : undefined}
-  maxDate={restriction === "cantAfterToday" ? dayjs() : undefined}
-  slotProps={{
-    textField: {
-      fullWidth: true,
-      error: !!error,
-      helperText: error,
-      required,
-      sx: {
-        "& .MuiOutlinedInput-root": {backgroundColor: "#ffffff", borderRadius: "8px"},
-        "& .MuiInputBase-input": {backgroundColor: "#ffffff"},
-        "& fieldset": { backgroundColor: "#ffffff" },
-      },
-    },
-    actionBar: { actions: ["today", "clear"] },
-  }}
-/>
+        <DatePicker
+            label={placeholder || "Fecha"}
+            value={value || null}
+            onChange={handleChange}
+            format="DD/MM/YYYY"
+            minDate={restriction === "cantBeforeToday" ? dayjs() : undefined}
+            maxDate={restriction === "cantAfterToday" ? dayjs() : undefined}
+            slotProps={{
+                textField: {
+                    fullWidth: true,
+                    error: !!error,
+                    helperText: error,
+                    required,
+                    sx: {
+                        "& .MuiOutlinedInput-root": { backgroundColor: "#ffffff", borderRadius: "8px" },
+                        "& .MuiInputBase-input": { backgroundColor: "#ffffff" },
+                        "& fieldset": { backgroundColor: "#ffffff" },
+                    },
+                },
+                actionBar: { actions: ["today", "clear"] },
+            }}
+        />
 
 
     );
