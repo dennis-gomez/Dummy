@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { DatePicker } from "@mui/x-date-pickers";
+import TextField from "@mui/material/TextField";
 import { ValidateValues } from "../../utils/validateValues";
-import dayjs from "dayjs";
 
 function InputValidatedDate({
     name,
@@ -12,58 +11,73 @@ function InputValidatedDate({
     validations = [],
     onError,
     restriction = "",
+    formValues = {},
     sx
 }) {
     const [error, setError] = useState("");
 
     const runValidation = (val) => {
-
-        const normalizedVal = val ? val.toISOString() : "";
+        const normalizedVal = val || "";
         const err = ValidateValues({
             type: "date",
-            value: normalizedVal, required, validations, restriction
+            value: normalizedVal,
+            required,
+            validations,
+            restriction,
+            allValues: formValues
         });
         setError(err);
         if (onError) onError(name, err);
         return err;
     };
 
-    const handleChange = (newValue) => {
-        runValidation(newValue);
-        if (onChange) {
-            onChange({ target: { name, value: newValue } });
-        }
+    const handleChange = (e) => {
+        const val = e.target.value;
+        runValidation(val);
+        if (onChange) onChange(e);
     };
 
     useEffect(() => {
         runValidation(value);
-    }, [value]);
+    }, [value, formValues]);
+
+    // Calcular minDate y maxDate según la restricción
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+    let minDate, maxDate;
+
+    if (restriction === "cantAfterToday") {
+        maxDate = today;
+    } else if (restriction === "cantBeforeToday") {
+        minDate = today;
+    } else if (restriction === "betweenManufactureAndToday") {
+        const manufactureDate = formValues["extinguisher_manufacturing_date"];
+        minDate = manufactureDate ? manufactureDate.split("T")[0] : undefined;
+        maxDate = today;
+    }
 
     return (
-        <DatePicker
+        <TextField
+            fullWidth
+            id={name + "-outlined-date"}
             label={placeholder || "Fecha"}
-            value={value || null}
+            variant="outlined"
+            type="date"
+            name={name}
+            value={value || ""}
             onChange={handleChange}
-            format="DD/MM/YYYY"
-            minDate={restriction === "cantBeforeToday" ? dayjs() : undefined}
-            maxDate={restriction === "cantAfterToday" ? dayjs() : undefined}
-            slotProps={{
-                textField: {
-                    fullWidth: true,
-                    error: !!error,
-                    helperText: error,
-                    required,
-                    sx: {
-                        "& .MuiOutlinedInput-root": { backgroundColor: "#ffffff", borderRadius: "8px" },
-                        "& .MuiInputBase-input": { backgroundColor: "#ffffff" },
-                        "& fieldset": { backgroundColor: "#ffffff" },
-                    },
+            placeholder={placeholder || "Fecha"}
+            error={!!error}
+            helperText={error}
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ min: minDate, max: maxDate }}
+            sx={{
+                "& .MuiOutlinedInput-root": {
+                    backgroundColor: "#ffffff",
                 },
-                actionBar: { actions: ["today", "clear"] },
+                ...sx,
             }}
+            required={required}
         />
-
-
     );
 }
 
