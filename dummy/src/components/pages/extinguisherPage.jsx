@@ -29,7 +29,7 @@ const ExtinguisherPage = () => {
             p: 3,
             borderRadius: 3,
             boxShadow: 3,
-            backgroundColor: "#fff",
+            backgroundColor: "#d9d9d9",
           }}
         >
           <Typography variant="h6" gutterBottom color="textPrimary">
