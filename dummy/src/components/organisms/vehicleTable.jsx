@@ -38,7 +38,6 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Vehículos</h2>
 
       {vehicles.length === 0 ? (
-        // ✅ MENSAJE CORREGIDO - igual que "No hay suplementos registrados"
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
           No hay vehículos registrados
         </div>
@@ -144,11 +143,9 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                           </td>
                         ))}
                         <td className="py-4 px-6 align-middle">
+                          {/* ✅ CAMBIÉ EL ORDEN DE LOS BOTONES */}
                           <div className="flex justify-center space-x-3">
-                            <ModalElimination
-                              message={'Eliminar vehículo'}
-                              onClick={() => onDelete(vehicle.cod_vehicle)}
-                            />
+                            {/* ✅ PRIMERO EL BOTÓN DE EDITAR */}
                             <button
                               onClick={() => handleEditClick(vehicle)}
                               aria-label="Editar vehículo"
@@ -156,6 +153,11 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                             >
                               <EditIcon />
                             </button>
+                            {/* ✅ LUEGO EL BOTÓN DE ELIMINAR */}
+                            <ModalElimination
+                              message={'Eliminar vehículo'}
+                              onClick={() => onDelete(vehicle.cod_vehicle)}
+                            />
                           </div>
                         </td>
                       </>

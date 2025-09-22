@@ -127,19 +127,19 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
                     ))}
                     <td className="py-4 px-6 text-center align-middle">
                       <div className="flex justify-center space-x-3">
+                              <button
+                          onClick={() => handleEditClick(ext)}
+                          aria-label="Editar extintor"
+                          className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                        >
+                          <EditIcon />
+                        </button>
                         <button
                           onClick={() => onDelete(ext.cod_extinguisher)}
                           aria-label="Eliminar extintor"
                           className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
                         >
                           <DeleteIcon />
-                        </button>
-                        <button
-                          onClick={() => handleEditClick(ext)}
-                          aria-label="Editar extintor"
-                          className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                        >
-                          <EditIcon />
                         </button>
                       </div>
                     </td>

@@ -42,7 +42,7 @@ function MedicKitPage() {
   return (
     <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Gestión de botiquines
+        Gestión de Botiquines
       </h1>
 
       {isCreatingSupply && medicKitSelectedId && (
