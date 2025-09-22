@@ -57,6 +57,25 @@ export const deleteMedicKit = async ( cod_medic_kit ) => {
 };
 
 
+//buscar kit medico por localizacion 
+
+export const searchMedicKitsByFeature = async ( searchTerm, feature  ) => {
+    try {
+        const response = await axios.get(
+            API_URL + "search-by-supply",
+            { 
+                params: { searchTerm, feature },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 // Actualizar kitMedico
 export const updateMedicKit = async (formData) => {
     try {

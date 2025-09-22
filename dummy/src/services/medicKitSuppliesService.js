@@ -86,6 +86,40 @@ export const deleteSupply = async ( cod_medic_kit,cod_supply ) => {
     }
 };
 
+export const searchSuppliesByTerm = async ( searchTerm  ) => {
+    try {
+        const response = await axios.get(
+            API_URL + "kits-with-supply",
+            {
+                params: { searchTerm },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const orderSuppliesByRelevance = async ( cod_medic_kit, searchTerm ) => {
+    try {
+        const response = await axios.get(
+            API_URL + "search-by-name",
+            {
+                params: {  searchTerm,cod_medic_kit },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 // Actualizar kitMedico
 export const updateSupply = async (formData) => {
