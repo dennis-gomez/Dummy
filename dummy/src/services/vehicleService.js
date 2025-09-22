@@ -9,7 +9,7 @@ export const getVehicles = async () => {
             API_URL,
             {
                 headers: {
-                "Content-Type": "application/json"
+                    "Content-Type": "application/json"
                 },
             }
         );
@@ -18,6 +18,24 @@ export const getVehicles = async () => {
         throw error;
     }
 };
+
+//Obtener vehiculos por caracteristica del vehiculo
+export const getVehicleByFeature = async ( feature, text ) => {
+    try{
+        const response = await axios.get(
+            API_URL + "find", 
+            {
+                params: { feature, text },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
 
 // Agregar vehiculo
 export const addVehicle = async (formData) => {
