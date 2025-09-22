@@ -29,9 +29,7 @@ console.log("los campos son", fields);
   "& .MuiFormHelperText-root.Mui-error": {
     color: "blue", // texto de error azul
   },
-  "& .MuiInputLabel-root.Mui-error": {
-    color: "inherit", // label/placeholder no se vuelve rojo
-  },
+  
 };
 
 const textAreaStyle2 = {
@@ -47,9 +45,7 @@ const textAreaStyle2 = {
   "& .MuiFormHelperText-root.Mui-error": {
     color: "blue", // texto de error azul
   },
-  "& .MuiInputLabel-root.Mui-error": {
-    color: "inherit", // placeholder/label no se vuelve rojo
-  },
+ 
 };
 
 

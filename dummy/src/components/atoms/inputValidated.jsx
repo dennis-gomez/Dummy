@@ -98,6 +98,12 @@ function InputValidated({
           color: "blue",
         },
 
+        //color del label cuando no hay error
+        "& .MuiInputLabel-root": {
+  color: "#2563eb",
+  opacity: 1, // fuerza que no sea transparente
+},
+
         // Color del helperText cuando hay error
         "& .MuiFormHelperText-root.Mui-error": {
           color: "blue",
