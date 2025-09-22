@@ -38,7 +38,6 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Vehículos</h2>
 
       {vehicles.length === 0 ? (
-        // ✅ MENSAJE CORREGIDO - igual que "No hay suplementos registrados"
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
           No hay vehículos registrados
         </div>
@@ -75,11 +74,11 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
             <table className="min-w-full">
               <thead>
                 <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                  <th className="py-4 px-6 text-left font-semibold text-sm uppercase tracking-wider rounded-tl-xl">#</th>
+                  <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">#</th>
                   {displayFields.map((f) => (
                     <th
                       key={f.name}
-                      className="py-4 px-6 text-left font-semibold text-sm uppercase tracking-wider"
+                      className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
                     >
                       {f.placeholder}
                     </th>
@@ -93,7 +92,7 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                     key={vehicle.cod_vehicle}
                     className="hover:bg-blue-50 transition-all duration-200 even:bg-gray-50"
                   >
-                    <td className="py-4 px-6 align-middle font-medium text-gray-900">
+                    <td className="py-4 px-6 text-center align-middle font-medium text-gray-900">
                       {index + 1}
                     </td>
 
@@ -102,7 +101,7 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                         {displayFields.map((f) => (
                           <td
                             key={f.name}
-                            className="py-4 px-6 align-middle"
+                            className="py-4 px-6 text-center align-middle"
                           >
                             <input
                               type={f.type || "text"}
@@ -110,11 +109,11 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                               onChange={(e) =>
                                 setEditData({ ...editData, [f.name]: e.target.value })
                               }
-                              className="min-w-[100px] py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+                              className="min-w-[100px] py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition mx-auto block text-center"
                             />
                           </td>
                         ))}
-                        <td className="py-4 px-6 align-middle">
+                        <td className="py-4 px-6 text-center align-middle">
                           <div className="flex justify-center space-x-2">
                             <button
                               onClick={handleSaveEdit}
@@ -138,17 +137,15 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                         {displayFields.map((f) => (
                           <td
                             key={f.name}
-                            className="py-4 px-6 align-middle text-gray-700"
+                            className="py-4 px-6 text-center align-middle text-gray-700"
                           >
                             {vehicle[f.name] || "-"}
                           </td>
                         ))}
-                        <td className="py-4 px-6 align-middle">
+                        <td className="py-4 px-6 text-center align-middle">
+                          {/* ✅ CAMBIÉ EL ORDEN DE LOS BOTONES */}
                           <div className="flex justify-center space-x-3">
-                            <ModalElimination
-                              message={'Eliminar vehículo'}
-                              onClick={() => onDelete(vehicle.cod_vehicle)}
-                            />
+                            {/* ✅ PRIMERO EL BOTÓN DE EDITAR */}
                             <button
                               onClick={() => handleEditClick(vehicle)}
                               aria-label="Editar vehículo"
@@ -156,6 +153,11 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                             >
                               <EditIcon />
                             </button>
+                            {/* ✅ LUEGO EL BOTÓN DE ELIMINAR */}
+                            <ModalElimination
+                              message={'Eliminar vehículo'}
+                              onClick={() => onDelete(vehicle.cod_vehicle)}
+                            />
                           </div>
                         </td>
                       </>
