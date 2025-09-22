@@ -46,7 +46,7 @@ export default function CollapsibleTable({
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Lista de Botiquines</h2>
+        <h2 className="text-2xl font-bold text-gray-800 text-center flex-1">Lista de Botiquines</h2>
         <Button text={getButtonName()} onClick={onAddClick} />
       </div>
 

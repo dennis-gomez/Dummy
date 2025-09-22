@@ -41,31 +41,30 @@ function TableOptionServices({
 
   // 🔹 Confirmar Guardar
   const handleValidatedSave = async (sub) => {
-  if (editValue.trim().length < 3) {
-    Swal.fire({
-      icon: "error",
-      title: "Validación",
-      text: "El nombre de la categoría debe tener al menos 3 caracteres",
+    if (editValue.trim().length < 3) {
+      Swal.fire({
+        icon: "error",
+        title: "Validación",
+        text: "El nombre de la categoría debe tener al menos 3 caracteres",
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "¿Quieres guardar los cambios?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, guardar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#9ca3af",
     });
-    return;
-  }
 
-  const result = await Swal.fire({
-    title: "¿Quieres guardar los cambios?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, guardar",
-    cancelButtonText: "Cancelar",
-    confirmButtonColor: "#2563eb",
-    cancelButtonColor: "#9ca3af",
-  });
-
-  if (result.isConfirmed) {
-    await saveEdit(sub);
-    Swal.fire("Actualizado", "La categoría fue modificada correctamente", "success");
-  }
-};
-
+    if (result.isConfirmed) {
+      await saveEdit(sub);
+      Swal.fire("Actualizado", "La categoría fue modificada correctamente", "success");
+    }
+  };
 
   // 🔹 Confirmar Eliminar
   const handleValidatedDelete = async (codCat, codServ) => {
@@ -85,7 +84,6 @@ function TableOptionServices({
       Swal.fire("Eliminado", "La categoría fue borrada", "success");
     }
   };
-  
 
   return (
     <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
@@ -131,9 +129,9 @@ function TableOptionServices({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6">Código Servicio</th>
-              <th className="py-4 px-6">Código Categoría</th>
-              <th className="py-4 px-6">Categoría</th>
+              <th className="py-4 px-6 text-center">Código Servicio</th>
+              <th className="py-4 px-6 text-center">Código Categoría</th>
+              <th className="py-4 px-6 text-center">Categoría</th>
               <th className="py-4 px-6 text-center">Acciones</th>
             </tr>
           </thead>
@@ -155,24 +153,24 @@ function TableOptionServices({
                     className={`transition-all duration-200 even:bg-gray-50 ${isSelected ? "bg-blue-100" : "hover:bg-blue-50"
                       }`}
                   >
-                    <td className="py-4 px-6">{sub.cod_service}</td>
-                    <td className="py-4 px-6">{sub.cod_category}</td>
+                    <td className="py-4 px-6 text-center">{sub.cod_service}</td>
+                    <td className="py-4 px-6 text-center">{sub.cod_category}</td>
                     <td
                       onClick={() => !isEditing && onSelectSub(sub.cod_category, sub.cod_service)}
-                      className="py-4 px-6 cursor-pointer select-none text-gray-700"
+                      className="py-4 px-6 text-center cursor-pointer select-none text-gray-700"
                     >
                       {isEditing ? (
                         <input
                           type="text"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
-                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition"
+                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition text-center mx-auto block"
                         />
                       ) : (
                         sub.category_name
                       )}
                     </td>
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-6 text-center">
                       <div className="flex justify-center space-x-3">
                         {isEditing ? (
                           <>
