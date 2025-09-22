@@ -5,6 +5,7 @@ import {
   deleteExtinguisher,
   addExtinguisher,
   updateExtinguisher,
+  getFindExtinguishers
 } from "../services/extinguisherService";
 import ModalAlert from "../components/molecules/modalAlert";
 
@@ -12,6 +13,8 @@ export function useExtinguishers() {
   const [extinguishers, setExtinguishers] = useState([]);
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const extinguisherTypes = [
     { value: "A", label: "A — Para sólidos" },
@@ -37,6 +40,9 @@ export function useExtinguishers() {
     { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 780, required: false },
   ];
 
+  const [searchText, setSearchText] = useState("");
+  const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
+
   const fetchData = async () => {
     try {
       const data = await getAllExtinguishers();
@@ -48,9 +54,19 @@ export function useExtinguishers() {
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const handleSearchExtinguishers = async (feature, text) => {
+    try {
+      setLoading(true);
+      const data = await getFindExtinguishers(feature, text);
+      setExtinguishers(data);
+    } catch (error) {
+      const message = err.response?.data?.message || "No se encuentra extintor.";
+      ModalAlert("Error", message, "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const handleAdd = async (formData) => {
     try {
@@ -93,6 +109,11 @@ export function useExtinguishers() {
     }
   };
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+
   return {
     extinguishers,
     error,
@@ -102,5 +123,12 @@ export function useExtinguishers() {
     handleAdd,
     handleEdit,
     handleDelete,
+    searchText,
+    searchFeature,
+    setSearchText,
+    setSearchFeature,
+    setError,
+    loading,
+    handleSearchExtinguishers,
   };
 }
