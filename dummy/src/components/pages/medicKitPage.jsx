@@ -2,6 +2,7 @@ import React from "react";
 import CollapsibleTable from "../organisms/collapsibleTable";
 import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
+import Button from "../atoms/button"; // ✅ Importación del botón
 
 function MedicKitPage() {
   const {
@@ -24,7 +25,6 @@ function MedicKitPage() {
   } = useMedicKits();
 
   const handleAddClick = () => {
-    // Si ya estamos creando, cancelar; si no, iniciar creación de botiquín
     if (isCreatingMedicKit || isCreatingSupply) {
       setIsCreatingMedicKit(false);
       setIsCreatingSupply(false);
@@ -33,11 +33,17 @@ function MedicKitPage() {
     }
   };
 
+  const getButtonName = () => {
+    if (isCreatingMedicKit) return "Cancelar";
+    if (isCreatingSupply) return "Cancelar";
+    return "Agregar Botiquín";
+  };
+
   return (
-    <>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+    <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Gestión de botiquines
-      </h2>
+      </h1>
 
       {isCreatingSupply && medicKitSelectedId && (
         <FormWithDetails
@@ -59,31 +65,35 @@ function MedicKitPage() {
         />
       )}
 
-      {medicKitsList && medicKitsList.length > 0 ? (
-        <CollapsibleTable
-          list={medicKitsList}
-          tittles={fields}
-          subTitle={SubTittle}
-          subfields={subfields}
-          suppliesList={suppliesList}
-          medicKitSelectedId={medicKitSelectedId}
-          onSelect={getSuppliesByMedicKitId}
-          onDeleteMedicKit={handleEliminateMedicKit}
-          onDeleteSupply={handleEliminateSupply}
-          onEditMedicKit={handleEditMedicKit}
-          onEditSupply={handleEditSupply}
-          changeStateSupply={setIsCreatingSupply}
-          isCreatingMedicKit={isCreatingMedicKit}      // ✅ pasa el estado
-          isCreatingSupply={isCreatingSupply}          // ✅ pasa el estado
-          setIsCreatingMedicKit={setIsCreatingMedicKit} // ✅ pasa el setter
-          setIsCreatingSupply={setIsCreatingSupply}     // ✅ pasa el setter
-          onAddClick={handleAddClick}
+      {/* ✅ BOTÓN EN LA MISMA POSICIÓN QUE VEHICLEPAGE */}
+      <div className="flex justify-end mt-2 mb-6"> {/* ✅ mismo mt-2 y mb-6 */}
+        <Button 
+          text={getButtonName()} 
+          onClick={handleAddClick}
         />
+      </div>
 
-      ) : (
-        <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
-      )}
-    </>
+      {/* ✅ TABLA SIEMPRE VISIBLE (como VehiclePage) */}
+      <CollapsibleTable
+        list={medicKitsList || []}
+        tittles={fields}
+        subTitle={SubTittle}
+        subfields={subfields}
+        suppliesList={suppliesList}
+        medicKitSelectedId={medicKitSelectedId}
+        onSelect={getSuppliesByMedicKitId}
+        onDeleteMedicKit={handleEliminateMedicKit}
+        onDeleteSupply={handleEliminateSupply}
+        onEditMedicKit={handleEditMedicKit}
+        onEditSupply={handleEditSupply}
+        changeStateSupply={setIsCreatingSupply}
+        isCreatingMedicKit={isCreatingMedicKit}
+        isCreatingSupply={isCreatingSupply}
+        setIsCreatingMedicKit={setIsCreatingMedicKit}
+        setIsCreatingSupply={setIsCreatingSupply}
+        onAddClick={handleAddClick}
+      />
+    </div>
   );
 }
 
