@@ -20,10 +20,14 @@ function MedicKitPage() {
     handleEditMedicKit,
     handleEditSupply,
     handleEliminateMedicKit,
-    handleEliminateSupply
+    handleEliminateSupply,
+    searchFields,
+    handleSearch,
   } = useMedicKits();
 
   const handleAddClick = () => {
+
+
     // Si ya estamos creando, cancelar; si no, iniciar creación de botiquín
     if (isCreatingMedicKit || isCreatingSupply) {
       setIsCreatingMedicKit(false);
@@ -78,10 +82,31 @@ function MedicKitPage() {
           setIsCreatingMedicKit={setIsCreatingMedicKit} // ✅ pasa el setter
           setIsCreatingSupply={setIsCreatingSupply}     // ✅ pasa el setter
           onAddClick={handleAddClick}
+          searchFields={searchFields}
+          handleSearch={handleSearch}
         />
 
       ) : (
+
+        <>
         <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
+
+        
+        <button
+  onClick={handleAddClick}
+  style={{
+    display: "block",
+    margin: "0 auto",
+    marginTop: "16px",   // margen superior
+    marginBottom: "16px" // margen inferior
+  }}
+  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+>
+  {isCreatingMedicKit ? "Cancelar" : "Agregar Botiquín"}
+</button>
+
+
+        </>
       )}
     </>
   );
