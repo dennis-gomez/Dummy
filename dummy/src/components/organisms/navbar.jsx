@@ -67,8 +67,8 @@ const navConfig = [
       { label: 'Configuraciones del sistema', path: '/ti/config' },
     ],
   },
-  { 
-    label: 'Catalogo', 
+  {
+    label: 'Catalogo',
     sub: [{ label: 'gestionar catalogo', path: '/catalogo/gestionar' }]
   }
 ];
@@ -95,16 +95,16 @@ function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo y menú móvil */}
           <div className="flex items-center">
-            {/* Logo desktop */}
+            <img
+              src="/src/assets/logo.png"   // ajusta la ruta según donde pongas la imagen
+              alt="FleetManager Logo"
+              className="h-10 w-10 mr-3 rounded" // puedes jugar con tamaño y estilos
+            />
             <div className="hidden md:flex items-center">
-              <AdbIcon className="mr-2" />
-              <span className="font-mono font-bold text-xl tracking-wide">LOGO</span>
+              <span className="text-xl font-bold"></span>
             </div>
-
-            {/* Logo móvil */}
             <div className="md:hidden flex items-center">
-              <AdbIcon className="mr-2" />
-              <span className="font-mono font-bold text-xl tracking-wide">LOGO</span>
+              <span className="text-xl font-bold"></span>
             </div>
 
             {/* Menú desktop */}
@@ -117,9 +117,9 @@ function Navbar() {
                   >
                     {page.label}
                   </button>
-                  
+
                   {desktopSubMenu.index === idx && (
-                    <div 
+                    <div
                       className="absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-50"
                       onMouseLeave={() => setDesktopSubMenu({ anchor: null, index: null })}
                     >

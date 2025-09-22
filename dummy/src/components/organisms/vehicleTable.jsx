@@ -10,6 +10,7 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
 
+  
   const handleEditClick = (vehicle) => {
     setEditingId(vehicle.cod_vehicle);
     setEditData({ ...vehicle });
