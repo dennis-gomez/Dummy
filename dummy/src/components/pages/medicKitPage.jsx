@@ -3,6 +3,7 @@ import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
 
 
+
 function MedicKitPage() {
   const {
     medicKitsList,
@@ -36,14 +37,13 @@ function MedicKitPage() {
       setIsCreatingMedicKit(true);
     }
   };
-
   return (
     <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Gestión de Botiquines
       </h1>
       {isCreatingSupply && medicKitSelectedId && (
-        <FormWithDetails
+         <FormWithDetails
           subfields={subfields}
           onSubmit={handleAddKitWithSupplies}
           titleBtn={"Añadir al botiquín"}
