@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Row from "./Row";
+import Button from "../atoms/button";
 
 export default function CollapsibleTable({
   list,
@@ -13,7 +14,12 @@ export default function CollapsibleTable({
   onDeleteSupply,
   onEditMedicKit,
   onEditSupply,
-  changeStateSupply
+  changeStateSupply,
+  isCreatingMedicKit,
+  isCreatingSupply,
+  setIsCreatingMedicKit,
+  setIsCreatingSupply,
+  onAddClick
 }) {
   const [openRowId, setOpenRowId] = useState(null);
 
@@ -26,12 +32,23 @@ export default function CollapsibleTable({
     }
     if (closing) {
       changeStateSupply(false);
+      setIsCreatingMedicKit(false);
     }
+  };
+
+  // Función que decide el nombre del botón
+  const getButtonName = () => {
+    if (isCreatingMedicKit ) return "Cancelar";
+    if (isCreatingSupply) return "Cancelar";
+    return "Agregar Botiquín";
   };
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Kits Médicos</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Lista de Botiquines</h2>
+        <Button text={getButtonName()} onClick={onAddClick} />
+      </div>
 
       <div className="overflow-x-auto rounded-xl">
         <table className="min-w-full">
