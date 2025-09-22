@@ -28,13 +28,16 @@ const ExtinguisherTable = ({
     setEditData({ ...ext });
   };
 
-  const handleSaveEdit = async () => {
-    const isSaved = await onEdit(editData);
-    if (isSaved) {
-      setEditingId(null);
-      setEditData({});
-    }
-  };
+const handleSaveEdit = async () => {
+  if (!editingId) return;
+
+  const isSaved = await onEdit(editingId, editData); // <- pasamos el ID
+  if (isSaved) {
+    setEditingId(null);
+    setEditData({});
+  }
+};
+
 
   const handleCancelEdit = () => {
     setEditingId(null);
