@@ -2,6 +2,7 @@ import React from "react";
 import CollapsibleTable from "../organisms/collapsibleTable";
 import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
+import Button from "../atoms/button"; // ✅ Importación del botón
 
 function MedicKitPage() {
   const {
@@ -37,11 +38,17 @@ function MedicKitPage() {
     }
   };
 
+  const getButtonName = () => {
+    if (isCreatingMedicKit) return "Cancelar";
+    if (isCreatingSupply) return "Cancelar";
+    return "Agregar Botiquín";
+  };
+
   return (
-    <>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+    <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Gestión de botiquines
-      </h2>
+      </h1>
 
       {isCreatingSupply && medicKitSelectedId && (
         <FormWithDetails

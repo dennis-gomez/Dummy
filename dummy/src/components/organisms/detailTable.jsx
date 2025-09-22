@@ -14,23 +14,22 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
     setEditingIdx(idx);
     setEditData({ ...item });
   };
-  
-const whiteInputStyle = {
-  "& .MuiOutlinedInput-root": {
-    backgroundColor: "#ffffff",
-    overflow: "auto", // scroll si el contenido excede el tamaño
-    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-      borderColor: "blue", // borde azul en error
-    },
-  },
-  "& .MuiFormHelperText-root.Mui-error": {
-    color: "blue", // texto de error azul
-  },
-  "& .MuiInputLabel-root.Mui-error": {
-    color: "inherit", // label/placeholder no se vuelve rojo
-  },
-};
 
+  const whiteInputStyle = {
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#ffffff",
+      overflow: "auto",
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: "blue",
+      },
+    },
+    "& .MuiFormHelperText-root.Mui-error": {
+      color: "blue",
+    },
+    "& .MuiInputLabel-root.Mui-error": {
+      color: "inherit",
+    },
+  };
 
   const handleSaveEdit = () => {
     onEdit(editingIdx, editData);
@@ -42,6 +41,17 @@ const whiteInputStyle = {
     setEditingIdx(null);
     setEditData({});
   };
+
+
+  if (!items || items.length === 0) {
+    return (
+      <div className="p-6 mt-6 bg-white rounded-2xl ">
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+          No hay suplementos registrados
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
@@ -75,29 +85,28 @@ const whiteInputStyle = {
 
                 {editingIdx === index ? (
                   <>
-                  {fields.map((f) => (
-  <td key={f.key} className="py-4 px-6 align-middle text-center">
-    <InputValidated
-      name={f.key}
-      type={f.type || "text"} // "textarea" funciona igual
-      placeholder={f.placeholder}
-      value={editData[f.key]}
-      onChange={(e) =>
-        setEditData({ ...editData, [f.key]: e.target.value })
-      }
-      required={f.required ?? true}
-      sx={{
-        ...whiteInputStyle,
-        "& .MuiOutlinedInput-root": {
-          ...whiteInputStyle["& .MuiOutlinedInput-root"],
-          minHeight: f.type === "textarea" ? "4rem" : "auto", // altura mínima para textarea
-          resize: f.type === "textarea" ? "vertical" : "none", // expandable solo vertical
-        },
-      }}
-    />
-  </td>
-))}
-
+                    {fields.map((f) => (
+                      <td key={f.key} className="py-4 px-6 align-middle text-center">
+                        <InputValidated
+                          name={f.key}
+                          type={f.type || "text"}
+                          placeholder={f.placeholder}
+                          value={editData[f.key]}
+                          onChange={(e) =>
+                            setEditData({ ...editData, [f.key]: e.target.value })
+                          }
+                          required={f.required ?? true}
+                          sx={{
+                            ...whiteInputStyle,
+                            "& .MuiOutlinedInput-root": {
+                              ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                              minHeight: f.type === "textarea" ? "4rem" : "auto",
+                              resize: f.type === "textarea" ? "vertical" : "none",
+                            },
+                          }}
+                        />
+                      </td>
+                    ))}
 
                     <td className="py-4 px-6 align-middle text-center">
                       <div className="flex justify-center space-x-2">
