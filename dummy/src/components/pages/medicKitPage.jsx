@@ -1,8 +1,7 @@
-import React from "react";
 import CollapsibleTable from "../organisms/collapsibleTable";
 import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
-import Button from "../atoms/button"; // ✅ Importación del botón
+
 
 function MedicKitPage() {
   const {
@@ -38,18 +37,11 @@ function MedicKitPage() {
     }
   };
 
-  const getButtonName = () => {
-    if (isCreatingMedicKit) return "Cancelar";
-    if (isCreatingSupply) return "Cancelar";
-    return "Agregar Botiquín";
-  };
-
   return (
     <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Gestión de Botiquines
       </h1>
-
       {isCreatingSupply && medicKitSelectedId && (
         <FormWithDetails
           subfields={subfields}
@@ -58,7 +50,6 @@ function MedicKitPage() {
           subTittle={"Añadir suplemento"}
         />
       )}
-
       {isCreatingMedicKit && (
         <FormWithDetails
           fields={fields}
@@ -69,7 +60,6 @@ function MedicKitPage() {
           subTittle={"Añadir suplemento"}
         />
       )}
-
       {medicKitsList && medicKitsList.length > 0 ? (
         <CollapsibleTable
           list={medicKitsList}
@@ -84,21 +74,17 @@ function MedicKitPage() {
           onEditMedicKit={handleEditMedicKit}
           onEditSupply={handleEditSupply}
           changeStateSupply={setIsCreatingSupply}
-          isCreatingMedicKit={isCreatingMedicKit}      // ✅ pasa el estado
-          isCreatingSupply={isCreatingSupply}          // ✅ pasa el estado
-          setIsCreatingMedicKit={setIsCreatingMedicKit} // ✅ pasa el setter
-          setIsCreatingSupply={setIsCreatingSupply}     // ✅ pasa el setter
+          isCreatingMedicKit={isCreatingMedicKit}      //  pasa el estado
+          isCreatingSupply={isCreatingSupply}          //  pasa el estado
+          setIsCreatingMedicKit={setIsCreatingMedicKit} //  pasa el setter
+          setIsCreatingSupply={setIsCreatingSupply}     //  pasa el setter
           onAddClick={handleAddClick}
           searchFields={searchFields}
           handleSearch={handleSearch}
         />
-
       ) : (
-
         <>
           <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
-
-
           <button
             onClick={handleAddClick}
             style={{
@@ -111,8 +97,6 @@ function MedicKitPage() {
           >
             {isCreatingMedicKit ? "Cancelar" : "Agregar Botiquín"}
           </button>
-
-
         </>
       )}
     </div>
