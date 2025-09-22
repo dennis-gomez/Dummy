@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { addVehicle, getVehicles, updateVehicle, deleteVehicle } from "../services/vehicleService";
+import { addVehicle, getVehicles, updateVehicle, deleteVehicle, getVehicleByFeature } from "../services/vehicleService";
 import ModalAlert from "../components/molecules/modalAlert";
-//hh
+
 export const useVehicles = () => {
     const [vehicles, setVehicles] = useState([]); // manejo de listado de vehiculos  
     const [showForm, setShowForm] = useState(false); // estado (true/false) para mostrar formulario
     const [error, setError] = useState(null); // manejo de errores por parte del backend
+
+    const [loading, setLoading] = useState(false); // manejo de loading al encontrar vehiculos
 
     const fields = [
         { 
@@ -150,6 +152,9 @@ export const useVehicles = () => {
         },
     ];
 
+    const [searchText, setSearchText] = useState(""); //manejo de text para buscar vehiculo
+    const [searchFeature, setSearchFeature] = useState(fields[0]?.name || ""); //manejo de caracteristica para buscar vehiculo
+
     // listado de vehiculos
     const fetchVehicles = async () => {
         try {
@@ -158,6 +163,19 @@ export const useVehicles = () => {
         } catch (error) {
             const message = error.response?.data?.message || "Error al obtener los vehículos.";
             setError(message);
+        }
+    };
+
+    const handleSearchVehicles = async (feature, text) => {
+        try {
+            setLoading(true);
+            const response = await getVehicleByFeature(feature, text);
+            setVehicles(response.data);
+        } catch (error) {
+            const message = error.response?.data?.message || "No se encuentra vehículo.";
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -217,12 +235,18 @@ export const useVehicles = () => {
     return {
         vehicles,
         fields,
+        searchText,
+        searchFeature, 
+        setSearchText,
+        setSearchFeature,
         showForm,
         setShowForm,
         error,
         setError,
+        loading, 
         handleSubmit,
         handleEdit,
         handleDelete,
+        handleSearchVehicles,
     };
 };

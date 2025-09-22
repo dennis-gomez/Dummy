@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField"
 
-function Input ({name, vale, onChange, placeholder}) {
+function Input ({name, value, onChange, placeholder}) {
   return (
     <TextField 
       fullWidth 
@@ -8,7 +8,7 @@ function Input ({name, vale, onChange, placeholder}) {
         label={placeholder} 
         variant="outlined" 
         name={name}
-        value={vale}
+        value={value}
         onChange={onChange}
         placeholder={placeholder}
     />

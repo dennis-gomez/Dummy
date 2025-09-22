@@ -8,13 +8,19 @@ function VehiclePage() {
     const {
         vehicles,
         fields,
+        searchText,
+        searchFeature, 
+        setSearchText,
+        setSearchFeature,
         showForm,
         setShowForm,
         error,
         setError,
+        loading, 
         handleSubmit,
         handleEdit,
         handleDelete,
+        handleSearchVehicles,
     } = useVehicles();
 
     return (
@@ -78,6 +84,12 @@ function VehiclePage() {
                 vehicles={vehicles}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
+                onSearch={handleSearchVehicles}
+                isLoading={loading}
+                valueText={searchText}
+                valueFeature={searchFeature}
+                onChangeText={setSearchText}
+                onChangeFeature={setSearchFeature}
             />
         </div>
     );
