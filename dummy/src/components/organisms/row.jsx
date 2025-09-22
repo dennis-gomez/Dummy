@@ -9,21 +9,7 @@ import DetailsTable from "../organisms/detailTable";
 import InputValidated from "../atoms/inputValidated";
 import { useState, useEffect } from "react";
 
-const whiteInputStyle = {
-  "& .MuiOutlinedInput-root": {
-    backgroundColor: "#ffffff",
-    overflow: "auto", // hace que el textarea tenga scroll si se excede
-    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-      borderColor: "blue",
-    },
-  },
-  "& .MuiFormHelperText-root.Mui-error": {
-    color: "blue",
-  },
-  "& .MuiInputLabel-root.Mui-error": {
-    color: "inherit",
-  },
-};
+
 
 export default function Row({
   item,

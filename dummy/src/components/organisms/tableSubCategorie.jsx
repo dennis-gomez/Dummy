@@ -59,44 +59,43 @@ function TableSubcategorie({
   };
 
   // 🔹 Confirmar Guardar
- const handleValidatedSave = async (det) => {
-  if (editValue.trim().length < 3) {
-    Swal.fire({
-      icon: "error",
-      title: "Validación",
-      text: "El nombre del item debe tener al menos 3 caracteres",
+  const handleValidatedSave = async (det) => {
+    if (editValue.trim().length < 3) {
+      Swal.fire({
+        icon: "error",
+        title: "Validación",
+        text: "El nombre del item debe tener al menos 3 caracteres",
+      });
+      return;
+    }
+
+    const error = tableValidator({
+      value: editValue,
+      list: items
+        .filter((i) => i.cod_item !== det.cod_item)
+        .map((i) => i.item_name.toLowerCase()),
     });
-    return;
-  }
 
-  const error = tableValidator({
-    value: editValue,
-    list: items
-      .filter((i) => i.cod_item !== det.cod_item)
-      .map((i) => i.item_name.toLowerCase()),
-  });
+    if (error) {
+      Swal.fire({ icon: "error", title: "Validación", text: error });
+      return;
+    }
 
-  if (error) {
-    Swal.fire({ icon: "error", title: "Validación", text: error });
-    return;
-  }
+    const result = await Swal.fire({
+      title: "¿Quieres guardar los cambios?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, guardar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#9ca3af",
+    });
 
-  const result = await Swal.fire({
-    title: "¿Quieres guardar los cambios?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, guardar",
-    cancelButtonText: "Cancelar",
-    confirmButtonColor: "#2563eb",
-    cancelButtonColor: "#9ca3af",
-  });
-
-  if (result.isConfirmed) {
-    await handleSaveEdit(det.cod_category, det.cod_service, det.cod_item);
-    Swal.fire("Actualizado", "El item fue modificado correctamente", "success");
-  }
-};
-
+    if (result.isConfirmed) {
+      await handleSaveEdit(det.cod_category, det.cod_service, det.cod_item);
+      Swal.fire("Actualizado", "El item fue modificado correctamente", "success");
+    }
+  };
 
   // 🔹 Confirmar Eliminar
   const handleValidatedDelete = async (codCat, codServ, codItem) => {
@@ -161,10 +160,10 @@ function TableSubcategorie({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6">Código Servicio</th>
-              <th className="py-4 px-6">Código Categoría</th>
-              <th className="py-4 px-6">Código Item</th>
-              <th className="py-4 px-6">Items</th>
+              <th className="py-4 px-6 text-center">Código Servicio</th>
+              <th className="py-4 px-6 text-center">Código Categoría</th>
+              <th className="py-4 px-6 text-center">Código Item</th>
+              <th className="py-4 px-6 text-center">Items</th>
               <th className="py-4 px-6 text-center">Acciones</th>
             </tr>
           </thead>
@@ -181,22 +180,22 @@ function TableSubcategorie({
 
                 return (
                   <tr key={det.cod_item} className="even:bg-gray-50 hover:bg-blue-50">
-                    <td className="py-4 px-6">{det.cod_service}</td>
-                    <td className="py-4 px-6">{det.cod_category}</td>
-                    <td className="py-4 px-6">{det.cod_item}</td>
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-6 text-center">{det.cod_service}</td>
+                    <td className="py-4 px-6 text-center">{det.cod_category}</td>
+                    <td className="py-4 px-6 text-center">{det.cod_item}</td>
+                    <td className="py-4 px-6 text-center">
                       {isEditing ? (
                         <input
                           type="text"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
-                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition"
+                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition text-center mx-auto block"
                         />
                       ) : (
                         det.item_name
                       )}
                     </td>
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-6 text-center">
                       <div className="flex justify-center space-x-3">
                         {isEditing ? (
                           <>
