@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { 
-  getMedicKits, deleteMedicKit, updateMedicKit, addMedicKit 
+  getMedicKits, deleteMedicKit, updateMedicKit, addMedicKit, searchMedicKitsByFeature
 } from "../services/medicKitService";
 import { 
-  getSuppliesById, deleteSupply, updateSupply, addManySupplies 
+  getSuppliesById, deleteSupply, updateSupply, addManySupplies, searchSuppliesByTerm, orderSuppliesByRelevance
 } from "../services/medicKitSuppliesService";
 import ModalAlert from "../components/molecules/modalAlert";
 
@@ -15,6 +15,10 @@ export const useMedicKits = () => {
   const [isCreatingMedicKit, setIsCreatingMedicKit] = useState(false);
   const [isCreatingSupply, setIsCreatingSupply] = useState(false);
   const [error, setError] = useState(null);
+
+
+  const [searchAnSupply, setSearchAnSupply] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
  const fields = [
   {
@@ -51,7 +55,64 @@ const subfields = [
 ];
 
 
-  
+const searchFields = [
+   
+{name: "medic_kit_location", placeholder: "Localización de botiquín"},
+{name: "medic_kit_details", placeholder: "Detalles de botiquín"},
+{ name: "supply_description", placeholder: "Suministro", },
+]
+
+  const handleSearch = async (feature, text) => {
+  try { 
+    if (feature === "supply_description") {
+      // Devuelve una lista de kits con esos suplementos
+
+if(text.trim() === "") {
+setSearchAnSupply(false);
+setSearchTerm("");
+fetchMedicKits();
+return;
+}
+
+      const kitsWithThatsSupplies = await searchSuppliesByTerm(text);
+
+      setSearchTerm(text);
+      
+
+      if (!kitsWithThatsSupplies || kitsWithThatsSupplies.length === 0) {
+        ModalAlert("Error", "No se encontró ningún botiquín con ese suplemento.", "error");
+        return; // no refresca la lista
+      }
+
+      setMedicKitsList(kitsWithThatsSupplies);
+      setSuppliesList([]); // Limpiar la lista de suplementos
+      setMedicKitSelectedId(null); // Deseleccionar cualquier botiquín
+      setSearchAnSupply(true);
+      setError(null); // Limpiar errores previos
+      return;
+
+    } else {
+      const medicKitsResp = await searchMedicKitsByFeature(text, feature);
+
+      if (!medicKitsResp || medicKitsResp.length === 0) {
+        ModalAlert("Error", "No se encontró ningún botiquín con esos criterios.", "error");
+        return; // no refresca la lista
+      }
+
+      setMedicKitsList(medicKitsResp);
+      setSuppliesList([]); // Limpiar suplementos
+      setMedicKitSelectedId(null); // Deseleccionar cualquier botiquín
+      setError(null); // Limpiar errores previos
+      return;
+    }
+
+  } catch (error) {
+    setError("Error al buscar botiquines o suplementos");
+    console.error(error);
+    ModalAlert("Error", "Error al buscar botiquines o suplementos.", "error");
+  }
+};
+
 
   const SubTittle = "Lista de suplementos médicos";
 
@@ -67,16 +128,25 @@ const subfields = [
   };
 
 
-  const getSuppliesByMedicKitId = async (cod_medic_kit) => {
+ const getSuppliesByMedicKitId = async (cod_medic_kit) => {
+  try {
     setMedicKitSelectedId(cod_medic_kit);
-    try {
-      const allSuppliesById = await getSuppliesById(cod_medic_kit);
-      setSuppliesList(allSuppliesById);
-    } catch (err) {
-      setError("Error al obtener suplementos médicos");
-      console.error(err);
+
+    let supplies = [];
+
+    if(searchAnSupply && searchTerm.trim() !== "") {
+      // asegurarse que sea async si hace llamadas al backend
+      supplies = await orderSuppliesByRelevance(cod_medic_kit, searchTerm);
+    } else {
+      supplies = await getSuppliesById(cod_medic_kit);
     }
-  };
+
+    setSuppliesList(supplies);
+  } catch (err) {
+    setError("Error al obtener suplementos médicos");
+    console.error(err);
+  }
+};
 
   const handleAddKitWithSupplies = async (formData) => {
     const { medic_kit_location, medic_kit_details, supplements } = formData || {};
@@ -185,5 +255,7 @@ const subfields = [
     handleEditSupply,
     handleEliminateMedicKit,
     handleEliminateSupply,
+    searchFields,
+    handleSearch,
   };
 };

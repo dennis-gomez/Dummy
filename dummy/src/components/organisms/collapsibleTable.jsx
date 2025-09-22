@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Row from "./Row";
 import Button from "../atoms/button";
+import Seeker from "../molecules/seeker";
 
 export default function CollapsibleTable({
   list,
@@ -15,7 +16,12 @@ export default function CollapsibleTable({
   onEditMedicKit,
   onEditSupply,
   changeStateSupply,
+    isCreatingMedicKit,
+  isCreatingSupply,
   setIsCreatingMedicKit,
+  onAddClick,
+  searchFields,
+  handleSearch,
 }) {
   const [openRowId, setOpenRowId] = useState(null);
 
@@ -32,16 +38,46 @@ export default function CollapsibleTable({
     }
   };
 
- 
+  // Función que decide el nombre del botón
+  const getButtonName = () => {
+    if (isCreatingMedicKit ) return "Cancelar";
+    if (isCreatingSupply) return "Cancelar";
+    return "Agregar Botiquín";
+  };
+
+  // Estados y funciones para el seeker
+  const [searchText, setSearchText] = useState("");
+const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
-      
-   
-      
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">Lista de Botiquines</h2>
-      </div>
+     <div className="flex justify-between items-center mb-6 gap-4">
+  {/* Título */}
+  <h2 className="text-2xl font-bold text-gray-800">
+    Lista de Botiquines
+  </h2>
+
+  {/* Seeker */}
+  <div className="flex-1 mx-4">
+    <Seeker
+      inputName="searchText"
+      inputPlaceholder="Buscar botiquín o suplemento"
+      btnName="Buscar"
+      valueText={searchText}
+      valueFeature={searchFeature}
+      onChangeText={setSearchText}
+      onChangeFeature={setSearchFeature}
+      onClick={handleSearch}
+      selectName="Filtrar por"
+      fields={searchFields}
+    />
+  </div>
+
+  {/* Botón */}
+  <Button text={getButtonName()} onClick={onAddClick} />
+</div>
+
 
       {list.length === 0 ? (
         // ✅ Mismo mensaje que VehicleTable cuando no hay datos

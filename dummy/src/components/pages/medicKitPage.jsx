@@ -21,10 +21,15 @@ function MedicKitPage() {
     handleEditMedicKit,
     handleEditSupply,
     handleEliminateMedicKit,
-    handleEliminateSupply
+    handleEliminateSupply,
+    searchFields,
+    handleSearch,
   } = useMedicKits();
 
   const handleAddClick = () => {
+
+
+    // Si ya estamos creando, cancelar; si no, iniciar creación de botiquín
     if (isCreatingMedicKit || isCreatingSupply) {
       setIsCreatingMedicKit(false);
       setIsCreatingSupply(false);
@@ -65,34 +70,51 @@ function MedicKitPage() {
         />
       )}
 
-      {/* ✅ BOTÓN EN LA MISMA POSICIÓN QUE VEHICLEPAGE */}
-      <div className="flex justify-end mt-2 mb-6"> {/* ✅ mismo mt-2 y mb-6 */}
-        <Button 
-          text={getButtonName()} 
-          onClick={handleAddClick}
+      {medicKitsList && medicKitsList.length > 0 ? (
+        <CollapsibleTable
+          list={medicKitsList}
+          tittles={fields}
+          subTitle={SubTittle}
+          subfields={subfields}
+          suppliesList={suppliesList}
+          medicKitSelectedId={medicKitSelectedId}
+          onSelect={getSuppliesByMedicKitId}
+          onDeleteMedicKit={handleEliminateMedicKit}
+          onDeleteSupply={handleEliminateSupply}
+          onEditMedicKit={handleEditMedicKit}
+          onEditSupply={handleEditSupply}
+          changeStateSupply={setIsCreatingSupply}
+          isCreatingMedicKit={isCreatingMedicKit}      // ✅ pasa el estado
+          isCreatingSupply={isCreatingSupply}          // ✅ pasa el estado
+          setIsCreatingMedicKit={setIsCreatingMedicKit} // ✅ pasa el setter
+          setIsCreatingSupply={setIsCreatingSupply}     // ✅ pasa el setter
+          onAddClick={handleAddClick}
+          searchFields={searchFields}
+          handleSearch={handleSearch}
         />
-      </div>
 
-      {/* ✅ TABLA SIEMPRE VISIBLE (como VehiclePage) */}
-      <CollapsibleTable
-        list={medicKitsList || []}
-        tittles={fields}
-        subTitle={SubTittle}
-        subfields={subfields}
-        suppliesList={suppliesList}
-        medicKitSelectedId={medicKitSelectedId}
-        onSelect={getSuppliesByMedicKitId}
-        onDeleteMedicKit={handleEliminateMedicKit}
-        onDeleteSupply={handleEliminateSupply}
-        onEditMedicKit={handleEditMedicKit}
-        onEditSupply={handleEditSupply}
-        changeStateSupply={setIsCreatingSupply}
-        isCreatingMedicKit={isCreatingMedicKit}
-        isCreatingSupply={isCreatingSupply}
-        setIsCreatingMedicKit={setIsCreatingMedicKit}
-        setIsCreatingSupply={setIsCreatingSupply}
-        onAddClick={handleAddClick}
-      />
+      ) : (
+
+        <>
+          <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
+
+
+          <button
+            onClick={handleAddClick}
+            style={{
+              display: "block",
+              margin: "0 auto",
+              marginTop: "16px",   // margen superior
+              marginBottom: "16px" // margen inferior
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            {isCreatingMedicKit ? "Cancelar" : "Agregar Botiquín"}
+          </button>
+
+
+        </>
+      )}
     </div>
   );
 }
