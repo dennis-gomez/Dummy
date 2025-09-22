@@ -7,6 +7,7 @@ import {
 } from "../services/medicKitSuppliesService";
 import ModalAlert from "../components/molecules/modalAlert";
 
+
 export const useMedicKits = () => {
   const [medicKitsList, setMedicKitsList] = useState([]);
   const [medicKitSelectedId, setMedicKitSelectedId] = useState(null);
@@ -33,25 +34,26 @@ export const useMedicKits = () => {
   {
     key: "medic_kit_details",
     label: "Detalles",
-    type: "text",
+    type: "textarea",
     placeholder: "Detalle",
     required: true
   }
 ];
 
 
+
 const subfields = [
   { key: "cod_medic_kit", label: "Código de botiquín", type: "text", placeholder: "Código de botiquín", required: false },
   { key: "cod_supply", label: "Código de suplemento", type: "text", placeholder: "Código de suplemento", required: false },
   { key: "supply_quantity", label: "Cantidad", type: "number", placeholder: "Cantidad", required: true },
-  { key: "supply_description", label: "Descripción", type: "text", placeholder: "Descripción", required: true },
   { key: "supply_expiration_date", label: "Fecha de Vencimiento", type: "date", placeholder: "Fecha de Vencimiento", required: false },
+   { key: "supply_description", label: "Descripción", type: "textarea", placeholder: "Descripción", required: true },
 ];
 
 
   
 
-  const SubTittle = "Suplementos médicos";
+  const SubTittle = "Lista de suplementos médicos";
 
   // Cargar lista de botiquines
   const fetchMedicKits = async () => {
@@ -63,6 +65,7 @@ const subfields = [
       console.error(err);
     }
   };
+
 
   const getSuppliesByMedicKitId = async (cod_medic_kit) => {
     setMedicKitSelectedId(cod_medic_kit);
@@ -159,6 +162,7 @@ const subfields = [
   };
 
   useEffect(() => {
+    console.log( fields);
     fetchMedicKits();
   }, []);
 

@@ -60,7 +60,7 @@ function InputValidated({
       onChange={handleChange}
       placeholder={placeholder}
       error={!!error}
-      helperText={error}
+      helperText={error || " "}
       InputLabelProps={
         type?.toLowerCase().includes("date") ? { shrink: true } : {}
       }
