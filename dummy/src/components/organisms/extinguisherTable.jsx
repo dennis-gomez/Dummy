@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import ModalElimination from "../molecules/modalElimination";
+import DeleteIcon from "@mui/icons-material/Delete";
+
 import Seeker from "../molecules/seeker";
 import { CircularProgress } from "@mui/material";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
@@ -105,122 +106,49 @@ const ExtinguisherTable = ({
                       {index + 1}
                     </td>
 
-                {editingId === ext.cod_extinguisher ? (
-                  <>
-                    {fields.map((f) => (
-                      <td key={f.name} className="py-4 px-6 text-center align-middle">
-                        {f.type === "textarea" ? (
-                          <textarea
-                            value={editData[f.name] || ""}
-                            onChange={(e) =>
-                              setEditData({
-                                ...editData,
-                                [f.name]: e.target.value,
-                              })
-                            }
-                            rows={f.rows || 2}
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center mx-auto block resize-vertical"
-                          />
-                        ) : (
-                          <input
-                            type={f.type || "text"}
-                            value={editData[f.name] || ""}
-                            onChange={(e) =>
-                              setEditData({
-                                ...editData,
-                                [f.name]: e.target.value,
-                              })
-                            }
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center mx-auto block"
-                          />
-                        )}
-                      </td>
-                    ))}
-                    <td className="py-4 px-6 text-center align-middle">
-                      <div className="flex justify-center space-x-2">
-                        <button
-                          onClick={handleSaveEdit}
-                          className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm"
-                        >
-                          <SaveIcon className="mr-1" fontSize="small" />
-                          Guardar
-                        </button>
-                        <button
-                          onClick={handleCancelEdit}
-                          className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
-                        >
-                          <CancelIcon className="mr-1" fontSize="small" />
-                          Cancelar
-                        </button>
-                      </div>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    {fields.map((f) => (
-                      <td
-                        key={f.name}
-                        className="py-4 px-6 text-center align-middle text-gray-700"
-                      >
-                        {f.type === "date"
-                          ? formatDateDDMMYYYY(ext[f.name])
-                          : ext[f.name] || "-"}
-                      </td>
-                    ))}
-                    <td className="py-4 px-6 text-center align-middle">
-                      <div className="flex justify-center space-x-3">
-                        <button
-                          onClick={() => onDelete(ext.cod_extinguisher)}
-                          aria-label="Eliminar extintor"
-                          className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-                        >
-                          <DeleteIcon />
-                        </button>
-                        <button
-                          onClick={() => handleEditClick(ext)}
-                          aria-label="Editar extintor"
-                          className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                        >
-                          <EditIcon />
-                        </button>
-                      </div>
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
                     {editingId === ext.cod_extinguisher ? (
                       <>
                         {fields.map((f) => (
-                          <td key={f.name} className="py-4 px-6 align-middle">
-                            <input
-                              type={f.type || "text"}
-                              value={editData[f.name] || ""}
-                              onChange={(e) =>
-                                setEditData({
-                                  ...editData,
-                                  [f.name]: e.target.value,
-                                })
-                              }
-                              className="min-w-[100px] py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-                            />
+                          <td key={f.name} className="py-4 px-6 text-center align-middle">
+                            {f.type === "textarea" ? (
+                              <textarea
+                                value={editData[f.name] || ""}
+                                onChange={(e) =>
+                                  setEditData({
+                                    ...editData,
+                                    [f.name]: e.target.value,
+                                  })
+                                }
+                                rows={f.rows || 2}
+                                className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center mx-auto block resize-vertical"
+                              />
+                            ) : (
+                              <input
+                                type={f.type || "text"}
+                                value={editData[f.name] || ""}
+                                onChange={(e) =>
+                                  setEditData({
+                                    ...editData,
+                                    [f.name]: e.target.value,
+                                  })
+                                }
+                                className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center mx-auto block"
+                              />
+                            )}
                           </td>
                         ))}
-                        <td className="py-4 px-6 align-middle">
+                        <td className="py-4 px-6 text-center align-middle">
                           <div className="flex justify-center space-x-2">
                             <button
                               onClick={handleSaveEdit}
-                              className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center"
+                              className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm"
                             >
                               <SaveIcon className="mr-1" fontSize="small" />
                               Guardar
                             </button>
                             <button
                               onClick={handleCancelEdit}
-                              className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition flex items-center"
+                              className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
                             >
                               <CancelIcon className="mr-1" fontSize="small" />
                               Cancelar
@@ -233,19 +161,22 @@ const ExtinguisherTable = ({
                         {fields.map((f) => (
                           <td
                             key={f.name}
-                            className="py-4 px-6 align-middle text-gray-700"
+                            className="py-4 px-6 text-center align-middle text-gray-700"
                           >
                             {f.type === "date"
                               ? formatDateDDMMYYYY(ext[f.name])
                               : ext[f.name] || "-"}
                           </td>
                         ))}
-                        <td className="py-4 px-6 align-middle">
+                        <td className="py-4 px-6 text-center align-middle">
                           <div className="flex justify-center space-x-3">
-                            <ModalElimination
-                              message={"Eliminar extintor"}
+                            <button
                               onClick={() => onDelete(ext.cod_extinguisher)}
-                            />
+                              aria-label="Eliminar extintor"
+                              className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
+                            >
+                              <DeleteIcon />
+                            </button>
                             <button
                               onClick={() => handleEditClick(ext)}
                               aria-label="Editar extintor"
@@ -262,6 +193,7 @@ const ExtinguisherTable = ({
               </tbody>
             </table>
           </div>
+
         </div>
       )}
     </div>
