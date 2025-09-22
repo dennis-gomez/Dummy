@@ -16,6 +16,8 @@ export default function CollapsibleTable({
   onEditMedicKit,
   onEditSupply,
   changeStateSupply,
+    isCreatingMedicKit,
+  isCreatingSupply,
   setIsCreatingMedicKit,
   onAddClick,
   searchFields,
