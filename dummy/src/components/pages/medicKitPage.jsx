@@ -1,8 +1,7 @@
-import React from "react";
 import CollapsibleTable from "../organisms/collapsibleTable";
-import Button from "../atoms/button";
 import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
+
 
 function MedicKitPage() {
   const {
@@ -21,53 +20,52 @@ function MedicKitPage() {
     handleEditMedicKit,
     handleEditSupply,
     handleEliminateMedicKit,
-    handleEliminateSupply
+    handleEliminateSupply,
+    searchFields,
+    handleSearch,
   } = useMedicKits();
 
-  return (
-    <>
-      <h2 style={{ textAlign: "center" }}>Registro de botiquines</h2>
+  const handleAddClick = () => {
 
+
+    // Si ya estamos creando, cancelar; si no, iniciar creación de botiquín
+    if (isCreatingMedicKit || isCreatingSupply) {
+      setIsCreatingMedicKit(false);
+      setIsCreatingSupply(false);
+    } else {
+      setIsCreatingMedicKit(true);
+    }
+  };
+
+  return (
+    <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Gestión de Botiquines
+      </h1>
       {isCreatingSupply && medicKitSelectedId && (
         <FormWithDetails
-          subfields={subfields} // usamos solo el combinado
+          subfields={subfields}
           onSubmit={handleAddKitWithSupplies}
-          titleBtn={"Añadir"}
+          titleBtn={"Añadir al botiquín"}
           subTittle={"Añadir suplemento"}
         />
       )}
-
       {isCreatingMedicKit && (
         <FormWithDetails
-          fields={fields} // usamos solo el combinado
-          subfields={subfields} // usamos solo el combinado
-          title={"Registro de suministros"}
+          fields={fields}
+          subfields={subfields}
+          title={"Registro de botiquín"}
           onSubmit={handleAddKitWithSupplies}
-          titleBtn={"Añadir"}
+          titleBtn={"Añadir Botiquín"}
           subTittle={"Añadir suplemento"}
         />
       )}
-
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "20px" }}>
-        <Button
-          text={isCreatingMedicKit || isCreatingSupply ? "Cancelar" : "Agregar botiquín"}
-          onClick={() => {
-            if (isCreatingMedicKit || isCreatingSupply) {
-              setIsCreatingMedicKit(false);
-              setIsCreatingSupply(false);
-            } else {
-              setIsCreatingMedicKit(true);
-            }
-          }}
-        />
-      </div>
-
       {medicKitsList && medicKitsList.length > 0 ? (
         <CollapsibleTable
           list={medicKitsList}
-          tittles={fields} // usamos fields unificado para tabla
+          tittles={fields}
           subTitle={SubTittle}
-          subfields={subfields} // usamos solo el combinado
+          subfields={subfields}
           suppliesList={suppliesList}
           medicKitSelectedId={medicKitSelectedId}
           onSelect={getSuppliesByMedicKitId}
@@ -75,12 +73,33 @@ function MedicKitPage() {
           onDeleteSupply={handleEliminateSupply}
           onEditMedicKit={handleEditMedicKit}
           onEditSupply={handleEditSupply}
-          changeStateSupply={setIsCreatingSupply} 
+          changeStateSupply={setIsCreatingSupply}
+          isCreatingMedicKit={isCreatingMedicKit}      //  pasa el estado
+          isCreatingSupply={isCreatingSupply}          //  pasa el estado
+          setIsCreatingMedicKit={setIsCreatingMedicKit} //  pasa el setter
+          setIsCreatingSupply={setIsCreatingSupply}     //  pasa el setter
+          onAddClick={handleAddClick}
+          searchFields={searchFields}
+          handleSearch={handleSearch}
         />
       ) : (
-        <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
+        <>
+          <h2 style={{ textAlign: "center" }}>No hay botiquines registrados</h2>
+          <button
+            onClick={handleAddClick}
+            style={{
+              display: "block",
+              margin: "0 auto",
+              marginTop: "16px",   // margen superior
+              marginBottom: "16px" // margen inferior
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            {isCreatingMedicKit ? "Cancelar" : "Agregar Botiquín"}
+          </button>
+        </>
       )}
-    </>
+    </div>
   );
 }
 

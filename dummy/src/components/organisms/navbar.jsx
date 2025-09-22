@@ -1,17 +1,9 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
+import MenuIcon from '@mui/icons-material/Menu';
+import AdbIcon from '@mui/icons-material/Adb';
+import Avatar from '@mui/material/Avatar';
+import Tooltip from '@mui/material/Tooltip';
 
 const navConfig = [
   {
@@ -75,212 +67,156 @@ const navConfig = [
       { label: 'Configuraciones del sistema', path: '/ti/config' },
     ],
   },
-  { label: 'Catalogo', 
-    sub: [{ label: 'gestionar catalogo', path: '/catalogo/gestionar' },]
+  { 
+    label: 'Catalogo', 
+    sub: [{ label: 'gestionar catalogo', path: '/catalogo/gestionar' }]
   }
 ];
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-
 function Navbar() {
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [mobileSubMenu, setMobileSubMenu] = React.useState(null); // para submenús en móvil
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [mobileSubMenu, setMobileSubMenu] = React.useState(null);
   const [desktopSubMenu, setDesktopSubMenu] = React.useState({ anchor: null, index: null });
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
   const navigate = useNavigate();
 
-
-  // Menú hamburguesa (móvil)
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const handleNavigate = (path) => {
+    navigate(path);
+    setMobileMenuOpen(false);
     setMobileSubMenu(null);
-  };
-
-  // Submenú móvil: ahora solo muestra el submenú, ocultando el menú principal
-  const handleOpenMobileSubMenu = (index) => {
-    setMobileSubMenu({ index });
-  };
-  const handleCloseMobileSubMenu = () => {
-    setMobileSubMenu(null);
-  };
-
-  // Submenú desktop
-  const handleOpenDesktopSubMenu = (event, index) => {
-    setDesktopSubMenu({ anchor: event.currentTarget, index });
-  };
-  const handleCloseDesktopSubMenu = () => {
     setDesktopSubMenu({ anchor: null, index: null });
   };
 
-  // Menú usuario
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  // Navegación
-  const handleNavigate = (path) => {
-    navigate(path);
-    handleCloseNavMenu();
-    handleCloseMobileSubMenu();
-    handleCloseDesktopSubMenu();
-  };
-
   return (
-    <AppBar position="static">
-      <Toolbar disableGutters>
-        <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-        <Typography
-          variant="h6"
-          noWrap
-          component="a"
-          href="#app-bar-with-responsive-menu"
-          sx={{
-            mr: 2,
-            display: { xs: 'none', md: 'flex' },
-            fontFamily: 'monospace',
-            fontWeight: 700,
-            letterSpacing: '.3rem',
-            color: 'inherit',
-            textDecoration: 'none',
-          }}
-        >
-          LOGO
-        </Typography>
+    <nav className="bg-blue-600 text-white shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo y menú móvil */}
+          <div className="flex items-center">
+            {/* Logo desktop */}
+            <div className="hidden md:flex items-center">
+              <AdbIcon className="mr-2" />
+              <span className="font-mono font-bold text-xl tracking-wide">LOGO</span>
+            </div>
 
+            {/* Logo móvil */}
+            <div className="md:hidden flex items-center">
+              <AdbIcon className="mr-2" />
+              <span className="font-mono font-bold text-xl tracking-wide">LOGO</span>
+            </div>
 
-        {/* Menú hamburguesa (móvil) */}
-        <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-          <IconButton
-            size="large"
-            aria-label="open navigation menu"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenNavMenu}
-            color="inherit"
-          >
-            <MenuIcon />
-          </IconButton>
-          {/* Menú principal móvil */}
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorElNav}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            open={Boolean(anchorElNav) && !mobileSubMenu}
-            onClose={handleCloseNavMenu}
-            sx={{ display: { xs: 'block', md: 'none' } }}
-            PaperProps={{ style: { minWidth: 220 } }}
-          >
-            {navConfig.map((page, idx) => (
-              <MenuItem key={page.label} onClick={() => handleOpenMobileSubMenu(idx)}>
-                <Typography sx={{ textAlign: 'center' }}>{page.label}</Typography>
-              </MenuItem>
-            ))}
-          </Menu>
-          {/* Submenú móvil: ocupa el menú completo y tiene botón de volver */}
-          <Menu
-            anchorEl={anchorElNav}
-            open={Boolean(anchorElNav) && !!mobileSubMenu}
-            onClose={handleCloseMobileSubMenu}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-            transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-            sx={{ display: { xs: 'block', md: 'none' } }}
-            PaperProps={{ style: { minWidth: 220 } }}
-          >
-            <MenuItem onClick={handleCloseMobileSubMenu} sx={{ fontWeight: 700, color: 'primary.main' }}>
-              ← Volver
-            </MenuItem>
-            {mobileSubMenu && navConfig[mobileSubMenu.index].sub.map((sub) => (
-              <MenuItem key={sub.label} onClick={() => handleNavigate(sub.path)}>
-                <Typography>{sub.label}</Typography>
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
+            {/* Menú desktop */}
+            <div className="hidden md:flex ml-10 space-x-4">
+              {navConfig.map((page, idx) => (
+                <div key={page.label} className="relative group">
+                  <button
+                    onClick={(e) => setDesktopSubMenu({ anchor: e.currentTarget, index: idx })}
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    {page.label}
+                  </button>
+                  
+                  {desktopSubMenu.index === idx && (
+                    <div 
+                      className="absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-50"
+                      onMouseLeave={() => setDesktopSubMenu({ anchor: null, index: null })}
+                    >
+                      {page.sub.map((sub) => (
+                        <button
+                          key={sub.label}
+                          onClick={() => handleNavigate(sub.path)}
+                          className="block w-full text-left px-4 py-2 text-sm hover:bg-blue-100 transition-colors"
+                        >
+                          {sub.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
 
-        {/* Logo móvil */}
-        <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-        <Typography
-          variant="h5"
-          noWrap
-          component="a"
-          href="#app-bar-with-responsive-menu"
-          sx={{
-            mr: 2,
-            display: { xs: 'flex', md: 'none' },
-            flexGrow: 1,
-            fontFamily: 'monospace',
-            fontWeight: 700,
-            letterSpacing: '.3rem',
-            color: 'inherit',
-            textDecoration: 'none',
-          }}
-        >
-          LOGO
-        </Typography>
-
-        {/* Menú desktop */}
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          {navConfig.map((page, idx) => (
-            <React.Fragment key={page.label}>
-              <Button
-                onClick={(e) => handleOpenDesktopSubMenu(e, idx)}
-                sx={{ my: 2, color: 'white', display: 'block' }}
+          {/* Menú usuario */}
+          <div className="flex items-center">
+            <Tooltip title="Open settings">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="p-1 rounded-full hover:bg-blue-700 transition-colors"
               >
-                {page.label}
-              </Button>
-              <Menu
-                anchorEl={desktopSubMenu.anchor}
-                open={desktopSubMenu.index === idx && Boolean(desktopSubMenu.anchor)}
-                onClose={handleCloseDesktopSubMenu}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                MenuListProps={{ onMouseLeave: handleCloseDesktopSubMenu }}
-              >
-                {page.sub.map((sub) => (
-                  <MenuItem key={sub.label} onClick={() => handleNavigate(sub.path)}>
-                    <Typography>{sub.label}</Typography>
-                  </MenuItem>
+                <Avatar className="w-8 h-8" alt="User" src="/static/images/avatar/2.jpg" />
+              </button>
+            </Tooltip>
+
+            {userMenuOpen && (
+              <div className="absolute right-4 top-16 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-50">
+                {settings.map((setting) => (
+                  <button
+                    key={setting}
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block w-full text-left px-4 py-2 text-sm hover:bg-blue-100 transition-colors"
+                  >
+                    {setting}
+                  </button>
                 ))}
-              </Menu>
-            </React.Fragment>
-          ))}
-        </Box>
+              </div>
+            )}
+          </div>
 
-        {/* Menú usuario */}
-        <Box sx={{ flexGrow: 0 }}>
-          <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-            </IconButton>
-          </Tooltip>
-          <Menu
-            sx={{ mt: '45px' }}
-            id="menu-appbar"
-            anchorEl={anchorElUser}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseUserMenu}
-          >
-            {settings.map((setting) => (
-              <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-              </MenuItem>
-            ))}
-          </Menu>
-        </Box>
-      </Toolbar>
-    </AppBar>
+          {/* Botón menú móvil */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              <MenuIcon />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Menú móvil */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-blue-700">
+          <div className="px-2 pt-2 pb-3 space-y-1">
+            {mobileSubMenu === null ? (
+              // Menú principal móvil
+              navConfig.map((page, idx) => (
+                <button
+                  key={page.label}
+                  onClick={() => setMobileSubMenu(idx)}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600 transition-colors"
+                >
+                  {page.label}
+                </button>
+              ))
+            ) : (
+              // Submenú móvil
+              <>
+                <button
+                  onClick={() => setMobileSubMenu(null)}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-blue-200 hover:bg-blue-600 transition-colors"
+                >
+                  ← Volver
+                </button>
+                {navConfig[mobileSubMenu].sub.map((sub) => (
+                  <button
+                    key={sub.label}
+                    onClick={() => handleNavigate(sub.path)}
+                    className="block w-full text-left px-3 py-2 rounded-md text-base font-medium hover:bg-blue-600 transition-colors"
+                  >
+                    {sub.label}
+                  </button>
+                ))}
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </nav>
   );
 }
+
 export default Navbar;

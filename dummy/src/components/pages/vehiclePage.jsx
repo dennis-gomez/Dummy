@@ -1,26 +1,31 @@
 import { Box, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
+import Button from "../atoms/button"; // ✅ Cambia por tu componente personalizado
 import Form from "../organisms/form";
 import VehicleTable from "../organisms/vehicleTable";
 import { useVehicles } from "../../utils/useVehicle";
 
 function VehiclePage() {
-
     const {
         vehicles,
         fields,
+        searchText,
+        searchFeature, 
+        setSearchText,
+        setSearchFeature,
         showForm,
         setShowForm,
         error,
         setError,
+        loading, 
         handleSubmit,
         handleEdit,
         handleDelete,
+        handleSearchVehicles,
     } = useVehicles();
 
     return (
         <div style={{ padding: 24 }}>
-            <h1>Gestión de Vehiculos</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Vehículos</h1>
 
             {/* Formulario dinamico */}
             {showForm && (
@@ -31,7 +36,7 @@ function VehiclePage() {
                     p: 3,
                     boxShadow: 3,
                     borderRadius: 2,
-                    backgroundColor: "#fff",
+                    backgroundColor: "#d9d9d9",
                 }}
                 >
                     <Typography variant="h6" gutterBottom color="textPrimary">
@@ -63,24 +68,28 @@ function VehiclePage() {
             )}
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                    setShowForm(!showForm);
-                    setError(null);
-                }}
-                >
-                {showForm ? "Cancelar" : "Agregar Vehículo"}
-                </Button>
+                {/* ✅ CAMBIO AQUÍ: Usa tu componente Button personalizado */}
+                <Button 
+                    text={showForm ? "Cancelar" : "Agregar Vehículo"} 
+                    onClick={() => { 
+                        setShowForm(!showForm);
+                        setError(null);
+                    }}
+                />
             </Box>
-
+           
             {/* Tabla de vehiculos */}
             <VehicleTable
                 fields={fields}
                 vehicles={vehicles}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
+                onSearch={handleSearchVehicles}
+                isLoading={loading}
+                valueText={searchText}
+                valueFeature={searchFeature}
+                onChangeText={setSearchText}
+                onChangeFeature={setSearchFeature}
             />
         </div>
     );

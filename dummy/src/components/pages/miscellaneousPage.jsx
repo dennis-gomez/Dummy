@@ -31,68 +31,64 @@ function MiscellaneousPage() {
   } = useMiscellaneousPage();
 
   return (
-    <div style={{ padding: 24 }}>
-      <style>{`
-        .tables-flex {
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-          align-items: center;
-          justify-content: center;
-          min-height: 80vh;
-        }
-        .panel {
-          width: 100%;
-          max-width: 600px;
-          min-width: 340px;
-          margin: 0 auto;
-        }
-      `}</style>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      {/* Contenido principal con scroll */}
+      <main className="flex-grow p-6 overflow-auto">
+        <div className="max-w-7xl mx-auto space-y-6">
+          
+          {/* Tabla de Servicios */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <TableMiscellaneousPage
+              services={services}
+              selectedId={selectedServCod}
+              onSelect={setSelectedServiceId}
+              tableRef={serviciosRef}
+              onAddItem={handleAddService}
+              onEditService={handleEditService}
+              onDeleteService={handleDeleteService}
+            />
+          </div>
 
-      <div className="tables-flex">
-        <div className="panel">
-          <TableMiscellaneousPage
-            services={services}
-            selectedId={selectedServCod}
-            onSelect={setSelectedServiceId}
-            tableRef={serviciosRef}
-            onAddItem={handleAddService}
-            onEditService={handleEditService}
-            onDeleteService={handleDeleteService}
-          />
+          {selectedServCod && (
+            /* Tabla de Categorías */
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <TableOptionServices
+                categoria={categories}
+                onClose={() => {
+                  setSelectedServCod(null);
+                  setSelectedSubCod(null);
+                  setItems([]);
+                }}
+                onSelectSub={setSelectedCategoryId}
+                selectedService={selectedServCod}
+                selectedCatCod={selectedCatCod}
+                tableRef={categoriasRef}
+                addCategory={handleAddCategory}
+                updateCategory={handleEditCategory}
+                deleteCategory={handleDeleteCategory}
+              />
+            </div>
+          )}
+
+          {selectedCatCod && (
+            /* Tabla de Items */
+            <div className="bg-white rounded-xl shadow-lg p-6">
+              <TableSubcategorie
+                items={items}
+                onClose={() => setSelectedSubCod(null)}
+                onDeleteItem={handleDeleteItem}
+                onEditItem={handleEditItem}
+                onAddItem={handleAddItem}
+                tableRef={itemsRef}
+              />
+            </div>
+          )}
+          
         </div>
-        {selectedServCod && (
-          <div className="panel">
-            <TableOptionServices
-              categoria={categories}
-              onClose={() => {
-                setSelectedServCod(null);
-                setSelectedSubCod(null);
-                setItems([]);
-              }}
-              onSelectSub={setSelectedCategoryId}
-              selectedService={selectedServCod}
-              selectedCatCod={selectedCatCod}
-              tableRef={categoriasRef}
-              addCategory={handleAddCategory}
-              updateCategory={handleEditCategory}
-              deleteCategory={handleDeleteCategory}
-            />
-          </div>
-        )}
-        {selectedCatCod && (
-          <div className="panel">
-            <TableSubcategorie
-              items={items}
-              onClose={() => setSelectedSubCod(null)}
-              onDeleteItem={handleDeleteItem}
-              onEditItem={handleEditItem}
-              onAddItem={handleAddItem}
-              tableRef={itemsRef}
-            />
-          </div>
-        )}
-      </div>
+      </main>
+
+      {/* Espacio para el footer */}
+      <div className="h-20 flex-shrink-0 bg-gray-50"></div>
     </div>
   );
 }

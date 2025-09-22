@@ -17,7 +17,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
     if (value !== "" && isNaN(Number(value))) {
       err = "Debe ser un número";
     } else if (Number(value) < 1 && !restriction) {
-      err = "No se permiten valores negativos o cero";
+      err = "solo valores mayores a 0";
     }
 
     //Validacion del año (Vehiculos)
