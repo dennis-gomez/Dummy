@@ -96,6 +96,73 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                       {index + 1}
                     </td>
 
+                  {editingId === vehicle.cod_vehicle ? (
+                    <>
+                      {displayFields.map((f) => (
+                        <td
+                          key={f.name}
+                          className="py-4 px-6 text-center align-middle"
+                        >
+                          <input
+                            type={f.type || "text"}
+                            value={editData[f.name] || ""}
+                            onChange={(e) =>
+                              setEditData({ ...editData, [f.name]: e.target.value })
+                            }
+                            className="min-w-[100px] py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition text-center mx-auto block"
+                          />
+                        </td>
+                      ))}
+                      <td className="py-4 px-6 text-center align-middle">
+                        <div className="flex justify-center space-x-2">
+                          <button
+                            onClick={handleSaveEdit}
+                            className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center"
+                          >
+                            <SaveIcon className="mr-1" fontSize="small" />
+                            Guardar
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition flex items-center"
+                          >
+                            <CancelIcon className="mr-1" fontSize="small" />
+                            Cancelar
+                          </button>
+                        </div>
+                      </td>
+                    </>
+                  ) : (
+                    <>
+                      {displayFields.map((f) => (
+                        <td
+                          key={f.name}
+                          className="py-4 px-6 text-center align-middle text-gray-700"
+                        >
+                          {vehicle[f.name] || "-"}
+                        </td>
+                      ))}
+                      <td className="py-4 px-6 text-center align-middle">
+                        <div className="flex justify-center space-x-3">
+                          <ModalElimination
+                            message={'Eliminar vehículo'}
+                            onClick={() => onDelete(vehicle.cod_vehicle)}
+                          />
+                          <button
+                            onClick={() => handleEditClick(vehicle)}
+                            aria-label="Editar vehículo"
+                            className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                          >
+                            <EditIcon />
+                          </button>
+                        </div>
+                      </td>
+                    </>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
                     {editingId === vehicle.cod_vehicle ? (
                       <>
                         {displayFields.map((f) => (

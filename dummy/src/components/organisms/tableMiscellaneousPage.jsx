@@ -59,32 +59,31 @@ function TableMiscellaneousPage({
   };
 
   // 🔹 Confirmación al Editar
- const handleValidatedEdit = async (srv) => {
-  if (editValue.trim().length < 3) {
-    Swal.fire({
-      icon: "error",
-      title: "Validación",
-      text: "El nombre del servicio debe tener al menos 3 caracteres",
+  const handleValidatedEdit = async (srv) => {
+    if (editValue.trim().length < 3) {
+      Swal.fire({
+        icon: "error",
+        title: "Validación",
+        text: "El nombre del servicio debe tener al menos 3 caracteres",
+      });
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "¿Quieres guardar los cambios?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, guardar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#2563eb",
+      cancelButtonColor: "#9ca3af",
     });
-    return;
-  }
 
-  const result = await Swal.fire({
-    title: "¿Quieres guardar los cambios?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Sí, guardar",
-    cancelButtonText: "Cancelar",
-    confirmButtonColor: "#2563eb",
-    cancelButtonColor: "#9ca3af",
-  });
-
-  if (result.isConfirmed) {
-    await saveEdit(srv);
-    Swal.fire("Actualizado", "El servicio fue modificado correctamente", "success");
-  }
-};
-
+    if (result.isConfirmed) {
+      await saveEdit(srv);
+      Swal.fire("Actualizado", "El servicio fue modificado correctamente", "success");
+    }
+  };
 
   // 🔹 Confirmación al Eliminar
   const handleValidatedDelete = async (id) => {
@@ -144,10 +143,10 @@ function TableMiscellaneousPage({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6 text-left font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
+              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
                 Código Servicio
               </th>
-              <th className="py-4 px-6 text-left font-semibold text-sm uppercase tracking-wider">
+              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider">
                 Servicio
               </th>
               <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl">
@@ -173,25 +172,25 @@ function TableMiscellaneousPage({
                     className={`transition-all duration-200 even:bg-gray-50 ${isSelected ? "bg-blue-100" : "hover:bg-blue-50"
                       }`}
                   >
-                    <td className="py-4 px-6 align-middle font-medium text-gray-900">
+                    <td className="py-4 px-6 text-center align-middle font-medium text-gray-900">
                       {srv.cod_service}
                     </td>
                     <td
                       onClick={() => !isEditing && onSelect(srv.cod_service)}
-                      className="py-4 px-6 align-middle text-gray-700 select-none cursor-pointer"
+                      className="py-4 px-6 text-center align-middle text-gray-700 select-none cursor-pointer"
                     >
                       {isEditing ? (
                         <input
                           type="text"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
-                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition text-center mx-auto block"
                         />
                       ) : (
                         srv.service_name
                       )}
                     </td>
-                    <td className="py-4 px-6 align-middle">
+                    <td className="py-4 px-6 text-center align-middle">
                       <div className="flex justify-center space-x-3">
                         {isEditing ? (
                           <>
