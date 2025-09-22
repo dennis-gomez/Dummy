@@ -32,13 +32,14 @@ const VehicleTable = ({ fields, vehicles, onDelete, onEdit }) => {
   );
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
+    <div className="p-6 mt-6 bg-white rounded-2xl">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Vehículos</h2>
 
       {vehicles.length === 0 ? (
-        <p className="text-gray-500 mt-2">
-          No hay vehículos disponibles. Haz clic en "Agregar vehículo" para crear uno nuevo.
-        </p>
+        // ✅ MENSAJE CORREGIDO - igual que "No hay suplementos registrados"
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+          No hay vehículos registrados
+        </div>
       ) : (
         <div className="overflow-x-auto rounded-xl">
           <table className="min-w-full">

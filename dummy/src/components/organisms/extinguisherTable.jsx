@@ -28,7 +28,7 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
   };
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
+    <div className="p-6 mt-6 bg-white rounded-2xl ">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Lista de Extintores
       </h2>
@@ -37,13 +37,13 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
         <table className="min-w-full">
           <thead>
             <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-              <th className="py-4 px-6 text-left font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
+              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
                 #
               </th>
               {fields.map((f) => (
                 <th
                   key={f.name}
-                  className="py-4 px-6 text-left font-semibold text-sm uppercase tracking-wider"
+                  className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
                 >
                   {f.placeholder}
                 </th>
@@ -59,14 +59,14 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
                 key={ext.cod_extinguisher}
                 className="hover:bg-blue-50 transition-all duration-200 even:bg-gray-50"
               >
-                <td className="py-4 px-6 align-middle font-medium text-gray-900">
+                <td className="py-4 px-6 text-center align-middle font-medium text-gray-900">
                   {index + 1}
                 </td>
 
                 {editingId === ext.cod_extinguisher ? (
                   <>
                     {fields.map((f) => (
-                      <td key={f.name} className="py-4 px-6 align-middle">
+                      <td key={f.name} className="py-4 px-6 text-center align-middle">
                         {f.type === "textarea" ? (
                           <textarea
                             value={editData[f.name] || ""}
@@ -77,7 +77,7 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
                               })
                             }
                             rows={f.rows || 2}
-                            className="min-w-[100px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center mx-auto block resize-vertical"
                           />
                         ) : (
                           <input
@@ -89,12 +89,12 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
                                 [f.name]: e.target.value,
                               })
                             }
-                            className="min-w-[100px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center mx-auto block"
                           />
                         )}
                       </td>
                     ))}
-                    <td className="py-4 px-6 align-middle">
+                    <td className="py-4 px-6 text-center align-middle">
                       <div className="flex justify-center space-x-2">
                         <button
                           onClick={handleSaveEdit}
@@ -118,14 +118,14 @@ const ExtinguisherTable = ({ fields, extinguishers, onDelete, onEdit }) => {
                     {fields.map((f) => (
                       <td
                         key={f.name}
-                        className="py-4 px-6 align-middle text-gray-700"
+                        className="py-4 px-6 text-center align-middle text-gray-700"
                       >
                         {f.type === "date"
                           ? formatDateDDMMYYYY(ext[f.name])
                           : ext[f.name] || "-"}
                       </td>
                     ))}
-                    <td className="py-4 px-6 align-middle">
+                    <td className="py-4 px-6 text-center align-middle">
                       <div className="flex justify-center space-x-3">
                         <button
                           onClick={() => onDelete(ext.cod_extinguisher)}

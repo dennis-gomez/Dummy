@@ -3,13 +3,11 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AddIcon from "@mui/icons-material/Add";
 import ModalElimination from "../molecules/modalElimination";
 import DetailsTable from "../organisms/detailTable";
 import InputValidated from "../atoms/inputValidated";
+import Button from "../atoms/button"; // ✅ Importa el componente Button
 import { useState, useEffect } from "react";
-
-
 
 export default function Row({
   item,
@@ -30,20 +28,20 @@ export default function Row({
   const [kitFormData, setKitFormData] = useState({ ...item });
 
   const whiteInputStyle = {
-  "& .MuiOutlinedInput-root": {
-    backgroundColor: "#ffffff",
-    overflow: "auto", // scroll si el contenido excede el tamaño
-    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-      borderColor: "blue", // borde azul en error
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#ffffff",
+      overflow: "auto",
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: "blue",
+      },
     },
-  },
-  "& .MuiFormHelperText-root.Mui-error": {
-    color: "blue", // texto de error azul
-  },
-  "& .MuiInputLabel-root.Mui-error": {
-    color: "inherit", // label/placeholder no se vuelve rojo
-  },
-};
+    "& .MuiFormHelperText-root.Mui-error": {
+      color: "blue",
+    },
+    "& .MuiInputLabel-root.Mui-error": {
+      color: "inherit",
+    },
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -75,30 +73,29 @@ export default function Row({
         {tittles.map((col, index) => (
           <td key={col.key} className="py-4 px-4 text-center text-gray-800">
             {editingKit && index !== 0 ? (
-            <InputValidated
-  name={col.key}
-  type={col.type || "text"}
-  placeholder={col.placeholder}
-  value={kitFormData[col.key]}
-  onChange={(e) =>
-    setKitFormData({ ...kitFormData, [col.key]: e.target.value })
-  }
-  required={col.required ?? true}
-  multiline={col.type === "textarea"}
-  rows={col.type === "textarea" ? 2 : undefined}
-  sx={{
-    ...whiteInputStyle,
-    "& .MuiOutlinedInput-root": {
-      ...whiteInputStyle["& .MuiOutlinedInput-root"],
-      minHeight: col.type === "textarea" ? "4rem" : "auto",
-      resize: col.type === "textarea" ? "vertical" : "none",
-      overflow: col.type === "textarea" ? "auto" : "visible",
-    },
-  }}
-/>
-
+              <InputValidated
+                name={col.key}
+                type={col.type || "text"}
+                placeholder={col.placeholder}
+                value={kitFormData[col.key]}
+                onChange={(e) =>
+                  setKitFormData({ ...kitFormData, [col.key]: e.target.value })
+                }
+                required={col.required ?? true}
+                multiline={col.type === "textarea"}
+                rows={col.type === "textarea" ? 2 : undefined}
+                sx={{
+                  ...whiteInputStyle,
+                  "& .MuiOutlinedInput-root": {
+                    ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                    minHeight: col.type === "textarea" ? "4rem" : "auto",
+                    resize: col.type === "textarea" ? "vertical" : "none",
+                    overflow: col.type === "textarea" ? "auto" : "visible",
+                  },
+                }}
+              />
             ) : (
-              <span className="font-medium">{item[col.key]}</span>
+              <span className="font-normal">{item[col.key]}</span>
             )}
           </td>
         ))}
@@ -146,7 +143,6 @@ export default function Row({
           </div>
         </td>
       </tr>
-
       {/* FILA SECUNDARIA */}
       {isOpen && (
         <tr>
@@ -154,31 +150,25 @@ export default function Row({
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">{subTitle}</h3>
-                <button
-                  type="button"
+                <Button 
+                  text="Agregar Suplemento" 
                   onClick={() => changeStateSupply(item[idKey])}
-                  className="bg-blue-600 text-white rounded-lg px-5 py-3 hover:bg-blue-700 transition flex items-center"
-                >
-                  <AddIcon className="mr-2" fontSize="small" />
-                  Agregar Suplemento
-                </button>
+                />
               </div>
-
-              {/* REUTILIZANDO DETAILS TABLE */}
               <DetailsTable
                 fields={subfields.filter(
                   (col) => col.key !== "cod_medic_kit" && col.key !== "cod_supply"
                 )}
                 items={suppliesList}
                 onEdit={(idx, data) => onEditSupply(data)}
-                renderDelete={(item, idx) => (
+                renderDelete={(item) => (
                   <ModalElimination
                     message={"¿Quieres eliminar este suplemento?"}
                     onClick={() => onDeleteSupply(item.cod_supply)}
                   />
                 )}
                 centered
-                inputStyle={whiteInputStyle} // <-- aquí pasamos el style para Inputs
+                inputStyle={whiteInputStyle}
               />
             </div>
           </td>

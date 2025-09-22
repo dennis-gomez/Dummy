@@ -1,11 +1,10 @@
 import { Box, Typography } from "@mui/material";
-import Button from "@mui/material/Button";
+import Button from "../atoms/button"; // ✅ Cambia por tu componente personalizado
 import Form from "../organisms/form";
 import VehicleTable from "../organisms/vehicleTable";
 import { useVehicles } from "../../utils/useVehicle";
 
 function VehiclePage() {
-
     const {
         vehicles,
         fields,
@@ -20,7 +19,7 @@ function VehiclePage() {
 
     return (
         <div style={{ padding: 24 }}>
-            <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Vehiculos</h1>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Vehículos</h1>
 
             {/* Formulario dinamico */}
             {showForm && (
@@ -63,13 +62,14 @@ function VehiclePage() {
             )}
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button color="primary" variant="contained" onClick={() => { 
-                    setShowForm(!showForm);
-                    setError(null);
-                }}
-                >
-                {showForm ? "Cancelar" : "Agregar Vehículo"}
-                </Button>
+                {/* ✅ CAMBIO AQUÍ: Usa tu componente Button personalizado */}
+                <Button 
+                    text={showForm ? "Cancelar" : "Agregar Vehículo"} 
+                    onClick={() => { 
+                        setShowForm(!showForm);
+                        setError(null);
+                    }}
+                />
             </Box>
            
             {/* Tabla de vehiculos */}

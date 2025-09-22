@@ -1,13 +1,14 @@
-import { Box, Button, Paper, Grid, minor } from "@mui/material";
+import { Box, Paper, Grid } from "@mui/material";
 import InputValidated from "../atoms/inputValidated";
 import { useState } from "react";
 import DetailsTable from "./detailTable";
+import Button from "../atoms/button";
 
 function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTittle }) {
   const visibleFields = fields?.filter(f => f.key !== "cod_medic_kit") || [];
   const visibleSubfields = subfields?.filter(f => f.key !== "cod_medic_kit" && f.key !== "cod_supply") || [];
 
-console.log("los campos son", fields);
+  console.log("los campos son", fields);
 
   const initialFormData = visibleFields.reduce((acc, f) => ({ ...acc, [f.key]: "" }), {});
   const [formData, setFormData] = useState(initialFormData);
@@ -20,34 +21,31 @@ console.log("los campos son", fields);
   const [subInputErrors, setSubInputErrors] = useState({});
 
   const whiteInputStyle = {
-  "& .MuiOutlinedInput-root": {
-    backgroundColor: "#ffffff",
-    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-      borderColor: "blue", // borde azul en error
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#ffffff",
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: "blue",
+      },
     },
-  },
-  "& .MuiFormHelperText-root.Mui-error": {
-    color: "blue", // texto de error azul
-  },
-  
-};
-
-const textAreaStyle2 = {
-  "& .MuiOutlinedInput-root": {
-    backgroundColor: "#ffffff",
-    width: "210%", // sigue siendo ancho extendido
-    resize: "horizontal",
-    minHeight: "8.8rem", // altura mínima
-    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-      borderColor: "blue", // borde azul en error
+    "& .MuiFormHelperText-root.Mui-error": {
+      color: "blue",
     },
-  },
-  "& .MuiFormHelperText-root.Mui-error": {
-    color: "blue", // texto de error azul
-  },
- 
-};
+  };
 
+  const textAreaStyle2 = {
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#ffffff",
+      width: "210%",
+      resize: "horizontal",
+      minHeight: "8.8rem",
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: "blue",
+      },
+    },
+    "& .MuiFormHelperText-root.Mui-error": {
+      color: "blue",
+    },
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -83,111 +81,115 @@ const textAreaStyle2 = {
     onSubmit({ ...formData, supplements: subformData });
   };
 
+  // Calcular estados disabled
+  const isAddButtonDisabled =
+    Object.values(subInputErrors).some(Boolean) ||
+    Object.values(newItem).some((val, idx) => {
+      const f = visibleSubfields[idx];
+      return (f.required ?? true) && (!val || String(val).trim() === "");
+    });
+
+  const isSubmitButtonDisabled =
+    Object.values(inputErrors).some(Boolean) ||
+    (visibleFields.length === 0 && subformData.length === 0);
+
   return (
     <Paper sx={{ maxWidth: 700, margin: "20px auto", p: 3, borderRadius: 3, boxShadow: 3, backgroundColor: "#d9d9d9" }}>
       <form onSubmit={handleSubmit}>
         {/* Campos principales */}
         {visibleFields.length > 0 && (
-          <Grid >
-            {title && <h2 style={{ paddingBottom: "10px", textAlign:"center" }}>{title}</h2>}
+          <Grid>
+            {title && (
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                {title}
+              </h2>
+            )}
             {visibleFields.map((f) => (
-             <Grid item xs={f.type === "textarea" ? 12 : 2} key={f.key} sx={{ mr: 2 }}>
-             <InputValidated
-  name={f.key}
-  type={f.type || "text"}
-  placeholder={f.placeholder}
-  value={formData[f.key]}
-  onChange={handleChange}
-  validations={f.validations || []}
-  onError={(key, error) => handleInputError(key, error)}
-  required={f.required ?? true}
-   sx={whiteInputStyle}
-/>
-
+              <Grid item xs={f.type === "textarea" ? 12 : 2} key={f.key} sx={{ mr: 2 }}>
+                <InputValidated
+                  name={f.key}
+                  type={f.type || "text"}
+                  placeholder={f.placeholder}
+                  value={formData[f.key]}
+                  onChange={handleChange}
+                  validations={f.validations || []}
+                  onError={(key, error) => handleInputError(key, error)}
+                  required={f.required ?? true}
+                  sx={whiteInputStyle}
+                />
               </Grid>
             ))}
           </Grid>
         )}
 
+        {subTittle && (
+          <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+            {subTittle}
+          </h3>
+        )}
 
-{subTittle && <h2 style={{ paddingBottom: "10px", textAlign:"center" }}>{subTittle}</h2>}
         {/* Subformulario */}
-       <Grid container spacing={2}>
-  {/* Columna izquierda: Fecha y Cantidad apiladas */}
-
-  <Grid item xs={4}>
-    <Grid container spacing={1} direction="column">
-      {visibleSubfields
-        .filter(f => f.key === "supply_expiration_date" || f.key === "supply_quantity")
-        .map(f => (
-          <Grid item key={f.key}>
-            <InputValidated
-              name={f.key}
-              type={f.type || "text"}
-              placeholder={f.placeholder}
-              value={newItem[f.key]}
-              onChange={handleNewItemChange}
-              validations={f.validations || []}
-              onError={(key, error) => handleInputError(key, error, true)}
-              required={f.required ?? true}
-              sx={whiteInputStyle}
-              
-            />
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Grid container spacing={1} direction="column">
+              {visibleSubfields
+                .filter(f => f.key === "supply_expiration_date" || f.key === "supply_quantity")
+                .map(f => (
+                  <Grid item key={f.key}>
+                    <InputValidated
+                      name={f.key}
+                      type={f.type || "text"}
+                      placeholder={f.placeholder}
+                      value={newItem[f.key]}
+                      onChange={handleNewItemChange}
+                      validations={f.validations || []}
+                      onError={(key, error) => handleInputError(key, error, true)}
+                      required={f.required ?? true}
+                      sx={whiteInputStyle}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
           </Grid>
-        ))}
-    </Grid>
-  </Grid>
 
-  {/* Columna derecha: Descripción */}
-  <Grid item xs={8}>
-    {visibleSubfields
-      .filter(f => f.key === "supply_description")
-      .map(f => (
-        <InputValidated
-          key={f.key}
-          name={f.key}
-          type={f.type || "text"}
-          placeholder={f.placeholder}
-          value={newItem[f.key]}
-          onChange={handleNewItemChange}
-          validations={f.validations || []}
-          onError={(key, error) => handleInputError(key, error, true)}
-          required={f.required ?? true}
-          sx={textAreaStyle2}
-        />
-      ))}
-  </Grid>
-</Grid>
+          <Grid item xs={8}>
+            {visibleSubfields
+              .filter(f => f.key === "supply_description")
+              .map(f => (
+                <InputValidated
+                  key={f.key}
+                  name={f.key}
+                  type={f.type || "text"}
+                  placeholder={f.placeholder}
+                  value={newItem[f.key]}
+                  onChange={handleNewItemChange}
+                  validations={f.validations || []}
+                  onError={(key, error) => handleInputError(key, error, true)}
+                  required={f.required ?? true}
+                  sx={textAreaStyle2}
+                />
+              ))}
+          </Grid>
+        </Grid>
 
-
-         {/* Botones */}
-        <Box sx={{ display: "flex", justifyContent: "flex-end"}} mt={2}>
+        {/* Botones */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }} mt={2}>
           {visibleSubfields.length > 0 && (
+            // ✅ Botón personalizado para "Añadir suplemento"
             <Button
-              variant="outlined"
-              color="primary"
+              text={subTittle}
               onClick={handleAddItem}
-              disabled={
-                Object.values(subInputErrors).some(Boolean) ||
-                Object.values(newItem).some((val, idx) => {
-                  const f = visibleSubfields[idx];
-                  return (f.required ?? true) && (!val || String(val).trim() === "");
-                })
-              }
-              sx={{ mr: 1 }}
-            >
-              {subTittle}
-            </Button>
+              disabled={isAddButtonDisabled}
+            />
           )}
 
+          {/* ✅ Botón personalizado para "Añadir Botiquín" */}
           <Button
+            text={titleBtn}
+            onClick={handleSubmit}
+            disabled={isSubmitButtonDisabled}
             type="submit"
-            variant="contained"
-            color="primary"
-            disabled={Object.values(inputErrors).some(Boolean) || (visibleFields.length === 0 && subformData.length === 0)}
-          >
-            {titleBtn}
-          </Button>
+          />
         </Box>
 
         {/* Tabla de subitems */}
@@ -199,8 +201,6 @@ const textAreaStyle2 = {
             onEdit={handleEditItem}
           />
         )}
-
-       
       </form>
     </Paper>
   );
