@@ -67,13 +67,50 @@ function InputValidatedDate({
             onChange={handleChange}
             placeholder={placeholder || "Fecha"}
             error={!!error}
-            helperText={error}
+            helperText={error || " "}
             InputLabelProps={{ shrink: true }}
             inputProps={{ min: minDate, max: maxDate }}
             sx={{
                 "& .MuiOutlinedInput-root": {
                     backgroundColor: "#ffffff",
+
+                    // Borde normal
+                    "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#cccccc",
+                    },
+
+                    // Borde cuando hay error
+                    "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "blue",
+                    },
+
+                    // Hover cuando hay error
+                    "&.Mui-error:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "darkblue",
+                    },
+
+                    // Focus cuando hay error
+                    "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "darkblue",
+                    },
                 },
+
+                // Label cuando hay error
+                "& .MuiFormLabel-root.Mui-error": {
+                    color: "blue",
+                },
+
+                // Label normal (sin error)
+                "& .MuiInputLabel-root": {
+                    color: "#2563eb",
+                    opacity: 1,
+                },
+
+                // HelperText cuando hay error
+                "& .MuiFormHelperText-root.Mui-error": {
+                    color: "blue",
+                },
+
                 ...sx,
             }}
             required={required}
