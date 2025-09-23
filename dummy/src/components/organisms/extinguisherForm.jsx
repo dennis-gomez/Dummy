@@ -1,3 +1,4 @@
+import React from "react";
 import { Box, Button, Typography, Grid, Paper } from "@mui/material";
 import InputValidated from "../molecules/InputValidated";
 import InputValidatedDate from "../molecules/InputValidatedDate";
@@ -25,27 +26,14 @@ const extinguisherTypes = [
   { value: "BC", label: "BC — Para líquidos y gases" },
   { value: "AB", label: "AB — Para sólidos y líquidos" },
 ];
+
+// Estilo común para todos los inputs
 const whiteInputStyle = {
   '& .MuiOutlinedInput-root': {
     backgroundColor: '#ffffff',
   }
 };
-const observationsTextareaStyle = {
-  ...whiteInputStyle,
-  width: '100%',
-  '& .MuiOutlinedInput-root': {
-    backgroundColor: '#ffffff',
-    minHeight: '100px',
-    resize: 'vertical',
-    '& textarea': {
-      resize: 'vertical',
-      minHeight: '80px',
-      "& .MuiFormHelperText-root.Mui-error": {
-        color: "blue",
-      },
-    }
-  },
-};
+
 const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel }) => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -56,22 +44,25 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
     const { name, value } = e.target;
     setExtinguisher({ ...extinguisher, [name]: value });
   };
+
   return (
     <Paper
       sx={{
-        maxWidth: 900,
+        maxWidth: 730,
         margin: "20px auto",
-        p: { xs: 2, sm: 3 },
+        p: 3,
+        borderRadius: 3,
         boxShadow: 3,
         backgroundColor: "#d9d9d9",
-        width: '95%',
       }}
     >
       <Typography variant="h6" gutterBottom>
         Agregar Extintor
       </Typography>
+
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={4}>
+        {/* Fila 1 */}
+        <Grid item xs={4}>
           <InputValidated
             name="extinguisher_serial_number"
             placeholder={fieldLabels.extinguisher_serial_number}
@@ -80,7 +71,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4}>
           <InputValidatedDate
             name="extinguisher_manufacturing_date"
             placeholder={fieldLabels.extinguisher_manufacturing_date}
@@ -90,7 +81,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4}>
           <InputValidated
             name="extinguisher_brand"
             placeholder={fieldLabels.extinguisher_brand}
@@ -99,7 +90,9 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+
+        {/* Fila 2 */}
+        <Grid item xs={4}>
           <InputValidated
             name="extinguisher_agent"
             placeholder={fieldLabels.extinguisher_agent}
@@ -108,7 +101,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4}>
           <InputValidatedDate
             name="extinguisher_installation_date"
             placeholder={fieldLabels.extinguisher_installation_date}
@@ -118,7 +111,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4}>
           <InputValidated
             name="extinguisher_type"
             placeholder={fieldLabels.extinguisher_type}
@@ -129,7 +122,9 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+
+        {/* Fila 3 */}
+        <Grid item xs={4}>
           <InputValidated
             name="extinguisher_capacity"
             placeholder={fieldLabels.extinguisher_capacity}
@@ -138,7 +133,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4}>
           <InputValidatedDate
             name="extinguisher_next_date_inspection"
             placeholder={fieldLabels.extinguisher_next_date_inspection}
@@ -148,7 +143,7 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={4}>
           <InputValidated
             name="extinguisher_location"
             placeholder={fieldLabels.extinguisher_location}
@@ -157,6 +152,8 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             sx={whiteInputStyle}
           />
         </Grid>
+
+        {/* Observaciones ocupa toda la fila */}
         <Grid item xs={12}>
           <InputValidated
             name="extinguisher_observations"
@@ -165,11 +162,11 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
             onChange={handleInputChange}
             type="textarea"
             required={false}
-            rows={4}
-            sx={observationsTextareaStyle}
+            sx={whiteInputStyle}
           />
         </Grid>
       </Grid>
+
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
         <Button onClick={onCancel} sx={{ mr: 2 }}>
           Cancelar
@@ -181,4 +178,5 @@ const ExtinguisherForm = ({ extinguisher, setExtinguisher, onSubmit, onCancel })
     </Paper>
   );
 };
+
 export default ExtinguisherForm;

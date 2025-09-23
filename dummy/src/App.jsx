@@ -21,6 +21,7 @@ function App() {
             <Route path="/salud/botiquin" element={<MedicKitPage />} />
             <Route path="/vehiculos" element={<VehiclePage />} />
             <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
+            {/* más rutas */}
           </Routes>
         </main>
 

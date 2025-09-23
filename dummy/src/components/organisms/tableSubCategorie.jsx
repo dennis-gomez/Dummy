@@ -1,3 +1,4 @@
+import React from "react";
 import useTableSubcategorie from "/src/utils/useTableSubcategorie";
 import { tableValidator } from "/src/utils/tableValidator";
 import Swal from "sweetalert2";
@@ -29,7 +30,7 @@ function TableSubcategorie({
 
   if (!items) return null;
 
-  // Confirmar el agregado
+  // 🔹 Confirmar Agregar
   const handleValidatedAdd = async () => {
     const error = tableValidator({
       value: name,
@@ -57,7 +58,7 @@ function TableSubcategorie({
     }
   };
 
-  // Confirmar guardado
+  // 🔹 Confirmar Guardar
   const handleValidatedSave = async (det) => {
     if (editValue.trim().length < 3) {
       Swal.fire({
@@ -96,7 +97,7 @@ function TableSubcategorie({
     }
   };
 
-  // Confirmar eliminacion
+  // 🔹 Confirmar Eliminar
   const handleValidatedDelete = async (codCat, codServ, codItem) => {
     const result = await Swal.fire({
       title: "¿Quieres eliminar este item?",

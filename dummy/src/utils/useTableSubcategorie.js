@@ -7,7 +7,7 @@ export default function useTableSubcategorie(items, onAddItem, onEditItem) {
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
 
-  // Agregar con validación
+  // 🔹 Agregar con validación
   const handleAdd = async () => {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -30,13 +30,13 @@ export default function useTableSubcategorie(items, onAddItem, onEditItem) {
     if (e.key === "Enter") handleAdd();
   };
 
-  // Iniciar edición
+  // 🔹 Iniciar edición
   const handleEditClick = (item) => {
     setEditingId(item.cod_item);
     setEditValue(item.item_name || "");
   };
 
-  // Guardar edición con validación
+  // 🔹 Guardar edición con validación
   const handleSaveEdit = async (cod_category, cod_service, cod_item) => {
     const trimmed = editValue.trim();
     if (!trimmed) return;

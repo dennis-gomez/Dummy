@@ -1,3 +1,4 @@
+import React from "react";
 import useTableOptionServices from "/src/utils/useTableOptionServices";
 import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";
@@ -38,7 +39,7 @@ function TableOptionServices({
 
   if (!categoria) return null;
 
-  // Confirmar el guardado
+  // 🔹 Confirmar Guardar
   const handleValidatedSave = async (sub) => {
     if (editValue.trim().length < 3) {
       Swal.fire({
@@ -65,7 +66,7 @@ function TableOptionServices({
     }
   };
 
-  // Confirmar Eliminar
+  // 🔹 Confirmar Eliminar
   const handleValidatedDelete = async (codCat, codServ) => {
     const result = await Swal.fire({
       title: "¿Quieres eliminar esta categoría?",

@@ -6,7 +6,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ModalElimination from "../molecules/modalElimination";
 import DetailsTable from "../organisms/detailTable";
 import InputValidated from "../atoms/inputValidated";
-import Button from "../atoms/button";
+import Button from "../atoms/button"; // ✅ Importa el componente Button
 import { useState, useEffect } from "react";
 
 export default function Row({
@@ -101,7 +101,7 @@ export default function Row({
         ))}
 
         <td className="py-4 px-4 text-center">
-          <div className="flex justify-center items-center space-x-3">
+          <div className="flex justify-center space-x-3">
             {editingKit ? (
               <>
                 <button
@@ -123,7 +123,7 @@ export default function Row({
               </>
             ) : (
               <>
-                   <button
+                <button
                   type="button"
                   onClick={() => {
                     setEditingKit(true);

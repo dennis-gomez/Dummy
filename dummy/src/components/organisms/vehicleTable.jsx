@@ -1,16 +1,15 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModalElimination from "../molecules/modalElimination";
 import Seeker from "../molecules/seeker";
-import { CircularProgress } from "@mui/material";
+import { Box, Typography, CircularProgress } from "@mui/material";
 
 const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch, valueText, valueFeature, onChangeText, onChangeFeature }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
 
-  
   const handleEditClick = (vehicle) => {
     setEditingId(vehicle.cod_vehicle);
     setEditData({ ...vehicle });
@@ -144,7 +143,9 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                           </td>
                         ))}
                         <td className="py-4 px-6 text-center align-middle">
+                          {/* ✅ CAMBIÉ EL ORDEN DE LOS BOTONES */}
                           <div className="flex justify-center space-x-3">
+                            {/* ✅ PRIMERO EL BOTÓN DE EDITAR */}
                             <button
                               onClick={() => handleEditClick(vehicle)}
                               aria-label="Editar vehículo"
@@ -152,6 +153,7 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
                             >
                               <EditIcon />
                             </button>
+                            {/* ✅ LUEGO EL BOTÓN DE ELIMINAR */}
                             <ModalElimination
                               message={'Eliminar vehículo'}
                               onClick={() => onDelete(vehicle.cod_vehicle)}
