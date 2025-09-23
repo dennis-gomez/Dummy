@@ -36,11 +36,14 @@ function VehiclePage() {
                     boxShadow: 3,
                     borderRadius: 2,
                     backgroundColor: "#d9d9d9",
+                    textAlign: "center",
                 }}
                 >
-                    <Typography variant="h6" gutterBottom color="textPrimary">
-                        Agregar vehículo
-                    </Typography>
+                    <div>
+                        <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
+                            Agregar vehículo
+                        </h3>
+                    </div> 
                     <Form fields={fields} onSubmit={handleSubmit} titleBtn={"Guardar vehículo"} />
                 </Box>
             )}

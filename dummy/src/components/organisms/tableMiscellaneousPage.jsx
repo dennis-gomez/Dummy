@@ -45,7 +45,7 @@ function TableMiscellaneousPage({
       title: "¿Quieres agregar este servicio?",
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Sí, agregar",
+      confirmButtonText: "S\u00ED, agregar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -72,7 +72,7 @@ function TableMiscellaneousPage({
       title: "¿Quieres guardar los cambios?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, guardar",
+      confirmButtonText: "S\u00ED, guardar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -88,10 +88,10 @@ function TableMiscellaneousPage({
   const handleValidatedDelete = async (id) => {
     const result = await Swal.fire({
       title: "¿Quieres eliminar este servicio?",
-      text: "No podrás deshacer esta acción",
+      text: "No podr\u00E1s deshacer esta acci\u00F3n",
       icon: "error",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "S\u00ED, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -143,7 +143,7 @@ function TableMiscellaneousPage({
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
               <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
-                Código Servicio
+                C&oacute;digo Servicio
               </th>
               <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider">
                 Servicio

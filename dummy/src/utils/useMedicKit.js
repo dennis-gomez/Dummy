@@ -23,16 +23,16 @@ export const useMedicKits = () => {
  const fields = [
   {
     key: "cod_medic_kit",
-    label: "Código de botiquín",
+    label: "C\u00F3digo de botiqu\u00EDn",
     type: "text",
-    placeholder: "Código de botiquín",
+    placeholder: "C\u00F3digo de botiqu\u00EDn",
     required: false
   },
   {
     key: "medic_kit_location",
-    label: "Localización",
+    label: "Localizaci\u00F3n",
     type: "text",
-    placeholder: "Localización",
+    placeholder: "Localizaci\u00F3n",
     required: true
   },
   {
@@ -47,19 +47,19 @@ export const useMedicKits = () => {
 
 
 const subfields = [
-  { key: "cod_medic_kit", label: "Código de botiquín", type: "text", placeholder: "Código de botiquín", required: false },
-  { key: "cod_supply", label: "Código de suplemento", type: "text", placeholder: "Código de suplemento", required: false },
+  { key: "cod_medic_kit", label: "C\u00F3digo de botiqu\u00EDn", type: "text", placeholder: "C\u00F3digo de botiqu\u00EDn", required: false },
+  { key: "cod_supply", label: "C\u00F3digo de suplemento", type: "text", placeholder: "C\u00F3digo de suplemento", required: false },
   { key: "supply_quantity", label: "Cantidad", type: "number", placeholder: "Cantidad", required: true },
   { key: "supply_expiration_date", label: "Fecha de Vencimiento", type: "date", placeholder: "Fecha de Vencimiento", required: false },
-   { key: "supply_description", label: "Descripción", type: "textarea", placeholder: "Descripción", required: true },
+   { key: "supply_description", label: "Descripci\u00F3n", type: "textarea", placeholder: "Descripci\u00F3n", required: true },
 ];
 
 
 const searchFields = [
    
-{name: "medic_kit_location", placeholder: "Localización de botiquín"},
-{name: "medic_kit_details", placeholder: "Detalles de botiquín"},
-{ name: "supply_description", placeholder: "Suministro", },
+{name: "medic_kit_location", placeholder: "Localizaci\u00F3n de botiqu\u00EDn"},
+{name: "medic_kit_details", placeholder: "Detalles de botiqu\u00EDn"},
+{ name: "supply_description", placeholder: "Suplementos", },
 ]
 
   const handleSearch = async (feature, text) => {
