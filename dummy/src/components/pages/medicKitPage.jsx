@@ -53,7 +53,6 @@ function MedicKitPage() {
         Gestión de Botiquines
       </h1>
       
-      {/* ✅ Botón con tu función local */}
       <div className="flex justify-end mb-6">
         <Button text={getButtonName()} onClick={handleAddClick} />
       </div>
