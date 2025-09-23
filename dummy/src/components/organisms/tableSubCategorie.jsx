@@ -45,7 +45,7 @@ function TableSubcategorie({
       title: "¿Quieres agregar este item?",
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "Sí, agregar",
+      confirmButtonText: "S\u00ED, agregar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -53,7 +53,7 @@ function TableSubcategorie({
 
     if (result.isConfirmed) {
       await handleAdd();
-      Swal.fire("Agregado", "El item fue agregado con éxito", "success");
+      Swal.fire("Agregado", "El item fue agregado con \u00E9xito", "success");
     }
   };
 
@@ -62,7 +62,7 @@ function TableSubcategorie({
     if (editValue.trim().length < 3) {
       Swal.fire({
         icon: "error",
-        title: "Validación",
+        title: "Validaci\u00F3n",
         text: "El nombre del item debe tener al menos 3 caracteres",
       });
       return;
@@ -76,7 +76,7 @@ function TableSubcategorie({
     });
 
     if (error) {
-      Swal.fire({ icon: "error", title: "Validación", text: error });
+      Swal.fire({ icon: "error", title: "Validaci\u00F3n", text: error });
       return;
     }
 
@@ -84,7 +84,7 @@ function TableSubcategorie({
       title: "¿Quieres guardar los cambios?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, guardar",
+      confirmButtonText: "S\u00ED, guardar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -100,10 +100,10 @@ function TableSubcategorie({
   const handleValidatedDelete = async (codCat, codServ, codItem) => {
     const result = await Swal.fire({
       title: "¿Quieres eliminar este item?",
-      text: "No podrás deshacer esta acción",
+      text: "No podr\u00E1s deshacer esta acci\u00F3n",
       icon: "error",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "S\u00ED, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -159,9 +159,9 @@ function TableSubcategorie({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6 text-center">Código Servicio</th>
-              <th className="py-4 px-6 text-center">Código Categoría</th>
-              <th className="py-4 px-6 text-center">Código Item</th>
+              <th className="py-4 px-6 text-center">C&oacute;digo Servicio</th>
+              <th className="py-4 px-6 text-center">C&oacute;digo Categor&iacute;a</th>
+              <th className="py-4 px-6 text-center">C&oacute;digo Item</th>
               <th className="py-4 px-6 text-center">Items</th>
               <th className="py-4 px-6 text-center">Acciones</th>
             </tr>

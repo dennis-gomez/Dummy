@@ -43,8 +43,8 @@ function TableOptionServices({
     if (editValue.trim().length < 3) {
       Swal.fire({
         icon: "error",
-        title: "Validación",
-        text: "El nombre de la categoría debe tener al menos 3 caracteres",
+        title: "Validaci\u00F3n",
+        text: "El nombre de la categor\u00EDa debe tener al menos 3 caracteres",
       });
       return;
     }
@@ -53,7 +53,7 @@ function TableOptionServices({
       title: "¿Quieres guardar los cambios?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, guardar",
+      confirmButtonText: "S\u00ED, guardar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -61,18 +61,18 @@ function TableOptionServices({
 
     if (result.isConfirmed) {
       await saveEdit(sub);
-      Swal.fire("Actualizado", "La categoría fue modificada correctamente", "success");
+      Swal.fire("Actualizado", "La categor\u00EDa fue modificada correctamente", "success");
     }
   };
 
   // Confirmar Eliminar
   const handleValidatedDelete = async (codCat, codServ) => {
     const result = await Swal.fire({
-      title: "¿Quieres eliminar esta categoría?",
-      text: "No podrás deshacer esta acción",
+      title: "¿Quieres eliminar esta categor\u00EDa?",
+      text: "No podr\u00E1s deshacer esta acci\u00F3n",
       icon: "error",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "S\u00ED, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -80,22 +80,22 @@ function TableOptionServices({
 
     if (result.isConfirmed) {
       await remove(codCat, codServ);
-      Swal.fire("Eliminado", "La categoría fue borrada", "success");
+      Swal.fire("Eliminado", "La categor\u00EDa fue borrada", "success");
     }
   };
 
   return (
     <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
-      <h2 className="mb-6 text-2xl font-bold text-gray-800 text-center">Categorías</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-800 text-center">Categor&iacute;as</h2>
 
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-            Nueva categoría:
+            Nueva categor&iacute;a:
           </label>
           <input
             type="text"
-            placeholder="Escribe una categoría"
+            placeholder="Escribe una categor&iacute;a"
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
@@ -128,9 +128,9 @@ function TableOptionServices({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6 text-center">Código Servicio</th>
-              <th className="py-4 px-6 text-center">Código Categoría</th>
-              <th className="py-4 px-6 text-center">Categoría</th>
+              <th className="py-4 px-6 text-center">C&oacute;digo Servicio</th>
+              <th className="py-4 px-6 text-center">C&oacute;digo Categor&iacute;a</th>
+              <th className="py-4 px-6 text-center">Categor&iacute;a</th>
               <th className="py-4 px-6 text-center">Acciones</th>
             </tr>
           </thead>
@@ -138,7 +138,7 @@ function TableOptionServices({
             {categoria.length === 0 ? (
               <tr>
                 <td colSpan={4} className="py-8 px-6 text-center text-gray-500 italic bg-gray-50">
-                  Sin categorías
+                  Sin categor&iacute;as
                 </td>
               </tr>
             ) : (
