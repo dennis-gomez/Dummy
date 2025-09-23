@@ -1,7 +1,6 @@
 import CollapsibleTable from "../organisms/collapsibleTable";
 import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
-import Button from "../atoms/button";
 
 function MedicKitPage() {
   const {
@@ -24,10 +23,8 @@ function MedicKitPage() {
     searchFields,
     handleSearch,
     isLoading,
-    // onAddClick, // ❌ REMOVER ESTA LÍNEA - usa tu función local
   } = useMedicKits();
 
-  // ✅ Esta es tu función local
   const handleAddClick = () => {
     console.log("Botón clickeado - isCreatingMedicKit actual:", isCreatingMedicKit);
     
@@ -53,8 +50,6 @@ function MedicKitPage() {
         Gestión de Botiquines
       </h1>
 
-      
-      {/* ✅ Formularios condicionales */}
       {isCreatingSupply && medicKitSelectedId && (
         <FormWithDetails
           subfields={subfields}
@@ -92,7 +87,7 @@ function MedicKitPage() {
         isCreatingSupply={isCreatingSupply}
         setIsCreatingMedicKit={setIsCreatingMedicKit}
         setIsCreatingSupply={setIsCreatingSupply}
-        onAddClick={handleAddClick} // ✅ Pasar tu función local
+        onAddClick={handleAddClick}
         searchFields={searchFields}
         handleSearch={handleSearch}
         isLoading={isLoading}
