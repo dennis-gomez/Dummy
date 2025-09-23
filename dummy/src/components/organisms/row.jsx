@@ -123,7 +123,6 @@ export default function Row({
               </>
             ) : (
               <>
-                {/* ✅ ORDEN INVERTIDO: PRIMERO ELIMINAR, LUEGO EDITAR */}
                 <ModalElimination
                   message={"¿Quieres eliminar este kit médico?"}
                   onClick={() => onDeleteMedicKit(item[idKey])}

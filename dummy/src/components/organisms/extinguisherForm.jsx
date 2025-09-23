@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Button, Typography, Grid, Paper } from "@mui/material";
 import InputValidated from "../molecules/InputValidated";
 import InputValidatedDate from "../molecules/InputValidatedDate";

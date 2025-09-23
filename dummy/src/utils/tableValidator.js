@@ -1,9 +1,8 @@
-// ✅ Validador específico para tablas (Servicios, Categorías, Items)
 export const tableValidator = ({
   value,
   list = [],         // Lista local (servicios, categorías o items)
-  parentList = [],    // Lista del padre (ej: categorías del servicio padre)
-  grandParentList = [] // Lista del abuelo (ej: servicios cuando validas items)
+  parentList = [],    // Lista del padre 
+  grandParentList = [] // Lista del abuelo 
 }) => {
   if (!value?.trim()) {
     return "El campo no puede estar vacío";
@@ -37,10 +36,10 @@ export const tableValidator = ({
     return "Debe tener al menos 3 caracteres";
   }
 
-  // ❌ Longitud máxima
+  // Longitud máxima
   if (trimmed.length > 50) {
     return "Debe tener máximo 50 caracteres";
   }
 
-  return ""; // ✅ válido
+  return ""; //valido
 };

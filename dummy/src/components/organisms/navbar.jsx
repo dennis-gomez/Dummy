@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
-import AdbIcon from '@mui/icons-material/Adb';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -93,12 +92,11 @@ function Navbar() {
     <nav className="bg-blue-600 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo y menú móvil */}
           <div className="flex items-center">
             <img
-              src="/src/assets/logo.png"   // ajusta la ruta según donde pongas la imagen
+              src="/src/assets/logo.png"   
               alt="FleetManager Logo"
-              className="h-10 w-10 mr-3 rounded" // puedes jugar con tamaño y estilos
+              className="h-10 w-10 mr-3 rounded" 
             />
             <div className="hidden md:flex items-center">
               <span className="text-xl font-bold"></span>

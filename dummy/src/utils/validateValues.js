@@ -2,7 +2,7 @@
 export function ValidateValues({ type, value, required = true, validations = [], restriction, allValues}) {
   let err = "";
 
-  // 🔹 Requerido
+  // Requerido
   if (required && (value === "" || value === null || value === undefined)) {
     err = "Este campo es obligatorio";
   }
@@ -11,7 +11,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
     return null;
   }
 
-  // 🔹 Validaciones base
+  // Validaciones base
   if (type === "number") {
 
     if (value !== "" && isNaN(Number(value))) {
@@ -61,7 +61,7 @@ export function ValidateValues({ type, value, required = true, validations = [],
 }
 
 
-  // 🔹 Validaciones personalizadas
+  // Validaciones personalizadas
   if (!err && validations.length > 0) {
     for (const validate of validations) {
       const vErr = validate(value, allValues);

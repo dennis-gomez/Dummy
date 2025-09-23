@@ -1,4 +1,3 @@
-import React from "react";
 import useTableMiscellaneousPage from "/src/utils/useTableMiscellaneous";
 import { tableValidator } from "/src/utils/tableValidator";
 import Swal from "sweetalert2";
@@ -30,7 +29,7 @@ function TableMiscellaneousPage({
     remove,
   } = useTableMiscellaneousPage(services, onAddItem, onEditService, onDeleteService);
 
-  // 🔹 Confirmación al Agregar
+  // Confirmacion al Agregar
   const handleValidatedAdd = async () => {
     const error = tableValidator({
       value: name,
@@ -58,7 +57,7 @@ function TableMiscellaneousPage({
     }
   };
 
-  // 🔹 Confirmación al Editar
+  // Confirmación al Editar
   const handleValidatedEdit = async (srv) => {
     if (editValue.trim().length < 3) {
       Swal.fire({
@@ -85,7 +84,7 @@ function TableMiscellaneousPage({
     }
   };
 
-  // 🔹 Confirmación al Eliminar
+  // Confirmación al Eliminar
   const handleValidatedDelete = async (id) => {
     const result = await Swal.fire({
       title: "¿Quieres eliminar este servicio?",

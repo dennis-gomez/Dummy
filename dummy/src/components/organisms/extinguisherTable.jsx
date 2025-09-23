@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -28,16 +28,15 @@ const ExtinguisherTable = ({
     setEditData({ ...ext });
   };
 
-const handleSaveEdit = async () => {
-  if (!editingId) return;
+  const handleSaveEdit = async () => {
+    if (!editingId) return;
 
-  const isSaved = await onEdit(editingId, editData); // <- pasamos el ID
-  if (isSaved) {
-    setEditingId(null);
-    setEditData({});
-  }
-};
-
+    const isSaved = await onEdit(editingId, editData); // <- pasar el ID
+    if (isSaved) {
+      setEditingId(null);
+      setEditData({});
+    }
+  };
 
   const handleCancelEdit = () => {
     setEditingId(null);
@@ -77,7 +76,7 @@ const handleSaveEdit = async () => {
             )}
           </div>
 
-          {/* 📋 Tabla */}
+          {/* Tabla */}
           <div className="overflow-x-auto rounded-xl">
             <table className="min-w-full">
               <thead>

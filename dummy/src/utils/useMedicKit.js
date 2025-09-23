@@ -67,12 +67,12 @@ const searchFields = [
     if (feature === "supply_description") {
       // Devuelve una lista de kits con esos suplementos
 
-if(text.trim() === "") {
-setSearchAnSupply(false);
-setSearchTerm("");
-fetchMedicKits();
-return;
-}
+      if(text.trim() === "") {
+      setSearchAnSupply(false);
+      setSearchTerm("");
+      fetchMedicKits();
+      return;
+      }
 
       const kitsWithThatsSupplies = await searchSuppliesByTerm(text);
 
@@ -108,7 +108,6 @@ return;
 
   } catch (error) {
     setError("Error al buscar botiquines o suplementos");
-    console.error(error);
     ModalAlert("Error", "Error al buscar botiquines o suplementos.", "error");
   }
 };
@@ -123,7 +122,6 @@ return;
       setMedicKitsList(medicKitsResp);
     } catch (err) {
       setError("Error al obtener botiquines");
-      console.error(err);
     }
   };
 
@@ -144,7 +142,6 @@ return;
     setSuppliesList(supplies);
   } catch (err) {
     setError("Error al obtener suplementos médicos");
-    console.error(err);
   }
 };
 
@@ -176,7 +173,6 @@ return;
       ModalAlert("Éxito", "Se agregó correctamente", "success");
     } catch (err) {
       setError("Error al agregar el kit médico o suplementos");
-      console.error(err);
       ModalAlert("Error", err.message, "error");
     }
   };
@@ -188,7 +184,6 @@ return;
       ModalAlert("Éxito", "Kit médico actualizado", "success");
     } catch (err) {
       setError("Error al actualizar el kit médico");
-      console.error(err);
       ModalAlert("Error", err.message, "error");
     }
   };
@@ -201,7 +196,6 @@ return;
       ModalAlert("Éxito", "Suplemento actualizado", "success");
     } catch (err) {
       setError("Error al actualizar suplemento");
-      console.error(err);
       ModalAlert("Error", err.message, "error");
     }
   };
@@ -213,7 +207,6 @@ return;
       ModalAlert("Éxito", "Kit médico eliminado", "success");
     } catch (err) {
       setError("Error al eliminar kit médico");
-      console.error(err);
       ModalAlert("Error", err.message, "error");
     }
   };
@@ -226,13 +219,11 @@ return;
       ModalAlert("Éxito", "Suplemento eliminado", "success");
     } catch (err) {
       setError("Error al eliminar suplemento");
-      console.error(err);
       ModalAlert("Error", err.message, "error");
     }
   };
 
   useEffect(() => {
-    console.log( fields);
     fetchMedicKits();
   }, []);
 

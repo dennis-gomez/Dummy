@@ -1,9 +1,8 @@
-// src/components/pages/ExtinguisherPage.jsx
 import { Box, Typography } from "@mui/material";
 import Form from "../organisms/form";
 import ExtinguisherTable from "../organisms/extinguisherTable";
 import { useExtinguishers } from "../../utils/useExtinguishers";
-import Button from "../atoms/button"; // Importar tu botón personalizado
+import Button from "../atoms/button";
 
 const ExtinguisherPage = () => {
   const {
@@ -77,7 +76,6 @@ const ExtinguisherPage = () => {
       )}
 
       {/* Botón toggle */}
-      {/* Botón personalizado en lugar del Button de MUI */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
         <Button
           text={showForm ? "Cancelar" : "Agregar Extintor"}
