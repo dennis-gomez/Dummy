@@ -1,3 +1,4 @@
+// services/Service_service.js
 import axios from "axios";
 
 const API_URL = "http://localhost:3000/services/";
@@ -23,6 +24,7 @@ export const addService = async (service_name) => {
     );
     return response.data;
   } catch (error) {
+    console.error("addService ERROR:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -37,6 +39,7 @@ export const updateService = async (cod_service, service_name) => {
     );
     return response.data;
   } catch (error) {
+    console.error("updateService ERROR:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -51,6 +54,7 @@ export const deleteService = async (cod_service) => {
     });
     return response.data;
   } catch (error) {
+    console.error("deleteService ERROR:", error.response?.data || error.message);
     throw error;
   }
 };

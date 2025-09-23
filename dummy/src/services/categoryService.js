@@ -1,3 +1,4 @@
+// services/categoryService.js
 import axios from "axios";
 
 const API_URL = "http://localhost:3000/categories/";
@@ -25,6 +26,7 @@ export const addCategory = async (cod_service, category_name) => {
     );
     return res.data;
   } catch (err) {
+    console.error("addCategory ERROR:", err.response?.data || err.message);
     throw err;
   }
 };
@@ -39,6 +41,7 @@ export const updateCategory = async (cod_category, cod_service, category_name) =
     );
     return res.data;
   } catch (err) {
+    console.error("updateCategory ERROR:", err.response?.data || err.message);
     throw err;
   }
 };
@@ -52,6 +55,7 @@ export const deleteCategory = async (cod_category, cod_service) => {
     });
     return res.data;
   } catch (err) {
+    console.error("deleteCategory ERROR:", err.response?.data || err.message);
     throw err;
   }
 };

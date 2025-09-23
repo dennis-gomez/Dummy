@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { tableValidator } from "/src/utils/tableValidator"; 
-import Swal from "sweetalert2"; 
+import { tableValidator } from "/src/utils/tableValidator"; // ✅ validador centralizado
+import Swal from "sweetalert2"; // ✅ mensajes bonitos
 
 export default function useTableOptionServices(
   categoria,
@@ -13,6 +13,7 @@ export default function useTableOptionServices(
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
 
+  // 🔹 Agregar categoría con validación
   const handleValidatedAdd = async () => {
     const error = tableValidator({
       value: name,
@@ -43,7 +44,7 @@ export default function useTableOptionServices(
     setEditValue("");
   };
 
-  // Guardar edicion con validación
+  // 🔹 Guardar edición con validación
   const saveEdit = async (cat) => {
     const trimmed = editValue.trim();
     if (!trimmed) return;
@@ -85,7 +86,7 @@ export default function useTableOptionServices(
     editingId,
     editValue,
     setEditValue,
-    handleValidatedAdd,
+    handleValidatedAdd, // ✅ reemplaza a handleAdd
     startEdit,
     cancelEdit,
     saveEdit,
