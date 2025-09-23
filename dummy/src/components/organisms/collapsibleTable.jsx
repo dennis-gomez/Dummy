@@ -2,6 +2,7 @@ import { useState } from "react";
 import Row from "./Row";
 import Seeker from "../molecules/seeker";
 import { CircularProgress } from "@mui/material";
+import Button from "../atoms/button";
 
 export default function CollapsibleTable({
   list,
@@ -19,7 +20,10 @@ export default function CollapsibleTable({
   setIsCreatingMedicKit,
   searchFields,
   handleSearch,
-  isLoading = false
+  isLoading = false,
+   isCreatingMedicKit,
+  isCreatingSupply,
+   onAddClick,
 }) {
   const [openRowId, setOpenRowId] = useState(null);
 
@@ -38,6 +42,14 @@ export default function CollapsibleTable({
 
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+
+  const getButtonName = () => {
+    if (isCreatingMedicKit ) return "Cancelar";
+    if (isCreatingSupply) return "Cancelar";
+    return "Agregar Botiquín";
+  };
+
+
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
@@ -67,6 +79,8 @@ export default function CollapsibleTable({
           )}
         </div>
       
+  <Button text={getButtonName()} onClick={onAddClick} />
+
       </div>
 
       {/* ✅ AQUÍ ESTÁ EL MENSAJE CON EL CONTENEDOR GRIS */}
