@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
-import AdbIcon from '@mui/icons-material/Adb';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -67,8 +66,8 @@ const navConfig = [
       { label: 'Configuraciones del sistema', path: '/ti/config' },
     ],
   },
-  { 
-    label: 'Catalogo', 
+  {
+    label: 'Catalogo',
     sub: [{ label: 'gestionar catalogo', path: '/catalogo/gestionar' }]
   }
 ];
@@ -93,18 +92,17 @@ function Navbar() {
     <nav className="bg-blue-600 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo y menú móvil */}
           <div className="flex items-center">
-            {/* Logo desktop */}
+            <img
+              src="/src/assets/logo.png"   
+              alt="FleetManager Logo"
+              className="h-10 w-10 mr-3 rounded" 
+            />
             <div className="hidden md:flex items-center">
-              <AdbIcon className="mr-2" />
-              <span className="font-mono font-bold text-xl tracking-wide">LOGO</span>
+              <span className="text-xl font-bold"></span>
             </div>
-
-            {/* Logo móvil */}
             <div className="md:hidden flex items-center">
-              <AdbIcon className="mr-2" />
-              <span className="font-mono font-bold text-xl tracking-wide">LOGO</span>
+              <span className="text-xl font-bold"></span>
             </div>
 
             {/* Menú desktop */}
@@ -117,9 +115,9 @@ function Navbar() {
                   >
                     {page.label}
                   </button>
-                  
+
                   {desktopSubMenu.index === idx && (
-                    <div 
+                    <div
                       className="absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-50"
                       onMouseLeave={() => setDesktopSubMenu({ anchor: null, index: null })}
                     >

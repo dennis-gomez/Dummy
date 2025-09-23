@@ -14,7 +14,6 @@ export const getSuppliesById = async (cod_medic_kit) => {
                 },
             }
         );
-        console.log("Respuesta de getSuppliesById:", response.data);  
         return response.data;
     } catch (error) {
         throw error;
@@ -23,8 +22,6 @@ export const getSuppliesById = async (cod_medic_kit) => {
 
 export const addManySupplies = async (cod_medic_kit, formDataArray) => {
   try {
-    console.log("cod_medic_kit en el servicio addManySupplies:", cod_medic_kit);
-    console.log("formDataArray en el servicio addManySupplies:", formDataArray);
 
     const response = await axios.post(
       API_URL + "addMany",
@@ -65,11 +62,6 @@ export const addSupply = async (formData) => {
 
 // Eliminar kitMedico
 export const deleteSupply = async ( cod_medic_kit,cod_supply ) => {
-
-    console.log("cod_medic_kit en el servicio:", cod_medic_kit);
-    console.log("cod_Supply en el servicio:", cod_supply);
-
-
     try {
         const response = await axios.delete(
             API_URL + "delete",

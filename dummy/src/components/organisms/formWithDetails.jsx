@@ -8,8 +8,6 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
   const visibleFields = fields?.filter(f => f.key !== "cod_medic_kit") || [];
   const visibleSubfields = subfields?.filter(f => f.key !== "cod_medic_kit" && f.key !== "cod_supply") || [];
 
-  console.log("los campos son", fields);
-
   const initialFormData = visibleFields.reduce((acc, f) => ({ ...acc, [f.key]: "" }), {});
   const [formData, setFormData] = useState(initialFormData);
 
@@ -32,15 +30,19 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
     },
   };
 
+
   const textAreaStyle2 = {
     "& .MuiOutlinedInput-root": {
       backgroundColor: "#ffffff",
-      width: "210%",
-      resize: "horizontal",
+      width: { xs: "140%", sm: "37rem" },
       minHeight: "8.8rem",
+      resize: "vertical",
       "&.Mui-error .MuiOutlinedInput-notchedOutline": {
         borderColor: "blue",
       },
+      "& textarea": {
+        minHeight: "1.5rem",
+      }
     },
     "& .MuiFormHelperText-root.Mui-error": {
       color: "blue",
@@ -81,7 +83,7 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
     onSubmit({ ...formData, supplements: subformData });
   };
 
-  // Calcular estados disabled
+
   const isAddButtonDisabled =
     Object.values(subInputErrors).some(Boolean) ||
     Object.values(newItem).some((val, idx) => {
@@ -94,9 +96,8 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
     (visibleFields.length === 0 && subformData.length === 0);
 
   return (
-    <Paper sx={{ maxWidth: 700, margin: "20px auto", p: 3, borderRadius: 3, boxShadow: 3, backgroundColor: "#d9d9d9" }}>
+    <Paper sx={{ maxWidth: 900, margin: "20px auto", p: 3, borderRadius: 3, boxShadow: 3, backgroundColor: "#d9d9d9" }}> {/* ✅ Aumentado a 900 */}
       <form onSubmit={handleSubmit}>
-        {/* Campos principales */}
         {visibleFields.length > 0 && (
           <Grid>
             {title && (
@@ -127,10 +128,8 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
             {subTittle}
           </h3>
         )}
-
-        {/* Subformulario */}
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
+        <Grid container spacing={2} alignItems="flex-start">
+          <Grid item xs={12} sm={3}>
             <Grid container spacing={1} direction="column">
               {visibleSubfields
                 .filter(f => f.key === "supply_expiration_date" || f.key === "supply_quantity")
@@ -151,8 +150,7 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
                 ))}
             </Grid>
           </Grid>
-
-          <Grid item xs={8}>
+          <Grid item xs={12} sm={9}>
             {visibleSubfields
               .filter(f => f.key === "supply_description")
               .map(f => (
@@ -167,23 +165,19 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
                   onError={(key, error) => handleInputError(key, error, true)}
                   required={f.required ?? true}
                   sx={textAreaStyle2}
+                  rows={4}
                 />
               ))}
           </Grid>
         </Grid>
-
-        {/* Botones */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }} mt={2}>
           {visibleSubfields.length > 0 && (
-            // ✅ Botón personalizado para "Añadir suplemento"
             <Button
               text={subTittle}
               onClick={handleAddItem}
               disabled={isAddButtonDisabled}
             />
           )}
-
-          {/* ✅ Botón personalizado para "Añadir Botiquín" */}
           <Button
             text={titleBtn}
             onClick={handleSubmit}
@@ -191,8 +185,6 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
             type="submit"
           />
         </Box>
-
-        {/* Tabla de subitems */}
         {subformData.length > 0 && (
           <DetailsTable
             fields={visibleSubfields}
@@ -205,5 +197,4 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
     </Paper>
   );
 }
-
 export default FormWithDetails;

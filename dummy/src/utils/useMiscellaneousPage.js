@@ -23,7 +23,6 @@ export default function useMiscellaneousPage() {
         const servicesResp = await getServices();
         setServices(servicesResp);
       } catch (error) {
-        console.error("Error al obtener servicios:", error);
       }
     };
     fetchData();
@@ -41,7 +40,6 @@ export default function useMiscellaneousPage() {
       const cats = await getCategorys(id);
       setCategories(cats);
     } catch (error) {
-      console.error("Error al obtener categorías:", error);
     }
   };
 
@@ -52,7 +50,6 @@ export default function useMiscellaneousPage() {
       const its = await getItems(id_service, id_category);
       setItems(its);
     } catch (error) {
-      console.error("Error al obtener items:", error);
     }
   };
 
@@ -64,7 +61,6 @@ export default function useMiscellaneousPage() {
       await addService(name);
       setServices(await getServices());
     } catch (e) {
-      console.error("No se pudo agregar el servicio:", e);
     }
   };
 
@@ -116,7 +112,6 @@ export default function useMiscellaneousPage() {
 
   const handleEditItem = async (cod_category, cod_service, cod_item, editValue) => {
     try {
-      // 🔹 Orden corregido: cod_service primero
       await updateItem(
         Number(cod_service),
         Number(cod_category),
@@ -125,7 +120,6 @@ export default function useMiscellaneousPage() {
       );
       setItems(await getItems(selectedServCod, selectedCatCod));
     } catch (error) {
-      console.error("Error al actualizar item:", error);
     }
   };
 

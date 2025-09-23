@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -28,16 +28,15 @@ const ExtinguisherTable = ({
     setEditData({ ...ext });
   };
 
-const handleSaveEdit = async () => {
-  if (!editingId) return;
+  const handleSaveEdit = async () => {
+    if (!editingId) return;
 
-  const isSaved = await onEdit(editingId, editData); // <- pasamos el ID
-  if (isSaved) {
-    setEditingId(null);
-    setEditData({});
-  }
-};
-
+    const isSaved = await onEdit(editingId, editData); // <- pasar el ID
+    if (isSaved) {
+      setEditingId(null);
+      setEditData({});
+    }
+  };
 
   const handleCancelEdit = () => {
     setEditingId(null);
@@ -45,13 +44,12 @@ const handleSaveEdit = async () => {
   };
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-2xl ">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Extintores </h2>
-
+      <div className="p-6 mt-6 bg-white rounded-2xl">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Extintores</h2>
       {extinguishers.length === 0 ? (
-        <p className="text-gray-500 mt-2">
-          No hay extintores disponibles. Haz clic en "Agregar extintor" para crear uno nuevo.
-        </p>
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+          No hay extintores registrados
+        </div>
       ) : (
         <div>
           <div className="flex justify-start mb-4">
@@ -78,7 +76,7 @@ const handleSaveEdit = async () => {
             )}
           </div>
 
-          {/* 📋 Tabla */}
+          {/* Tabla */}
           <div className="overflow-x-auto rounded-xl">
             <table className="min-w-full">
               <thead>
@@ -173,19 +171,19 @@ const handleSaveEdit = async () => {
                         ))}
                         <td className="py-4 px-6 text-center align-middle">
                           <div className="flex justify-center space-x-3">
+                                  <button
+                              onClick={() => handleEditClick(ext)}
+                              aria-label="Editar extintor"
+                              className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                            >
+                              <EditIcon />
+                            </button>
                             <button
                               onClick={() => onDelete(ext.cod_extinguisher)}
                               aria-label="Eliminar extintor"
                               className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
                             >
                               <DeleteIcon />
-                            </button>
-                            <button
-                              onClick={() => handleEditClick(ext)}
-                              aria-label="Editar extintor"
-                              className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                            >
-                              <EditIcon />
                             </button>
                           </div>
                         </td>

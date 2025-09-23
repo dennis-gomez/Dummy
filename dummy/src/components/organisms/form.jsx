@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Button from "../atoms/button"; // ✅ Cambia por tu componente personalizado
+import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedDate from "../atoms/inputValidatedDate";
 import { useState } from "react";
@@ -105,7 +105,6 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
               Cancelar
             </button>
           )}
-          {/* ✅ Usa tu componente Button personalizado */}
           <Button 
             text={titleBtn} 
             onClick={handleSubmit}

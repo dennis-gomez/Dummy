@@ -1,7 +1,8 @@
 import { useState } from "react";
 import Row from "./Row";
-import Button from "../atoms/button";
 import Seeker from "../molecules/seeker";
+import { CircularProgress } from "@mui/material";
+import Button from "../atoms/button";
 
 export default function CollapsibleTable({
   list,
@@ -16,12 +17,13 @@ export default function CollapsibleTable({
   onEditMedicKit,
   onEditSupply,
   changeStateSupply,
-    isCreatingMedicKit,
-  isCreatingSupply,
   setIsCreatingMedicKit,
-  onAddClick,
   searchFields,
   handleSearch,
+  isLoading = false,
+   isCreatingMedicKit,
+  isCreatingSupply,
+   onAddClick,
 }) {
   const [openRowId, setOpenRowId] = useState(null);
 
@@ -38,55 +40,57 @@ export default function CollapsibleTable({
     }
   };
 
-  // Función que decide el nombre del botón
+  const [searchText, setSearchText] = useState("");
+  const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+
   const getButtonName = () => {
     if (isCreatingMedicKit ) return "Cancelar";
     if (isCreatingSupply) return "Cancelar";
     return "Agregar Botiquín";
   };
 
-  // Estados y funciones para el seeker
-  const [searchText, setSearchText] = useState("");
-const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
 
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
-     <div className="flex justify-between items-center mb-6 gap-4">
-  {/* Título */}
-  <h2 className="text-2xl font-bold text-gray-800">
-    Lista de Botiquines
-  </h2>
-
-  {/* Seeker */}
-  <div className="flex-1 mx-4">
-    <Seeker
-      inputName="searchText"
-      inputPlaceholder="Buscar botiquín o suplemento"
-      btnName="Buscar"
-      valueText={searchText}
-      valueFeature={searchFeature}
-      onChangeText={setSearchText}
-      onChangeFeature={setSearchFeature}
-      onClick={handleSearch}
-      selectName="Filtrar por"
-      fields={searchFields}
-    />
-  </div>
-
-  {/* Botón */}
+    <div className="p-6 mt-6 bg-white rounded-2xl">
+      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Botiquines</h2>
+      
+      {/* Contenedor del buscador y botón */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex-1 mx-4">
+          {isLoading ? (
+            <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
+              <p className="text-gray-700 font-medium mb-2">Cargando botiquines...</p>
+              <CircularProgress />
+            </div>
+          ) : (
+            <Seeker
+              inputName="searchText"
+              inputPlaceholder="Buscar botiquín o suplemento"
+              btnName="Buscar"
+              valueText={searchText}
+              valueFeature={searchFeature}
+              onChangeText={setSearchText}
+              onChangeFeature={setSearchFeature}
+              onClick={handleSearch}
+              selectName="Filtrar por"
+              fields={searchFields}
+            />
+          )}
+        </div>
+      
   <Button text={getButtonName()} onClick={onAddClick} />
-</div>
 
+      </div>
 
+      {/* ✅ AQUÍ ESTÁ EL MENSAJE CON EL CONTENEDOR GRIS */}
       {list.length === 0 ? (
-        // ✅ Mismo mensaje que VehicleTable cuando no hay datos
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
           No hay botiquines registrados
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl">
-          <table className="min-w-full"> {/* Cambié a min-w-full como VehicleTable */}
+          <table className="min-w-full">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">#</th>

@@ -1,9 +1,8 @@
-// src/components/pages/ExtinguisherPage.jsx
 import { Box, Typography } from "@mui/material";
 import Form from "../organisms/form";
 import ExtinguisherTable from "../organisms/extinguisherTable";
 import { useExtinguishers } from "../../utils/useExtinguishers";
-import Button from "../atoms/button"; // Importar tu botón personalizado
+import Button from "../atoms/button";
 
 const ExtinguisherPage = () => {
   const {
@@ -31,8 +30,15 @@ const ExtinguisherPage = () => {
         Gestión de Extintores
       
       </h1>
-
-      {/* Formulario dinámico */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Button
+          text={showForm ? "Cancelar" : "Agregar Extintor"}
+          onClick={() => {
+            setShowForm(!showForm);
+            setError(null);
+          }}
+        />
+      </Box>
       {showForm && (
         <Box
           sx={{
@@ -54,8 +60,6 @@ const ExtinguisherPage = () => {
           />
         </Box>
       )}
-
-      {/* Errores del backend */}
       {error && (
         <Box
           sx={{
@@ -75,20 +79,6 @@ const ExtinguisherPage = () => {
           <Typography sx={{ color: "#b71c1c" }}>{error}.</Typography>
         </Box>
       )}
-
-      {/* Botón toggle */}
-      {/* Botón personalizado en lugar del Button de MUI */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
-          text={showForm ? "Cancelar" : "Agregar Extintor"}
-          onClick={() => {
-            setShowForm(!showForm);
-            setError(null);
-          }}
-        />
-      </Box>
-
-      {/* Tabla de extintores */}
       <ExtinguisherTable
         fields={fields}
         extinguishers={extinguishers}
@@ -104,5 +94,4 @@ const ExtinguisherPage = () => {
     </div>
   );
 };
-
 export default ExtinguisherPage;

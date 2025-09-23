@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { tableValidator } from "/src/utils/tableValidator"; // ✅ validador centralizado
-import Swal from "sweetalert2"; // ✅ alertas bonitas
+import { tableValidator } from "/src/utils/tableValidator";
+import Swal from "sweetalert2";
 
 export default function useTableMiscellaneous(
   services,
@@ -12,7 +12,6 @@ export default function useTableMiscellaneous(
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
 
-  // 🔹 Agregar servicio con validación
   const handleAdd = async () => {
     const trimmed = name.trim();
     if (!trimmed) return;
@@ -40,7 +39,6 @@ export default function useTableMiscellaneous(
     if (e.key === "Enter") handleAdd();
   };
 
-  // 🔹 Editar inline con validación
   const startEdit = (srv) => {
     setEditingId(srv.cod_service);
     setEditValue(srv.service_name || "");
@@ -55,7 +53,6 @@ export default function useTableMiscellaneous(
     const trimmed = editValue.trim();
     if (!trimmed) return;
 
-    // Evitar guardar si no cambió
     if (trimmed.toLowerCase() === (srv.service_name || "").trim().toLowerCase()) {
       cancelEdit();
       return;
@@ -82,7 +79,7 @@ export default function useTableMiscellaneous(
     cancelEdit();
   };
 
-  // 🔹 Eliminar servicio
+  // Eliminar servicio
   const remove = async (cod_service) => {
     await onDeleteService?.(cod_service);
   };

@@ -1,4 +1,3 @@
-import React from "react";
 import TableMiscellaneousPage from "../organisms/tableMiscellaneousPage";
 import TableOptionServices from "../organisms/tableOptionService";
 import TableSubcategorie from "../organisms/tableSubCategorie";
