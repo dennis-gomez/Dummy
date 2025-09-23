@@ -25,20 +25,8 @@ const ExtinguisherPage = () => {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1 className="text-2xl font-bold text-gray-800 text-center flex-1">
-        
-        Gestión de Extintores
-      
-      </h1>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
-          text={showForm ? "Cancelar" : "Agregar Extintor"}
-          onClick={() => {
-            setShowForm(!showForm);
-            setError(null);
-          }}
-        />
-      </Box>
+      <h1 className="text-2xl font-bold text-gray-800 text-center flex-1"> Gestión de Extintores </h1>
+
       {showForm && (
         <Box
           sx={{
@@ -90,6 +78,9 @@ const ExtinguisherPage = () => {
         valueFeature={searchFeature}
         onChangeText={setSearchText}
         onChangeFeature={setSearchFeature}
+        showForm={showForm}
+        setShowForm={setShowForm}
+        setError={setError}
       />
     </div>
   );
