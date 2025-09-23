@@ -30,7 +30,7 @@ export const useVehicles = () => {
         },
         { 
             name: "vehicle_year", 
-            placeholder: "Año", 
+            placeholder: "A\u00F1o", 
             type: "number", 
             restriction: "vehicle_year_restrictions", 
             width: 250
@@ -64,7 +64,7 @@ export const useVehicles = () => {
         },
         { 
             name: "vehicle_last_km_maintenance", 
-            placeholder: "Último mantenimiento (km)", 
+            placeholder: "\u00DAltimo mantenimiento (km)", 
             type: "number", 
             restriction: "vehicle_last_km_maintenance_restrictions", 
             validations: [
@@ -99,7 +99,7 @@ export const useVehicles = () => {
         },
         { 
             name: "vehicle_spark_plug_model", 
-            placeholder: "Bujía", 
+            placeholder: "Buj\u00EDa", 
             validations: [
                 (value) =>
                 value && value.length > 50 ? "La bujía debe tener máximo 50 caracteres." : null,

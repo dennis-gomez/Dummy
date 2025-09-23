@@ -6,9 +6,9 @@ import Tooltip from '@mui/material/Tooltip';
 
 const navConfig = [
   {
-    label: 'Vehiculos',
+    label: 'Veh\u00EDculos',
     sub: [
-      { label: 'Gestion de Vehículos', path: '/vehiculos' },
+      { label: 'Gestion de Veh\u00EDculos', path: '/vehiculos' },
       { label: 'Marcas y modelos', path: '/vehiculos/marcas-modelos' },
       { label: 'Tipos de vehículos', path: '/vehiculos/tipos' },
       { label: 'Combustibles', path: '/vehiculos/combustibles' },
@@ -30,9 +30,9 @@ const navConfig = [
     sub: [
       { label: 'Proveedores', path: '/suministros/proveedores' },
       { label: 'Servicios', path: '/suministros/servicios' },
-      { label: 'Categorías', path: '/suministros/categorias' },
+      { label: 'Categor\u00EDas', path: '/suministros/categorias' },
       { label: 'Items', path: '/suministros/items' },
-      { label: 'Órdenes de compra', path: '/suministros/ordenes' },
+      { label: '\u00D3rdenes de compra', path: '/suministros/ordenes' },
     ],
   },
   {
@@ -47,7 +47,7 @@ const navConfig = [
     label: 'Libros legales',
     sub: [
       { label: 'Registros de mantenimiento', path: '/libros/mantenimiento' },
-      { label: 'Registros de inspección', path: '/libros/inspeccion' },
+      { label: 'Registros de inspecci\u00F3n', path: '/libros/inspeccion' },
       { label: 'Registros de combustible', path: '/libros/combustible' },
     ],
   },
@@ -55,7 +55,7 @@ const navConfig = [
     label: 'Salud ocupacional',
     sub: [
       { label: 'Botiquines', path: '/salud/botiquin' },
-      { label: 'Extinguidores', path: '/salud/extinguidores' },
+      { label: 'Extintores', path: '/salud/extinguidores' },
     ],
   },
   {
@@ -67,8 +67,8 @@ const navConfig = [
     ],
   },
   {
-    label: 'Catalogo',
-    sub: [{ label: 'gestionar catalogo', path: '/catalogo/gestionar' }]
+    label: 'Cat\u00E1logo',
+    sub: [{ label: 'Gestionar cat\u00E1logo', path: '/catalogo/gestionar' }]
   }
 ];
 

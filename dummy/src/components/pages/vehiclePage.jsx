@@ -25,16 +25,7 @@ function VehiclePage() {
 
     return (
         <div style={{ padding: 24 }}>
-            <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gestión de Vehículos</h1>
- <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                <Button 
-                    text={showForm ? "Cancelar" : "Agregar Vehículo"} 
-                    onClick={() => { 
-                        setShowForm(!showForm);
-                        setError(null);
-                    }}
-                />
-            </Box>
+            <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gesti&oacute;n de Veh&iacute;culos</h1>
             {/* Formulario dinamico */}
             {showForm && (
                 <Box
@@ -86,6 +77,11 @@ function VehiclePage() {
                 valueFeature={searchFeature}
                 onChangeText={setSearchText}
                 onChangeFeature={setSearchFeature}
+                onToggleForm={() => {
+                    setShowForm(!showForm);
+                    setError(null);
+                }}
+                showForm={showForm}
             />
         </div>
     );
