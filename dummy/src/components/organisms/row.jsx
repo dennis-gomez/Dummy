@@ -123,11 +123,7 @@ export default function Row({
               </>
             ) : (
               <>
-                <ModalElimination
-                  message={"¿Quieres eliminar este kit médico?"}
-                  onClick={() => onDeleteMedicKit(item[idKey])}
-                />
-                <button
+                   <button
                   type="button"
                   onClick={() => {
                     setEditingKit(true);
@@ -138,6 +134,10 @@ export default function Row({
                 >
                   <EditIcon fontSize="small" />
                 </button>
+                <ModalElimination
+                  message={"¿Quieres eliminar este kit médico?"}
+                  onClick={() => onDeleteMedicKit(item[idKey])}
+                />
               </>
             )}
           </div>

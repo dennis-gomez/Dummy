@@ -30,7 +30,15 @@ const ExtinguisherPage = () => {
         Gestión de Extintores
       
       </h1>
-
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+        <Button
+          text={showForm ? "Cancelar" : "Agregar Extintor"}
+          onClick={() => {
+            setShowForm(!showForm);
+            setError(null);
+          }}
+        />
+      </Box>
       {/* Formulario dinámico */}
       {showForm && (
         <Box
@@ -74,18 +82,6 @@ const ExtinguisherPage = () => {
           <Typography sx={{ color: "#b71c1c" }}>{error}.</Typography>
         </Box>
       )}
-
-      {/* Botón toggle */}
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-        <Button
-          text={showForm ? "Cancelar" : "Agregar Extintor"}
-          onClick={() => {
-            setShowForm(!showForm);
-            setError(null);
-          }}
-        />
-      </Box>
-
       {/* Tabla de extintores */}
       <ExtinguisherTable
         fields={fields}

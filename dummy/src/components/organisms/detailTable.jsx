@@ -145,9 +145,17 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
                     ))}
                     <td className="py-4 px-6 align-middle text-center">
                       <div className="flex justify-center space-x-3">
-                        {renderDelete ? (
+                         <button
+                          type="button"
+                          onClick={() => handleEditClick(item, index)}
+                          className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                        >
+                          <EditIcon />
+                        </button>
+                         {renderDelete ? (
                           renderDelete(item, index)
                         ) : (
+                          
                           <button
                             type="button"
                             onClick={() => onDelete(index)}
@@ -155,16 +163,10 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
                           >
                             <DeleteIcon />
                           </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => handleEditClick(item, index)}
-                          className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                        >
-                          <EditIcon />
-                        </button>
+                          )}
                       </div>
                     </td>
+                  
                   </>
                 )}
               </tr>
