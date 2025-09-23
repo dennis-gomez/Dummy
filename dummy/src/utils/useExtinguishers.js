@@ -1,4 +1,3 @@
-// src/hooks/useExtinguishers.js
 import { useState, useEffect } from "react";
 import {
   getAllExtinguishers,

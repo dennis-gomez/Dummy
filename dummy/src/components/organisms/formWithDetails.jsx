@@ -8,8 +8,6 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
   const visibleFields = fields?.filter(f => f.key !== "cod_medic_kit") || [];
   const visibleSubfields = subfields?.filter(f => f.key !== "cod_medic_kit" && f.key !== "cod_supply") || [];
 
-  console.log("los campos son", fields);
-
   const initialFormData = visibleFields.reduce((acc, f) => ({ ...acc, [f.key]: "" }), {});
   const [formData, setFormData] = useState(initialFormData);
 
@@ -175,7 +173,7 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
         {/* Botones */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }} mt={2}>
           {visibleSubfields.length > 0 && (
-            // ✅ Botón personalizado para "Añadir suplemento"
+            // Boton Añadir suplemento
             <Button
               text={subTittle}
               onClick={handleAddItem}
@@ -183,7 +181,7 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
             />
           )}
 
-          {/* ✅ Botón personalizado para "Añadir Botiquín" */}
+          {/* Boton Añadir Botiquín */}
           <Button
             text={titleBtn}
             onClick={handleSubmit}

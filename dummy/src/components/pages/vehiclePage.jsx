@@ -1,5 +1,5 @@
 import { Box, Typography } from "@mui/material";
-import Button from "../atoms/button"; // ✅ Cambia por tu componente personalizado
+import Button from "../atoms/button";
 import Form from "../organisms/form";
 import VehicleTable from "../organisms/vehicleTable";
 import { useVehicles } from "../../utils/useVehicle";
@@ -68,7 +68,6 @@ function VehiclePage() {
             )}
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-                {/* ✅ CAMBIO AQUÍ: Usa tu componente Button personalizado */}
                 <Button 
                     text={showForm ? "Cancelar" : "Agregar Vehículo"} 
                     onClick={() => { 

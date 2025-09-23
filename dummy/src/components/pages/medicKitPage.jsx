@@ -2,8 +2,6 @@ import CollapsibleTable from "../organisms/collapsibleTable";
 import FormWithDetails from "../organisms/formWithDetails";
 import { useMedicKits } from "../../utils/useMedicKit";
 
-
-
 function MedicKitPage() {
   const {
     medicKitsList,
@@ -38,7 +36,7 @@ function MedicKitPage() {
     }
   };
   return (
-    <div style={{ padding: 24 }}> {/* ✅ Mismo padding que VehiclePage */}
+    <div style={{ padding: 24 }}>
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Gestión de Botiquines
       </h1>
@@ -90,8 +88,8 @@ function MedicKitPage() {
             style={{
               display: "block",
               margin: "0 auto",
-              marginTop: "16px",   // margen superior
-              marginBottom: "16px" // margen inferior
+              marginTop: "16px",   
+              marginBottom: "16px" 
             }}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
           >
