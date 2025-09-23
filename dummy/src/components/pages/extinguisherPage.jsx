@@ -39,7 +39,6 @@ const ExtinguisherPage = () => {
           }}
         />
       </Box>
-      {/* Formulario dinámico */}
       {showForm && (
         <Box
           sx={{
@@ -61,8 +60,6 @@ const ExtinguisherPage = () => {
           />
         </Box>
       )}
-
-      {/* Errores del backend */}
       {error && (
         <Box
           sx={{
@@ -82,7 +79,6 @@ const ExtinguisherPage = () => {
           <Typography sx={{ color: "#b71c1c" }}>{error}.</Typography>
         </Box>
       )}
-      {/* Tabla de extintores */}
       <ExtinguisherTable
         fields={fields}
         extinguishers={extinguishers}
@@ -98,5 +94,4 @@ const ExtinguisherPage = () => {
     </div>
   );
 };
-
 export default ExtinguisherPage;
