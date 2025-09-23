@@ -5,8 +5,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import ModalElimination from "../molecules/modalElimination";
 import Seeker from "../molecules/seeker";
 import { CircularProgress } from "@mui/material";
+import Button from "../atoms/button";
 
-const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch, valueText, valueFeature, onChangeText, onChangeFeature }) => {
+const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch, valueText, valueFeature, onChangeText, onChangeFeature, onToggleForm, showForm }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
 
@@ -36,37 +37,44 @@ const VehicleTable = ({ fields, vehicles, isLoading, onDelete, onEdit, onSearch,
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Vehículos</h2>
-
+      {/* <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Veh&iacute;culos</h2> */}
       {vehicles.length === 0 ? (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
-          No hay vehículos registrados
+          No hay veh&iacute;culos registrados
         </div>
       ) : (
         <div>
           {/* Buscador */}
           <div className="flex justify-start mb-4">
-            
             {isLoading ? (
                 <div 
                   className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto"
                 >
-                <p className="text-gray-700 font-medium mb-2">Cargando vehículos...</p>
+                <p className="text-gray-700 font-medium mb-2">Cargando veh&iacute;culos...</p>
                 <CircularProgress />
               </div>
             ) : (
-              <Seeker
-                inputName={'search'}
-                inputPlaceholder={'Buscar...'}
-                btnName={'Buscar'}
-                selectName={'Caracteristicas'}
-                fields={fields}
-                onClick={onSearch}
-                valueText={valueText}
-                valueFeature={valueFeature}
-                onChangeText={onChangeText}
-                onChangeFeature={onChangeFeature}
-              />
+              <>
+                <Seeker
+                  inputName={'search'}
+                  inputPlaceholder={'Buscar por caracter\u00EDstica'}
+                  btnName={'Buscar'}
+                  selectName={'Filtrar por'}
+                  fields={fields}
+                  onClick={onSearch}
+                  valueText={valueText}
+                  valueFeature={valueFeature}
+                  onChangeText={onChangeText}
+                  onChangeFeature={onChangeFeature}
+                />
+
+                <div className="flex flex-wrap items-center gap-3  ">
+                  <Button 
+                    text={showForm ? "Cancelar" : "Agregar Vehículo"} 
+                    onClick={onToggleForm} 
+                  />
+                </div>
+              </>
             )}
 
           </div>
