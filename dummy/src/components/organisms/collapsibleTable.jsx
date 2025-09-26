@@ -53,7 +53,6 @@ export default function CollapsibleTable({
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Lista de Botiquines</h2>
       
       {/* Contenedor del buscador y botón */}
       <div className="flex items-center justify-between mb-6">
