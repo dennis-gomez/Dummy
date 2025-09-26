@@ -47,7 +47,7 @@ const navConfig = [
     label: 'Libros legales',
     sub: [
       { label: 'Gestión de libros legales', path: '/libros/mantenimiento' },
-      { label: 'Registros de libros legales', path: '/libros/registros' }, {/* registros de libros legales: Dixon no toque jeje*/}
+      { label: 'Registros de libros legales', path: '/libros/registros' },
     ],
   },
   {
