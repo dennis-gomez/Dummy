@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/book/record";
+const API_URL = "http://localhost:3000/book-record/";
+const API_URL_BOOK = "http://localhost:3000/books/";
 
 // Obtener registros
 export const getRecords = async () => {
     try {
-        /*
         const response = await axios.get(
             API_URL + "active",
             {
@@ -14,41 +14,36 @@ export const getRecords = async () => {
                 },
             }
         );
-        */
-        //return response;
-        console.log("Simulacion obtener registros")
+        return response;
     } catch (error) {
         throw error;
     }
 };
 
 //Obtener registros por caracteristica del registro
-export const getRecordByFeature = async ( feature, text ) => {
-    try{/*
+export const getRecordByFeature = async ( bookId, field, text ) => {
+    try{
         const response = await axios.get(
             API_URL + "find", 
             {
-                params: { feature, text },
+                params: { bookId, field, text },
                 headers: {
                     "Content-Type": "application/json"
                 },
             }
         );
         return response;
-        */
-       console.log("Simulacion obtener registro", feature, text)
     } catch (error) {
         throw error;
     }
 }
 
 // Agregar registro
-export const addRecord = async (formData) => {
+export const addRecord = async (dataToSend) => {
     try {
-        /*
         const response = await axios.post(
             API_URL + "add",
-            formData,
+            dataToSend,
             {
                 headers: {
                     "Content-Type": "application/json"
@@ -56,39 +51,33 @@ export const addRecord = async (formData) => {
             }
         );
         return response;
-        */
-       console.log("Simulacion agregar registro", formData)
     } catch (error) {
         throw error;
     }
 };
 
-// Eliminar vehiculo
-export const deleteRecord = async ( cod_vehicle ) => {
+// Eliminar registro (logico)
+export const deleteRecord = async ( cod_registration_application ) => {
     try {
-        /*
         const response = await axios.put(
             API_URL + "delete",
             {},
             {
-                params: { cod_vehicle },
+                params: { cod_registration_application },
                 headers: {
                     "Content-Type": "application/json"
                 },
             }
         );
         return response;
-        */
-         console.log("Simulacion agregar registro", cod_vehicle)
     } catch (error) {
         throw error;
     }
 };
 
-// Actualizar vehiculo
+// Actualizar registro
 export const updateRecord = async ( formData ) => {
     try {
-        /*
         const response = await axios.put(
             API_URL + "update",
             formData,
@@ -99,9 +88,24 @@ export const updateRecord = async ( formData ) => {
             }
         );
         return response;
-        */
-        console.log("Simulacion editar registro", formData)
     } catch (error) {
         throw error;
     }  
 };
+
+//obtener nombres de libros
+export const getBooksNames = async () => {
+    try{
+        const response = await axios.get(
+            API_URL_BOOK + "names_ids",
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}; 
