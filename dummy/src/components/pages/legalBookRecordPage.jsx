@@ -5,12 +5,15 @@ import Form from "../organisms/form";
 
 function LegalBookRecordPage() {
     const {
+        books,
         legalBookRecords,
         fields, 
         searchText,
-        searchFeature, 
         setSearchText,
-        setSearchFeature,
+        selectedBook,
+        setSelectedBook,
+        searchField,
+        setSearchField,
         showForm,
         setShowForm,
         error,
@@ -19,14 +22,15 @@ function LegalBookRecordPage() {
         handleSubmit,
         handleEdit,
         handleDelete,
-        handleSearchRecord,
+        handleSearch,
+        handleResetSearch,
     } = useLegalBookRecord();
 
     return (
         <>
-            <h1>Gesti&oacute;n de Registros</h1>
+            <h1>Gestión de Registros</h1>
 
-            {/* Formulario dinamico */}
+            {/* Formulario dinámico */}
             {showForm && (
                 <Box>
                     <div>
@@ -38,39 +42,29 @@ function LegalBookRecordPage() {
                 </Box>
             )}
 
-             {/* Errores manejados por el backend */}
+            {/* Errores */}
             {error && (
-                <Box
-                sx={{
-                    p: 2,
-                    mt: 3,
-                    maxWidth: 800,
-                    margin: "0 auto",
-                    borderRadius: 2,
-                    backgroundColor: "#fdecea",
-                    border: "1px solid #f5c2c7",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                }}
-                >
-                <span style={{ color: "#b71c1c", fontWeight: "bold" }}>Error: </span>
-                <Typography sx={{ color: "#b71c1c" }}>{error}.</Typography>
+                <Box sx={{ p: 2, mt: 3, maxWidth: 800, margin: "0 auto", borderRadius: 2, backgroundColor: "#fdecea", border: "1px solid #f5c2c7" }}>
+                    <Typography sx={{ color: "#b71c1c" }}>Error: {error}</Typography>
                 </Box>
             )}
 
             {/* Tabla de registros */}
             <LegalBookRecordTable
                 fields={fields}
+                books={books}
                 legalBookRecords={legalBookRecords}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
-                onSearch={handleSearchRecord}
+                onSearch={handleSearch}
+                onResetSearch={handleResetSearch}
                 isLoading={loading}
-                valueText={searchText}
-                valueFeature={searchFeature}
-                onChangeText={setSearchText}
-                onChangeFeature={setSearchFeature}
+                searchText={searchText}
+                setSearchText={setSearchText}
+                selectedBook={selectedBook}
+                setSelectedBook={setSelectedBook}
+                searchField={searchField}
+                setSearchField={setSearchField}
                 onToggleForm={() => {
                     setShowForm(!showForm);
                     setError(null);
@@ -80,4 +74,5 @@ function LegalBookRecordPage() {
         </>
     );
 } 
-export default LegalBookRecordPage
+
+export default LegalBookRecordPage;
