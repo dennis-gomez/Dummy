@@ -6,7 +6,7 @@ const API_URL = "http://localhost:3000/vehicles/";
 export const getVehicles = async () => {
     try {
         const response = await axios.get(
-            API_URL,
+            API_URL + "active",
             {
                 headers: {
                     "Content-Type": "application/json"
@@ -58,8 +58,9 @@ export const addVehicle = async (formData) => {
 // Eliminar vehiculo
 export const deleteVehicle = async ( cod_vehicle ) => {
     try {
-        const response = await axios.delete(
+        const response = await axios.put(
             API_URL + "delete",
+            {},
             {
                 params: { cod_vehicle },
                 headers: {
