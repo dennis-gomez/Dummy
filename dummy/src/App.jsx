@@ -5,6 +5,7 @@ import Navbar from './components/organisms/navbar'
 import Footer from './components/organisms/footer'
 import MedicKitPage from './components/pages/medicKitPage'
 import VehiclePage from './components/pages/vehiclePage'
+import LegalBookRecordPage from './components/pages/legalBookRecordPage'
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
             <Route path="/salud/botiquin" element={<MedicKitPage />} />
             <Route path="/vehiculos" element={<VehiclePage />} />
             <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
+            <Route path="/libros/registros" element={<LegalBookRecordPage />} />
           </Routes>
         </main>
 
