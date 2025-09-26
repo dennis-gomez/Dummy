@@ -6,6 +6,7 @@ import Footer from './components/organisms/footer'
 import MedicKitPage from './components/pages/medicKitPage'
 import VehiclePage from './components/pages/vehiclePage'
 import LegalBookRecordPage from './components/pages/legalBookRecordPage'
+import OHPersonnelPage from './components/pages/ohPersonnelPage'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/vehiculos" element={<VehiclePage />} />
             <Route path="/salud/extinguidores" element={<ExtinguisherPage />} />
             <Route path="/libros/registros" element={<LegalBookRecordPage />} />
+            <Route path="/salud/brigadas" element={<OHPersonnelPage />} />
           </Routes>
         </main>
 
