@@ -151,7 +151,6 @@ export const useVehicles = () => {
             width: 250
         },
     ];
-
     const [searchText, setSearchText] = useState(""); //manejo de text para buscar vehiculo
     const [searchFeature, setSearchFeature] = useState(fields[0]?.name || ""); //manejo de caracteristica para buscar vehiculo
 

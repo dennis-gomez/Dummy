@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
-import { addRecord, getRecords, updateRecord, deleteRecord, getRecordByFeature } from "../services/legalBookRecordService";
+import { addRecord, getRecords, updateRecord, deleteRecord, getRecordByFeature, getBooksNames } from "../services/legalBookRecordService";
 import ModalAlert from "../components/molecules/modalAlert";
 
 export const useLegalBookRecord = () => {
-    const [legalBookRecords, setLegalBookRecords] = useState([]); //listado de registros
-    const [showForm, setShowForm] = useState(false); // estado (true/false) para mostrar formulario
-    const [error, setError] = useState(null); // manejo de errores por parte del backend
-
-    const [loading, setLoading] = useState(false); // manejo de loading al encontrar registros
+    const [books, setBooks] = useState([]);
+    const [legalBookRecords, setLegalBookRecords] = useState([]);
+    const [showForm, setShowForm] = useState(false);
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const fields = [
         { 
@@ -45,47 +45,61 @@ export const useLegalBookRecord = () => {
         },
     ]
 
-    const [searchText, setSearchText] = useState(""); //manejo de text para buscar registros
-    const [searchFeature, setSearchFeature] = useState(fields[0]?.name || ""); //manejo de caracteristica para buscar registros
+    // Estados para filtrado - más claros
+    const [searchText, setSearchText] = useState(""); // Texto a buscar
+    const [selectedBook, setSelectedBook] = useState(""); // Libro seleccionado
+    const [searchField, setSearchField] = useState(fields[0]?.name || ""); // Campo del registro a buscar
 
-    // listado de registros
-    const fetchRecords = async () => {
-        try {
-            //const response = 
-            await getRecords();
-            //setLegalBookRecords(response.data);
-        } catch (error) {
-            const message = error.response?.data?.message || "Error al obtener los registros.";
-            setError(message);
+    // Listado de registros (con o sin filtros)
+    const fetchRecords = async (bookId = "", field = "", text = "") => {
+    try {
+        setLoading(true);
+        let response;
+        
+        if (bookId || (field && text)) {
+            // Búsqueda con filtros (ahora funciona con 1, 2 o 3 filtros)
+            response = await getRecordByFeature(bookId, field, text);
+        } else {
+            // Todos los registros
+            response = await getRecords();
         }
+        setLegalBookRecords(response.data);
+    } catch (error) {
+        const message = error.response?.data?.message || "Error al obtener los registros.";
+        setError(message);
+    } finally {
+        setLoading(false);
+    }
+}
+
+    // Búsqueda específica
+    const handleSearch = async () => {
+        await fetchRecords(selectedBook, searchField, searchText);
     }
 
-    const handleSearchRecord = async (feature, text) => {
-        try {
-            setLoading(true);
-            //const response = 
-            await getRecordByFeature(feature, text);
-            //setLegalBookRecords(response.data);
-        } catch (error) {
-            const message = error.response?.data?.message || "No se encuentra registro.";
-            ModalAlert("Error", message, "error");
-        } finally {
-            setLoading(false);
-        }
+    // Resetear filtros y cargar todos los registros
+    const handleResetSearch = async () => {
+        setSelectedBook("");
+        setSearchField(fields[0]?.name || "");
+        setSearchText("");
+        await fetchRecords();
     }
 
     const handleSubmit = async (formData) => {
         try {
             setError(null);
-            //const response = 
-            await addRecord(formData);
-            //if (response.status === 201) {
-            //    ModalAlert("Éxito", "Vehículo agregado exitosamente.", "success");
-            //    fetchRecords();
-            //    setShowForm(false);
-            //}
+            const dataToSend = {
+                ...formData,
+                cod_book_catalog: selectedBook,
+            };
+            const response = await addRecord(dataToSend);
+            if (response.status === 201) {
+                ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
+                await fetchRecords(); // Recargar registros
+                setShowForm(false);
+            }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al agregar vehículo.";
+            const message = error.response?.data?.message || "Error al agregar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }
@@ -94,46 +108,57 @@ export const useLegalBookRecord = () => {
     const handleEdit = async (updatedData) => {
         try {
             setError(null);
-            //const response = 
-            await updateRecord(updatedData);
-            //if (response.status === 200) {
-            //    ModalAlert("Éxito", "Vehículo editado exitosamente.", "success");
-            //    fetchRecords();
-            //}
+            const response = await updateRecord(updatedData);
+            if (response.status === 200) {
+                ModalAlert("Éxito", "Registro editado exitosamente.", "success");
+                await fetchRecords(); // Recargar registros
+            }
             return true;
         } catch (error) {
-            const message = error.response?.data?.message || "Error al editar vehículo.";
+            const message = error.response?.data?.message || "Error al editar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
             return false;
         }
     }
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (cod_registration_application) => {
         try {
-            //const response = 
-            await deleteRecord(id);
-            //if (response.status === 200) {
-            //    ModalAlert("Éxito", response.data.message, "success");
-            //    fetchRecords();
-            //}
+            const response = await deleteRecord(cod_registration_application);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message, "success");
+                await fetchRecords(); // Recargar registros
+            }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al eliminar vehículo.";
+            const message = error.response?.data?.message || "Error al eliminar registro.";
             ModalAlert("Error", message, "error");
         }
     }
 
     useEffect(() => {
         fetchRecords();
+        const loadBooks = async () => {
+            try {
+                const response = await getBooksNames();
+                setBooks(response.data);
+            } catch (error) {
+                const message = error.response?.data?.message || "Error al obtener los catálogos de libros.";
+                setError(message);
+            }
+        };
+        loadBooks();
     }, []);
 
     return {
+        books,
         legalBookRecords,
         fields, 
         searchText,
-        searchFeature, 
         setSearchText,
-        setSearchFeature,
+        selectedBook,
+        setSelectedBook,
+        searchField,
+        setSearchField,
         showForm,
         setShowForm,
         error,
@@ -142,6 +167,7 @@ export const useLegalBookRecord = () => {
         handleSubmit,
         handleEdit,
         handleDelete,
-        handleSearchRecord,
+        handleSearch,
+        handleResetSearch,
     };
 };

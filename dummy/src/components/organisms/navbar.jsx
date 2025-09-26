@@ -55,6 +55,7 @@ const navConfig = [
     sub: [
       { label: 'Botiquines', path: '/salud/botiquin' },
       { label: 'Extintores', path: '/salud/extinguidores' },
+      { label: 'Brigadas', path: '/salud/brigadas' },
     ],
   },
   {
