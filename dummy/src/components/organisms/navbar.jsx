@@ -8,7 +8,7 @@ const navConfig = [
   {
     label: 'Veh\u00EDculos',
     sub: [
-      { label: 'Gestion de Veh\u00EDculos', path: '/vehiculos' },
+      { label: 'Gestión de Veh\u00EDculos', path: '/vehiculos' },
       { label: 'Marcas y modelos', path: '/vehiculos/marcas-modelos' },
       { label: 'Tipos de vehículos', path: '/vehiculos/tipos' },
       { label: 'Combustibles', path: '/vehiculos/combustibles' },
@@ -46,9 +46,8 @@ const navConfig = [
   {
     label: 'Libros legales',
     sub: [
-      { label: 'Registros de mantenimiento', path: '/libros/mantenimiento' },
-      { label: 'Registros de inspecci\u00F3n', path: '/libros/inspeccion' },
-      { label: 'Registros de combustible', path: '/libros/combustible' },
+      { label: 'Gestión de libros legales', path: '/libros/mantenimiento' },
+      { label: 'Registros de libros legales', path: '/libros/registros' }, {/* registros de libros legales: Dixon no toque jeje*/}
     ],
   },
   {
