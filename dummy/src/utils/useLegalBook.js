@@ -37,15 +37,24 @@ export const useBooks = () => {
 
 
 
+// Transformar bookOptions para Seeker / CustomSelect
+const bookOptionsForSelect = bookOptions.map(opt => ({
+  name: opt.value,        // lo que antes era value
+  placeholder: opt.label  // lo que antes era label
+}));
+
 const searchFields = fields
-  .filter(
-    (f) =>
-      f.name !== "cod_book" &&
-      f.name !== "book_service_code" &&
-      f.name !== "book_category_code" &&
-      f.name !== "book_items_code"
-  )
-  .map((f) => ({ name: f.name, placeholder: f.label }));
+  .filter(f => f.name !== "cod_book" && f.name !== "book_service_code" && f.name !== "book_category_code")
+  .map(f => ({ 
+    name: f.name, 
+    placeholder: f.label, 
+    type: f.type, 
+    options: f.name === "book_items_code" ? bookOptionsForSelect : f.options?.map(o => ({
+      name: o.value,
+      placeholder: o.label
+    })) || []
+  }));
+
 
  const fetchBooks = async () => {
     try {
@@ -85,12 +94,18 @@ console.log("estado de libros:", STATUS_OPTIONS)
 
 
   const handleSearchBooks = async (feature, text) => {
+
+    text= String(text); // Asegura que text es una cadena
+    
   try {
     setLoading(true);
+
     if (!text.trim()) {
       fetchBooks();
       return;
     }
+console.log("Buscando libros con:", feature, text);
+
     const resp = await searchBooksByTerm(feature, text);
 
     if (!resp || !resp.data || resp.data.length === 0) {  // <- resp.data

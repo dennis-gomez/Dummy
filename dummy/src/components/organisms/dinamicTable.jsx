@@ -29,7 +29,6 @@ const DinamicTable = ({
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
 
 
-
   const whiteInputStyle = {
     "& .MuiOutlinedInput-root": {
       backgroundColor: "#ffffff",
@@ -126,18 +125,18 @@ const DinamicTable = ({
                 <th className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl w-12">
                   #
                 </th>
-               {displayFields
-  .filter((_, i) => i !== 0) // 👈 oculta el primer campo
-  .map((f) => (
-    <th
-      key={f.name}
-      name={f.name}
-      className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
-      style={{ minWidth: "150px" }}
-    >
-      {f.label}
-    </th>
-  ))}
+                {displayFields
+                  .filter((_, i) => i !== 0) // 👈 oculta el primer campo
+                  .map((f) => (
+                    <th
+                      key={f.name}
+                      name={f.name}
+                      className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
+                      style={{ minWidth: "150px" }}
+                    >
+                      {f.label}
+                    </th>
+                  ))}
 
                 <th
                   className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl w-32"
@@ -156,8 +155,10 @@ const DinamicTable = ({
 
                   {editingId === row[fields[0].name] ? (
                     <>
-                      {displayFields.map((f) => (
-                        <td name={f.name} className="dinamic-table-td py-4 px-6 text-center">
+                      {displayFields
+      .filter((_, i) => i !== 0) // ❌ quita el primer campo visualmente
+      .map((f) => (
+        <td key={f.name} className="dinamic-table-td py-4 px-6 text-center">
                           {f.name === "book_items_code" ? (
                             <InputValidated
                               name={f.name}
