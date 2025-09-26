@@ -2,8 +2,7 @@ import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import DeleteIcon from "@mui/icons-material/Delete";
-
+import ModalElimination from "../molecules/modalElimination"; // 👈 importa el modal
 import Seeker from "../molecules/seeker";
 import { CircularProgress } from "@mui/material";
 import Button from "../atoms/button";
@@ -51,6 +50,7 @@ const ExtinguisherTable = ({
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
 
+      {/* Buscador */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex-1 mx-4">
           {isLoading ? (
@@ -189,13 +189,12 @@ const ExtinguisherTable = ({
                             >
                               <EditIcon />
                             </button>
-                            <button
+
+                            {/* 👇 Aquí usamos el mismo ModalElimination que en VehicleTable */}
+                            <ModalElimination
+                              message={"Eliminar extintor"}
                               onClick={() => onDelete(ext.cod_extinguisher)}
-                              aria-label="Eliminar extintor"
-                              className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-                            >
-                              <DeleteIcon />
-                            </button>
+                            />
                           </>
                         )}
                       </div>
