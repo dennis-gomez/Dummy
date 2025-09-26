@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Row from "./Row";
+import Row from "./row";
 import Seeker from "../molecules/seeker";
 import { CircularProgress } from "@mui/material";
 import Button from "../atoms/button";
