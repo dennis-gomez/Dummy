@@ -21,12 +21,12 @@ export function useOH_Personnel() {
     // Campos que puedes usar en formularios y búsquedas
     const fields = [
         { name: "oh_personnel_UID", placeholder: "Cédula", width: 250 },
-        { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 400 },
+        { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 250 },
         {
             name: "oh_personnel_brigade_item_code",
             placeholder: "Brigada",
             type: "select", // 👈 importante para el combo
-            width: 400,
+            width: 250,
             options: brigadeItems, // 👈 aquí le pasamos las opciones dinámicas
         },
     ];

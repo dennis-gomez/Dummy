@@ -95,7 +95,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
           })}
         </Grid>
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3, gap: 2 }}>
+       <Box sx={{ display: "flex", justifyContent: "center", mt: 3, gap: 2 }}>
           {onCancel && (
             <button 
               type="button"
