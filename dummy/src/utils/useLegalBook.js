@@ -19,134 +19,134 @@ export const useBooks = () => {
   const [bookOptions, setBookOptions] = useState([]);
 
   const STATUS_OPTIONS = [
-    {value : 1, label: "Activo"},
-    {value : 2, label: "En uso"},
-    {value : 3, label: "Archivado"},
-    {value : 4, label: "Dado de baja"}
+    { value: 1, label: "Activo" },
+    { value: 2, label: "En uso" },
+    { value: 3, label: "Archivado" },
+    { value: 4, label: "Dado de baja" }
   ];
 
   const fields = [
-    
-    { name: "cod_book", label: "Código", type: "text", placeholder: "Código", editable: false },
-    { name: "book_items_code", label: "Tipo de libro", type: "select", placeholder: "Tipo de libro", options:bookOptions, editable: false },
-    {name: "book_code", label: "Código de libro", type: "text", placeholder: "Código de libro", editable: true },
-    { name: "book_name", label: "Nombre", type: "textarea", placeholder: "Nombre", editable: true },
-    { name: "book_location", label: "Ubicación", type: "textarea", placeholder: "Ubicación", editable: true },
-    { name: "book_status", label: "Estado", type: "select", placeholder: "Estado", options: STATUS_OPTIONS, editable: true },
+
+    { name: "cod_book", label: "Código", type: "text", placeholder: "Código", editable: false, grid: 4,   width: 250 },
+    { name: "book_items_code", label: "Tipo de libro", type: "select", placeholder: "Tipo de libro", options: bookOptions, editable: false, grid: 4,   width: 250 },
+        { name: "book_status", label: "Estado", type: "select", placeholder: "Estado", options: STATUS_OPTIONS, editable: true, grid: 4,   width: 250 },
+    { name: "book_code", label: "Código de libro", type: "text", placeholder: "Código de libro", editable: true, grid: 4,   width: 250 },
+    { name: "book_name", label: "Nombre", type: "textarea", placeholder: "Nombre", editable: true, grid: 4,   width: '49rem' },
+    { name: "book_location", label: "Ubicación", type: "textarea", placeholder: "Ubicación", editable: true, grid: 4 ,  width: '49rem'},
   ];
 
 
 
-// Transformar bookOptions para Seeker / CustomSelect
-const bookOptionsForSelect = bookOptions.map(opt => ({
-  name: opt.value,        // lo que antes era value
-  placeholder: opt.label  // lo que antes era label
-}));
-
-const searchFields = fields
-  .filter(f => f.name !== "cod_book" && f.name !== "book_service_code" && f.name !== "book_category_code")
-  .map(f => ({ 
-    name: f.name, 
-    placeholder: f.label, 
-    type: f.type, 
-    options: f.name === "book_items_code" ? bookOptionsForSelect : f.options?.map(o => ({
-      name: o.value,
-      placeholder: o.label
-    })) || []
+  // Transformar bookOptions para Seeker / CustomSelect
+  const bookOptionsForSelect = bookOptions.map(opt => ({
+    name: opt.value,        // lo que antes era value
+    placeholder: opt.label  // lo que antes era label
   }));
 
+  const searchFields = fields
+    .filter(f => f.name !== "cod_book" && f.name !== "book_service_code" && f.name !== "book_category_code")
+    .map(f => ({
+      name: f.name,
+      placeholder: f.label,
+      type: f.type,
+      options: f.name === "book_items_code" ? bookOptionsForSelect : f.options?.map(o => ({
+        name: o.value,
+        placeholder: o.label
+      })) || []
+    }));
 
- const fetchBooks = async () => {
+
+  const fetchBooks = async () => {
     try {
-        setLoading(true);
-        const resp = await getBooks();
-        setBooksList(resp.data); // <- aquí accedes al array real
-        console.log("Books fetched:", resp.data);
+      setLoading(true);
+      const resp = await getBooks();
+      setBooksList(resp.data); // <- aquí accedes al array real
+      console.log("Books fetched:", resp.data);
     } catch (err) {
-        setError("Error al obtener libros");
-        ModalAlert("Error", "Error al obtener libros", "error");
+      setError("Error al obtener libros");
+      ModalAlert("Error", "Error al obtener libros", "error");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-const fetchTypesOfBooks = async () => {
+  const fetchTypesOfBooks = async () => {
     try {
-    const typesResp = await getItems(
-  Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
-  Number(import.meta.env.VITE_BOOK_CATEGORY_CODE)
-);
+      const typesResp = await getItems(
+        Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
+        Number(import.meta.env.VITE_BOOK_CATEGORY_CODE)
+      );
 
-    setTypesOfBooks(typesResp);
+      setTypesOfBooks(typesResp);
 
-setBookOptions(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
+      setBookOptions(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
 
-console.log("Types of books fetched:", typesResp);
+      console.log("Types of books fetched:", typesResp);
 
-console.log("estado de libros:", STATUS_OPTIONS)
+      console.log("estado de libros:", STATUS_OPTIONS)
 
     } catch (err) {
-        setError("Error al obtener tipos de libros");
-        ModalAlert("Error", "Error al obtener tipos de libros", "error");
-        return [];
+      setError("Error al obtener tipos de libros");
+      ModalAlert("Error", "Error al obtener tipos de libros", "error");
+      return [];
     }
-};
+  };
 
 
   const handleSearchBooks = async (feature, text) => {
 
-    text= String(text); // Asegura que text es una cadena
-    
-  try {
-    setLoading(true);
+    text = String(text); // Asegura que text es una cadena
 
-    if (!text.trim()) {
-      fetchBooks();
-      return;
+    try {
+      setLoading(true);
+
+      if (!text.trim()) {
+        fetchBooks();
+        return;
+      }
+      console.log("Buscando libros con:", feature, text);
+
+      const resp = await searchBooksByTerm(feature, text);
+
+      if (!resp || !resp.data || resp.data.length === 0) {  // <- resp.data
+        ModalAlert("Error", "No se encontró ningún libro con esos criterios.", "error");
+        return;
+      }
+
+      setBooksList(resp.data);  // <- resp.data
+      setBookSelectedId(null);
+    } catch (err) {
+      setError("Error al buscar libros");
+      ModalAlert("Error", "Error al buscar libros", "error");
+    } finally {
+      setLoading(false);
     }
-console.log("Buscando libros con:", feature, text);
-
-    const resp = await searchBooksByTerm(feature, text);
-
-    if (!resp || !resp.data || resp.data.length === 0) {  // <- resp.data
-      ModalAlert("Error", "No se encontró ningún libro con esos criterios.", "error");
-      return;
-    }
-
-    setBooksList(resp.data);  // <- resp.data
-    setBookSelectedId(null);
-  } catch (err) {
-    setError("Error al buscar libros");
-    ModalAlert("Error", "Error al buscar libros", "error");
-  } finally {
-    setLoading(false);
-  }
-};
-
-const handleAddBook = async (formData) => {
-  console.log("Datos del formulario para agregar libro (antes de enviar):", formData);
-
-  // Agregamos los valores fijos desde .env
-  const dataToSend = {
-    ...formData,
-    book_service_code: Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
-    book_category_code: Number(import.meta.env.VITE_BOOK_CATEGORY_CODE),
   };
 
-  console.log("Datos que se enviarán a la API:", dataToSend);
+  const handleAddBook = async (formData) => {
+    console.log("Datos del formulario para agregar libro (antes de enviar):", formData);
 
-  try {
-    const resp = await addBook(dataToSend);
-    if (resp.status === 201) {
-      ModalAlert("Éxito", "Libro agregado exitosamente.", "success");
-      fetchBooks();
-      setIsCreatingBook(false);
+    // Agregamos los valores fijos desde .env
+    const dataToSend = {
+      ...formData,
+      book_service_code: Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
+      book_category_code: Number(import.meta.env.VITE_BOOK_CATEGORY_CODE),
+    };
+
+    console.log("Datos que se enviarán a la API:", dataToSend);
+
+    try {
+      const resp = await addBook(dataToSend);
+      if (resp.status === 201) {
+        ModalAlert("Éxito", "Libro agregado exitosamente.", "success");
+        fetchBooks();
+        setIsCreatingBook(false);
+      }
+    } catch (err) {
+      setError("Error al agregar libro");
+      ModalAlert("Error", "Error al agregar libro", "error");
     }
-  } catch (err) {
-    setError("Error al agregar libro");
-    ModalAlert("Error", "Error al agregar libro", "error");
-  }
-};
+  };
 
 
   const handleEditBook = async (cod_book, formData) => {
@@ -162,7 +162,7 @@ const handleAddBook = async (formData) => {
     }
   };
 
-   
+
 
   const handleDeleteBook = async (cod_book) => {
     try {
