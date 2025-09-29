@@ -97,86 +97,106 @@ function LegalBookRecordTable({
 
   return (
     <>
+    {/* Botón agregar separado a la derecha */}
+<div className="gird w-full max-w-5xl mx-auto mb-4 text-right">
+  <Button
+    text={showForm ? "Cancelar" : "Agregar Registro"}
+    onClick={onToggleForm}
+  />
+</div>
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
           <p className="text-gray-700 font-medium mb-2">Cargando registros...</p>
           <CircularProgress />
         </div>
+        
       ) : (
         <>
           {/* Filtros */}
-          <Box className="flex flex-col gap-4 bg-white shadow-md rounded-2xl p-4 w-full max-w-5xl mx-auto mb-4">
-            <div className="flex flex-wrap gap-3 items-end">
-              <FormControl className="min-w-[200px]">
-                <InputLabel>Filtrar por libro</InputLabel>
-                <Select
-                  value={selectedBook}
-                  onChange={(e) => setSelectedBook(e.target.value)}
-                  label="Filtrar por libro"
-                >
-                  <MenuItem value="">Todos los libros</MenuItem>
-                  {books.map((book) => (
-                    <MenuItem key={book.cod_book} value={book.cod_book}>
-                      {book.book_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+          <Box className="flex flex-col gap-4 bg-white  shadow-md rounded-2xl p-4 w-full max-w-5xl mx-auto mb-4">
+  <div className="flex flex-wrap gap-3 items-end">
+    <FormControl className="w-full max-w-[250px] h-12">
+      <InputLabel>Filtrar por libro</InputLabel>
+      <Select
+        value={selectedBook}
+        onChange={(e) => setSelectedBook(e.target.value)}
+        label="Filtrar por libro"
+        className="h-12 px-4 text-sm"
+      >
+        <MenuItem value="">Todos los libros</MenuItem>
+        {books.map((book) => (
+          <MenuItem key={book.cod_book} value={book.cod_book}>
+            {book.book_name}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
 
-              <FormControl className="min-w-[200px]">
-                <InputLabel>Buscar por campo</InputLabel>
-                <Select
-                  value={searchField}
-                  onChange={(e) => setSearchField(e.target.value)}
-                  label="Buscar por campo"
-                >
-                  {fields.map((field) => (
-                    <MenuItem key={field.name} value={field.name}>
-                      {field.placeholder}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+    <FormControl className="w-full max-w-[250px] h-12">
+      <InputLabel>Buscar por campo</InputLabel>
+      <Select
+        value={searchField}
+        onChange={(e) => setSearchField(e.target.value)}
+        label="Buscar por campo"
+        className="h-12 px-4 text-sm"
+      >
+        {fields.map((field) => (
+          <MenuItem key={field.name} value={field.name}>
+            {field.placeholder}
+          </MenuItem>
+        ))}
+      </Select>
+    </FormControl>
 
-              <TextField
-                label="Texto a buscar"
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="min-w-[250px]"
-                placeholder="Ingrese texto a buscar..."
-              />
+    <TextField
+      label="Texto a buscar"
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      className="w-full max-w-[250px] h-12 px-4 text-sm"
+      placeholder="Ingrese texto a buscar..."
+      InputProps={{ className: "h-12 px-4 text-sm" }}
+    />
 
-              <div className="flex gap-2">
-                <Button text="Buscar" onClick={onSearch} disabled={!searchText && !selectedBook} />
-                <Button text="Limpiar" onClick={onResetSearch} variant="outlined" />
-              </div>
-            </div>
-          </Box>
-
-          {/* Botón agregar */}
-          <div className="mb-4 text-center">
-            <Button
-              text={showForm ? "Cancelar" : "Agregar Registro"}
-              onClick={onToggleForm}
-            />
-          </div>
-        </>
+    <div className="flex gap-2 mt-1">
+      <Button text="Buscar" onClick={onSearch} />
+      <Button text="Limpiar" onClick={onResetSearch} variant="outlined" />
+    </div>
+  </div>
+</Box>
+</>
       )}
-
       {/* Tabla */}
-    <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
-        <table className="min-w-full border-collapse bg-white rounded-2xl">
-          <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-            <tr>
-              <th className="py-3 px-4 text-center">#</th>
-              <th className="py-3 px-4 text-center">Libro</th>
-              <th className="py-3 px-4 text-center">Solicitado</th>
-              <th className="py-3 px-4 text-center">Entregado</th>
-              <th className="py-3 px-4 text-center">Regresado</th>
-              <th className="py-3 px-4 text-center">Fecha registro</th>
-              <th className="py-3 px-4 text-center">Fecha retorno</th>
-              <th className="py-3 px-4 text-center">Observaciones</th>
-              <th className="py-3 px-4 text-center">Acciones</th>
+      <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
+        <table className="min-w-full">
+          <thead>
+            <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">
+                #
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Libro
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Solicitado
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Entregado
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Regresado
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Fecha registro
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Fecha retorno
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                Observaciones
+              </th>
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -184,7 +204,7 @@ function LegalBookRecordTable({
               <tr>
                 <td
                   colSpan={9}
-                  className="py-6 px-4 text-center text-gray-500 italic bg-gray-50"
+                  className="py-8 px-6 text-center text-gray-500 italic bg-gray-50 rounded-lg"
                 >
                   No se encontraron registros
                 </td>
@@ -196,13 +216,15 @@ function LegalBookRecordTable({
                 return (
                   <tr
                     key={record.cod_registration_application}
-                    className={`transition-all duration-200 even:bg-gray-50 hover:bg-blue-50`}
+                    className="hover:bg-blue-50 transition-all duration-200 even:bg-gray-50"
                   >
-                    <td className="py-3 px-4 text-center">{index + 1}</td>
+                    <td className="py-4 px-6 text-center align-middle font-medium text-gray-900">
+                      {index + 1}
+                    </td>
 
                     {isEditing ? (
                       <>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
                           <FormControl fullWidth size="small">
                             <Select
                               value={editData.cod_book_catalog || ""}
@@ -218,56 +240,56 @@ function LegalBookRecordTable({
                             </Select>
                           </FormControl>
                         </td>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle">
                           <input
-                            className="w-full p-1 border rounded"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             value={editData.lb_record_requested_by || ""}
                             onChange={(e) =>
                               setEditData({ ...editData, lb_record_requested_by: e.target.value })
                             }
                           />
                         </td>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle">
                           <input
-                            className="w-full p-1 border rounded"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             value={editData.lb_record_delivered_to || ""}
                             onChange={(e) =>
                               setEditData({ ...editData, lb_record_delivered_to: e.target.value })
                             }
                           />
                         </td>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle">
                           <input
-                            className="w-full p-1 border rounded"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             value={editData.lb_record_return_by || ""}
                             onChange={(e) =>
                               setEditData({ ...editData, lb_record_return_by: e.target.value })
                             }
                           />
                         </td>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle">
                           <input
                             type="date"
-                            className="w-full p-1 border rounded"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             value={editData.lb_record_date || ""}
                             onChange={(e) =>
                               setEditData({ ...editData, lb_record_date: e.target.value })
                             }
                           />
                         </td>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle">
                           <input
                             type="date"
-                            className="w-full p-1 border rounded"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             value={editData.lb_record_return_date || ""}
                             onChange={(e) =>
                               setEditData({ ...editData, lb_record_return_date: e.target.value })
                             }
                           />
                         </td>
-                        <td className="p-2">
+                        <td className="py-4 px-6 text-center align-middle">
                           <textarea
-                            className="w-full p-1 border rounded"
+                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             value={editData.lb_record_observation || ""}
                             onChange={(e) =>
                               setEditData({ ...editData, lb_record_observation: e.target.value })
@@ -275,7 +297,7 @@ function LegalBookRecordTable({
                             rows={2}
                           />
                         </td>
-                        <td className="p-2 text-center">
+                        <td className="py-4 px-6 text-center align-middle">
                           <div className="flex justify-center gap-2">
                             <button
                               onClick={() => handleSaveEdit(record)}
@@ -294,26 +316,35 @@ function LegalBookRecordTable({
                       </>
                     ) : (
                       <>
-                        <td className="py-3 px-4 text-center font-medium text-blue-600">
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
                           {getBookName(record.cod_book_catalog)}
                         </td>
-                        <td className="py-3 px-4 text-center">{record.lb_record_requested_by}</td>
-                        <td className="py-3 px-4 text-center">{record.lb_record_delivered_to}</td>
-                        <td className="py-3 px-4 text-center">{record.lb_record_return_by}</td>
-                        <td className="py-3 px-4 text-center">{record.lb_record_date}</td>
-                        <td className="py-3 px-4 text-center">{record.lb_record_return_date}</td>
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
+                          {record.lb_record_requested_by}
+                        </td>
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
+                          {record.lb_record_delivered_to}
+                        </td>
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
+                          {record.lb_record_return_by}
+                        </td>
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
+                          {record.lb_record_date}
+                        </td>
+                        <td className="py-4 px-6 text-center align-middle text-gray-700">
+                          {record.lb_record_return_date}
+                        </td>
                         <td
-                          className="py-3 px-4 text-center max-w-xs truncate"
+                          className="py-4 px-6 text-center align-middle text-gray-700 max-w-xs truncate"
                           title={record.lb_record_observation}
                         >
                           {record.lb_record_observation}
                         </td>
-                        <td className="py-3 px-4 text-center">
+                        <td className="py-4 px-6 text-center align-middle">
                           <div className="flex justify-center space-x-3">
                             <button
                               onClick={() => handleEditClick(record)}
                               className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                              aria-label="Editar registro"
                             >
                               <EditIcon fontSize="small" />
                             </button>
@@ -322,7 +353,6 @@ function LegalBookRecordTable({
                                 handleValidatedDelete(record.cod_registration_application)
                               }
                               className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-                              aria-label="Eliminar registro"
                             >
                               <DeleteIcon fontSize="small" />
                             </button>

@@ -105,8 +105,6 @@ function TableMiscellaneousPage({
 
   return (
     <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Servicios</h2>
-
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
@@ -118,7 +116,7 @@ function TableMiscellaneousPage({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
-            className="border border-gray-300 rounded-lg py-2 px-4 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            className="border bg-white border-gray-300 rounded-lg py-2 px-4 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
           <button
             onClick={handleValidatedAdd}
@@ -134,7 +132,7 @@ function TableMiscellaneousPage({
       </div>
 
       {/* Contenedor con altura máxima y scroll interno */}
-      <div className="overflow-x-auto rounded-xl mb-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="overflow-x-auto rounded-xl mb-4 max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 shadow-lg">
         <table
           ref={tableRef}
           aria-label="Tabla de Servicios"
@@ -142,13 +140,13 @@ function TableMiscellaneousPage({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">
                 C&oacute;digo Servicio
               </th>
-              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider">
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
                 Servicio
               </th>
-              <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl">
+              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">
                 Acciones
               </th>
             </tr>

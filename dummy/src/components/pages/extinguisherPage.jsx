@@ -38,9 +38,9 @@ const ExtinguisherPage = () => {
             backgroundColor: "#d9d9d9",
           }}
         >
-          <Typography variant="h6" gutterBottom color="textPrimary">
+          <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
             Agregar Extintor
-          </Typography>
+          </h3>
           <Form
             fields={fields}
             onSubmit={handleAdd}

@@ -54,23 +54,23 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
   }
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-2xl shadow-lg">
-      <div className={`overflow-x-auto rounded-xl ${centered ? "flex justify-center" : ""}`}>
-        <table className={`min-w-full ${centered ? "mx-auto" : ""}`}>
+    <div className="p-6 mt-6 bg-white rounded-2xl">
+      <div className={`overflow-x-auto rounded-xl shadow-lg ${centered ? "flex justify-center" : ""}`}>
+        <table className= {`min-w-full ${centered ? "mx-auto" : ""}`}>
           <thead>
             <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-              <th className="py-4 px-6 font-semibold text-sm uppercase tracking-wider rounded-tl-xl text-center">
+              <th className="py-4 px-6 font-semibold text-md capitalize tracking-wider rounded-tl-xl text-center">
                 #
               </th>
               {fields.map((f) => (
                 <th
                   key={f.key}
-                  className="py-4 px-6 font-semibold text-sm uppercase tracking-wider text-center"
+                  className="py-4 px-6 font-semibold text-md capitalize tracking-wider text-center"
                 >
                   {f.placeholder}
                 </th>
               ))}
-              <th className="py-4 px-6 font-semibold text-sm uppercase tracking-wider rounded-tr-xl text-center">
+              <th className="py-4 px-6 font-semibold text-md capitalize tracking-wider rounded-tr-xl text-center">
                 Acciones
               </th>
             </tr>
