@@ -93,7 +93,7 @@ export default function CollapsibleTable({
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
-                {tittles.map((col) => (
+                {tittles.slice(1).map((col) => (
                   <th
                     key={col.key}
                     className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
@@ -107,15 +107,16 @@ export default function CollapsibleTable({
             <tbody>
               {list.map((item, index) => (
                 <Row
-                  key={item[tittles[0].key]}
+                 key={item.cod_medic_kit}
                   item={item}
                   index={index}
-                  tittles={tittles}
+                  tittles={tittles.slice(1)}
+                  id={item.cod_medic_kit}
                   subTitle={subTitle}
                   subfields={subfields}
                   onExpand={handleExpand}
-                  isOpen={item[tittles[0].key] === openRowId}
-                  suppliesList={item[tittles[0].key] === medicKitSelectedId ? suppliesList : []}
+                   isOpen={item.cod_medic_kit === openRowId}
+                  suppliesList={item.cod_medic_kit === medicKitSelectedId ? suppliesList : []}
                   onDeleteMedicKit={onDeleteMedicKit}
                   onDeleteSupply={onDeleteSupply}
                   onEditMedicKit={onEditMedicKit}
