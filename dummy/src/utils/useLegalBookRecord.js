@@ -13,67 +13,65 @@ export const useLegalBookRecord = () => {
         { 
             name: "lb_record_requested_by", 
             placeholder: "Solicitado", 
+            validations: [
+                (value) =>
+                    value && value.length > 20 ? "El solicitante del libro debe tener máximo 100 caracteres." : null,
+            ],
             width: 250
         },
         { 
             name: "lb_record_delivered_to", 
-            placeholder: "Entregado", 
-            width: 250
-        },
-        { 
-            name: "lb_record_return_by", 
-            placeholder: "Regresado", 
+            placeholder: "Entregado",
+            validations: [
+                (value) =>
+                    value && value.length > 20 ? "El responsable de recepción del libro debe tener máximo 100 caracteres." : null,
+            ], 
             width: 250
         },
         { 
             name: "lb_record_date", 
             placeholder: "Fecha de registro", 
             type: "date", 
-            width: 250
-        },
-        { 
-            name: "lb_record_return_date", 
-            placeholder: "Fecha de regreso", 
-            type: "date", 
-            width: 250
+            width: 250, 
+            restriction: "cantAfterToday"
         },
         { 
             name: "lb_record_observation", 
             placeholder: "Observaciones", 
             type: "textarea",
-            width: 250
+            width: 783, 
+            required: false,
+            
         },
     ]
 
     // Estados para filtrado - más claros
     const [searchText, setSearchText] = useState(""); // Texto a buscar
-    const [selectedBook, setSelectedBook] = useState(""); // Libro seleccionado
+    const [selectedBook, setSelectedBook] = useState("Todos"); // Libro seleccionado
     const [searchField, setSearchField] = useState(fields[0]?.name || ""); // Campo del registro a buscar
 
-    // Listado de registros (con o sin filtros)
+    // Listado de registros
     const fetchRecords = async (bookId = "", field = "", text = "") => {
-    try {
-        setLoading(true);
-        let response;
-        
-        if (bookId || (field && text)) {
-            // Búsqueda con filtros (ahora funciona con 1, 2 o 3 filtros)
-            response = await getRecordByFeature(bookId, field, text);
-        } else {
-            // Todos los registros
-            response = await getRecords();
+        try {
+            setLoading(true);
+            let response;
+            if ( bookId === "Todos" && !text.trim()) {
+                response = await getRecords();
+            } else {
+                response = await getRecordByFeature(bookId, field, text);
+            }
+            setLegalBookRecords(response.data);
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al obtener los registros.";
+            setError(message);
+        } finally {
+            setLoading(false);
         }
-        setLegalBookRecords(response.data);
-    } catch (error) {
-        const message = error.response?.data?.message || "Error al obtener los registros.";
-        setError(message);
-    } finally {
-        setLoading(false);
     }
-}
 
     // Búsqueda específica
     const handleSearch = async () => {
+        setError(null);
         await fetchRecords(selectedBook, searchField, searchText);
     }
 
@@ -91,6 +89,8 @@ export const useLegalBookRecord = () => {
             const dataToSend = {
                 ...formData,
                 cod_book_catalog: selectedBook,
+                lb_record_return_date: null, 
+                lb_record_return_by: null,
             };
             const response = await addRecord(dataToSend);
             if (response.status === 201) {

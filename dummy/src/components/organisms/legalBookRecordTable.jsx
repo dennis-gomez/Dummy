@@ -35,6 +35,7 @@ function LegalBookRecordTable({
 }) {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const dateFields = ["lb_record_date", "lb_record_return_date"];
 
   const getBookName = (bookCode) => {
     const book = books.find((book) => book.cod_book === bookCode);
@@ -98,12 +99,7 @@ function LegalBookRecordTable({
   return (
     <>
     {/* Botón agregar separado a la derecha */}
-<div className="gird w-full max-w-5xl mx-auto mb-4 text-right">
-  <Button
-    text={showForm ? "Cancelar" : "Agregar Registro"}
-    onClick={onToggleForm}
-  />
-</div>
+
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
           <p className="text-gray-700 font-medium mb-2">Cargando registros...</p>
@@ -112,58 +108,68 @@ function LegalBookRecordTable({
         
       ) : (
         <>
-          {/* Filtros */}
+        {/* Filtros */}
+        <div>
           <Box className="flex flex-col gap-4 bg-white  shadow-md rounded-2xl p-4 w-full max-w-5xl mx-auto mb-4">
-  <div className="flex flex-wrap gap-3 items-end">
-    <FormControl className="w-full max-w-[250px] h-12">
-      <InputLabel>Filtrar por libro</InputLabel>
-      <Select
-        value={selectedBook}
-        onChange={(e) => setSelectedBook(e.target.value)}
-        label="Filtrar por libro"
-        className="h-12 px-4 text-sm"
-      >
-        <MenuItem value="">Todos los libros</MenuItem>
-        {books.map((book) => (
-          <MenuItem key={book.cod_book} value={book.cod_book}>
-            {book.book_name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+            <div className="flex flex-wrap gap-3 items-end">
+              <FormControl className="w-full max-w-[285px] h-12">
+                <InputLabel>Seleccione un libro</InputLabel>
+                <Select
+                  value={selectedBook}
+                  onChange={(e) => setSelectedBook(e.target.value)}
+                  label="Filtrar por libro"
+                  className="h-12 px-4 text-sm"
+                >
+                  <MenuItem value= "Todos">
+                    Todos los libros
+                  </MenuItem> {/* Valor por defecto (todos) */}
+                  {books.map((book) => (
+                    <MenuItem key={book.cod_book} value={book.cod_book}> {/* valores dinamicos */}
+                      {book.book_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
 
-    <FormControl className="w-full max-w-[250px] h-12">
-      <InputLabel>Buscar por campo</InputLabel>
-      <Select
-        value={searchField}
-        onChange={(e) => setSearchField(e.target.value)}
-        label="Buscar por campo"
-        className="h-12 px-4 text-sm"
-      >
-        {fields.map((field) => (
-          <MenuItem key={field.name} value={field.name}>
-            {field.placeholder}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
-
-    <TextField
-      label="Texto a buscar"
-      value={searchText}
-      onChange={(e) => setSearchText(e.target.value)}
-      className="w-full max-w-[250px] h-12 px-4 text-sm"
-      placeholder="Ingrese texto a buscar..."
-      InputProps={{ className: "h-12 px-4 text-sm" }}
-    />
-
-    <div className="flex gap-2 mt-1">
-      <Button text="Buscar" onClick={onSearch} />
-      <Button text="Limpiar" onClick={onResetSearch} variant="outlined" />
-    </div>
-  </div>
-</Box>
-</>
+              <FormControl className="w-full max-w-[285px] h-12">
+                <InputLabel>Buscar por característica</InputLabel>
+                <Select
+                  value={searchField}
+                  onChange={(e) => setSearchField(e.target.value)}
+                  label="Buscar por campo"
+                  className="h-12 px-4 text-sm"
+                >
+                  {fields.map((field) => (
+                    <MenuItem key={field.name} value={field.name}>
+                      {field.placeholder}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                label={dateFields.includes(searchField) ? "Seleccione fecha" : "Texto a buscar"}
+                type={dateFields.includes(searchField) ? "date" : "text"}   
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                className="w-full max-w-[285px] px-4"
+                InputLabelProps={dateFields.includes(searchField) ? { shrink: true } : {}}
+                placeholder={
+                  dateFields.includes(searchField)
+                    ? "Seleccione una fecha"
+                    : "Ingrese texto a buscar..."
+                }
+              />
+              <Button text="Buscar" onClick={onSearch} />
+            </div>
+          </Box>
+          <div className="gird w-full max-w-5xl mx-auto mb-4 text-right">
+            <Button
+              text={showForm ? "Cancelar" : "Agregar Registro"}
+              onClick={onToggleForm}
+            />
+          </div>
+      </div>
+      </>
       )}
       {/* Tabla */}
       <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
