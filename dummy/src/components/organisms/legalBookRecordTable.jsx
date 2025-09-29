@@ -112,16 +112,15 @@ function LegalBookRecordTable({
         
       ) : (
         <>
-          {/* Filtros */}
-          <Box className="flex flex-col gap-4 bg-white  shadow-md rounded-2xl p-4 w-full max-w-5xl mx-auto mb-4">
+         {/* Filtros */}
+<Box className="flex flex-col gap-4 bg-white shadow-md rounded-2xl p-4 w-full max-w-5xl mx-auto mb-4">
   <div className="flex flex-wrap gap-3 items-end">
-    <FormControl className="w-full max-w-[250px] h-12">
+    <FormControl className="flex-1 min-w-[200px]">
       <InputLabel>Filtrar por libro</InputLabel>
       <Select
         value={selectedBook}
         onChange={(e) => setSelectedBook(e.target.value)}
         label="Filtrar por libro"
-        className="h-12 px-4 text-sm"
       >
         <MenuItem value="">Todos los libros</MenuItem>
         {books.map((book) => (
@@ -132,13 +131,12 @@ function LegalBookRecordTable({
       </Select>
     </FormControl>
 
-    <FormControl className="w-full max-w-[250px] h-12">
+    <FormControl className="flex-1 min-w-[200px]">
       <InputLabel>Buscar por campo</InputLabel>
       <Select
         value={searchField}
         onChange={(e) => setSearchField(e.target.value)}
         label="Buscar por campo"
-        className="h-12 px-4 text-sm"
       >
         {fields.map((field) => (
           <MenuItem key={field.name} value={field.name}>
@@ -152,9 +150,8 @@ function LegalBookRecordTable({
       label="Texto a buscar"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
-      className="w-full max-w-[250px] h-12 px-4 text-sm"
+      className="flex-1 min-w-[200px]"
       placeholder="Ingrese texto a buscar..."
-      InputProps={{ className: "h-12 px-4 text-sm" }}
     />
 
     <div className="flex gap-2 mt-1">
