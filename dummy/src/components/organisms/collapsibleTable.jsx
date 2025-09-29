@@ -1,11 +1,11 @@
 import { useState } from "react";
 import Row from "./row";
 import Seeker from "../molecules/seeker";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
 
 export default function CollapsibleTable({
-  list,
+  list = [],
   tittles,
   subTitle,
   subfields,
@@ -21,11 +21,13 @@ export default function CollapsibleTable({
   searchFields,
   handleSearch,
   isLoading = false,
-   isCreatingMedicKit,
+  isCreatingMedicKit,
   isCreatingSupply,
-   onAddClick,
+  onAddClick,
 }) {
   const [openRowId, setOpenRowId] = useState(null);
+  const [searchText, setSearchText] = useState("");
+  const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
 
   const handleExpand = (id) => {
     const closing = openRowId === id;
@@ -40,27 +42,23 @@ export default function CollapsibleTable({
     }
   };
 
-  const [searchText, setSearchText] = useState("");
-  const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
-
   const getButtonName = () => {
-    if (isCreatingMedicKit ) return "Cancelar";
-    if (isCreatingSupply) return "Cancelar";
+    if (isCreatingMedicKit || isCreatingSupply) return "Cancelar";
     return "Agregar Botiquín";
   };
 
-
-
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      
-      {/* Contenedor del buscador y botón */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex-1 mx-4">
+
+      {/* Contenedor buscador + botón */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
+
+        {/* Columna 1: Buscador */}
+        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           {isLoading ? (
-            <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
-              <p className="text-gray-700 font-medium mb-2">Cargando botiquines...</p>
-              <CircularProgress />
+            <div className="flex flex-wrap items-center gap-3 w-full">
+              <CircularProgress size={24} />
+              <span>Cargando botiquines...</span>
             </div>
           ) : (
             <Seeker
@@ -76,13 +74,21 @@ export default function CollapsibleTable({
               fields={searchFields}
             />
           )}
-        </div>
-      
-  <Button text={getButtonName()} onClick={onAddClick} />
+        </Box>
 
+        {/* Columna 2: Botón Agregar/Cancelar */}
+        <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
+          <div className="p-4 h-fit">
+            <Button
+              text={getButtonName()}
+              onClick={onAddClick}
+              className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            />
+          </div>
+        </div>
       </div>
 
-      {/* ✅ AQUÍ ESTÁ EL MENSAJE CON EL CONTENEDOR GRIS */}
+      {/* Mensaje cuando no hay registros */}
       {list.length === 0 ? (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
           No hay botiquines registrados
@@ -93,11 +99,8 @@ export default function CollapsibleTable({
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
-                {tittles.slice(1).map((col) => (
-                  <th
-                    key={col.key}
-                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
-                  >
+                {tittles.slice(1).map(col => (
+                  <th key={col.key} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
                     {col.label}
                   </th>
                 ))}
@@ -107,7 +110,7 @@ export default function CollapsibleTable({
             <tbody>
               {list.map((item, index) => (
                 <Row
-                 key={item.cod_medic_kit}
+                  key={item.cod_medic_kit}
                   item={item}
                   index={index}
                   tittles={tittles.slice(1)}
@@ -115,7 +118,7 @@ export default function CollapsibleTable({
                   subTitle={subTitle}
                   subfields={subfields}
                   onExpand={handleExpand}
-                   isOpen={item.cod_medic_kit === openRowId}
+                  isOpen={item.cod_medic_kit === openRowId}
                   suppliesList={item.cod_medic_kit === medicKitSelectedId ? suppliesList : []}
                   onDeleteMedicKit={onDeleteMedicKit}
                   onDeleteSupply={onDeleteSupply}
