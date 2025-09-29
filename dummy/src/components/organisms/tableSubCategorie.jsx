@@ -116,9 +116,8 @@ function TableSubcategorie({
   };
 
   return (
+    
     <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
-      <h2 className="mb-6 text-2xl font-bold text-gray-800 text-center">Items</h2>
-
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
@@ -130,7 +129,7 @@ function TableSubcategorie({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
-            className="border border-gray-300 rounded-lg py-2 px-4 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            className="border bg-white border-gray-300 rounded-lg py-2 px-4 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
           <button
             onClick={handleValidatedAdd}
@@ -151,7 +150,7 @@ function TableSubcategorie({
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      <div className="overflow-x-auto shadow-lg  rounded-xl max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <table
           ref={tableRef}
           aria-label="Tabla de Items"
@@ -159,11 +158,11 @@ function TableSubcategorie({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6 text-center">C&oacute;digo Servicio</th>
-              <th className="py-4 px-6 text-center">C&oacute;digo Categor&iacute;a</th>
-              <th className="py-4 px-6 text-center">C&oacute;digo Item</th>
-              <th className="py-4 px-6 text-center">Items</th>
-              <th className="py-4 px-6 text-center">Acciones</th>
+              <th className="py-4 px-6 font-semibold text-md text-center">C&oacute;digo Servicio</th>
+              <th className="py-4 px-6 font-semibold text-md text-center">C&oacute;digo Categor&iacute;a</th>
+              <th className="py-4 px-6 font-semibold text-md text-center">C&oacute;digo Item</th>
+              <th className="py-4 px-6 font-semibold text-md text-center">Items</th>
+              <th className="py-4 px-6 font-semibold text-md text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>

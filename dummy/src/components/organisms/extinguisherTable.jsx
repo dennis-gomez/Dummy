@@ -90,22 +90,22 @@ const ExtinguisherTable = ({
           No hay extintores registrados
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl">
+        <div className="overflow-x-auto rounded-xl shadow-lg">
           <table className="min-w-full">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">
                   #
                 </th>
                 {fields.map((f) => (
                   <th
                     key={f.name}
-                    className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
+                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
                   >
                     {f.placeholder}
                   </th>
                 ))}
-                <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl">
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">
                   Acciones
                 </th>
               </tr>

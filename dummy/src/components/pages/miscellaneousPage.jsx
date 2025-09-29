@@ -34,55 +34,62 @@ function MiscellaneousPage() {
       {/* Contenido principal con scroll */}
       <main className="flex-grow p-6 overflow-auto">
         <div className="max-w-7xl mx-auto space-y-6">
-          
           {/* Tabla de Servicios */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <TableMiscellaneousPage
-              services={services}
-              selectedId={selectedServCod}
-              onSelect={setSelectedServiceId}
-              tableRef={serviciosRef}
-              onAddItem={handleAddService}
-              onEditService={handleEditService}
-              onDeleteService={handleDeleteService}
-            />
+          <div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">Servicios</h2>
+            <div className="bg-gray-300 rounded-xl shadow-lg p-6">
+              <TableMiscellaneousPage
+                services={services}
+                selectedId={selectedServCod}
+                onSelect={setSelectedServiceId}
+                tableRef={serviciosRef}
+                onAddItem={handleAddService}
+                onEditService={handleEditService}
+                onDeleteService={handleDeleteService}
+              />
+            </div>
           </div>
-
           {selectedServCod && (
             /* Tabla de Categorías */
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <TableOptionServices
-                categoria={categories}
-                onClose={() => {
-                  setSelectedServCod(null);
-                  setSelectedSubCod(null);
-                  setItems([]);
-                }}
-                onSelectSub={setSelectedCategoryId}
-                selectedService={selectedServCod}
-                selectedCatCod={selectedCatCod}
-                tableRef={categoriasRef}
-                addCategory={handleAddCategory}
-                updateCategory={handleEditCategory}
-                deleteCategory={handleDeleteCategory}
-              />
+            <div>
+              <h2 className="mb-6 text-2xl font-bold text-gray-800 text-center">Categor&iacute;as</h2>
+              <div className="bg-gray-300  rounded-xl shadow-lg p-6">
+                <TableOptionServices
+                  categoria={categories}
+                  onClose={() => {
+                    setSelectedServCod(null);
+                    setSelectedSubCod(null);
+                    setItems([]);
+                  }}
+                  onSelectSub={setSelectedCategoryId}
+                  selectedService={selectedServCod}
+                  selectedCatCod={selectedCatCod}
+                  tableRef={categoriasRef}
+                  addCategory={handleAddCategory}
+                  updateCategory={handleEditCategory}
+                  deleteCategory={handleDeleteCategory}
+                />
+              </div>
             </div>
           )}
 
           {selectedCatCod && (
             /* Tabla de Items */
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <TableSubcategorie
-                items={items}
-                onClose={() => setSelectedSubCod(null)}
-                onDeleteItem={handleDeleteItem}
-                onEditItem={handleEditItem}
-                onAddItem={handleAddItem}
-                tableRef={itemsRef}
-              />
+            <div>
+              <h2 className="mb-6 text-2xl font-bold text-gray-800 text-center">Items</h2>
+              <div className="bg-gray-300  rounded-xl shadow-lg p-6">
+                <TableSubcategorie
+                  items={items}
+                  onClose={() => setSelectedSubCod(null)}
+                  onDeleteItem={handleDeleteItem}
+                  onEditItem={handleEditItem}
+                  onAddItem={handleAddItem}
+                  tableRef={itemsRef}
+                />
+              </div>
             </div>
           )}
-          
+
         </div>
       </main>
 

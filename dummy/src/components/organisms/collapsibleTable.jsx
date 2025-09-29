@@ -88,20 +88,20 @@ export default function CollapsibleTable({
           No hay botiquines registrados
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl">
+        <div className="overflow-x-auto rounded-xl shadow-lg">
           <table className="min-w-full">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl">#</th>
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
                 {tittles.map((col) => (
                   <th
                     key={col.key}
-                    className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
+                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
                   >
                     {col.label}
                   </th>
                 ))}
-                <th className="py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl">Acciones</th>
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
               </tr>
             </thead>
             <tbody>

@@ -118,11 +118,11 @@ const DinamicTable = ({
           No hay {singularName}s registrados
         </div>
       ) : (
-        <div className="dinamic-table-wrapper overflow-x-auto rounded-xl">
+        <div className="dinamic-table-wrapper overflow-x-auto rounded-xl shadow-lg">
           <table className="dinamic-table min-w-full table-auto">
             <thead>
               <tr className="dinamic-table-header-row bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tl-xl w-12">
+                <th className="dinamic-table-th py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">
                   #
                 </th>
                 {displayFields
@@ -131,7 +131,7 @@ const DinamicTable = ({
                     <th
                       key={f.name}
                       name={f.name}
-                      className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider"
+                      className="dinamic-table-th py-4 px-6 text-center font-semibold text-md capitalize  tracking-wider"
                       style={{ minWidth: "150px" }}
                     >
                       {f.label}
@@ -139,7 +139,7 @@ const DinamicTable = ({
                   ))}
 
                 <th
-                  className="dinamic-table-th py-4 px-6 text-center font-semibold text-sm uppercase tracking-wider rounded-tr-xl w-32"
+                  className="dinamic-table-th py-4 px-6 text-center font-semibold text-md  capitalize tracking-wider rounded-tr-xl w-32"
                 >
                   Acciones
                 </th>
