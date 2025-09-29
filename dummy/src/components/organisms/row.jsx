@@ -21,9 +21,9 @@ export default function Row({
   onDeleteSupply,
   onEditMedicKit,
   onEditSupply,
-  changeStateSupply
+  changeStateSupply,
+  id,
 }) {
-  const idKey = tittles[0]?.key;
   const [editingKit, setEditingKit] = useState(false);
   const [kitFormData, setKitFormData] = useState({ ...item });
 
@@ -62,7 +62,7 @@ export default function Row({
         <td className="py-4 px-4 text-center">
           <button
             type="button"
-            onClick={() => onExpand(item[idKey])}
+            onClick={() => onExpand(id)}
             className="p-2 rounded-full hover:bg-gray-200 transition"
             aria-label={isOpen ? "Contraer" : "Expandir"}
           >
@@ -72,7 +72,7 @@ export default function Row({
 
         {tittles.map((col, index) => (
           <td key={col.key} className="py-4 px-4 text-center text-gray-800">
-            {editingKit && index !== 0 ? (
+            {editingKit ? (
               <InputValidated
                 name={col.key}
                 type={col.type || "text"}
@@ -95,7 +95,7 @@ export default function Row({
                 }}
               />
             ) : (
-              <span className="font-normal">{item[col.key]}</span>
+              <span className="font-normal">{  item[col.key]}</span>
             )}
           </td>
         ))}
@@ -136,7 +136,7 @@ export default function Row({
                 </button>
                 <ModalElimination
                   message={"¿Quieres eliminar este kit médico?"}
-                  onClick={() => onDeleteMedicKit(item[idKey])}
+                  onClick={() => onDeleteMedicKit(id)}
                 />
               </>
             )}
@@ -152,7 +152,7 @@ export default function Row({
                 <h3 className="text-lg font-semibold text-gray-800">{subTitle}</h3>
                 <Button 
                   text="Agregar Suplemento" 
-                  onClick={() => changeStateSupply(item[idKey])}
+                  onClick={() => changeStateSupply(id)}
                 />
               </div>
               <DetailsTable
