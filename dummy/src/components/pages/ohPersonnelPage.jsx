@@ -25,7 +25,7 @@ const OHPersonnelPage = () => {
   return (
     <div style={{ padding: 24 }}>
       <h1 className="text-2xl font-bold text-gray-800 text-center flex-1">
-        Gestión de Personal de Salud Ocupacional
+        Gestión del Personal de Brigadas
       </h1>
 
       {/* Formulario */}

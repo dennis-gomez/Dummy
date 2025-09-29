@@ -24,10 +24,11 @@ function Seeker({
     if (selectedField) {
       setType(selectedField.type || "");
       setOptions(selectedField.options || []);
-      if (selectedField.type === "select") onChangeText("");
+    // if (selectedField.type === "select") onChangeText("");
 
       console.log("Selected field options:", selectedField.options);
       console.log("campos:", fields);
+      console.log("valueValueText:", valueText);
     }
   }, [valueFeature, fields]);
 

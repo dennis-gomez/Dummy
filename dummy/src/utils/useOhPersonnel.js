@@ -22,13 +22,7 @@ export function useOH_Personnel() {
     const fields = [
         { name: "oh_personnel_UID", placeholder: "Cédula", width: 250 },
         { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 250 },
-        {
-            name: "oh_personnel_brigade_item_code",
-            placeholder: "Brigada",
-            type: "select", // 👈 importante para el combo
-            width: 250,
-            options: brigadeItems, // 👈 aquí le pasamos las opciones dinámicas
-        },
+        { name: "oh_personnel_brigade_item_code", name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 300, options: brigadeItems, },
     ];
 
     const [searchText, setSearchText] = useState("");
@@ -51,12 +45,15 @@ export function useOH_Personnel() {
             const items = await getItems(5, 1);
             setBrigadeItems(
                 items.map((i) => ({
+                    name: i.cod_item,
+                    placeholder: i.item_name,
                     value: i.cod_item,
                     label: i.item_name,
                     service_cod: i.cod_service,
                     category_cod: i.cod_category,
                 }))
             );
+
         } catch (err) {
             const message = err.response?.data?.message || "Error al obtener items.";
             setError(message);
@@ -97,8 +94,6 @@ export function useOH_Personnel() {
                     oh_personnel_brigade_category_code: selectedItem.category_cod,
                 }),
             };
-
-            console.log("Payload final:", payload); // 👈 revisalo en consola
 
             await addPersonnel(payload);
             ModalAlert("Éxito", "Personal agregado exitosamente.", "success");

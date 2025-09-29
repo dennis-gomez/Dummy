@@ -139,7 +139,6 @@ const OHPersonnelTable = ({
                               }
                               className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             >
-                              <option value="">Seleccione...</option>
                               {f.options?.map((opt) => (
                                 <option key={opt.value} value={opt.value}>
                                   {opt.label}
