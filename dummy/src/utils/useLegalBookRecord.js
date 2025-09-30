@@ -1,12 +1,28 @@
 import { useEffect, useState } from "react";
-import { addRecord, getRecords, updateRecord, deleteRecord, getRecordByFeature, getBooksNames } from "../services/legalBookRecordService";
-import ModalAlert from "../components/molecules/modalAlert";
+import { 
+    addRecord, 
+    getRecords, 
+    updateRecord, 
+    deleteRecord, 
+    getRecordByFeature, 
+    getBooksNames 
+} from "../services/legalBookRecordService";
+import Swal from "sweetalert2";
+
+// Modal genérico con SweetAlert2
+const ModalAlert = (title, text, icon = "info") => {
+    Swal.fire({
+        title,
+        text,
+        icon,
+        confirmButtonColor: icon === "error" ? "#dc2626" : "#2563eb",
+    });
+};
 
 export const useLegalBookRecord = () => {
     const [books, setBooks] = useState([]);
     const [legalBookRecords, setLegalBookRecords] = useState([]);
     const [showForm, setShowForm] = useState(false);
-    const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const fields = [
@@ -15,7 +31,7 @@ export const useLegalBookRecord = () => {
             placeholder: "Solicitado", 
             validations: [
                 (value) =>
-                    value && value.length > 20 ? "El solicitante del libro debe tener máximo 100 caracteres." : null,
+                    value && value.length > 100 ? "El solicitante del libro debe tener máximo 100 caracteres." : null,
             ],
             width: 250
         },
@@ -24,7 +40,7 @@ export const useLegalBookRecord = () => {
             placeholder: "Entregado",
             validations: [
                 (value) =>
-                    value && value.length > 20 ? "El responsable de recepción del libro debe tener máximo 100 caracteres." : null,
+                    value && value.length > 100 ? "El responsable de recepción del libro debe tener máximo 100 caracteres." : null,
             ], 
             width: 250
         },
@@ -41,21 +57,20 @@ export const useLegalBookRecord = () => {
             type: "textarea",
             width: 783, 
             required: false,
-            
         },
-    ]
+    ];
 
-    // Estados para filtrado - más claros
-    const [searchText, setSearchText] = useState(""); // Texto a buscar
-    const [selectedBook, setSelectedBook] = useState("Todos"); // Libro seleccionado
-    const [searchField, setSearchField] = useState(fields[0]?.name || ""); // Campo del registro a buscar
+    // Estados para filtrado
+    const [searchText, setSearchText] = useState("");
+    const [selectedBook, setSelectedBook] = useState("Todos");
+    const [searchField, setSearchField] = useState(fields[0]?.name || "");
 
     // Listado de registros
     const fetchRecords = async (bookId = "", field = "", text = "") => {
         try {
             setLoading(true);
             let response;
-            if ( bookId === "Todos" && !text.trim()) {
+            if (bookId === "Todos" && !text.trim()) {
                 response = await getRecords();
             } else {
                 response = await getRecordByFeature(bookId, field, text);
@@ -63,29 +78,28 @@ export const useLegalBookRecord = () => {
             setLegalBookRecords(response.data);
         } catch (error) {
             const message = error.response?.data?.message || "Error al obtener los registros.";
-            setError(message);
+            ModalAlert("Error", message, "error");
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     // Búsqueda específica
     const handleSearch = async () => {
-        setError(null);
         await fetchRecords(selectedBook, searchField, searchText);
-    }
+    };
 
     // Resetear filtros y cargar todos los registros
     const handleResetSearch = async () => {
-        setSelectedBook("");
+        setSelectedBook("Todos");
         setSearchField(fields[0]?.name || "");
         setSearchText("");
         await fetchRecords();
-    }
+    };
 
+    // Agregar registro
     const handleSubmit = async (formData) => {
         try {
-            setError(null);
             const dataToSend = {
                 ...formData,
                 cod_book_catalog: selectedBook,
@@ -95,46 +109,46 @@ export const useLegalBookRecord = () => {
             const response = await addRecord(dataToSend);
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                await fetchRecords(); // Recargar registros
+                await fetchRecords();
                 setShowForm(false);
             }
         } catch (error) {
             const message = error.response?.data?.message || "Error al agregar registro.";
             ModalAlert("Error", message, "error");
-            setError(message);
         }
-    }
+    };
 
+    // Editar registro
     const handleEdit = async (updatedData) => {
         try {
-            setError(null);
             const response = await updateRecord(updatedData);
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
-                await fetchRecords(); // Recargar registros
+                await fetchRecords();
             }
             return true;
         } catch (error) {
             const message = error.response?.data?.message || "Error al editar registro.";
             ModalAlert("Error", message, "error");
-            setError(message);
             return false;
         }
-    }
+    };
 
+    // Eliminar registro
     const handleDelete = async (cod_registration_application) => {
         try {
             const response = await deleteRecord(cod_registration_application);
             if (response.status === 200) {
-                ModalAlert("Éxito", response.data.message, "success");
-                await fetchRecords(); // Recargar registros
+                ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
+                await fetchRecords();
             }
         } catch (error) {
             const message = error.response?.data?.message || "Error al eliminar registro.";
             ModalAlert("Error", message, "error");
         }
-    }
+    };
 
+    // Cargar registros y libros al iniciar
     useEffect(() => {
         fetchRecords();
         const loadBooks = async () => {
@@ -143,7 +157,7 @@ export const useLegalBookRecord = () => {
                 setBooks(response.data);
             } catch (error) {
                 const message = error.response?.data?.message || "Error al obtener los catálogos de libros.";
-                setError(message);
+                ModalAlert("Error", message, "error");
             }
         };
         loadBooks();
@@ -161,8 +175,6 @@ export const useLegalBookRecord = () => {
         setSearchField,
         showForm,
         setShowForm,
-        error,
-        setError,
         loading, 
         handleSubmit,
         handleEdit,

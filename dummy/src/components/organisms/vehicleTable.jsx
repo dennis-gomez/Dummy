@@ -78,77 +78,105 @@ const VehicleTable = ({
       </div>
 
       {/* Contenido de la tabla */}
-      {isLoading ? (
-        <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
-          <CircularProgress size={24} />
-          <span>Cargando vehículos...</span>
-        </div>
-      ) : vehicles.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
-          No hay vehículos registrados
-        </div>
-      ) : (
-        <div className="overflow-x-auto rounded-xl shadow-lg">
-          <table className="min-w-full table-auto">
-            <thead>
-              <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
-                {fields.map(f => (
-                  <th key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
-                    {f.placeholder}
-                  </th>
-                ))}
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vehicles.map((vehicle, index) => {
-                const isEditing = editingId === vehicle.cod_vehicle;
-                return (
-                  <tr key={vehicle.cod_vehicle} className={`hover:bg-blue-50 transition-all duration-200 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-                    <td className="py-4 px-6 text-center font-medium text-gray-900">{index + 1}</td>
+      {/* Contenido tabla */}
+{isLoading ? (
+  // 🌀 Solo loader cuando está cargando
+  <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
+    <CircularProgress size={24} />
+    <span>Cargando vehículos...</span>
+  </div>
+) : vehicles.length === 0 ? (
+  // 📭 Solo mensaje vacío cuando ya cargó pero no hay resultados
+    <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
+    No hay vehículos registrados
+  </div>
+) : (
+  // 📋 Render de tabla normal
+  <div className="overflow-x-auto rounded-xl shadow-lg">
+    <table className="min-w-full table-auto">
+      <thead>
+        <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+          <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">
+            #
+          </th>
+          {fields.map((f) => (
+            <th
+              key={f.name}
+              className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
+            >
+              {f.placeholder}
+            </th>
+          ))}
+          <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">
+            Acciones
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {vehicles.map((vehicle, index) => {
+          const isEditing = editingId === vehicle.cod_vehicle;
+          return (
+            <tr
+              key={vehicle.cod_vehicle}
+              className={`${
+                index % 2 === 0 ? "bg-white" : "bg-gray-50"
+              } hover:bg-gray-100`}
+            >
+              <td className="py-4 px-6 text-center">{index + 1}</td>
+              {fields.map((f) => (
+                <td key={f.name} className="py-4 px-6 text-center">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={editData[f.name] || ""}
+                      onChange={(e) =>
+                        setEditData({ ...editData, [f.name]: e.target.value })
+                      }
+                      className="border rounded px-2 py-1 w-full"
+                    />
+                  ) : (
+                    vehicle[f.name]
+                  )}
+                </td>
+              ))}
+              <td className="py-4 px-6 text-center flex gap-2 justify-center">
+                {isEditing ? (
+                  <>
+                    <button
+                      onClick={handleSaveEdit}
+                      className="text-green-600 hover:text-green-800"
+                    >
+                      <SaveIcon />
+                    </button>
+                    <button
+                      onClick={handleCancelEdit}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <CancelIcon />
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleEditClick(vehicle)}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <EditIcon />
+                    </button>
+                    <ModalElimination
+                      onConfirm={() => onDelete(vehicle.cod_vehicle)}
+                    />
+                  </>
+                )}
+              </td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+)}
 
-                    {fields.map(f => (
-                      <td key={f.name} className="py-4 px-6 text-center text-gray-700">
-                        {isEditing ? (
-                          <input
-                            type={f.type || "text"}
-                            value={editData[f.name] || ""}
-                            onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                          />
-                        ) : (
-                          vehicle[f.name] || "-"
-                        )}
-                      </td>
-                    ))}
-
-                    <td className="py-4 px-6 text-center">
-                      {isEditing ? (
-                        <div className="flex justify-center gap-2">
-                          <button onClick={handleSaveEdit} className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 flex items-center">
-                            <SaveIcon className="mr-1" fontSize="small" /> Guardar
-                          </button>
-                          <button onClick={handleCancelEdit} className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 flex items-center">
-                            <CancelIcon className="mr-1" fontSize="small" /> Cancelar
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="flex justify-center gap-3">
-                          <button onClick={() => handleEditClick(vehicle)} className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition">
-                            <EditIcon />
-                          </button>
-                          <ModalElimination message="Eliminar vehículo" onClick={() => onDelete(vehicle.cod_vehicle)} />
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 };
