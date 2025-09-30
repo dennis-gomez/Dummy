@@ -36,7 +36,7 @@ const navConfig = [
     ],
   },
   {
-    label: 'Caja chica',
+    label: 'Caja Chica',
     sub: [
       { label: 'Fondos', path: '/caja/fondos' },
       { label: 'Gastos', path: '/caja/gastos' },
@@ -44,14 +44,14 @@ const navConfig = [
     ],
   },
   {
-    label: 'Libros legales',
+    label: 'Libros Legales',
     sub: [
       { label: 'Gestión de libros legales', path: '/libros/mantenimiento' },
       { label: 'Registros de libros legales', path: '/libros/registros' },
     ],
   },
   {
-    label: 'Salud ocupacional',
+    label: 'Salud Ocupacional',
     sub: [
       { label: 'Botiquines', path: '/salud/botiquin' },
       { label: 'Extintores', path: '/salud/extinguidores' },

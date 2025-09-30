@@ -26,9 +26,7 @@ function Seeker({
       setOptions(selectedField.options || []);
     // if (selectedField.type === "select") onChangeText("");
 
-      console.log("Selected field options:", selectedField.options);
-      console.log("campos:", fields);
-      console.log("valueValueText:", valueText);
+     
     }
   }, [valueFeature, fields]);
 

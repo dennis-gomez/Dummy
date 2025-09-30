@@ -20,13 +20,13 @@ function LegalBookPage() {
     isCreatingBook,
     setIsCreatingBook,
     STATUS_OPTIONS,
+    openPDF,
     
     } = useBooks();
 
   
     React.useEffect(() => {
 
-console.log("campos de busqueda:", searchFields);
 
     }, []);
 
@@ -76,6 +76,7 @@ console.log("campos de busqueda:", searchFields);
     STATUS_OPTIONS={STATUS_OPTIONS}
     isCreatingBook={isCreatingBook}
     setIsCreatingBook={setIsCreatingBook}
+    openPDF={openPDF}
 />
         </div>
     );
