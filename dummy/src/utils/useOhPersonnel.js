@@ -20,9 +20,9 @@ export function useOH_Personnel() {
 
     // Campos que puedes usar en formularios y búsquedas
     const fields = [
-        { name: "oh_personnel_UID", placeholder: "Cédula", width: 250 },
-        { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 250 },
-        { name: "oh_personnel_brigade_item_code", name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 250, options: brigadeItems, },
+        { name: "oh_personnel_UID", placeholder: "Cédula", width: 125 },
+        { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 300 },
+        { name: "oh_personnel_brigade_item_code", name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 325, options: brigadeItems, },
     ];
 
     const [searchText, setSearchText] = useState("");
