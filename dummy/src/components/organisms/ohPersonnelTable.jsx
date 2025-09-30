@@ -4,7 +4,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModalElimination from "../molecules/modalElimination";
 import Seeker from "../molecules/seeker";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
 
 const OHPersonnelTable = ({
@@ -44,13 +44,14 @@ const OHPersonnelTable = ({
     setEditData({});
   };
 
-  const getButtonName = () => (showForm ? "Cancelar" : "Agregar Personal");
-
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      {/* Buscador */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex-1 mx-4">
+      
+      {/* Contenedor principal: buscador + botón - Misma estructura que LegalBookRecordTable */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
+
+        {/* Columna 1: Buscador */}
+        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           {isLoading ? (
             <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
               <p className="text-gray-700 font-medium mb-0">
@@ -72,16 +73,21 @@ const OHPersonnelTable = ({
               onChangeFeature={onChangeFeature}
             />
           )}
-        </div>
+        </Box>
 
-        <Button
-          sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}
-          text={getButtonName()}
-          onClick={() => {
-            setShowForm(!showForm);
-            if (setError) setError(null);
-          }}
-        />
+        {/* Columna 2: Botón Agregar/Cancelar */}
+        <div className="flex items-center justify-center lg:justify-start lg:ml-9 w-full sm:w-auto">
+          <div className="p-5 h-fit">
+            <Button
+              text={showForm ? "Cancelar" : "Agregar Personal"}
+              onClick={() => {
+                setShowForm(!showForm);
+                if (setError) setError(null);
+              }}
+              className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Mensaje cuando no hay registros */}
