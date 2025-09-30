@@ -34,7 +34,7 @@ function Seeker({
     <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
       
       {/* Primer Select */}
-      <div className="flex-1 min-w-[150px]">
+      <div className="flex-1  min-w-[150px]">
         <CustomSelect 
           selectLabel={selectName}
           fields={fields}
