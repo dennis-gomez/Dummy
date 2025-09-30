@@ -1,4 +1,3 @@
-import React from "react";
 import { useLegalBookRecord } from "../../utils/useLegalBookRecord";
 import LegalBookRecordTable from "../organisms/legalBookRecordTable";
 import { Box, Typography } from "@mui/material";
