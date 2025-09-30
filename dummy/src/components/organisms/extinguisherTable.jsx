@@ -137,7 +137,7 @@ const ExtinguisherTable = ({
                                 })
                               }
                               rows={f.rows || 2}
-                              className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center resize-vertical"
+                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center resize-vertical"
                             />
                           ) : (
                             <input
@@ -149,7 +149,7 @@ const ExtinguisherTable = ({
                                   [f.name]: e.target.value,
                                 })
                               }
-                              className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
                             />
                           )
                         ) : f.type === "date" ? (
