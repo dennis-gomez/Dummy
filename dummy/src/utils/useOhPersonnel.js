@@ -22,7 +22,7 @@ export function useOH_Personnel() {
     const fields = [
         { name: "oh_personnel_UID", placeholder: "Cédula", width: 250 },
         { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 250 },
-        { name: "oh_personnel_brigade_item_code", name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 300, options: brigadeItems, },
+        { name: "oh_personnel_brigade_item_code", name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 250, options: brigadeItems, },
     ];
 
     const [searchText, setSearchText] = useState("");
