@@ -1,347 +1,160 @@
 import { useState } from "react";
-import {
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Box,
-} from "@mui/material";
-import Button from "../atoms/button";
-import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import ModalElimination from "../molecules/modalElimination";
+import Seeker from "../molecules/seeker";
+import { CircularProgress, Box } from "@mui/material";
+import Button from "../atoms/button";
 
-function LegalBookRecordTable({
-  books,
-  legalBookRecords,
-  isLoading,
+const OHPersonnelTable = ({
+  fields,
+  personnel = [],
+  isLoading = false,
   onDelete,
   onEdit,
-  fields,
   onSearch,
-  onResetSearch,
-  searchText,
-  setSearchText,
-  selectedBook,
-  setSelectedBook,
-  searchField,
-  setSearchField,
-  onToggleForm,
+  valueText,
+  valueFeature,
+  onChangeText,
+  onChangeFeature,
   showForm,
-}) {
+  onToggleForm,
+  setError,
+}) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
-  const dateFields = ["lb_record_date", "lb_record_return_date"];
 
-  // Función para obtener el nombre del libro por código
-  const getBookName = (bookCode) => {
-    const book = books.find((book) => book.cod_book === bookCode);
-    return book ? book.book_name : "Libro no encontrado";
+  const handleEditClick = (p) => {
+    setEditingId(p.cod_personnel);
+    setEditData({ ...p });
   };
 
-  // Maneja el click en "Editar"
-  const handleEditClick = (record) => {
-    setEditingId(record.cod_registration_application);
-    setEditData({ ...record });
-  };
-
-  // Maneja el click en "Guardar"
-  const handleSaveEdit = async (record) => {
-    if (!editData.lb_record_requested_by?.trim()) {
-      Swal.fire("Error", "El campo 'Solicitado' no puede estar vacío", "error");
-      return;
-    }
-
-    const result = await Swal.fire({
-      title: "¿Guardar cambios?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, guardar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#2563eb",
-      cancelButtonColor: "#9ca3af",
-    });
-
-    if (result.isConfirmed) {
-      const isSaved = await onEdit(editData);
-      if (isSaved) {
-        setEditingId(null);
-        setEditData({});
-        Swal.fire("Actualizado", "El registro fue modificado correctamente", "success");
-      }
+  const handleSaveEdit = async () => {
+    if (!editingId) return;
+    const isSaved = await onEdit(editingId, editData);
+    if (isSaved) {
+      setEditingId(null);
+      setEditData({});
     }
   };
 
-  // Cancela la edición
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
   };
 
-  // Valida y elimina un registro
-  const handleValidatedDelete = async (id) => {
-    const result = await Swal.fire({
-      title: "¿Eliminar este registro?",
-      text: "No podrás deshacer esta acción",
-      icon: "error",
-      showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#dc2626",
-      cancelButtonColor: "#9ca3af",
-    });
-
-    if (result.isConfirmed) {
-      await onDelete(id);
-      Swal.fire("Eliminado", "El registro fue borrado", "success");
-    }
-  };
-
-  // Clase común para inputs y selects del buscador
-  const searchInputClass = "w-full sm:w-48 h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
-
   return (
-    <>
+    <div className="p-6 mt-6 bg-white rounded-2xl">
+
+      {/* Contenedor principal: buscador + botón */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
+
+        {/* Columna 1: buscador */}
+        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
+          <Seeker
+            inputName="search"
+            inputPlaceholder="Buscar personal..."
+            btnName="Buscar"
+            selectName="Filtrar por"
+            fields={fields}
+            valueText={valueText}
+            valueFeature={valueFeature}
+            onChangeText={onChangeText}
+            onChangeFeature={onChangeFeature}
+            onClick={onSearch}
+          />
+        </Box>
+
+        {/* Columna 2: botón Agregar/Cancelar */}
+        <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
+          <div className="p-4 h-fit">
+            <Button
+              text={showForm ? "Cancelar" : "Agregar Personal"}
+              onClick={() => {
+                onToggleForm();
+                if (setError) setError(null);
+              }}
+              className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Contenido de la tabla */}
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
-          <p className="text-gray-700 font-medium mb-2">Cargando registros...</p>
-          <CircularProgress />
+          <CircularProgress size={24} />
+          <span>Cargando personal...</span>
+        </div>
+      ) : personnel.length === 0 ? (
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+          No hay personal registrado
         </div>
       ) : (
-        <>
-          {/* Contenedor principal con dos columnas */}
-          <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-            {/* Columna 1: Filtros/Buscador */}
-            <Box className="flex flex-wrap gap-3 bg-white shadow-md rounded-xl p-4 flex-1">
-              <FormControl className={searchInputClass}>
-                <InputLabel>Seleccione un libro</InputLabel>
-                <Select
-                  value={selectedBook}
-                  onChange={(e) => setSelectedBook(e.target.value)}
-                >
-                  <MenuItem value="Todos">Todos los libros</MenuItem>
-                  {books.map((book) => (
-                    <MenuItem key={book.cod_book} value={book.cod_book}>
-                      {book.book_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <FormControl className={searchInputClass}>
-                <InputLabel>Buscar por característica</InputLabel>
-                <Select
-                  value={searchField}
-                  onChange={(e) => setSearchField(e.target.value)}
-                >
-                  {fields.map((field) => (
-                    <MenuItem key={field.name} value={field.name}>
-                      {field.placeholder}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              <TextField
-                label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar"}
-                type={dateFields.includes(searchField) ? "date" : "text"}
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className={searchInputClass}
-                InputLabelProps={dateFields.includes(searchField) ? { shrink: true } : {}}
-                placeholder={dateFields.includes(searchField) ? "Seleccione fecha" : "Ingrese texto..."}
-              />
-
-              {/* Botón de búsqueda */}
-              <div className="flex items-center justify-center  lg:ml-9 w-full sm:w-auto">
-                <Button
-                  text="Buscar"
-                  onClick={onSearch}
-                  className="h-12 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-                />
-              </div>
-            </Box>
-
-            {/* Columna 2: Botón Agregar/Cancelar */}
-            <div className="flex items-center justify-center lg:justify-start lg:ml-9 w-full sm:w-auto">
-              <div className="p-5 h-fit">
-                <Button
-                  text={showForm ? "Cancelar" : "Agregar Registro"}
-                  onClick={onToggleForm}
-                  className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-                />
-              </div>
-            </div>
-          </div>
-        </>
-      )}
-
-      {/* Tabla de registros */}
-      <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
-        <table className="min-w-full">
-          <thead>
-            <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Libro</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Solicitado</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Entregado</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Regresado</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha registro</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha retorno</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Observaciones</th>
-              <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {legalBookRecords.length === 0 ? (
-              <tr>
-                <td colSpan={9} className="py-8 px-6 text-center text-gray-500 italic bg-gray-50 rounded-lg">
-                  No se encontraron registros
-                </td>
+        <div className="overflow-x-auto rounded-xl shadow-lg">
+          <table className="min-w-full table-auto">
+            <thead>
+              <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
+                {fields.map(f => (
+                  <th key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                    {f.placeholder}
+                  </th>
+                ))}
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">Acciones</th>
               </tr>
-            ) : (
-              legalBookRecords.map((record, index) => {
-                const isEditing = editingId === record.cod_registration_application;
-
+            </thead>
+            <tbody>
+              {personnel.map((p, index) => {
+                const isEditing = editingId === p.cod_personnel;
                 return (
-                  <tr key={record.cod_registration_application} className="hover:bg-blue-50 transition-all duration-200 even:bg-gray-50">
+                  <tr key={p.cod_personnel} className={`hover:bg-blue-50 transition-all duration-200 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                     <td className="py-4 px-6 text-center font-medium text-gray-900">{index + 1}</td>
 
-                    {isEditing ? (
-                      <>
-                        {/* Filas en modo edición */}
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          <FormControl fullWidth size="small">
-                            <Select
-                              value={editData.cod_book_catalog || ""}
-                              onChange={(e) => setEditData({ ...editData, cod_book_catalog: e.target.value })}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.cod_book} value={book.cod_book}>
-                                  {book.book_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
+                    {fields.map(f => (
+                      <td key={f.name} className="py-4 px-6 text-center text-gray-700">
+                        {isEditing ? (
                           <input
+                            type={f.type || "text"}
+                            value={editData[f.name] || ""}
+                            onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
                             className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_requested_by || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_requested_by: e.target.value })}
                           />
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <input
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_delivered_to || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_delivered_to: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <input
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_return_by || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_return_by: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <input
-                            type="date"
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_date || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_date: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <input
-                            type="date"
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_return_date || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_return_date: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <textarea
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_observation || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_observation: e.target.value })}
-                            rows={2}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <div className="flex justify-center gap-2">
-                            <button
-                              onClick={() => handleSaveEdit(record)}
-                              className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm"
-                            >
-                              <SaveIcon className="mr-1" fontSize="small" /> Guardar
-                            </button>
-                            <button
-                              onClick={handleCancelEdit}
-                              className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
-                            >
-                              <CancelIcon className="mr-1" fontSize="small" /> Cancelar
-                            </button>
-                          </div>
-                        </td>
-                      </>
-                    ) : (
-                      <>
-                        {/* Filas en modo visualización */}
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {getBookName(record.cod_book_catalog)}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {record.lb_record_requested_by}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {record.lb_record_delivered_to}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {record.lb_record_return_by}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {formatDateDDMMYYYY(record.lb_record_date)}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {formatDateDDMMYYYY(record.lb_record_return_date)}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle text-gray-700 max-w-xs truncate" title={record.lb_record_observation}>
-                          {record.lb_record_observation}
-                        </td>
-                        <td className="py-4 px-6 text-center align-middle">
-                          <div className="flex justify-center space-x-3">
-                            <button
-                              onClick={() => handleEditClick(record)}
-                              className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                            >
-                              <EditIcon fontSize="small" />
-                            </button>
-                            <button
-                              onClick={() => handleValidatedDelete(record.cod_registration_application)}
-                              className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </button>
-                          </div>
-                        </td>
-                      </>
-                    )}
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
-      </div>
-    </>
-  );
-}
+                        ) : (
+                          p[f.name] || "-"
+                        )}
+                      </td>
+                    ))}
 
-export default LegalBookRecordTable;
+                    <td className="py-4 px-6 text-center">
+                      {isEditing ? (
+                        <div className="flex justify-center gap-2">
+                          <button onClick={handleSaveEdit} className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 flex items-center">
+                            <SaveIcon className="mr-1" fontSize="small" /> Guardar
+                          </button>
+                          <button onClick={handleCancelEdit} className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 flex items-center">
+                            <CancelIcon className="mr-1" fontSize="small" /> Cancelar
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex justify-center gap-3">
+                          <button onClick={() => handleEditClick(p)} className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition">
+                            <EditIcon />
+                          </button>
+                          <ModalElimination message="Eliminar personal" onClick={() => onDelete(p.cod_personnel)} />
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default OHPersonnelTable;
