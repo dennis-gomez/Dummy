@@ -14,6 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
 function LegalBookRecordTable({
   books,
@@ -306,10 +307,10 @@ function LegalBookRecordTable({
                           {record.lb_record_return_by}
                         </td>
                         <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {record.lb_record_date}
+                          {formatDateDDMMYYYY(record.lb_record_date)}
                         </td>
                         <td className="py-4 px-6 text-center align-middle text-gray-700">
-                          {record.lb_record_return_date}
+                          {formatDateDDMMYYYY(record.lb_record_return_date)}
                         </td>
                         <td className="py-4 px-6 text-center align-middle text-gray-700 max-w-xs truncate" title={record.lb_record_observation}>
                           {record.lb_record_observation}
