@@ -46,11 +46,9 @@ const OHPersonnelTable = ({
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      
       {/* Contenedor principal: buscador + botón - Misma estructura que LegalBookRecordTable */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
 
-        {/* Columna 1: Buscador */}
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           {isLoading ? (
             <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
