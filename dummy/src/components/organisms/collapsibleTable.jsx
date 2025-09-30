@@ -27,7 +27,9 @@ export default function CollapsibleTable({
 }) {
   const [openRowId, setOpenRowId] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+  const [searchFeature, setSearchFeature] = useState(
+    () => searchFields?.[0]?.name || ""
+  );
 
   const handleExpand = (id) => {
     const closing = openRowId === id;
@@ -49,18 +51,11 @@ export default function CollapsibleTable({
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-
       {/* Contenedor buscador + botón */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-
         {/* Columna 1: Buscador */}
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-          {isLoading ? (
-            <div className="flex flex-wrap items-center gap-3 w-full">
-              <CircularProgress size={24} />
-              <span>Cargando botiquines...</span>
-            </div>
-          ) : (
+         
             <Seeker
               inputName="searchText"
               inputPlaceholder="Buscar botiquín o suplemento"
@@ -73,7 +68,6 @@ export default function CollapsibleTable({
               selectName="Filtrar por"
               fields={searchFields}
             />
-          )}
         </Box>
 
         {/* Columna 2: Botón Agregar/Cancelar */}
@@ -88,8 +82,13 @@ export default function CollapsibleTable({
         </div>
       </div>
 
-      {/* Mensaje cuando no hay registros */}
-      {list.length === 0 ? (
+      {/* Mensaje cuando no hay registros o loading */}
+      {isLoading ? (
+        <div className="flex flex-wrap items-center justify-center gap-3 bg-white shadow-md rounded-2xl px-4 py-6 w-full max-w-3xl mx-auto">
+          <CircularProgress size={24} />
+          <span>Cargando botiquines...</span>
+        </div>
+      ) : list.length === 0 ? (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
           No hay botiquines registrados
         </div>
@@ -98,13 +97,20 @@ export default function CollapsibleTable({
           <table className="min-w-full">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
-                {tittles.slice(1).map(col => (
-                  <th key={col.key} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">
+                  #
+                </th>
+                {tittles.slice(1).map((col) => (
+                  <th
+                    key={col.key}
+                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
+                  >
                     {col.label}
                   </th>
                 ))}
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">
+                  Acciones
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -119,7 +125,9 @@ export default function CollapsibleTable({
                   subfields={subfields}
                   onExpand={handleExpand}
                   isOpen={item.cod_medic_kit === openRowId}
-                  suppliesList={item.cod_medic_kit === medicKitSelectedId ? suppliesList : []}
+                  suppliesList={
+                    item.cod_medic_kit === medicKitSelectedId ? suppliesList : []
+                  }
                   onDeleteMedicKit={onDeleteMedicKit}
                   onDeleteSupply={onDeleteSupply}
                   onEditMedicKit={onEditMedicKit}

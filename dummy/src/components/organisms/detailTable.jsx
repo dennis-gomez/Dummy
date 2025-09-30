@@ -67,7 +67,7 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
                   key={f.key}
                   className="py-4 px-6 font-semibold text-md capitalize tracking-wider text-center"
                 >
-                  {f.placeholder}
+                  {f.label}
                 </th>
               ))}
               <th className="py-4 px-6 font-semibold text-md capitalize tracking-wider rounded-tr-xl text-center">
