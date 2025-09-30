@@ -10,12 +10,7 @@ export const tableValidator = ({
 
   const trimmed = value.trim();
   const lower = trimmed.toLowerCase();
-
-  //  No permitir números
-  if (/\d/.test(trimmed)) {
-    return "No se permiten números en este campo";
-  }
-
+   
   //  Validación de duplicados en la lista actual
   if (list.some((item) => item.toLowerCase() === lower)) {
     return "El valor ya existe en esta tabla";

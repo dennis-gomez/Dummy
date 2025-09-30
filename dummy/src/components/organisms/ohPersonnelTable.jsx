@@ -46,31 +46,21 @@ const OHPersonnelTable = ({
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      {/* Contenedor principal: buscador + botón - Misma estructura que LegalBookRecordTable */}
+      {/* Contenedor principal: buscador + botón */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-          {isLoading ? (
-            <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
-              <p className="text-gray-700 font-medium mb-0">
-                Cargando personal de Brigadas...
-              </p>
-              <CircularProgress size={20} />
-            </div>
-          ) : (
-            <Seeker
-              inputName={"search"}
-              inputPlaceholder={"Buscar..."}
-              btnName={"Buscar"}
-              selectName={"Características"}
-              fields={fields}
-              onClick={onSearch}
-              valueText={valueText}
-              valueFeature={valueFeature}
-              onChangeText={onChangeText}
-              onChangeFeature={onChangeFeature}
-            />
-          )}
+          <Seeker
+            inputName={"search"}
+            inputPlaceholder={"Buscar..."}
+            btnName={"Buscar"}
+            selectName={"Características"}
+            fields={fields}
+            onClick={onSearch}
+            valueText={valueText}
+            valueFeature={valueFeature}
+            onChangeText={onChangeText}
+            onChangeFeature={onChangeFeature}
+          />
         </Box>
 
         {/* Columna 2: Botón Agregar/Cancelar */}
@@ -88,13 +78,24 @@ const OHPersonnelTable = ({
         </div>
       </div>
 
+      {/* Loader justo debajo del buscador */}
+      {isLoading && (
+        <div className="flex items-center justify-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-5xl mx-auto mb-4">
+          <CircularProgress size={24} />
+          <span className="text-gray-700 font-medium">Cargando personal de brigadas...</span>
+        </div>
+      )}
+
       {/* Mensaje cuando no hay registros */}
-      {personnel.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+      {!isLoading && personnel.length === 0 && (
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-5xl mx-auto mb-4">
           No hay personal de brigadas registrado
         </div>
-      ) : (
-        <div className="overflow-x-auto rounded-xl shadow-lg">
+      )}
+
+      {/* Tabla de personal */}
+      {!isLoading && personnel.length > 0 && (
+        <div className="overflow-x-auto rounded-xl shadow-lg w-full max-w-5xl mx-auto">
           <table className="min-w-full">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
@@ -125,7 +126,6 @@ const OHPersonnelTable = ({
                     <td className="py-4 px-6 text-center align-middle font-medium text-gray-900">
                       {index + 1}
                     </td>
-
                     {fields.map((f) => (
                       <td
                         key={f.name}
@@ -172,7 +172,6 @@ const OHPersonnelTable = ({
                         )}
                       </td>
                     ))}
-
                     <td className="py-4 px-6 text-center align-middle">
                       <div className="flex justify-center space-x-3">
                         {isEditing ? (

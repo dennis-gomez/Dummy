@@ -13,7 +13,7 @@ export function useOH_Personnel() {
     const [personnel, setPersonnel] = useState([]);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
-    const [loading, setLoading] = useState(false);
+ const [loading, setLoading] = useState(true); 
 
     // 🔹 opciones dinámicas de items (brigadas)
     const [brigadeItems, setBrigadeItems] = useState([]);
@@ -29,16 +29,18 @@ export function useOH_Personnel() {
     const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
 
     const fetchData = async () => {
-        try {
-            const data = await getAllPersonnel();
-            setPersonnel(data);
-        } catch (err) {
-            const message = err.response?.data?.message || "Error al obtener personal.";
-            setError(message);
-            ModalAlert("Error", message, "error");
-        }
-    };
-
+    try {
+        setLoading(true);
+        const data = await getAllPersonnel();
+        setPersonnel(data);
+    } catch (err) {
+        const message = err.response?.data?.message || "Error al obtener personal.";
+        setError(message);
+        ModalAlert("Error", message, "error");
+    } finally {
+        setLoading(false);
+    }
+};
     // 🔹 Obtener items por defecto (puedes pasar valores reales de servicio/categoría)
     const fetchItems = async () => {
         try {
