@@ -3,6 +3,7 @@ import Grid from "@mui/material/Grid";
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedDate from "../atoms/inputValidatedDate";
+import InputValidatedFile from "../atoms/inputValidatedFile"; // 👈 importa aquí
 import { useState } from "react";
 
 function Form({ fields, onSubmit, titleBtn, onCancel }) {
@@ -13,8 +14,14 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
   const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    const { name, value, files } = e.target;
+
+    // si es file, guardamos el archivo (o null)
+    if (e.target.type === "file") {
+      setFormData({ ...formData, [name]: files[0] || null });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleError = (name, errorMessage) => {
@@ -70,6 +77,22 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                     }}
                     required={field.required ?? true}
                   />
+                ) : field.type === "file" ? (
+                  <InputValidatedFile
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    onError={handleError}
+                    accept={field.accept}
+                    required={field.required ?? true}
+                    validations={field.validations}
+                    restriction={field.restriction || ""}
+                    formValues={formData}
+                    sx={{
+                      ...(field.width ? { width: field.width } : {}),
+                    }}
+                  />
                 ) : (
                   <InputValidated
                     name={field.name}
@@ -95,18 +118,18 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
           })}
         </Grid>
 
-       <Box sx={{ display: "flex", justifyContent: "center", mt: 3, gap: 2 }}>
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3, gap: 2 }}>
           {onCancel && (
-            <button 
+            <button
               type="button"
-              onClick={onCancel} 
+              onClick={onCancel}
               className="px-5 py-2 rounded-md font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300 transition border border-gray-300"
             >
               Cancelar
             </button>
           )}
-          <Button 
-            text={titleBtn} 
+          <Button
+            text={titleBtn}
             onClick={handleSubmit}
             disabled={hasError}
             type="submit"

@@ -33,6 +33,7 @@ export const useBooks = () => {
     { name: "book_code", label: "Código de libro", type: "text", placeholder: "Código de libro", editable: true, grid: 4,   width: 250 },
     { name: "book_name", label: "Nombre", type: "textarea", placeholder: "Nombre", editable: true, grid: 4,   width: '49rem' },
     { name: "book_location", label: "Ubicación", type: "textarea", placeholder: "Ubicación", editable: true, grid: 4 ,  width: '49rem'},
+    { name: "book_file", label: "Archivo", type: "file", required:false, placeholder: "Archivo", editable: true, grid: 4 ,  width: '49rem', accept: ".pdf"},
   ];
 
 
@@ -61,7 +62,7 @@ export const useBooks = () => {
       setLoading(true);
       const resp = await getBooks();
       setBooksList(resp.data); // <- aquí accedes al array real
-      console.log("Books fetched:", resp.data);
+  
     } catch (err) {
       setError("Error al obtener libros");
       ModalAlert("Error", "Error al obtener libros", "error");
@@ -81,9 +82,7 @@ export const useBooks = () => {
 
       setBookOptions(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
 
-      console.log("Types of books fetched:", typesResp);
-
-      console.log("estado de libros:", STATUS_OPTIONS)
+    
 
     } catch (err) {
       setError("Error al obtener tipos de libros");
@@ -104,7 +103,7 @@ export const useBooks = () => {
         fetchBooks();
         return;
       }
-      console.log("Buscando libros con:", feature, text);
+   
 
       const resp = await searchBooksByTerm(feature, text);
 
@@ -123,45 +122,95 @@ export const useBooks = () => {
     }
   };
 
-  const handleAddBook = async (formData) => {
-    console.log("Datos del formulario para agregar libro (antes de enviar):", formData);
+  const openPDF = (base64) => {
+  const byteCharacters = atob(base64); // decodificar Base64
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: "application/pdf" });
+  const blobUrl = URL.createObjectURL(blob);
+  window.open(blobUrl, "_blank");
+};
 
-    // Agregamos los valores fijos desde .env
+const handleAddBook = async (formData) => {
+  try {
+    console.log("Datos del formulario antes de enviar:", formData);
+
+    // Clonamos los datos obligatorios
     const dataToSend = {
       ...formData,
       book_service_code: Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
       book_category_code: Number(import.meta.env.VITE_BOOK_CATEGORY_CODE),
     };
 
+    // Solo agregar book_file si hay un archivo real
+    if (formData.book_file instanceof File) {
+      const fileBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(formData.book_file);
+        reader.onload = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = error => reject(error);
+      });
+      dataToSend.book_file = fileBase64;
+    } else {
+      // Eliminar la propiedad si no hay archivo
+      delete dataToSend.book_file;
+    }
+
     console.log("Datos que se enviarán a la API:", dataToSend);
 
-    try {
-      const resp = await addBook(dataToSend);
-      if (resp.status === 201) {
-        ModalAlert("Éxito", "Libro agregado exitosamente.", "success");
-        fetchBooks();
-        setIsCreatingBook(false);
-      }
-    } catch (err) {
-      setError("Error al agregar libro");
-      ModalAlert("Error", "Error al agregar libro", "error");
+    const resp = await addBook(dataToSend);
+
+    if (resp.status === 201) {
+      ModalAlert("Éxito", "Libro agregado exitosamente.", "success");
+      fetchBooks();
+      setIsCreatingBook(false);
     }
-  };
+  } catch (err) {
+    console.error(err);
+    ModalAlert("Error", "Error al agregar libro", "error");
+  }
+};
 
 
-  const handleEditBook = async (cod_book, formData) => {
-    try {
-      const resp = await updateBook(cod_book, formData);
-      if (resp.status === 200) {
-        ModalAlert("Éxito", "Libro editado exitosamente.", "success");
-        fetchBooks();
-      }
-    } catch (err) {
-      setError("Error al editar libro");
-      ModalAlert("Error", "Error al editar libro", "error");
+
+const handleEditBook = async (cod_book, formData) => {
+  try {
+    console.log("Datos del formulario antes de enviar:", formData);
+
+    // Convertimos el archivo a Base64 si se seleccionó uno nuevo
+    let fileBase64 = null;
+    if (formData.book_file instanceof File) {
+      fileBase64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(formData.book_file);
+        reader.onload = () => resolve(reader.result.split(",")[1]); // solo contenido
+        reader.onerror = error => reject(error);
+      });
     }
-  };
 
+    const dataToSend = {
+      ...formData,
+      book_file: fileBase64 || formData.book_file, // si no hay nuevo archivo, se mantiene el existente
+      book_service_code: Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
+      book_category_code: Number(import.meta.env.VITE_BOOK_CATEGORY_CODE),
+    };
+
+    console.log("Datos que se enviarán a la API:", dataToSend);
+
+    const resp = await updateBook(cod_book, dataToSend);
+
+    if (resp.status === 200) {
+      ModalAlert("Éxito", "Libro editado exitosamente.", "success");
+      fetchBooks();
+    }
+  } catch (err) {
+    setError("Error al editar libro");
+    ModalAlert("Error", "Error al editar libro", "error");
+  }
+};
 
 
   const handleDeleteBook = async (cod_book) => {
@@ -201,5 +250,6 @@ export const useBooks = () => {
     typesOfBooks,
     fetchTypesOfBooks,
     STATUS_OPTIONS,
+    openPDF
   };
 };

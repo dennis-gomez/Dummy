@@ -26,15 +26,11 @@ function MedicKitPage() {
   } = useMedicKits();
 
   const handleAddClick = () => {
-    console.log("Botón clickeado - isCreatingMedicKit actual:", isCreatingMedicKit);
-    
     if (isCreatingMedicKit || isCreatingSupply) {
       setIsCreatingMedicKit(false);
       setIsCreatingSupply(false);
-      console.log("Modo creación cancelado");
     } else {
       setIsCreatingMedicKit(true);
-      console.log("Modo creación activado");
     }
   };
 

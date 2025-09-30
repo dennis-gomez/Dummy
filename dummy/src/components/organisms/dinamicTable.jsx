@@ -2,11 +2,13 @@ import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import Seeker from "../molecules/seeker";
 import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidated";
+import InputValidatedFile from "../atoms/inputValidatedFile";
 
 const DinamicTable = ({
   fields,
@@ -21,8 +23,8 @@ const DinamicTable = ({
   isCreatingBook,
   typesOfBooks = [],
   STATUS_OPTIONS,
+  openPDF
 }) => {
-
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const [searchText, setSearchText] = useState("");
@@ -64,7 +66,11 @@ const DinamicTable = ({
     setEditData({});
   };
 
-  const displayFields = fields.filter(f => f.name !== "book_service_code" && f.name !== "book_category_code");
+  const displayFields = fields.filter(f =>
+    f.name !== "book_service_code" &&
+    f.name !== "book_category_code" &&
+    f.name !== "book_file"
+  );
 
   const getTypeName = (cod_item) => {
     const type = typesOfBooks.find((t) => t.cod_item === cod_item);
@@ -73,11 +79,8 @@ const DinamicTable = ({
 
   return (
     <div className="dinamic-table-container p-6 mt-6 bg-white rounded-2xl">
-
-      {/* Contenedor principal: buscador + botón */}
+      {/* Buscador + botón agregar */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-
-        {/* Columna 1: buscador */}
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           <Seeker
             inputName="searchText"
@@ -92,8 +95,6 @@ const DinamicTable = ({
             onClick={() => handleSearch(searchFeature, searchText)}
           />
         </Box>
-
-        {/* Columna 2: botón agregar/cancelar */}
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
           <div className="p-4 h-fit">
             <Button
@@ -105,7 +106,7 @@ const DinamicTable = ({
         </div>
       </div>
 
-      {/* Contenido de la tabla */}
+      {/* Tabla */}
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
           <CircularProgress size={24} />
@@ -126,13 +127,14 @@ const DinamicTable = ({
                     {f.label}
                   </th>
                 ))}
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Documento</th>
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">Acciones</th>
               </tr>
             </thead>
+
             <tbody>
               {data.map((row, index) => {
                 const isEditing = editingId === row[fields[0].name];
-
                 return (
                   <tr key={row[fields[0].name] || index} className={`hover:bg-blue-50 transition-all duration-200 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                     <td className="py-4 px-6 text-center">{index + 1}</td>
@@ -185,6 +187,32 @@ const DinamicTable = ({
                       </td>
                     ))}
 
+                    {/* Columna Documento */}
+                    <td className="py-4 px-6 text-center">
+                      {isEditing ? (
+                        <InputValidatedFile
+                          name="book_file"
+                          value={editData.book_file}
+                          onChange={e => setEditData({ ...editData, book_file: e.target.files[0] })}
+                          accept=".pdf"
+                          placeholder="Archivo PDF"
+                        />
+                      ) : (
+
+                        
+                         row.book_file && (
+                            <button
+                              onClick={() => openPDF(row.book_file)}
+                              className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
+                              title="Ver PDF"
+                            >
+                              <LibraryBooksIcon />
+                            </button>
+                          )
+                      )}
+                    </td>
+
+                    {/* Acciones */}
                     <td className="py-4 px-6 text-center">
                       {isEditing ? (
                         <div className="flex justify-center gap-2">
@@ -197,16 +225,21 @@ const DinamicTable = ({
                         </div>
                       ) : (
                         <div className="flex justify-center gap-3">
-                          <button onClick={() => handleEditClick(row)} className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition">
+                          <button
+                            onClick={() => handleEditClick(row)}
+                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
+                          >
                             <EditIcon />
                           </button>
+
+                         
+
                           <ModalElimination message={`Eliminar ${singularName}`} onClick={() => onDelete(row[fields[0].name])} />
                         </div>
                       )}
                     </td>
-
                   </tr>
-                )
+                );
               })}
             </tbody>
           </table>

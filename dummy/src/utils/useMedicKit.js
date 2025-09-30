@@ -120,8 +120,7 @@ const searchFields = [
     try {
       const medicKitsResp = await getMedicKits();
       setMedicKitsList(medicKitsResp);
-      console.log("Medic kits fetched:", medicKitsResp);
-    } catch (err) {
+     } catch (err) {
       setError("Error al obtener botiquines");
     }
   };
