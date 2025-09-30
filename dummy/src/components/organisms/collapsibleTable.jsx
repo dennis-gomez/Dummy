@@ -27,7 +27,9 @@ export default function CollapsibleTable({
 }) {
   const [openRowId, setOpenRowId] = useState(null);
   const [searchText, setSearchText] = useState("");
-  const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+  const [searchFeature, setSearchFeature] = useState(
+    () => searchFields?.[0]?.name || ""
+  );
 
   const handleExpand = (id) => {
     const closing = openRowId === id;
@@ -49,10 +51,8 @@ export default function CollapsibleTable({
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-
       {/* Contenedor buscador + botón */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-
         {/* Columna 1: Buscador */}
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           <Seeker
@@ -119,7 +119,9 @@ export default function CollapsibleTable({
                   subfields={subfields}
                   onExpand={handleExpand}
                   isOpen={item.cod_medic_kit === openRowId}
-                  suppliesList={item.cod_medic_kit === medicKitSelectedId ? suppliesList : []}
+                  suppliesList={
+                    item.cod_medic_kit === medicKitSelectedId ? suppliesList : []
+                  }
                   onDeleteMedicKit={onDeleteMedicKit}
                   onDeleteSupply={onDeleteSupply}
                   onEditMedicKit={onEditMedicKit}

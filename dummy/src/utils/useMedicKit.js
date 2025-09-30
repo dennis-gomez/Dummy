@@ -141,12 +141,14 @@ export const useMedicKits = () => {
   // Agregar botiquín y/o suplementos
   // -------------------------
   const handleAddKitWithSupplies = async (formData) => {
-    const { medic_kit_location, medic_kit_details, supplements } = formData || {};
-    const suppliesToAdd = Array.isArray(supplements)
-      ? supplements.map(({ supply_quantity, supply_description, supply_expiration_date }) => ({
-          supply_quantity, supply_description, supply_expiration_date
-        }))
-      : [];
+    setLoading(true);
+    try {
+      const { medic_kit_location, medic_kit_details, supplements } = formData || {};
+      const suppliesToAdd = Array.isArray(supplements)
+        ? supplements.map(({ supply_quantity, supply_description, supply_expiration_date }) => ({
+            supply_quantity, supply_description, supply_expiration_date
+          }))
+        : [];
 
     try {
       setIsLoading(true);
@@ -179,6 +181,7 @@ export const useMedicKits = () => {
   // Editar botiquín
   // -------------------------
   const handleEditMedicKit = async (formData) => {
+    setLoading(true);
     try {
       setIsLoading(true);
       await updateMedicKit(formData);
@@ -196,6 +199,7 @@ export const useMedicKits = () => {
   // Editar suplemento
   // -------------------------
   const handleEditSupply = async (formData) => {
+    setLoading(true);
     try {
       setIsLoading(true);
       await updateSupply(formData);
@@ -214,6 +218,7 @@ export const useMedicKits = () => {
   // Eliminar botiquín
   // -------------------------
   const handleEliminateMedicKit = async (cod_MedicKit) => {
+    setLoading(true);
     try {
       setIsLoading(true);
       await deleteMedicKit(cod_MedicKit);
@@ -231,6 +236,7 @@ export const useMedicKits = () => {
   // Eliminar suplemento
   // -------------------------
   const handleEliminateSupply = async (cod_supply) => {
+    setLoading(true);
     try {
       setIsLoading(true);
       await deleteSupply(medicKitSelectedId, cod_supply);
@@ -274,5 +280,6 @@ export const useMedicKits = () => {
     handleEliminateSupply,
     searchFields,
     handleSearch,
+    isLoading,
   };
 };

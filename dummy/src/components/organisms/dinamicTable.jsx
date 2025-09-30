@@ -23,7 +23,8 @@ const DinamicTable = ({
   isCreatingBook,
   typesOfBooks = [],
   STATUS_OPTIONS,
-  openPDF
+  openPDF,
+  tableName
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
@@ -110,11 +111,11 @@ const DinamicTable = ({
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
           <CircularProgress size={24} />
-          <span>Cargando {singularName}...</span>
+          <span>Cargando {tableName}...</span>
         </div>
       ) : data.length === 0 ? (
-          <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
-          No hay {singularName} registrados
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+          No hay {tableName} registrados
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl shadow-lg">
