@@ -11,7 +11,7 @@ import { ValidateValues } from "../../utils/validateValues";
   placeholder,
   validations = [],
   onError,
-  required = true,
+  required,
   sx,
   restriction = "",
   formValues,

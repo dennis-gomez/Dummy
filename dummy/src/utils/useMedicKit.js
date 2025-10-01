@@ -114,7 +114,7 @@ export const useMedicKits = () => {
   // -------------------------
   const getSuppliesByMedicKitId = async (cod_medic_kit) => {
     try {
-      setIsLoading(true);
+  
       setMedicKitSelectedId(cod_medic_kit);
 
       const supplies = searchAnSupply && searchTerm
@@ -127,7 +127,7 @@ export const useMedicKits = () => {
       setError("Error al obtener suplementos médicos");
       ModalAlert("Error", "Error al obtener suplementos médicos.", "error");
     } finally {
-      setIsLoading(false);
+     
     }
   };
 
@@ -174,7 +174,7 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEditMedicKit = async (formData) => {
     try {
-      setIsLoading(true);
+    
       await updateMedicKit(formData);
       await fetchMedicKits();
       ModalAlert("Éxito", "Kit médico actualizado", "success");
@@ -182,7 +182,7 @@ export const useMedicKits = () => {
       setError("Error al actualizar el kit médico");
       ModalAlert("Error", err.message, "error");
     } finally {
-      setIsLoading(false);
+    
     }
   };
 
@@ -191,7 +191,7 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEditSupply = async (formData) => {
     try {
-      setIsLoading(true);
+     
       await updateSupply(formData);
       const updatedSupplies = await getSuppliesById(medicKitSelectedId);
       setSuppliesList(updatedSupplies);
@@ -200,7 +200,7 @@ export const useMedicKits = () => {
       setError("Error al actualizar suplemento");
       ModalAlert("Error", err.message, "error");
     } finally {
-      setIsLoading(false);
+      
     }
   };
 
@@ -209,7 +209,7 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEliminateMedicKit = async (cod_MedicKit) => {
     try {
-      setIsLoading(true);
+      
       await deleteMedicKit(cod_MedicKit);
       await fetchMedicKits();
       ModalAlert("Éxito", "Kit médico eliminado", "success");
@@ -217,7 +217,7 @@ export const useMedicKits = () => {
       setError("Error al eliminar kit médico");
       ModalAlert("Error", err.message, "error");
     } finally {
-      setIsLoading(false);
+  
     }
   };
 
@@ -226,7 +226,7 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEliminateSupply = async (cod_supply) => {
     try {
-      setIsLoading(true);
+     
       await deleteSupply(medicKitSelectedId, cod_supply);
       const updatedSupplies = await getSuppliesById(medicKitSelectedId);
       setSuppliesList(updatedSupplies);
@@ -235,7 +235,7 @@ export const useMedicKits = () => {
       setError("Error al eliminar suplemento");
       ModalAlert("Error", err.message, "error");
     } finally {
-      setIsLoading(false);
+      
     }
   };
 

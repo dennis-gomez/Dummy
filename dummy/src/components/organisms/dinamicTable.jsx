@@ -28,6 +28,7 @@ const DinamicTable = ({
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [editErrors, setEditErrors] = useState({}); // Estado de errores
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
 
@@ -54,17 +55,20 @@ const DinamicTable = ({
       ...row,
       book_status: statusOption ? statusOption.value : "",
     });
+    setEditErrors({}); // Limpiar errores al iniciar edición
   };
 
   const handleSaveEdit = async () => {
     await onEdit(editData[fields[0].name], editData);
     setEditingId(null);
     setEditData({});
+    setEditErrors({});
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
+    setEditErrors({});
   };
 
   const displayFields = fields.filter(f =>
@@ -148,17 +152,38 @@ const DinamicTable = ({
                               name={f.name}
                               type="textarea"
                               value={editData[f.name] || ""}
-                              onChange={e => setEditData({ ...editData, [f.name]: e.target.value })}
+                              onChange={e => {
+                                const value = e.target.value;
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: !value.trim() ? "Campo obligatorio" : ""
+                                }));
+                              }}
                               multiline
                               rows={2}
-                              sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "4rem", resize: "vertical" }, ...whiteInputStyle }}
+                              sx={{
+                                ...whiteInputStyle,
+                                "& .MuiOutlinedInput-root": {
+                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                  minHeight: "4rem",
+                                  resize: "vertical",
+                                },
+                              }}
                             />
                           ) : f.name === "book_items_code" ? (
                             <InputValidated
                               name={f.name}
                               type="select"
                               value={editData[f.name]}
-                              onChange={e => setEditData({ ...editData, [f.name]: Number(e.target.value) })}
+                              onChange={e => {
+                                const value = Number(e.target.value);
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: !value ? "Seleccione un tipo" : ""
+                                }));
+                              }}
                               options={typesOfBooks.map(type => ({ value: type.cod_item, label: type.item_name }))}
                               sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
                             />
@@ -167,7 +192,14 @@ const DinamicTable = ({
                               name={f.name}
                               type="select"
                               value={editData[f.name]}
-                              onChange={e => setEditData({ ...editData, [f.name]: Number(e.target.value) })}
+                              onChange={e => {
+                                const value = Number(e.target.value);
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: value === undefined ? "Seleccione un estado" : ""
+                                }));
+                              }}
                               options={STATUS_OPTIONS}
                               sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
                             />
@@ -176,14 +208,21 @@ const DinamicTable = ({
                               name={f.name}
                               type={f.type || "text"}
                               value={editData[f.name] || ""}
-                              onChange={e => setEditData({ ...editData, [f.name]: e.target.value })}
-                              sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
+                              onChange={e => {
+                                const value = e.target.value;
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: !value.trim() ? "Campo obligatorio" : ""
+                                }));
+                              }}
+                              sx={whiteInputStyle}
                             />
                           )
                         ) : (
                           f.name === "book_items_code" ? getTypeName(row[f.name])
-                          : f.name === "book_status" ? STATUS_OPTIONS.find(opt => opt.value === row[f.name])?.label || row[f.name]
-                          : row[f.name]
+                            : f.name === "book_status" ? STATUS_OPTIONS.find(opt => opt.value === row[f.name])?.label || row[f.name]
+                              : row[f.name]
                         )}
                       </td>
                     ))}
@@ -194,22 +233,27 @@ const DinamicTable = ({
                         <InputValidatedFile
                           name="book_file"
                           value={editData.book_file}
-                          onChange={e => setEditData({ ...editData, book_file: e.target.files[0] })}
+                          onChange={e => {
+                            const file = e.target.files[0];
+                            setEditData({ ...editData, book_file: file });
+                            setEditErrors(prev => ({
+                              ...prev,
+                              book_file: file && file.type !== "application/pdf" ? "Debe ser PDF" : ""
+                            }));
+                          }}
                           accept=".pdf"
                           placeholder="Archivo PDF"
                         />
                       ) : (
-
-                        
-                         row.book_file && (
-                            <button
-                              onClick={() => openPDF(row.book_file)}
-                              className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
-                              title="Ver PDF"
-                            >
-                              <LibraryBooksIcon />
-                            </button>
-                          )
+                        row.book_file && (
+                          <button
+                            onClick={() => openPDF(row.book_file)}
+                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
+                            title="Ver PDF"
+                          >
+                            <LibraryBooksIcon />
+                          </button>
+                        )
                       )}
                     </td>
 
@@ -217,10 +261,17 @@ const DinamicTable = ({
                     <td className="py-4 px-6 text-center">
                       {isEditing ? (
                         <div className="flex justify-center gap-2">
-                          <button onClick={handleSaveEdit} className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 flex items-center">
+                          <button
+                            onClick={handleSaveEdit}
+                            disabled={Object.values(editErrors).some(err => err)}
+                            className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+                          >
                             <SaveIcon className="mr-1" fontSize="small" /> Guardar
                           </button>
-                          <button onClick={handleCancelEdit} className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 flex items-center">
+                          <button
+                            onClick={handleCancelEdit}
+                            className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 flex items-center"
+                          >
                             <CancelIcon className="mr-1" fontSize="small" /> Cancelar
                           </button>
                         </div>
@@ -232,10 +283,10 @@ const DinamicTable = ({
                           >
                             <EditIcon />
                           </button>
-
-                         
-
-                          <ModalElimination message={`Eliminar ${singularName}`} onClick={() => onDelete(row[fields[0].name])} />
+                          <ModalElimination
+                            message={`Eliminar ${singularName}`}
+                            onClick={() => onDelete(row[fields[0].name])}
+                          />
                         </div>
                       )}
                     </td>
