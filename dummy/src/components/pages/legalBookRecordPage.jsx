@@ -1,19 +1,19 @@
 import { useLegalBookRecord } from "../../utils/useLegalBookRecord";
 import LegalBookRecordTable from "../organisms/legalBookRecordTable";
-import { Box, Typography, FormControl, Select, InputLabel, MenuItem } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Form from "../organisms/form";
 
 function LegalBookRecordPage() {
   const {
+    booksItems,
     books,
     legalBookRecords,
     fields,
+    editFields, 
     searchText,
     setSearchText,
     selectedBook,
     setSelectedBook,
-    formSelectedBook, 
-    setFormSelectedBook,
     searchField,
     setSearchField,
     showForm,
@@ -50,52 +50,6 @@ function LegalBookRecordPage() {
             Agregar Registro
           </h3>
 
-          <div className="pl-7 pr-11">
-            <FormControl
-              fullWidth
-              sx={{
-                mb: 2,
-                backgroundColor: "#ffffff",
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "#ffffff",
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#cccccc",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#2563eb",
-                  },
-                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#2563eb",
-                    borderWidth: "2px",
-                  },
-                },
-                "& .MuiInputLabel-root": {
-                  color: "#2563eb",
-                  "&.Mui-focused": {
-                    color: "#2563eb",
-                  },
-                },
-                "& .MuiSelect-select": {
-                  paddingY: "12px",
-                  backgroundColor: "#ffffff",
-                },
-              }}
-            >
-              <InputLabel>Seleccione un libro para agregar</InputLabel>
-              <Select
-                value={formSelectedBook}
-                onChange={(e) => setFormSelectedBook(e.target.value)}
-                required
-              >
-                {books.map((book) => (
-                  <MenuItem key={book.cod_book} value={book.cod_book}>
-                    {book.book_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          
-          </div>
           <Form
             fields={fields}
             onSubmit={handleSubmit}
@@ -129,6 +83,8 @@ function LegalBookRecordPage() {
       {/* Tabla de registros */}
       <LegalBookRecordTable
         fields={fields}
+        editFields={editFields}
+        booksItems={booksItems} 
         books={books}
         legalBookRecords={legalBookRecords}
         onDelete={handleDelete}

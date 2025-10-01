@@ -14,15 +14,18 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
 function LegalBookRecordTable({
   books,
+  booksItems,
   legalBookRecords,
   isLoading,
   onDelete,
   onEdit,
   fields,
+  editFields,
   onSearch,
   searchText,
   setSearchText,
@@ -35,6 +38,7 @@ function LegalBookRecordTable({
 }) {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
   const dateFields = ["lb_record_date", "lb_record_return_date"];
 
   const getBookName = (bookCode) => {
@@ -48,8 +52,9 @@ function LegalBookRecordTable({
   };
 
   const handleSaveEdit = async (record) => {
-    if (!editData.lb_record_requested_by?.trim()) {
-      Swal.fire("Error", "El campo 'Solicitado' no puede estar vacío", "error");
+    const hasError = Object.values(fieldErrors).some((err) => err);
+    if (hasError) {
+      Swal.fire("Error", "Hay campos vacíos.", "error");
       return;
     }
 
@@ -68,6 +73,7 @@ function LegalBookRecordTable({
       if (isSaved) {
         setEditingId(null);
         setEditData({});
+        setFieldErrors({});
         Swal.fire("Actualizado", "El registro fue modificado correctamente", "success");
       }
     }
@@ -76,6 +82,7 @@ function LegalBookRecordTable({
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
+    setFieldErrors({});
   };
 
   const handleValidatedDelete = async (id) => {
@@ -200,74 +207,46 @@ function LegalBookRecordTable({
 
                     {isEditing ? (
                       <>
-                        {/* Filas en modo edición */}
-                        <td className="py-4 px-6 text-center">
-                          <FormControl fullWidth size="small">
-                            <Select
-                              value={editData.cod_book_catalog || ""}
-                              onChange={(e) => setEditData({ ...editData, cod_book_catalog: e.target.value })}
-                            >
-                              {books.map((book) => (
-                                <MenuItem key={book.cod_book} value={book.cod_book}>
-                                  {book.book_name}
-                                </MenuItem>
-                              ))}
-                            </Select>
-                          </FormControl>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <input
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_requested_by || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_requested_by: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <input
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_delivered_to || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_delivered_to: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <input
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_return_by || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_return_by: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <input
-                            type="date"
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_date || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_date: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <input
-                            type="date"
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_return_date || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_return_date: e.target.value })}
-                          />
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <textarea
-                            className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                            value={editData.lb_record_observation || ""}
-                            onChange={(e) => setEditData({ ...editData, lb_record_observation: e.target.value })}
-                            rows={2}
-                          />
-                        </td>
+                        {editFields.map((field) => (
+                          <td key={field.name} className="py-4 px-6 text-center">
+                            <InputValidated
+                              name={field.name}
+                              type={field.type || "text"}
+                              value={editData[field.name] || ""}
+                              placeholder={field.placeholder}
+                              options={field.options || []}
+                              restriction={field.restriction}
+                              required={field.required}
+                              onChange={(e) =>
+                                setEditData({ ...editData, [field.name]: e.target.value })
+                              }
+                              onError={(name, errorMsg) =>
+                                setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
+                              }
+                              sx={{
+                                "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                ...(field.width ? { width: field.width } : {}),
+                              }}
+                              formValues={editData}
+                            />
+                          </td>
+                        ))}
+
+                        {/* Botones */}
                         <td className="py-4 px-6 text-center">
                           <div className="flex justify-center gap-2">
                             <button
                               onClick={() => handleSaveEdit(record)}
-                              className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm"
+                              disabled={Object.values(fieldErrors).some((err) => err)}
+                              className={`rounded-lg px-3 py-2 transition flex items-center text-sm ${
+                                Object.values(fieldErrors).some((err) => err)
+                                  ? "bg-gray-400 cursor-not-allowed text-white"
+                                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                              }`}
                             >
                               <SaveIcon className="mr-1" fontSize="small" /> Guardar
                             </button>
+
                             <button
                               onClick={handleCancelEdit}
                               className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"

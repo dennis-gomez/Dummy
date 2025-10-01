@@ -6,11 +6,17 @@ import Tooltip from '@mui/material/Tooltip';
 
 const navConfig = [
   {
+    label: 'Inicio',
+    sub: [
+      { label: 'Página Principal', path: '/' }
+    ],
+  },
+  {
     label: 'Veh\u00EDculos',
     sub: [
       { label: 'Gestión de Veh\u00EDculos', path: '/vehiculos' },
-      { label: 'Marcas y modelos', path: '/vehiculos/marcas-modelos' },
-      { label: 'Tipos de vehículos', path: '/vehiculos/tipos' },
+      { label: 'Marcas y Modelos', path: '/vehiculos/marcas-modelos' },
+      { label: 'Tipos de Vehículos', path: '/vehiculos/tipos' },
       { label: 'Combustibles', path: '/vehiculos/combustibles' },
       { label: 'Colores', path: '/vehiculos/colores' },
       { label: 'Ubicaciones', path: '/vehiculos/ubicaciones' },
@@ -19,10 +25,10 @@ const navConfig = [
   {
     label: 'Mantenimiento Preventivo',
     sub: [
-      { label: 'Planes de mantenimiento', path: '/mp/planes' },
-      { label: 'Tareas de mantenimiento', path: '/mp/tareas' },
+      { label: 'Planes de Mantenimiento', path: '/mp/planes' },
+      { label: 'Tareas de Mantenimiento', path: '/mp/tareas' },
       { label: 'Frecuencias', path: '/mp/frecuencias' },
-      { label: 'Historial de mantenimiento', path: '/mp/historial' },
+      { label: 'Historial de Mantenimiento', path: '/mp/historial' },
     ],
   },
   {
@@ -32,7 +38,7 @@ const navConfig = [
       { label: 'Servicios', path: '/suministros/servicios' },
       { label: 'Categor\u00EDas', path: '/suministros/categorias' },
       { label: 'Items', path: '/suministros/items' },
-      { label: '\u00D3rdenes de compra', path: '/suministros/ordenes' },
+      { label: '\u00D3rdenes de Compra', path: '/suministros/ordenes' },
     ],
   },
   {
@@ -46,8 +52,8 @@ const navConfig = [
   {
     label: 'Libros Legales',
     sub: [
-      { label: 'Gestión de libros legales', path: '/libros/mantenimiento' },
-      { label: 'Registros de libros legales', path: '/libros/registros' },
+      { label: 'Gestión de Libros Legales', path: '/libros/mantenimiento' },
+      { label: 'Registros de Libros Legales', path: '/libros/registros' },
     ],
   },
   {
@@ -62,13 +68,13 @@ const navConfig = [
     label: 'TI',
     sub: [
       { label: 'Usuarios', path: '/ti/usuarios' },
-      { label: 'Roles y permisos', path: '/ti/roles' },
-      { label: 'Configuraciones del sistema', path: '/ti/config' },
+      { label: 'Roles y Permisos', path: '/ti/roles' },
+      { label: 'Configuraciones del Sistema', path: '/ti/config' },
     ],
   },
   {
     label: 'Cat\u00E1logo',
-    sub: [{ label: 'Gestionar cat\u00E1logo', path: '/catalogo/gestionar' }]
+    sub: [{ label: 'Gestionar Cat\u00E1logo', path: '/catalogo/gestionar' }]
   }
 ];
 

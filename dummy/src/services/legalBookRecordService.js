@@ -109,3 +109,20 @@ export const getBooksNames = async () => {
         throw error;
     }
 }; 
+
+//obtener nombres de libros activos
+export const getActiveBooksNames = async () => {
+    try{
+        const response = await axios.get(
+            API_URL_BOOK + "active/names_ids",
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}; 
