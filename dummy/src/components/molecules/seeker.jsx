@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Input from "../atoms/input";
 import Button from "../atoms/button";
 import CustomSelect from "../atoms/select";
+import CustomDatePicker from "../atoms/date-picker";
 
 function Seeker({ 
   inputName,
@@ -53,16 +54,25 @@ function Seeker({
             onChange={(e) => onChangeText(e.target.value)}
           />
         </div>
-      ) : (
-        <div className="flex-1 min-w-[200px]">
-          <Input 
-            name={inputName}
-            value={valueText}
-            onChange={(e) => onChangeText(e.target.value)}
-            placeholder={inputPlaceholder}    
-          />
-        </div>
-      )}
+) : type === "date" ? (
+  <div className="flex-1 min-w-[200px]">
+    <CustomDatePicker
+      label={inputPlaceholder}
+      value={valueText}
+      onChange={(e) => onChangeText(e.target.value)}
+      name={inputName}
+    />
+  </div>
+) : (
+  <div className="flex-1 min-w-[200px]">
+    <Input 
+      name={inputName}
+      value={valueText}
+      onChange={(e) => onChangeText(e.target.value)}
+      placeholder={inputPlaceholder}    
+    />
+  </div>
+)}
 
       {/* Botón */}
       <div>
