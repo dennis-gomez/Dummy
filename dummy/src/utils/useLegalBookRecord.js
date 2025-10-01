@@ -24,6 +24,8 @@ export const useLegalBookRecord = () => {
     const [legalBookRecords, setLegalBookRecords] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [formSelectedBook, setFormSelectedBook] = useState(""); // select de libros legales
+    const [error, setError] = useState(null); //manejo de errores
 
     const fields = [
         { 
@@ -72,8 +74,10 @@ export const useLegalBookRecord = () => {
             let response;
             if (bookId === "Todos" && !text.trim()) {
                 response = await getRecords();
+                setError(null);
             } else {
                 response = await getRecordByFeature(bookId, field, text);
+                setError(null);
             }
             setLegalBookRecords(response.data);
         } catch (error) {
@@ -100,21 +104,33 @@ export const useLegalBookRecord = () => {
     // Agregar registro
     const handleSubmit = async (formData) => {
         try {
+
+            if (!formSelectedBook) {
+                setError("Debe seleccionar un libro legal antes de agregar el registro.");
+                return;
+            }
+
             const dataToSend = {
                 ...formData,
-                cod_book_catalog: selectedBook,
+                cod_book_catalog: formSelectedBook,
                 lb_record_return_date: null, 
                 lb_record_return_by: null,
             };
+
             const response = await addRecord(dataToSend);
+
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
                 await fetchRecords();
                 setShowForm(false);
+                setFormSelectedBook("");
+                setError(null);
             }
+
         } catch (error) {
             const message = error.response?.data?.message || "Error al agregar registro.";
             ModalAlert("Error", message, "error");
+            setError(message);
         }
     };
 
@@ -125,11 +141,13 @@ export const useLegalBookRecord = () => {
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
                 await fetchRecords();
+                setError(null);
             }
             return true;
         } catch (error) {
             const message = error.response?.data?.message || "Error al editar registro.";
             ModalAlert("Error", message, "error");
+            setError(message);
             return false;
         }
     };
@@ -141,10 +159,12 @@ export const useLegalBookRecord = () => {
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
                 await fetchRecords();
+                setError(null);
             }
         } catch (error) {
             const message = error.response?.data?.message || "Error al eliminar registro.";
             ModalAlert("Error", message, "error");
+            setError(message);
         }
     };
 
@@ -155,9 +175,11 @@ export const useLegalBookRecord = () => {
             try {
                 const response = await getBooksNames();
                 setBooks(response.data);
+                setError(null);
             } catch (error) {
                 const message = error.response?.data?.message || "Error al obtener los catálogos de libros.";
                 ModalAlert("Error", message, "error");
+                setError(message);
             }
         };
         loadBooks();
@@ -171,11 +193,15 @@ export const useLegalBookRecord = () => {
         setSearchText,
         selectedBook,
         setSelectedBook,
+        formSelectedBook, 
+        setFormSelectedBook,
         searchField,
         setSearchField,
         showForm,
         setShowForm,
         loading, 
+        error,      
+        setError,
         handleSubmit,
         handleEdit,
         handleDelete,

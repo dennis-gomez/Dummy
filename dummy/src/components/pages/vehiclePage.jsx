@@ -65,7 +65,7 @@ function VehiclePage() {
                 }}
                 >
                 <span style={{ color: "#b71c1c", fontWeight: "bold" }}>Error: </span>
-                <Typography sx={{ color: "#b71c1c" }}>{error}.</Typography>
+                <Typography sx={{ color: "#b71c1c" }}>{error}</Typography>
                 </Box>
             )}
             {/* Tabla de vehiculos */}

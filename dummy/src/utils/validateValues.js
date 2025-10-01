@@ -39,8 +39,8 @@ export function ValidateValues({
       if (Number(value) > currentYear) {
         err = "El año del vehículo no puede ser mayor al actual.";
       }
-      if (Number(value) < 1900) {
-        err = "El año del vehículo debe ser 1900 o posterior.";
+      if (Number(value) < 2000) {
+        err = "El año del vehículo debe ser 2000 o posterior.";
       }
     }
 
