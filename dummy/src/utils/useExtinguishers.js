@@ -43,11 +43,11 @@ const fields = [
   { name: "extinguisher_type", placeholder: "Tipo", type: "select", width: 250, options: extinguisherTypes },
   { name: "extinguisher_capacity_value", placeholder: "Capacidad", type: "number", width: 150 },
   { name: "extinguisher_capacity_unit", placeholder: "Unidad", type: "select", width: 100, options: extinguisherCapacityUnits },
-  { name: "extinguisher_location", placeholder: "Ubicación", width: 250 },
+
   { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", width: 250, restriction: "cantAfterToday" },
   { name: "extinguisher_last_maintenance_date", placeholder: "Último Mantenimiento", type: "date", width: 250 },
   { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", width: 250, restriction: "cantBeforeToday" },
-
+  { name: "extinguisher_location", placeholder: "Ubicación", type: "textarea", width: 250 },
   { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 780, required: false },
 ];
 
