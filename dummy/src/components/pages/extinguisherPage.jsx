@@ -8,6 +8,9 @@ const ExtinguisherPage = () => {
   const {
     fields,
     extinguishers,
+    agentItems,
+    extinguisherTypes,
+    extinguisherCapacityUnits,
     searchText,
     searchFeature,
     setSearchText,
@@ -22,6 +25,7 @@ const ExtinguisherPage = () => {
     handleDelete,
     handleSearchExtinguishers,
   } = useExtinguishers();
+
 
   return (
     <div style={{ padding: 24 }}>
@@ -70,6 +74,9 @@ const ExtinguisherPage = () => {
       <ExtinguisherTable
         fields={fields}
         extinguishers={extinguishers}
+        agentItems={agentItems}
+        extinguisherTypes={extinguisherTypes}
+        extinguisherCapacityUnits={extinguisherCapacityUnits}
         onDelete={handleDelete}
         onEdit={handleEdit}
         onSearch={handleSearchExtinguishers}
@@ -82,6 +89,7 @@ const ExtinguisherPage = () => {
         setShowForm={setShowForm}
         setError={setError}
       />
+
     </div>
   );
 };
