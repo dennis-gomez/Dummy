@@ -8,6 +8,7 @@ import VehiclePage from './components/pages/vehiclePage'
 import LegalBookRecordPage from './components/pages/legalBookRecordPage'
 import OHPersonnelPage from './components/pages/ohPersonnelPage'
 import LegalBookPage from './components/pages/legalBookPage'
+import HomePage from './components/pages/homePage'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         {/* Main ocupa todo el espacio libre */}
         <main className="flex-grow">
           <Routes>
+             <Route path="/" element={<HomePage />} />
             <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
             <Route path="/salud/botiquin" element={<MedicKitPage />} />
             <Route path="/vehiculos" element={<VehiclePage />} />
