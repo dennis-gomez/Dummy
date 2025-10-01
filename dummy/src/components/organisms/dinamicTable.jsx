@@ -32,6 +32,8 @@ const DinamicTable = ({
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
 
+  const [isUnique, setIsUnique] = useState(true);
+
   const whiteInputStyle = {
     "& .MuiOutlinedInput-root": {
       backgroundColor: "#ffffff",
@@ -208,6 +210,13 @@ const DinamicTable = ({
                               name={f.name}
                               type={f.type || "text"}
                               value={editData[f.name] || ""}
+                              setIsUnique={setIsUnique}
+                              restriction= {f.restriction}
+                              currentId={editingId}
+                              uniqueValues={data.map((ex) => ({
+                              id: ex.cod_book,
+                              value: ex[f.name],
+                            }))} 
                               onChange={e => {
                                 const value = e.target.value;
                                 setEditData({ ...editData, [f.name]: value });
@@ -263,8 +272,8 @@ const DinamicTable = ({
                         <div className="flex justify-center gap-2">
                           <button
                             onClick={handleSaveEdit}
-                            disabled={Object.values(editErrors).some(err => err)}
-                            className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+                            disabled={Object.values(editErrors).some(err => err) || !isUnique}
+                            className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) || !isUnique ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
                           >
                             <SaveIcon className="mr-1" fontSize="small" /> Guardar
                           </button>

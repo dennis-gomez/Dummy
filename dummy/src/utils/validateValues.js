@@ -5,6 +5,9 @@ export function ValidateValues({
   validations = [],
   restriction,
   allValues,
+  uniqueValues = [],
+  currentId = null,
+  setIsUnique,
 }) {
   let err = "";
 
@@ -24,6 +27,19 @@ export function ValidateValues({
   ) {
     return null;
   }
+
+if (restriction === "unique" && value !== "") {
+  const exists = uniqueValues.some(
+    (item) => String(item.value).trim() === String(value).trim() && item.id !== currentId
+  );
+  if (exists) {
+    setIsUnique(false);
+    err = "Ya existe*";
+  } else {
+    setIsUnique(true);
+  }
+}
+
 
   // Validaciones base
   if (type === "number") {

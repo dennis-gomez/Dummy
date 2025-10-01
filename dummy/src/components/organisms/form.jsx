@@ -3,20 +3,20 @@ import Grid from "@mui/material/Grid";
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedDate from "../atoms/inputValidatedDate";
-import InputValidatedFile from "../atoms/inputValidatedFile"; // 👈 importa aquí
+import InputValidatedFile from "../atoms/inputValidatedFile";
 import { useState } from "react";
 
-function Form({ fields, onSubmit, titleBtn, onCancel }) {
+function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
 
   const [errors, setErrors] = useState({});
+  const [isUnique, setIsUnique] = useState(true);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    // si es file, guardamos el archivo (o null)
     if (e.target.type === "file") {
       setFormData({ ...formData, [name]: files[0] || null });
     } else {
@@ -69,6 +69,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                     placeholder={field.placeholder}
                     value={formData[field.name]}
                     onChange={handleChange}
+                    restriction={field.restriction || ""}
                     onError={handleError}
                     options={field.options}
                     sx={{
@@ -102,7 +103,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                     onChange={handleChange}
                     onError={handleError}
                     multiline={field.type === "textarea"}
-                    rows={field.type === "textarea" ? 4 : undefined}
+                    rows={field.type === "textarea" ? 3 : undefined}
                     sx={{
                       "& .MuiInputBase-root": { backgroundColor: "#fff !important" },
                       ...(field.width ? { width: field.width } : {}),
@@ -110,6 +111,9 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
                     required={field.required ?? true}
                     restriction={field.restriction || ""}
                     validations={field.validations}
+                    setIsUnique={setIsUnique}
+                    uniqueValues={values || []}
+                    currentId={field.currentId || null}
                     formValues={formData}
                   />
                 )}
@@ -131,7 +135,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel }) {
           <Button
             text={titleBtn}
             onClick={handleSubmit}
-            disabled={hasError}
+            disabled={hasError || !isUnique}
             type="submit"
           />
         </Box>
