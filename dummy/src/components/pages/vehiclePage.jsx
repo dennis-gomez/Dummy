@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import Button from "../atoms/button";
 import Form from "../organisms/form";
 import VehicleTable from "../organisms/vehicleTable";
 import { useVehicles } from "../../utils/useVehicle";
@@ -8,6 +7,7 @@ function VehiclePage() {
     const {
         vehicles,
         fields,
+        editFields, 
         searchText,
         searchFeature, 
         setSearchText,
@@ -71,6 +71,7 @@ function VehiclePage() {
             {/* Tabla de vehiculos */}
             <VehicleTable
                 fields={fields}
+                editFields={editFields}
                 vehicles={vehicles}
                 onDelete={handleDelete}
                 onEdit={handleEdit}

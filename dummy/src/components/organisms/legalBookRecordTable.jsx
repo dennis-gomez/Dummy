@@ -54,7 +54,7 @@ function LegalBookRecordTable({
   const handleSaveEdit = async (record) => {
     const hasError = Object.values(fieldErrors).some((err) => err);
     if (hasError) {
-      Swal.fire("Error", "El campo 'Solicitado' no puede estar vacío", "error");
+      Swal.fire("Error", "Hay campos vacíos.", "error");
       return;
     }
 

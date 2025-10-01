@@ -6,9 +6,11 @@ import ModalElimination from "../molecules/modalElimination";
 import Seeker from "../molecules/seeker";
 import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
+import InputValidated from "../atoms/inputValidated"
 
 const VehicleTable = ({
   fields,
+  editFields,
   vehicles = [],
   isLoading = false,
   onDelete,
@@ -23,6 +25,7 @@ const VehicleTable = ({
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const handleEditClick = (vehicle) => {
     setEditingId(vehicle.cod_vehicle);
@@ -30,17 +33,25 @@ const VehicleTable = ({
   };
 
   const handleSaveEdit = async () => {
+    const hasError = Object.values(fieldErrors).some((err) => err);
+    if (hasError) {
+      Swal.fire("Error", "Hay campos vacíos.", "error");
+      return;
+    }
+
     if (!editingId) return;
     const isSaved = await onEdit(editData);
     if (isSaved) {
       setEditingId(null);
       setEditData({});
+      setFieldErrors({});
     }
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
+    setFieldErrors({});
   };
 
   return (
@@ -76,122 +87,120 @@ const VehicleTable = ({
       </div>
 
       {/* Contenido de la tabla */}
-      {/* Contenido tabla */}
-{isLoading ? (
-  <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
-    <CircularProgress size={24} />
-    <span>Cargando vehículos...</span>
-  </div>
-) : vehicles.length === 0 ? (
-  // 📭 Solo mensaje vacío cuando ya cargó pero no hay resultados
-    <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
-    No hay vehículos registrados
-  </div>
-) : (
-  // 📋 Render de tabla normal
-  <div className="overflow-x-auto rounded-xl shadow-lg">
-    <table className="min-w-full table-auto">
-      <thead>
-        <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-          <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">
-            #
-          </th>
-          {fields.map((f) => (
-            <th
-              key={f.name}
-              className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
-            >
-              {f.placeholder}
-            </th>
-          ))}
-          <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">
-            Acciones
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {vehicles.map((vehicle, index) => {
-          const isEditing = editingId === vehicle.cod_vehicle;
-          return (
-            <tr
-              key={vehicle.cod_vehicle}
-              className={`${
-                index % 2 === 0 ? "bg-white" : "bg-gray-50"
-              } hover:bg-gray-100`}
-            >
-              <td className="py-4 px-6 text-center">{index + 1}</td>
-              {fields.map((f) => (
-                <td key={f.name} className="py-4 px-6 text-center">
-                  {isEditing ? (
-                    <input
-                    type={
-                      [
-                        "vehicle_frecuency_of_change",
-                        "vehicle_last_km_maintenance",
-                        "vehicle_initial_km",
-                        "vehicle_year",
-                      ].includes(f.name)
-                        ? "number"
-                        : "text"
-                    }
-                    value={editData[f.name] || ""}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      const newValue = [
-                        "vehicle_frecuency_of_change",
-                        "vehicle_last_km_maintenance",
-                        "vehicle_initial_km",
-                        "vehicle_year",
-                      ].includes(f.name)
-                        ? value === "" ? "" : Number(value)
-                        : value;
-                      setEditData({ ...editData, [f.name]: newValue });
-                    }}
-                    className="min-w-[150px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                  />
-                  ) : (
-                    vehicle[f.name]
-                  )}
-                </td>
-              ))}
-              <td className="py-4 px-6 text-center flex gap-2 justify-center">
-                {isEditing ? (
-                  <>
-                    <button
-                      onClick={handleSaveEdit}
-                      className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm"
-                    >
-                      <SaveIcon className="mr-1" fontSize="small" /> Guardar
-                    </button>
-                    <button
-                      onClick={handleCancelEdit}
-                      className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
-                    >
-                      <CancelIcon className="mr-1" fontSize="small" /> Cancelar
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => handleEditClick(vehicle)}
-                      className="text-blue-600 hover:text-blue-800"
-                    >
-                      <EditIcon />
-                    </button>
-                    <ModalElimination
-                      onConfirm={() => onDelete(vehicle.cod_vehicle)}
-                    />
-                  </>
-                )}
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-  </div>
-)}
+      {isLoading ? (
+        <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
+          <CircularProgress size={24} />
+          <span>Cargando vehículos...</span>
+        </div>
+      ) : vehicles.length === 0 ? (
+        //Solo mensaje vacío cuando ya cargo pero no hay resultados
+        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
+          No hay vehículos registrados
+        </div>
+      ) : (
+        <div className="overflow-x-auto rounded-xl shadow-lg">
+          <table className="min-w-full table-auto">
+            <thead>
+              <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
+                {fields.map((f) => (
+                  <th
+                    key={f.name}
+                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
+                  >
+                    {f.placeholder}
+                  </th>
+                ))}
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {vehicles.map((vehicle, index) => {
+                const isEditing = editingId === vehicle.cod_vehicle;
+                return (
+                  <tr
+                    key={vehicle.cod_vehicle}
+                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
+                  >
+                    <td className="py-4 px-6 text-center">{index + 1}</td>
 
+                    {fields.map((f) => {
+                      const fieldEdit = editFields.find((ef) => ef.name === f.name);
+                      return (
+                        <td key={f.name} className="py-4 px-6 text-center">
+                          {isEditing && fieldEdit ? (
+                            <InputValidated
+                              name={fieldEdit.name}
+                              type={fieldEdit.type || "text"}
+                              value={editData[fieldEdit.name] || ""}
+                              placeholder={fieldEdit.placeholder}
+                              options={fieldEdit.options || []}
+                              restriction={fieldEdit.restriction}
+                              validations={fieldEdit.validations} 
+                              required={fieldEdit.required}
+                              onChange={(e) =>
+                                setEditData({ ...editData, [fieldEdit.name]: e.target.value })
+                              }
+                              onError={(name, errorMsg) =>
+                                setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
+                              }
+                              sx={{
+                                "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                ...(fieldEdit.width ? { width: fieldEdit.width } : {}),
+                              }}
+                              formValues={editData}
+                            />
+                          ) : (
+                            vehicle[f.name]
+                          )}
+                        </td>
+                      );
+                    })}
+                    <td className="py-4 px-6 text-center flex gap-2 justify-center">
+                      {isEditing ? (
+                        <>
+                          <button
+                            onClick={handleSaveEdit}
+                            disabled={Object.values(fieldErrors).some((err) => err)}
+                            className={`rounded-lg px-3 py-2 transition flex items-center text-sm ${
+                              Object.values(fieldErrors).some((err) => err)
+                                ? "bg-gray-400 cursor-not-allowed text-white"
+                                : "bg-blue-600 hover:bg-blue-700 text-white"
+                            }`}
+                          >
+                            <SaveIcon className="mr-1" fontSize="small" /> Guardar
+                          </button>
+                          <button
+                            onClick={handleCancelEdit}
+                            className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
+                          >
+                            <CancelIcon className="mr-1" fontSize="small" /> Cancelar
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button
+                            onClick={() => handleEditClick(vehicle)}
+                            className="text-blue-600 hover:text-blue-800"
+                          >
+                            <EditIcon />
+                          </button>
+                          <ModalElimination
+                            message={"¿Estás seguro de eliminar este vehículo?"}
+                            onClick={() => onDelete(vehicle.cod_vehicle)}
+                          />
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
