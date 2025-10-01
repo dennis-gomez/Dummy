@@ -38,12 +38,10 @@ function InputValidatedFile({
     const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
     setFileName(file ? file.name : "");
     runValidation(file);
-    // reenviamos el evento original para que Form lo procese igual que con los demas inputs
     if (onChange) onChange(e);
   };
 
   useEffect(() => {
-    // si value viene con un File desde el form, sincronizamos el nombre
     if (value && value.name) setFileName(value.name);
     runValidation(value);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,7 +54,6 @@ function InputValidatedFile({
       <TextField
         fullWidth
         id={name + "-outlined-file"}
-        label={placeholder || "Archivo"}
         variant="outlined"
         name={name}
         value={fileName || ""}
@@ -73,9 +70,36 @@ function InputValidatedFile({
                   variant="contained"
                   component="span"
                   size="small"
-                  sx={{ textTransform: "none" }}
+                  sx={{ 
+                    textTransform: "none",
+                    backgroundColor: "#2563eb",
+                    "&:hover": {
+                      backgroundColor: "#1d4ed8",
+                    },
+                    "&:focus": {
+                      outline: "2px solid #93c5fd",
+                      ring: "4px",
+                      ringColor: "#dbeafe"
+                    },
+                    fontSize: "0.875rem",
+                    fontWeight: "600",
+                    padding: "8px 20px",
+                    borderRadius: "8px",
+                    boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                    minWidth: "auto",
+                    lineHeight: "1.5",
+                    letterSpacing: "normal",
+                    // Estilo IDÉNTICO al botón "Agregar"
+                    color: "white",
+                    fontFamily: "inherit",
+                    "&:disabled": {
+                      backgroundColor: "#2563eb",
+                      opacity: 0.5,
+                      cursor: "not-allowed"
+                    }
+                  }}
                 >
-                  Seleccionar archivo
+                  Seleccionar
                 </Button>
               </label>
             </InputAdornment>
@@ -84,34 +108,58 @@ function InputValidatedFile({
         sx={{
           "& .MuiOutlinedInput-root": {
             backgroundColor: "#ffffff",
+            width: '100%',
+            maxWidth: '100%',
+
             "& .MuiOutlinedInput-notchedOutline": {
               borderColor: "#cccccc",
             },
+
+            "&:hover .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#2563eb",
+            },
+
+            "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+              borderColor: "#2563eb",
+            },
+
             "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-              borderColor: "blue",
+              borderColor: "#d32f2f",
             },
+
             "&.Mui-error:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "darkblue",
+              borderColor: "#d32f2f",
             },
+
             "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "darkblue",
+              borderColor: "#d32f2f",
             },
           },
-          "& .MuiFormLabel-root.Mui-error": {
-            color: "blue",
-          },
-          "& .MuiInputLabel-root": {
+
+          "& .MuiFormLabel-root": {
             color: "#2563eb",
             opacity: 1,
+            "&.Mui-focused": {
+              color: "#2563eb",
+            },
+            "&.Mui-error": {
+              color: "#d32f2f",
+            },
           },
-          "& .MuiFormHelperText-root.Mui-error": {
-            color: "blue",
+
+          "& .MuiFormHelperText-root": {
+            "&.Mui-error": {
+              color: "#d32f2f",
+            },
           },
+
+          width: "100%",
+          maxWidth: "100%",
           ...sx,
         }}
         required={required}
         onClick={() => {
-          /* lectura segura: TextField es readonly, el click lo hacemos en el botón/label */
+          /* lectura segura */
         }}
       />
 

@@ -55,19 +55,18 @@ export default function CollapsibleTable({
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
         {/* Columna 1: Buscador */}
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-         
-            <Seeker
-              inputName="searchText"
-              inputPlaceholder="Buscar botiquín o suplemento"
-              btnName="Buscar"
-              valueText={searchText}
-              valueFeature={searchFeature}
-              onChangeText={setSearchText}
-              onChangeFeature={setSearchFeature}
-              onClick={handleSearch}
-              selectName="Filtrar por"
-              fields={searchFields}
-            />
+          <Seeker
+            inputName="searchText"
+            inputPlaceholder="Buscar botiquín o suplemento"
+            btnName="Buscar"
+            valueText={searchText}
+            valueFeature={searchFeature}
+            onChangeText={setSearchText}
+            onChangeFeature={setSearchFeature}
+            onClick={handleSearch}
+            selectName="Filtrar por"
+            fields={searchFields}
+          />
         </Box>
 
         {/* Columna 2: Botón Agregar/Cancelar */}
@@ -82,33 +81,28 @@ export default function CollapsibleTable({
         </div>
       </div>
 
-      {/* Mensaje cuando no hay registros o loading */}
+      {/* Contenido tabla o loader */}
       {isLoading ? (
-        <div className="flex flex-wrap items-center justify-center gap-3 bg-white shadow-md rounded-2xl px-4 py-6 w-full max-w-3xl mx-auto">
+        <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-6 w-full max-w-3xl mx-auto">
           <CircularProgress size={24} />
           <span>Cargando botiquines...</span>
         </div>
       ) : list.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
+          <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
           No hay botiquines registrados
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl shadow-lg">
-          <table className="min-w-full">
+          <table className="min-w-full table-auto">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">
-                  #
-                </th>
-                {tittles.slice(1).map((col) => (
-                  <th
-                    key={col.key}
-                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
-                  >
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
+                {tittles.slice(1).map(col => (
+                  <th key={col.key} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
                     {col.label}
                   </th>
                 ))}
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">
                   Acciones
                 </th>
               </tr>
