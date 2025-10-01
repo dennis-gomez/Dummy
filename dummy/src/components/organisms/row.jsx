@@ -26,6 +26,7 @@ export default function Row({
 }) {
   const [editingKit, setEditingKit] = useState(false);
   const [kitFormData, setKitFormData] = useState({ ...item });
+  const [kitErrors, setKitErrors] = useState({}); // Estado de errores
 
   const whiteInputStyle = {
     "& .MuiOutlinedInput-root": {
@@ -53,7 +54,10 @@ export default function Row({
   const handleSaveKit = () => {
     onEditMedicKit(kitFormData);
     setEditingKit(false);
+    setKitErrors({});
   };
+
+  const hasErrors = Object.values(kitErrors).some((err) => err);
 
   return (
     <>
@@ -70,7 +74,7 @@ export default function Row({
           </button>
         </td>
 
-        {tittles.map((col, index) => (
+        {tittles.map((col) => (
           <td key={col.key} className="py-4 px-4 text-center text-gray-800">
             {editingKit ? (
               <InputValidated
@@ -78,9 +82,19 @@ export default function Row({
                 type={col.type || "text"}
                 placeholder={col.placeholder}
                 value={kitFormData[col.key]}
-                onChange={(e) =>
-                  setKitFormData({ ...kitFormData, [col.key]: e.target.value })
-                }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setKitFormData({ ...kitFormData, [col.key]: value });
+
+                  // Validación: campo obligatorio y no solo espacios
+                  setKitErrors((prev) => ({
+                    ...prev,
+                    [col.key]:
+                      (col.required ?? true) && (!value || !value.trim())
+                        ? "Campo obligatorio"
+                        : "",
+                  }));
+                }}
                 required={col.required ?? true}
                 multiline={col.type === "textarea"}
                 rows={col.type === "textarea" ? 2 : undefined}
@@ -95,7 +109,7 @@ export default function Row({
                 }}
               />
             ) : (
-              <span className="font-normal">{  item[col.key]}</span>
+              <span className="font-normal">{item[col.key]}</span>
             )}
           </td>
         ))}
@@ -107,14 +121,20 @@ export default function Row({
                 <button
                   type="button"
                   onClick={handleSaveKit}
-                  className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center text-sm"
+                  disabled={hasErrors}
+                  className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center text-sm ${
+                    hasErrors ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
+                  }`}
                 >
                   <SaveIcon className="mr-2" fontSize="small" />
                   Guardar
                 </button>
                 <button
                   type="button"
-                  onClick={() => setEditingKit(false)}
+                  onClick={() => {
+                    setEditingKit(false);
+                    setKitErrors({});
+                  }}
                   className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition flex items-center text-sm"
                 >
                   <CancelIcon className="mr-2" fontSize="small" />
@@ -123,7 +143,7 @@ export default function Row({
               </>
             ) : (
               <>
-                   <button
+                <button
                   type="button"
                   onClick={() => {
                     setEditingKit(true);
@@ -150,8 +170,8 @@ export default function Row({
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">{subTitle}</h3>
-                <Button 
-                  text="Agregar Suplemento" 
+                <Button
+                  text="Agregar Suplemento"
                   onClick={() => changeStateSupply(id)}
                 />
               </div>
