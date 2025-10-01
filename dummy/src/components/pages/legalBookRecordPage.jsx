@@ -1,6 +1,6 @@
 import { useLegalBookRecord } from "../../utils/useLegalBookRecord";
 import LegalBookRecordTable from "../organisms/legalBookRecordTable";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, FormControl, Select, InputLabel, MenuItem } from "@mui/material";
 import Form from "../organisms/form";
 
 function LegalBookRecordPage() {
@@ -12,6 +12,8 @@ function LegalBookRecordPage() {
     setSearchText,
     selectedBook,
     setSelectedBook,
+    formSelectedBook, 
+    setFormSelectedBook,
     searchField,
     setSearchField,
     showForm,
@@ -48,6 +50,52 @@ function LegalBookRecordPage() {
             Agregar Registro
           </h3>
 
+          <div className="pl-7 pr-11">
+            <FormControl
+              fullWidth
+              sx={{
+                mb: 2,
+                backgroundColor: "#ffffff",
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#ffffff",
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#cccccc",
+                  },
+                  "&:hover .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#2563eb",
+                  },
+                  "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                    borderColor: "#2563eb",
+                    borderWidth: "2px",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "#2563eb",
+                  "&.Mui-focused": {
+                    color: "#2563eb",
+                  },
+                },
+                "& .MuiSelect-select": {
+                  paddingY: "12px",
+                  backgroundColor: "#ffffff",
+                },
+              }}
+            >
+              <InputLabel>Seleccione un libro para agregar</InputLabel>
+              <Select
+                value={formSelectedBook}
+                onChange={(e) => setFormSelectedBook(e.target.value)}
+                required
+              >
+                {books.map((book) => (
+                  <MenuItem key={book.cod_book} value={book.cod_book}>
+                    {book.book_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          
+          </div>
           <Form
             fields={fields}
             onSubmit={handleSubmit}
@@ -57,7 +105,7 @@ function LegalBookRecordPage() {
         </Box>
       )}
 
-      {/* Errores */}
+      {/* Errores manejados por el backend */}
       {error && (
         <Box
           sx={{
@@ -68,9 +116,13 @@ function LegalBookRecordPage() {
             borderRadius: 2,
             backgroundColor: "#fdecea",
             border: "1px solid #f5c2c7",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
           }}
         >
-          <Typography sx={{ color: "#b71c1c" }}>Error: {error}</Typography>
+          <span style={{ color: "#b71c1c", fontWeight: "bold" }}>Error: </span>
+          <Typography sx={{ color: "#b71c1c" }}>{error}</Typography>
         </Box>
       )}
 
