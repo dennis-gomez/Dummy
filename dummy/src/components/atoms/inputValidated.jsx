@@ -3,7 +3,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { useState, useEffect } from "react";
 import { ValidateValues } from "../../utils/validateValues";
 
- function InputValidated({
+function InputValidated({
   name,
   type,
   value,
@@ -11,12 +11,15 @@ import { ValidateValues } from "../../utils/validateValues";
   placeholder,
   validations = [],
   onError,
-  required,
+  required = true,
   sx,
   restriction = "",
   formValues,
   options = [],
   className,
+  uniqueValues = [],
+  currentId = null,
+  setIsUnique,
 }) {
   const [error, setError] = useState("");
 
@@ -28,6 +31,9 @@ import { ValidateValues } from "../../utils/validateValues";
       validations,
       restriction,
       allValues: formValues,
+      uniqueValues,
+      currentId,
+      setIsUnique,
     });
     setError(err);
     if (onError) onError(name, err);
@@ -50,9 +56,7 @@ import { ValidateValues } from "../../utils/validateValues";
       select={type === "select"}
       id={name + "-outlined-basic"}
       label={
-        type?.toLowerCase().includes("date")
-          ? placeholder || "Fecha"
-          : placeholder
+        type?.toLowerCase().includes("date") ? placeholder || "Fecha" : placeholder
       }
       variant="outlined"
       type={type === "DateCanBefore" ? "date" : type || "text"}
@@ -62,53 +66,43 @@ import { ValidateValues } from "../../utils/validateValues";
       placeholder={placeholder}
       error={!!error}
       helperText={error || " "}
-      InputLabelProps={
-        type?.toLowerCase().includes("date") ? { shrink: true } : {}
-      }
+      InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
       inputProps={type === "number" ? { min: 0 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
       className={className}
+      uniqueValues={uniqueValues}
+      currentId={currentId}
       sx={{
-        // ✅ MEJORAR RESPONSIVIDAD
         width: '100%',
         maxWidth: '100%',
-        
         "& .MuiOutlinedInput-root": {
           backgroundColor: "#ffffff",
           width: '100%',
           maxWidth: '100%',
-
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "#cccccc",
           },
-
           "&.Mui-error .MuiOutlinedInput-notchedOutline": {
             borderColor: "blue",
           },
-
           "&.Mui-error:hover .MuiOutlinedInput-notchedOutline": {
             borderColor: "darkblue",
           },
-
           "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
             borderColor: "darkblue",
           },
         },
-
         "& .MuiFormLabel-root.Mui-error": {
           color: "blue",
         },
-
         "& .MuiInputLabel-root": {
           color: "#2563eb",
           opacity: 1,
         },
-
         "& .MuiFormHelperText-root.Mui-error": {
           color: "blue",
         },
-
         ...sx,
       }}
       required={false}
@@ -122,4 +116,5 @@ import { ValidateValues } from "../../utils/validateValues";
     </TextField>
   );
 }
+
 export default InputValidated;

@@ -56,6 +56,7 @@ function LegalBookPage() {
   formTitle="Agregar Nuevo Libro Legal"
   onSubmit={handleAddBook}
   titleBtn="Guardar Libro Legal"
+  values={booksList.map(e => ({ value: e.book_code, id: e.cod_book }))}
 />
   </Box>
 )}

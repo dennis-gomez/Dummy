@@ -27,13 +27,33 @@ const ExtinguisherTable = ({
   showForm,
   setShowForm,
   setError,
+
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [editErrors, setEditErrors] = useState({}); // Estado de errores
+  const [isUnique, setIsUnique] = useState(true);
+
+  const whiteInputStyle = {
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: "#ffffff",
+      overflow: "auto",
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: "blue",
+      },
+    },
+    "& .MuiFormHelperText-root.Mui-error": {
+      color: "blue",
+    },
+    "& .MuiInputLabel-root.Mui-error": {
+      color: "inherit",
+    },
+  };
 
   const handleEditClick = (ext) => {
     setEditingId(ext.cod_extinguisher);
     setEditData({ ...ext });
+    setEditErrors({});
   };
 
   const handleSaveEdit = async () => {
@@ -42,12 +62,14 @@ const ExtinguisherTable = ({
     if (isSaved) {
       setEditingId(null);
       setEditData({});
+      setEditErrors({});
     }
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
+    setEditErrors({});
   };
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
@@ -118,62 +140,127 @@ const ExtinguisherTable = ({
                         {isEditing ? (
 
                           f.type === "select" ? (
-                            <select
-                              value={editData[f.name] || ""}
-                              onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
-                              {(f.name === "extinguisher_agente_item_code" ? agentItems
+                            <InputValidated
+                              type="select"
+                              name={f.name}
+                              placeholder={f.placeholder}
+                              options={f.name === "extinguisher_agente_item_code" ? agentItems
                                 : f.name === "extinguisher_type" ? extinguisherTypes
                                   : f.name === "extinguisher_capacity_unit" ? extinguisherCapacityUnits
                                     : []
-                              ).map((opt) => (
+                              }
+                              sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                  minWidth: "200px", width: "100%", minHeight: "3rem"
+                                },
+                              }}
+                              value={editData[f.name] || ""}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: !value.trim() ? "Campo obligatorio" : ""
+                                }));
+                              }}
+                              required={f.required ?? true}
+                            >
+                              {f.options.map((opt) => (
                                 <option key={opt.value} value={opt.value}>
                                   {opt.label}
                                 </option>
                               ))}
-                            </select>
+                            </InputValidated>
+
 
                           ) : f.type === "textarea" ? (
                             <InputValidated
                               name={f.name}
-                              type={"textarea"}
+                              type="textarea"
                               value={editData[f.name] || ""}
-                              onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: !value.trim() ? "Campo obligatorio" : ""
+                                }));
+                              }}
                               placeholder={f.placeholder}
                               restriction={f.restriction}
-                              className="min-w-[200px] w-full max-w-[780px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                               required={f.required ?? true}
-                              sx={{ width: '200px', maxWidth: '280px' }}
-                              />
-                              
+                              multiline
+                              rows={2}
+                              sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                  minHeight: "2rem", width: '200px', resize: "vertical",
+                                },
+                              }}
+                            />
+
                           ) : f.type === "date" ? (
                             <InputValidatedDate
                               name={f.name}
                               value={editData[f.name] ? editData[f.name].split("T")[0] : ""}
-                              onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({
+                                  ...prev,
+                                  [f.name]: !value.trim() ? "Seleccione una fecha" : ""
+                                }));
+                              }}
                               placeholder={f.placeholder}
                               restriction={f.restriction}
                               required={f.required ?? true}
-                              className={"min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"}
-                              sx={{ width: '200px', maxWidth: '280px' }}
+                              sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                  minWidth: "200px", width: "100%", minHeight: "3rem"
+                                },
+                              }}
                             />
-                          ) : (
-                            <InputValidated
-                              type={f.type || "text"}
-                              name={f.name}
-                              value={editData[f.name] || ""}
-                              onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              placeholder={f.placeholder}
-                              restriction={f.restriction}
-                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
-                              required={f.required ?? true} 
-                              sx={{ width: '200px', maxWidth: '280px' }}
-                              />
+                          ) : (<InputValidated
+                            type={f.type || "text"}
+                            name={f.name}
+                            value={editData[f.name] || ""}
+                            placeholder={f.placeholder}
+                            required={f.required ?? true}
+                            restriction={f.restriction}
+                            setIsUnique={setIsUnique}
+                            currentId={editingId}
+                            uniqueValues={extinguishers.map((ex) => ({
+                              id: ex.cod_extinguisher,
+                              value: ex[f.name],
+                            }))} 
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setEditData({ ...editData, [f.name]: value });
+                              setEditErrors(prev => ({
+                                ...prev,
+                                [f.name]: !value.trim() ? "Campo obligatorio" : ""
+                              }));
+                            }}
+                            sx={{
+                              ...whiteInputStyle,
+                              "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                minWidth: "200px",
+                                width: "100%",
+                                minHeight: "3rem"
+                              },
+                            }}
+                            className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                          />
+
                           )
                         ) : f.type === "date" ? (formatDateDDMMYYYY(ext[f.name])
-                        ) : f.name === "extinguisher_agente_item_code" ? (agentItems.find((i) => i.value === ext[f.name])?.label || "-"
-                        ) : f.name === "extinguisher_type" ? (extinguisherTypes.find((i) => i.value === ext[f.name])?.value || "-"
-                        ) : (ext[f.name] || "-")
+                        ) : f.name === "extinguisher_agente_item_code" ? (agentItems.find((i) => i.value === ext[f.name])?.label || ""
+                        ) : f.name === "extinguisher_type" ? (extinguisherTypes.find((i) => i.value === ext[f.name])?.value || ""
+                        ) : f.name === "extinguisher_capacity_unit" ? (extinguisherCapacityUnits.find((i) => i.value === ext[f.name])?.label || ""
+                        ) : (ext[f.name] || "")
                         }
                       </td>
                     ))}
@@ -184,9 +271,13 @@ const ExtinguisherTable = ({
                           <>
                             <button
                               onClick={handleSaveEdit}
-                              className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm">
+                              disabled={Object.values(editErrors).some(err => err) || !isUnique}
+                              className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) || !isUnique ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
+                            >
                               <SaveIcon className="mr-1" fontSize="small" /> Guardar
                             </button>
+
+
                             <button
                               onClick={handleCancelEdit}
                               className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm">

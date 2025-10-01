@@ -31,14 +31,14 @@ export function useExtinguishers() {
   ];
 
   const extinguisherCapacityUnits = [
-    { value: "Kg", label: "Kg" },
-    { value: "L", label: "L" }
+    { value: "Kg", label: "Kilogramos" },
+    { value: "L", label: "Litros" }
   ];
 
   // Campos para formularios y búsqueda
 const fields = [
-  { name: "extinguisher_serial_number", placeholder: "Número de Serie", width: 250 },
-  { name: "extinguisher_brand", placeholder: "Marca", width: 250 },
+  { name: "extinguisher_serial_number", placeholder: "Número de Serie", width: 250,  restriction: "unique", type: "text" },
+  { name: "extinguisher_brand", placeholder: "Marca", width: 250, type: "text" },
   { name: "extinguisher_agente_item_code", placeholder: "Agente", type: "select", width: 250, options: agentItems },
   { name: "extinguisher_type", placeholder: "Tipo", type: "select", width: 250, options: extinguisherTypes },
   { name: "extinguisher_capacity_value", placeholder: "Capacidad", type: "number", width: 250 },
