@@ -6,6 +6,12 @@ import Tooltip from '@mui/material/Tooltip';
 
 const navConfig = [
   {
+    label: 'Inicio',
+    sub: [
+      { label: 'Página Principal', path: '/' }
+    ],
+  },
+  {
     label: 'Veh\u00EDculos',
     sub: [
       { label: 'Gestión de Veh\u00EDculos', path: '/vehiculos' },

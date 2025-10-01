@@ -25,8 +25,7 @@ const Footer = () => {
                 <span className="text-xl font-bold">NovaComp</span>
               </div>
             </div>
-            <p className="text-gray-400 mb-4 text-sm">
-              Creemos en el impacto humano detrás de cada tecnología implementada, lo que nos convierte en un verdadero acelerador de capacidades. No solo ofrecemos soluciones tecnológicas, sino que también construimos el futuro digital del continente con el poder del talento humano especializado y la innovación constante.   </p>
+        
             <div className="flex space-x-4">
               <a 
                 href="https://www.facebook.com/NovacompCR" 
