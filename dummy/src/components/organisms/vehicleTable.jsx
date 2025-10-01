@@ -45,11 +45,9 @@ const VehicleTable = ({
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-
-      {/* Contenedor principal: buscador + botón */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
 
-        {/* Columna 1: buscador */}
+        {/* Buscador */}
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           <Seeker
             inputName="search"
@@ -65,7 +63,7 @@ const VehicleTable = ({
           />
         </Box>
 
-        {/* Columna 2: botón Agregar/Cancelar */}
+        {/* Botón Agregar/Cancelar */}
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
           <div className="p-4 h-fit">
             <Button
@@ -80,7 +78,6 @@ const VehicleTable = ({
       {/* Contenido de la tabla */}
       {/* Contenido tabla */}
 {isLoading ? (
-  // 🌀 Solo loader cuando está cargando
   <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
     <CircularProgress size={24} />
     <span>Cargando vehículos...</span>
@@ -127,13 +124,31 @@ const VehicleTable = ({
                 <td key={f.name} className="py-4 px-6 text-center">
                   {isEditing ? (
                     <input
-                      type="text"
-                      value={editData[f.name] || ""}
-                      onChange={(e) =>
-                        setEditData({ ...editData, [f.name]: e.target.value })
-                      }
-                      className="border rounded px-2 py-1 w-full"
-                    />
+                    type={
+                      [
+                        "vehicle_frecuency_of_change",
+                        "vehicle_last_km_maintenance",
+                        "vehicle_initial_km",
+                        "vehicle_year",
+                      ].includes(f.name)
+                        ? "number"
+                        : "text"
+                    }
+                    value={editData[f.name] || ""}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const newValue = [
+                        "vehicle_frecuency_of_change",
+                        "vehicle_last_km_maintenance",
+                        "vehicle_initial_km",
+                        "vehicle_year",
+                      ].includes(f.name)
+                        ? value === "" ? "" : Number(value)
+                        : value;
+                      setEditData({ ...editData, [f.name]: newValue });
+                    }}
+                    className="min-w-[150px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                  />
                   ) : (
                     vehicle[f.name]
                   )}
@@ -144,15 +159,15 @@ const VehicleTable = ({
                   <>
                     <button
                       onClick={handleSaveEdit}
-                      className="text-green-600 hover:text-green-800"
+                      className="bg-blue-600 text-white rounded-lg px-3 py-2 hover:bg-blue-700 transition flex items-center text-sm"
                     >
-                      <SaveIcon />
+                      <SaveIcon className="mr-1" fontSize="small" /> Guardar
                     </button>
                     <button
                       onClick={handleCancelEdit}
-                      className="text-red-600 hover:text-red-800"
+                      className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
                     >
-                      <CancelIcon />
+                      <CancelIcon className="mr-1" fontSize="small" /> Cancelar
                     </button>
                   </>
                 ) : (
