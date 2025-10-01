@@ -12,6 +12,7 @@ function InputValidatedDate({
     onError,
     restriction = "",
     formValues = {},
+    className,
     sx
 }) {
     const [error, setError] = useState("");
@@ -70,6 +71,7 @@ function InputValidatedDate({
             helperText={error || " "}
             InputLabelProps={{ shrink: true }}
             inputProps={{ min: minDate, max: maxDate }}
+            className={className}
             sx={{
                 "& .MuiOutlinedInput-root": {
                     backgroundColor: "#ffffff",

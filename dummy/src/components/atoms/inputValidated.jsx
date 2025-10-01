@@ -15,7 +15,8 @@ import { ValidateValues } from "../../utils/validateValues";
   sx,
   restriction = "",
   formValues,
-  options = []
+  options = [],
+  className,
 }) {
   const [error, setError] = useState("");
 
@@ -67,6 +68,7 @@ import { ValidateValues } from "../../utils/validateValues";
       inputProps={type === "number" ? { min: 0 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
+      className={className}
       sx={{
         // ✅ MEJORAR RESPONSIVIDAD
         width: '100%',

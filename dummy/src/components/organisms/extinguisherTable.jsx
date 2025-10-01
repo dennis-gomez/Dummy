@@ -3,6 +3,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModalElimination from "../molecules/modalElimination";
+import InputValidatedDate from "../atoms/inputValidatedDate";
+import InputValidated from "../atoms/inputValidated";
 import Seeker from "../molecules/seeker";
 import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
@@ -132,17 +134,41 @@ const ExtinguisherTable = ({
                             </select>
 
                           ) : f.type === "textarea" ? (
-                            <textarea
+                            <InputValidated
+                              name={f.name}
+                              type={"textarea"}
                               value={editData[f.name] || ""}
                               onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              className="min-w-[200px] w-full max-w-[780px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-
+                              placeholder={f.placeholder}
+                              restriction={f.restriction}
+                              className="min-w-[200px] w-full max-w-[780px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              required={f.required ?? true}
+                              sx={{ width: '200px', maxWidth: '280px' }}
+                              />
+                              
+                          ) : f.type === "date" ? (
+                            <InputValidatedDate
+                              name={f.name}
+                              value={editData[f.name] ? editData[f.name].split("T")[0] : ""}
+                              onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
+                              placeholder={f.placeholder}
+                              restriction={f.restriction}
+                              required={f.required ?? true}
+                              className={"min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"}
+                              sx={{ width: '200px', maxWidth: '280px' }}
+                            />
                           ) : (
-                            <input
+                            <InputValidated
                               type={f.type || "text"}
+                              name={f.name}
                               value={editData[f.name] || ""}
                               onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center" />
+                              placeholder={f.placeholder}
+                              restriction={f.restriction}
+                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                              required={f.required ?? true} 
+                              sx={{ width: '200px', maxWidth: '280px' }}
+                              />
                           )
                         ) : f.type === "date" ? (formatDateDDMMYYYY(ext[f.name])
                         ) : f.name === "extinguisher_agente_item_code" ? (agentItems.find((i) => i.value === ext[f.name])?.label || "-"
