@@ -9,6 +9,7 @@ import LegalBookRecordPage from './components/pages/legalBookRecordPage'
 import OHPersonnelPage from './components/pages/ohPersonnelPage'
 import LegalBookPage from './components/pages/legalBookPage'
 import HomePage from './components/pages/homePage'
+import LandingPage from './components/pages/landingPage'
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <main className="flex-grow">
           <Routes>
              <Route path="/" element={<HomePage />} />
+               <Route path="/landingPage" element={<LandingPage />} />
             <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
             <Route path="/salud/botiquin" element={<MedicKitPage />} />
             <Route path="/vehiculos" element={<VehiclePage />} />
