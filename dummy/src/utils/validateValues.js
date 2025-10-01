@@ -13,9 +13,9 @@ export function ValidateValues({
     required &&
     (typeof value === "string"
       ? value.trim() === ""
-      : value === null || value === undefined)
+      : value === null || value === undefined) && type !== "file"
   ) {
-    err = "Este campo es obligatorio";
+    err = "Obligatorio*";
   }
 
   if (
@@ -74,13 +74,21 @@ export function ValidateValues({
       }
     }
   } else if (type === "file") {
-    if (value) {
-      // value aquí es un File (cuando viene de input[type=file])
+  if (value) {
+    if (value instanceof File) {
+      // Caso: es un objeto File del input
       if (value.type !== "application/pdf") {
         err = "Solo se permiten archivos PDF";
       }
+    } else if (typeof value === "string") {
+      // Caso: ya viene en base64
+      if (!value.startsWith("JVBERi0xL")) {
+        err = "El archivo no es un PDF válido";
+      }
     }
   }
+}
+
 
   // Validaciones personalizadas
   if (!err && validations.length > 0) {

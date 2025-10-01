@@ -189,6 +189,8 @@ const handleEditBook = async (cod_book, formData) => {
         reader.onload = () => resolve(reader.result.split(",")[1]); // solo contenido
         reader.onerror = error => reject(error);
       });
+    }else{
+      delete formData.book_file;
     }
 
     const dataToSend = {

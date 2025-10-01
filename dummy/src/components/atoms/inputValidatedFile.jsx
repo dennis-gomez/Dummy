@@ -124,15 +124,15 @@ function InputValidatedFile({
             },
 
             "&.Mui-error .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#d32f2f",
+              borderColor: "#2563eb",
             },
 
             "&.Mui-error:hover .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#d32f2f",
+              borderColor: "#2563eb",
             },
 
             "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
-              borderColor: "#d32f2f",
+              borderColor: "#2563eb",
             },
           },
 
@@ -143,13 +143,13 @@ function InputValidatedFile({
               color: "#2563eb",
             },
             "&.Mui-error": {
-              color: "#d32f2f",
+              color: "#2563eb",
             },
           },
 
           "& .MuiFormHelperText-root": {
             "&.Mui-error": {
-              color: "#d32f2f",
+              color: "#2563eb",
             },
           },
 
