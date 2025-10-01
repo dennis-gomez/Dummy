@@ -10,7 +10,7 @@ import OHPersonnelPage from './components/pages/ohPersonnelPage'
 import LegalBookPage from './components/pages/legalBookPage'
 import HomePage from './components/pages/homePage'
 import LandingPage from './components/pages/landingPage'
-
+import ErrorPage from './components/pages/errorPage'
 function App() {
   return (
     <BrowserRouter>
@@ -24,6 +24,7 @@ function App() {
           <Routes>
              <Route path="/" element={<HomePage />} />
                <Route path="/landingPage" element={<LandingPage />} />
+                <Route path="/errorPage" element={<ErrorPage />} />
             <Route path="/catalogo/gestionar" element={<MiscellaneousPage />} />
             <Route path="/salud/botiquin" element={<MedicKitPage />} />
             <Route path="/vehiculos" element={<VehiclePage />} />
