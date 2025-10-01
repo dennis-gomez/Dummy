@@ -119,7 +119,7 @@ const ExtinguisherTable = ({
                             <select
                               value={editData[f.name] || ""}
                               onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
+                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center">
                               {(f.name === "extinguisher_agente_item_code" ? agentItems
                                 : f.name === "extinguisher_type" ? extinguisherTypes
                                   : f.name === "extinguisher_capacity_unit" ? extinguisherCapacityUnits
@@ -135,14 +135,14 @@ const ExtinguisherTable = ({
                             <textarea
                               value={editData[f.name] || ""}
                               onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              className="min-w-[100px] w-full max-w-[780px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                              className="min-w-[200px] w-full max-w-[780px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
                           ) : (
                             <input
                               type={f.type || "text"}
                               value={editData[f.name] || ""}
                               onChange={(e) => setEditData({ ...editData, [f.name]: e.target.value })}
-                              className="min-w-[100px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center" />
+                              className="min-w-[200px] w-full max-w-[280px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-center" />
                           )
                         ) : f.type === "date" ? (formatDateDDMMYYYY(ext[f.name])
                         ) : f.name === "extinguisher_agente_item_code" ? (agentItems.find((i) => i.value === ext[f.name])?.label || "-"
