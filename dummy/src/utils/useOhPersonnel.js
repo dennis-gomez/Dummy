@@ -22,7 +22,7 @@ export function useOH_Personnel() {
     const fields = [
         { name: "oh_personnel_UID", placeholder: "Cédula", width: 125 },
         { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 300 },
-        { name: "oh_personnel_brigade_item_code", name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 325, options: brigadeItems, },
+        { name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 325, options: brigadeItems, },
     ];
 
     const [searchText, setSearchText] = useState("");
@@ -44,7 +44,10 @@ export function useOH_Personnel() {
     // 🔹 Obtener items por defecto (puedes pasar valores reales de servicio/categoría)
     const fetchItems = async () => {
         try {
-            const items = await getItems(5, 1);
+            const items = await getItems(
+                Number(import.meta.env.VITE_OH_SERVICE_CODE),
+                Number(import.meta.env.VITE_OH_BRIGADE_CODE)
+            );
             setBrigadeItems(
                 items.map((i) => ({
                     name: i.cod_item,
