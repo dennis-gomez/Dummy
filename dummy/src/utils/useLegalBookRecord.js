@@ -5,7 +5,8 @@ import {
     updateRecord, 
     deleteRecord, 
     getRecordByFeature, 
-    getBooksNames 
+    getBooksNames, 
+    getActiveBooksNames
 } from "../services/legalBookRecordService";
 import Swal from "sweetalert2";
 
@@ -24,42 +25,29 @@ export const useLegalBookRecord = () => {
     const [legalBookRecords, setLegalBookRecords] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [formSelectedBook, setFormSelectedBook] = useState(""); // select de libros legales
+
+    const [booksItems, setBooksItems] = useState([]); //opciones de libros legales
+    const [formattedBook, setFormattedBook] = useState([])
+
     const [error, setError] = useState(null); //manejo de errores
 
     const fields = [
-        { 
-            name: "lb_record_requested_by", 
-            placeholder: "Solicitado", 
-            validations: [
-                (value) =>
-                    value && value.length > 100 ? "El solicitante del libro debe tener máximo 100 caracteres." : null,
-            ],
-            width: 250
-        },
-        { 
-            name: "lb_record_delivered_to", 
-            placeholder: "Entregado",
-            validations: [
-                (value) =>
-                    value && value.length > 100 ? "El responsable de recepción del libro debe tener máximo 100 caracteres." : null,
-            ], 
-            width: 250
-        },
-        { 
-            name: "lb_record_date", 
-            placeholder: "Fecha de registro", 
-            type: "date", 
-            width: 250, 
-            restriction: "cantAfterToday"
-        },
-        { 
-            name: "lb_record_observation", 
-            placeholder: "Observaciones", 
-            type: "textarea",
-            width: 783, 
-            required: false,
-        },
+        { name: "cod_book_catalog", placeholder: "Libro legal", required: true, type: "select", options: booksItems, width: 780},
+        { name: "lb_record_requested_by", placeholder: "Solicitado", required: true, validations: [ (value) =>value && value.length > 100 ? "El solicitante del libro debe tener máximo 100 caracteres." : null,], width: 250 },
+        { name: "lb_record_delivered_to", placeholder: "Entregado", required: true, validations: [ (value) => value && value.length > 100 ? "El responsable de recepción del libro debe tener máximo 100 caracteres." : null,], width: 250},
+        { name: "lb_record_date", placeholder: "Fecha de registro", required: true, type: "date", width: 250, restriction: "cantAfterToday" },
+        { name: "lb_record_observation", placeholder: "Observaciones", required: true, type: "textarea", width: 783, required: false,},
+    ];
+
+    // Campos para editar
+    const editFields = [
+        { name: "cod_book_catalog", placeholder: "Libro legal", type: "select", options: formattedBook, width: 200, required: true },
+        { name: "lb_record_requested_by", placeholder: "Solicitado", required: true, width: 220 },
+        { name: "lb_record_delivered_to", placeholder: "Entregado", required: true, width: 220 },
+        { name: "lb_record_return_by", placeholder: "Regresado por", required: false, width: 220 },  
+        { name: "lb_record_date", placeholder: "Fecha de registro", type: "date", restriction: "cantAfterToday", required: true, width: 150 },
+        { name: "lb_record_return_date", placeholder: "Fecha de retorno", type: "date", restriction: "cantAfterToday", required: false, width: 150 },
+        { name: "lb_record_observation", placeholder: "Observaciones", type: "textarea", required: false, width: 200 },
     ];
 
     // Estados para filtrado
@@ -104,15 +92,8 @@ export const useLegalBookRecord = () => {
     // Agregar registro
     const handleSubmit = async (formData) => {
         try {
-
-            if (!formSelectedBook) {
-                setError("Debe seleccionar un libro legal antes de agregar el registro.");
-                return;
-            }
-
             const dataToSend = {
                 ...formData,
-                cod_book_catalog: formSelectedBook,
                 lb_record_return_date: null, 
                 lb_record_return_by: null,
             };
@@ -123,7 +104,6 @@ export const useLegalBookRecord = () => {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
                 await fetchRecords();
                 setShowForm(false);
-                setFormSelectedBook("");
                 setError(null);
             }
 
@@ -173,8 +153,28 @@ export const useLegalBookRecord = () => {
         fetchRecords();
         const loadBooks = async () => {
             try {
-                const response = await getBooksNames();
-                setBooks(response.data);
+                const activeBooks = await getActiveBooksNames();
+                const allBooks = await getBooksNames();
+
+                setBooksItems(
+                    activeBooks.data.map((i) => ({
+                        name: i.cod_book,
+                        placeholder: i.book_name,
+                        value: i.cod_book,
+                        label: i.book_name
+                    }))
+                );
+
+                setBooks(allBooks.data);
+
+                setFormattedBook(
+                    allBooks.data.map((i) => ({
+                        name: i.cod_book,
+                        placeholder: i.book_name,
+                        value: i.cod_book,
+                        label: i.book_name
+                    }))
+                )
                 setError(null);
             } catch (error) {
                 const message = error.response?.data?.message || "Error al obtener los catálogos de libros.";
@@ -187,14 +187,14 @@ export const useLegalBookRecord = () => {
 
     return {
         books,
+        booksItems,
         legalBookRecords,
-        fields, 
+        fields,
+        editFields, 
         searchText,
         setSearchText,
         selectedBook,
         setSelectedBook,
-        formSelectedBook, 
-        setFormSelectedBook,
         searchField,
         setSearchField,
         showForm,
