@@ -15,11 +15,8 @@ const navConfig = [
     label: 'Veh\u00EDculos',
     sub: [
       { label: 'Gestión de Veh\u00EDculos', path: '/vehiculos' },
-      { label: 'Marcas y Modelos', path: '/vehiculos/marcas-modelos' },
-      { label: 'Tipos de Vehículos', path: '/vehiculos/tipos' },
-      { label: 'Combustibles', path: '/vehiculos/combustibles' },
-      { label: 'Colores', path: '/vehiculos/colores' },
-      { label: 'Ubicaciones', path: '/vehiculos/ubicaciones' },
+      { label: 'Registro de Combustible', path: '/vehiculos/registro-combustible' },
+      { label: 'Mantenimiento de Veh\u00EDculos', path: '/vehiculos/tipos' },
     ],
   },
   {
