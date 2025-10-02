@@ -6,12 +6,6 @@ import Tooltip from '@mui/material/Tooltip';
 
 const navConfig = [
   {
-    label: 'Inicio',
-    sub: [
-      { label: 'Página Principal', path: '/' }
-    ],
-  },
-  {
     label: 'Veh\u00EDculos',
     sub: [
       { label: 'Gestión de Veh\u00EDculos', path: '/vehiculos' },
@@ -65,6 +59,14 @@ const navConfig = [
     ],
   },
   {
+    label: 'Garantías',
+    sub: [
+      { label: 'Gestión de Garantías', path: '/garantias/gestion' },
+      { label: 'Cuadro de Resumen', path: '/garantias/resumen' },
+    ],
+  },
+  
+  {
     label: 'TI',
     sub: [
       { label: 'Usuarios', path: '/ti/usuarios' },
@@ -99,11 +101,13 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <img
-              src="/src/assets/logo.png"   
-              alt="FleetManager Logo"
-              className="h-10 w-10 mr-3 rounded" 
-            />
+           <img
+  src="/src/assets/logo.png"   
+  alt="FleetManager Logo"
+  className="h-10 w-10 rounded cursor-pointer hover:opacity-80 transition"
+  onClick={() => handleNavigate("/")}   // 👈 Navegar al inicio
+/>
+
             <div className="hidden md:flex items-center">
               <span className="text-xl font-bold"></span>
             </div>
