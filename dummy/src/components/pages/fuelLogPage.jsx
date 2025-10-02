@@ -31,7 +31,7 @@ function FuelLogPage() {
         <>
             <div style={{ padding: 24 }}>
             <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-                Gestión de Registros de Combustibles
+                Registro de Combustibles
             </h1>
 
             {/* Formulario dinámico */}
