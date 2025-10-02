@@ -13,34 +13,34 @@ export function useOH_Personnel() {
     const [personnel, setPersonnel] = useState([]);
     const [error, setError] = useState(null);
     const [showForm, setShowForm] = useState(false);
- const [loading, setLoading] = useState(true); 
+    const [loading, setLoading] = useState(true);
 
     // 🔹 opciones dinámicas de items (brigadas)
     const [brigadeItems, setBrigadeItems] = useState([]);
 
     // Campos que puedes usar en formularios y búsquedas
     const fields = [
-        { name: "oh_personnel_UID", placeholder: "Cédula", width: 125 },
-        { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 300 },
-        { name: "oh_personnel_brigade_item_code", placeholder: "Brigada",  type: "select",  width: 325, options: brigadeItems, },
+        { name: "oh_personnel_UID", placeholder: "Cédula", width: 150, restriction: "unique", type: "text", validations: [(value) => value && value.length > 12 ? "Máximo 12 caracteres." : null,] },
+        { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 290, validations: [(value) => value && value.length > 50 ? "Máximo 50 caracteres." : null,], type: "text" },
+        { name: "oh_personnel_brigade_item_code", placeholder: "Brigada", type: "select", width: 330, options: brigadeItems, },
     ];
 
     const [searchText, setSearchText] = useState("");
     const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
 
     const fetchData = async () => {
-    try {
-        setLoading(true);
-        const data = await getAllPersonnel();
-        setPersonnel(data);
-    } catch (err) {
-        const message = err.response?.data?.message || "Error al obtener personal.";
-        setError(message);
-        ModalAlert("Error", message, "error");
-    } finally {
-        setLoading(false);
-    }
-};
+        try {
+            setLoading(true);
+            const data = await getAllPersonnel();
+            setPersonnel(data);
+        } catch (err) {
+            const message = err.response?.data?.message || "Error al obtener personal.";
+            setError(message);
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
+        }
+    };
     // 🔹 Obtener items por defecto (puedes pasar valores reales de servicio/categoría)
     const fetchItems = async () => {
         try {

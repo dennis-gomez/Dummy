@@ -68,6 +68,7 @@ if (restriction === "unique" && value !== "") {
     ) {
       err = "No se permiten valores negativos";
     }
+    
   } else if (type === "date") {
     if (value !== "" && value !== "Sin fecha") {
       const inputDate = new Date(value);
@@ -81,6 +82,16 @@ if (restriction === "unique" && value !== "") {
         // Restricción: no permitir fechas futuras
         if (restriction === "cantAfterToday" && inputDate > today) {
           err = "No se permiten fechas futuras";
+        } else if (restriction === "cantBeforeToday" && inputDate < today) {
+          err = "No se permiten fechas pasadas";
+        } else if (restriction === "betweenManufactureAndToday") {
+          const manufactureDateStr = allValues["extinguisher_manufacturing_date"];
+          if (manufactureDateStr) {
+            const manufactureDate = new Date(manufactureDateStr);
+            if (inputDate < manufactureDate || inputDate > today) {
+              err = "La fecha debe estar entre la fecha de fabricación y hoy";
+            }
+          }
         }
 
         // Restricción por defecto: solo permitir fechas futuras
