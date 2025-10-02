@@ -11,14 +11,15 @@ import LegalBookPage from './components/pages/legalBookPage'
 import HomePage from './components/pages/homePage'
 import LandingPage from './components/pages/landingPage'
 import ErrorPage from './components/pages/errorPage'
+import ScrollToTop from './components/organisms/scrollToTop';
+
 function App() {
   return (
     <BrowserRouter>
       {/* Contenedor padre */}
+         <ScrollToTop />
       <div className="flex flex-col min-h-screen">
-        
         <Navbar />
-
         {/* Main ocupa todo el espacio libre */}
         <main className="flex-grow">
           <Routes>
