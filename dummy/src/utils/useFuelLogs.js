@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { 
-    getAllFuelLogs, 
     getActiveFuelLogs, 
     findFuelLogs, 
     addFuelLog, 
