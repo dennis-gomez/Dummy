@@ -216,6 +216,7 @@ function LegalBookRecordTable({
                               placeholder={field.placeholder}
                               options={field.options || []}
                               restriction={field.restriction}
+                              validations={field.validations}
                               required={field.required}
                               onChange={(e) =>
                                 setEditData({ ...editData, [field.name]: e.target.value })

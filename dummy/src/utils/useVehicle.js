@@ -12,7 +12,7 @@ export const useVehicles = () => {
         { name: "vehicle_brand", placeholder: "Marca", validations: [(value) => value && value.length > 20 ? "La marca debe tener máximo 20 caracteres." : null,], width: 250 },
         { name: "vehicle_model", placeholder: "Modelo", validations: [(value) => value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,], width: 250 },
         { name: "vehicle_year", placeholder: "A\u00F1o", type: "number", restriction: "vehicle_year_restrictions", width: 250 },
-        { name: "vehicle_plate", placeholder: "Placa", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 250 },
+        { name: "vehicle_plate", placeholder: "Placa", restriction: "unique", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 250, },
         { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number", restriction: "vehicle_initial_km_restrictions", 
             validations: [
                 (value, allValues) => {
@@ -54,7 +54,7 @@ export const useVehicles = () => {
         { name: "vehicle_brand", placeholder: "Marca", validations: [(value) => value && value.length > 20 ? "La marca debe tener máximo 20 caracteres." : null,], width: 150 },
         { name: "vehicle_model", placeholder: "Modelo", validations: [(value) => value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,], width: 150 },
         { name: "vehicle_year", placeholder: "A\u00F1o", type: "number", restriction: "vehicle_year_restrictions", width: 100 },
-        { name: "vehicle_plate", placeholder: "Placa", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 130 },
+        { name: "vehicle_plate", placeholder: "Placa", restriction: "unique", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 130 },
         { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number", restriction: "vehicle_initial_km_restrictions", width: 175, required: false},
         { name: "vehicle_last_km_maintenance", placeholder: "\u00DAltimo mantenimiento", type: "number", restriction: "vehicle_last_km_maintenance_restrictions", width: 205, required: false},
         { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia de cambio", type: "number", width: 205 },

@@ -91,3 +91,38 @@ export const updateVehicle = async ( formData ) => {
         throw error;
     }  
 };
+
+// Obtener nombre de vehiculos activos
+export const getActiveVehiclesNames = async () => {
+    try {
+        const response = await axios.get(
+            API_URL + "active/names",
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Obtener nombre de vehiculos activos e inactivos
+export const getAllVehiclesNames = async () => {
+    try {
+        const response = await axios.get(
+            API_URL + "all/names",
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        console.log("respuesta", response);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};

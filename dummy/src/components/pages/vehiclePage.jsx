@@ -44,7 +44,11 @@ function VehiclePage() {
                             Agregar vehículo
                         </h3>
                     </div> 
-                    <Form fields={fields} onSubmit={handleSubmit} titleBtn={"Guardar vehículo"} />
+                    <Form 
+                    fields={fields} 
+                    onSubmit={handleSubmit}
+                    values={vehicles.map(v => ({ value: v.vehicle_plate, id: v.cod_vehicle }))}
+                    titleBtn={"Guardar vehículo"} />
                 </Box>
             )}
 

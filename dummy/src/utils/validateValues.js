@@ -116,14 +116,12 @@ if (restriction === "unique" && value !== "") {
   }
 }
 
-
   // Validaciones personalizadas
   if (!err && validations.length > 0) {
     for (const validate of validations) {
       const vErr = validate(value, allValues);
       if (vErr) {
         err = vErr;
-        console.log(err);
         break;
       }
     }
