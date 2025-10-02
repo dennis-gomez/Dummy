@@ -5,6 +5,7 @@ import Navbar from './components/organisms/navbar'
 import Footer from './components/organisms/footer'
 import MedicKitPage from './components/pages/medicKitPage'
 import VehiclePage from './components/pages/vehiclePage'
+import FuelLogPage from './components/pages/fuelLogPage'
 import LegalBookRecordPage from './components/pages/legalBookRecordPage'
 import OHPersonnelPage from './components/pages/ohPersonnelPage'
 import LegalBookPage from './components/pages/legalBookPage'
@@ -33,9 +34,9 @@ function App() {
             <Route path="/libros/registros" element={<LegalBookRecordPage />} />
             <Route path="/salud/brigadas" element={<OHPersonnelPage />} />
             <Route path="/libros/mantenimiento" element={<LegalBookPage />} />
+            <Route path="/vehiculos/registro-combustible" element={<FuelLogPage />} />
           </Routes>
         </main>
-
         <Footer />
       </div>
     </BrowserRouter>
