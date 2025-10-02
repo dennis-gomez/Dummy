@@ -56,6 +56,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
                       setFormData({ ...formData, [name]: value });
                     }}
                     restriction={field.restriction || ""}
+                    onError={handleError}
                     validations={field.validations}
                     sx={{
                       "& .MuiInputBase-root": { backgroundColor: "#fff !important" },

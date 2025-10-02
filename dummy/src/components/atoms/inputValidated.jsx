@@ -23,22 +23,31 @@ function InputValidated({
 }) {
   const [error, setError] = useState("");
 
-  const runValidation = (val) => {
-    const err = ValidateValues({
-      type,
-      value: val,
-      required,
-      validations,
-      restriction,
-      allValues: formValues,
-      uniqueValues,
-      currentId,
-      setIsUnique,
-    });
-    setError(err);
-    if (onError) onError(name, err);
+const runValidation = (val) => {
+  const err = ValidateValues({
+    type,
+    value: val,
+    required,
+    validations,
+    restriction,
+    allValues: formValues,
+    uniqueValues,
+    currentId,
+    setIsUnique,
+  });
+
+  setError((prev) => {
+    if (prev === err) return prev; // 👈 no cambies si es igual
     return err;
-  };
+  });
+
+  if (onError) {
+    onError(name, err);
+  }
+
+  return err;
+};
+
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -46,9 +55,11 @@ function InputValidated({
     if (onChange) onChange(e);
   };
 
-  useEffect(() => {
-    runValidation(value);
-  }, [value]);
+useEffect(() => {
+  runValidation(value);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [value]); //solo se dispara cuando cambia el valor
+
 
   return (
     <TextField

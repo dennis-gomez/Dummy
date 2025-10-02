@@ -48,7 +48,7 @@ const ExtinguisherPage = () => {
           <Form
             fields={fields}
             onSubmit={handleAdd}
-            values={extinguishers.map(e => ({ value: e.extinguisher_serial_number, id: e.cod_extinguisher }))} // <-- pasamos los valores existentes
+            values={extinguishers.map(e => ({ value: e.extinguisher_serial_number, id: e.cod_extinguisher }))}
             titleBtn={"Guardar Extintor"}
           />
         </Box>
