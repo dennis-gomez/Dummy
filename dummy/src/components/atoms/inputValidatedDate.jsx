@@ -17,20 +17,31 @@ function InputValidatedDate({
 }) {
     const [error, setError] = useState("");
 
-    const runValidation = (val) => {
-        const normalizedVal = val || "";
-        const err = ValidateValues({
-            type: "date",
-            value: normalizedVal,
-            required,
-            validations,
-            restriction,
-            allValues: formValues
-        });
-        setError(err);
-        if (onError) onError(name, err);
-        return err;
-    };
+const runValidation = (val) => {
+  const normalizedVal = val || "";
+  const err = ValidateValues({
+    type: "date",
+    value: normalizedVal,
+    required,
+    validations,
+    restriction,
+    allValues: formValues,
+  });
+
+  // Solo actualiza si cambió
+  setError((prev) => {
+    if (prev === err) return prev;
+    return err;
+  });
+
+  if (onError) {
+    // Solo llama si cambió
+    if (error !== err) onError(name, err);
+  }
+
+  return err;
+};
+
 
     const handleChange = (e) => {
         const val = e.target.value;
@@ -38,9 +49,11 @@ function InputValidatedDate({
         if (onChange) onChange(e);
     };
 
-    useEffect(() => {
-        runValidation(value);
-    }, [value, formValues]);
+useEffect(() => {
+  runValidation(value);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [value]);
+
 
     // Calcular minDate y maxDate según la restricción
     const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
@@ -72,6 +85,7 @@ function InputValidatedDate({
             InputLabelProps={{ shrink: true }}
             inputProps={{ min: minDate, max: maxDate }}
             className={className}
+            restriction={restriction}
             sx={{
                 "& .MuiOutlinedInput-root": {
                     backgroundColor: "#ffffff",

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import {
   getAllExtinguishers,
+  getFindExtinguishers,
   deleteExtinguisher,
   addExtinguisher,
   updateExtinguisher,
-  getFindExtinguishers,
 } from "../services/extinguisherService";
 import { getItems } from "../services/itemService";
 import ModalAlert from "../components/molecules/modalAlert";
@@ -36,20 +36,20 @@ export function useExtinguishers() {
   ];
 
   // Campos para formularios y búsqueda
-const fields = [
-  { name: "extinguisher_serial_number", placeholder: "Número de Serie", width: 250,  restriction: "unique", type: "text" },
-  { name: "extinguisher_brand", placeholder: "Marca", width: 250, type: "text" },
-  { name: "extinguisher_agente_item_code", placeholder: "Agente", type: "select", width: 250, options: agentItems },
-  { name: "extinguisher_type", placeholder: "Tipo", type: "select", width: 250, options: extinguisherTypes },
-  { name: "extinguisher_capacity_value", placeholder: "Capacidad", type: "number", width: 250 },
-  { name: "extinguisher_capacity_unit", placeholder: "Unidad", type: "select", width: 250, options: extinguisherCapacityUnits },
+  const fields = [
+    { name: "extinguisher_serial_number", placeholder: "Número de Serie", width: 250, restriction: "unique", type: "text", validations: [(value) => value && value.length > 30 ? "Máximo 30 caracteres." : null,] },
+    { name: "extinguisher_brand", placeholder: "Marca", width: 250, type: "text", validations: [(value) => value && value.length > 30 ? "Máximo 30 caracteres." : null,] },
+    { name: "extinguisher_agente_item_code", placeholder: "Agente", type: "select", width: 250, options: agentItems },
+    { name: "extinguisher_type", placeholder: "Tipo", type: "select", width: 250, options: extinguisherTypes },
+    { name: "extinguisher_capacity_value", placeholder: "Capacidad", type: "number", width: 250 },
+    { name: "extinguisher_capacity_unit", placeholder: "Unidad", type: "select", width: 250, options: extinguisherCapacityUnits },
 
-  { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", width: 250, restriction: "cantAfterToday" },
-  { name: "extinguisher_last_maintenance_date", placeholder: "Último Mantenimiento", type: "date", width: 250, restriction: "cantAfterToday" },
-  { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", width: 250, restriction: "cantBeforeToday" },
-  { name: "extinguisher_location", placeholder: "Ubicación", type: "textarea", width: 780 },
-  { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 780, required: false },
-];
+    { name: "extinguisher_manufacturing_date", placeholder: "Fecha de Fabricación", type: "date", width: 250, restriction: "cantAfterToday" },
+    { name: "extinguisher_last_maintenance_date", placeholder: "Último Mantenimiento", type: "date", width: 250, restriction: "cantAfterToday" },
+    { name: "extinguisher_next_date_inspection", placeholder: "Próxima Inspección", type: "date", width: 250, restriction: "cantBeforeToday" },
+    { name: "extinguisher_location", placeholder: "Ubicación", type: "textarea", width: 780 },
+    { name: "extinguisher_observations", placeholder: "Observaciones", type: "textarea", width: 780, required: false },
+  ];
 
 
   const [searchText, setSearchText] = useState("");
