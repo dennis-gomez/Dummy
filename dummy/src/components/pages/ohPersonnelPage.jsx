@@ -43,7 +43,11 @@ const OHPersonnelPage = () => {
           <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
             Agregar Personal
           </h3>
-          <Form fields={fields} onSubmit={handleAdd} titleBtn={"Guardar Personal"} />
+          <Form 
+          fields={fields} 
+          onSubmit={handleAdd} 
+          values={personnel.map(p => ({ value: p.oh_personnel_UID, id: p.cod_personnel }))}
+          titleBtn={"Guardar Personal"} />
         </Box>
       )}
 
