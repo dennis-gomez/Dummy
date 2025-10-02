@@ -66,7 +66,6 @@ const LandingPage = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          // Features
           const fIndex = featureRefs.current.indexOf(entry.target);
           if (entry.isIntersecting && fIndex !== -1) {
             setVisibleFeatures((prev) => {
@@ -75,8 +74,6 @@ const LandingPage = () => {
               return newVisible;
             });
           }
-
-          // Stats
           const sIndex = statsRefs.current.indexOf(entry.target);
           if (entry.isIntersecting && sIndex !== -1) {
             setVisibleStats((prev) => {
@@ -99,7 +96,6 @@ const LandingPage = () => {
     };
   }, []);
 
-  // Scroll handler para "Ver Más"
   const handleVerMasClick = () => {
     if (featuresSectionRef.current) {
       featuresSectionRef.current.scrollIntoView({ behavior: "smooth" });
@@ -111,7 +107,7 @@ const LandingPage = () => {
       {/* Primera sección */}
       <section className="min-h-screen p-8 flex flex-col items-center justify-center">
         <div className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Texto con transición */}
+          {/* Texto */}
           <div
             className={`text-white space-y-6 max-w-xl transform transition-all duration-1000 ${
               showMain
@@ -137,7 +133,7 @@ const LandingPage = () => {
             </button>
           </div>
 
-          {/* Imagen con transición */}
+          {/* Imagen con realce */}
           <div
             className={`flex justify-center transform transition-all duration-1000 delay-300 ${
               showMain
@@ -145,11 +141,18 @@ const LandingPage = () => {
                 : "opacity-0 translate-x-10"
             }`}
           >
-            <img
-              src="/pic01.png"
-              alt="Illustration"
-              className="w-full max-w-md"
-            />
+           {/* Imagen con realce */}
+<div
+  className={`flex justify-center transform transition-all duration-1000 delay-300 ${
+    showMain ? "opacity-100 translate-x-0" : "opacity-0 translate-x-10"
+  }`}
+>
+  <img
+    src="/pic01.png"
+    alt="Illustration"
+    className="w-full max-w-md rounded-3xl transition-transform duration-500 hover:scale-105"
+  />
+</div>
           </div>
         </div>
       </section>
@@ -201,7 +204,7 @@ const LandingPage = () => {
             <div
               key={label}
               ref={(el) => (statsRefs.current[index] = el)}
-              className={`rounded-xl p-8  bg-white shadow-md transform transition-all duration-700 hover:scale-105 hover:shadow-xl cursor-default ${
+              className={`rounded-xl p-8 bg-white shadow-md transform transition-all duration-700 hover:scale-105 hover:shadow-xl cursor-default ${
                 visibleStats[index]
                   ? "opacity-100 scale-100 translate-y-0"
                   : "opacity-0 scale-90 translate-y-10"
