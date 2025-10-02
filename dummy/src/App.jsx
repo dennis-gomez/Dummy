@@ -13,6 +13,8 @@ import HomePage from './components/pages/homePage'
 import LandingPage from './components/pages/landingPage'
 import ErrorPage from './components/pages/errorPage'
 import ScrollToTop from './components/organisms/scrollToTop';
+import ResumePage from './components/pages/resumePage'
+import GuaranteePage from './components/pages/guaranteePage'
 
 function App() {
   return (
@@ -35,6 +37,8 @@ function App() {
             <Route path="/salud/brigadas" element={<OHPersonnelPage />} />
             <Route path="/libros/mantenimiento" element={<LegalBookPage />} />
             <Route path="/vehiculos/registro-combustible" element={<FuelLogPage />} />
+            <Route path="/garantias/resumen" element={<ResumePage />} />
+            <Route path="/garantias/gestion" element={<GuaranteePage />} />
           </Routes>
         </main>
         <Footer />

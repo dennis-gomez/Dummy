@@ -10,7 +10,7 @@ import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedFile from "../atoms/inputValidatedFile";
 
-const DinamicTable = ({
+const DynamicTable = ({
   fields,
   data,
   singularName = "Item",
@@ -24,14 +24,15 @@ const DinamicTable = ({
   typesOfBooks = [],
   STATUS_OPTIONS,
   openPDF,
-  tableName
+  tableName,
+  onStartEdit,           // nuevo prop
+  setEditingIdProp       // prop opcional para controlar editingId desde el padre
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
-  const [editErrors, setEditErrors] = useState({}); // Estado de errores
+  const [editErrors, setEditErrors] = useState({});
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
-
   const [isUnique, setIsUnique] = useState(true);
 
   const whiteInputStyle = {
@@ -51,24 +52,32 @@ const DinamicTable = ({
   };
 
   const handleEditClick = (row) => {
+    // aviso al padre para cerrar formulario de creación
+    if (onStartEdit) onStartEdit();
+
     const statusOption = STATUS_OPTIONS.find(opt => opt.value === row.book_status);
-    setEditingId(row[fields[0].name]);
+    const id = row[fields[0].name];
+    setEditingId(id);
+    if (setEditingIdProp) setEditingIdProp(id); // levantar al padre si es necesario
+
     setEditData({
       ...row,
       book_status: statusOption ? statusOption.value : "",
     });
-    setEditErrors({}); // Limpiar errores al iniciar edición
+    setEditErrors({});
   };
 
   const handleSaveEdit = async () => {
     await onEdit(editData[fields[0].name], editData);
     setEditingId(null);
+    if (setEditingIdProp) setEditingIdProp(null);
     setEditData({});
     setEditErrors({});
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
+    if (setEditingIdProp) setEditingIdProp(null);
     setEditData({});
     setEditErrors({});
   };
@@ -106,7 +115,10 @@ const DinamicTable = ({
           <div className="p-4 h-fit">
             <Button
               text={isCreatingBook ? "Cancelar" : `Agregar ${singularName}`}
-              onClick={() => setIsCreatingBook(!isCreatingBook)}
+              onClick={() => {
+                if (!isCreatingBook && editingId) handleCancelEdit(); // cancela edición si se abre formulario
+                setIsCreatingBook(!isCreatingBook);
+              }}
               className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
             />
           </div>
@@ -157,10 +169,7 @@ const DinamicTable = ({
                               onChange={e => {
                                 const value = e.target.value;
                                 setEditData({ ...editData, [f.name]: value });
-                                setEditErrors(prev => ({
-                                  ...prev,
-                                  [f.name]: !value.trim() ? "Campo obligatorio" : ""
-                                }));
+                                setEditErrors(prev => ({ ...prev, [f.name]: !value.trim() ? "Campo obligatorio" : "" }));
                               }}
                               multiline
                               rows={2}
@@ -181,10 +190,7 @@ const DinamicTable = ({
                               onChange={e => {
                                 const value = Number(e.target.value);
                                 setEditData({ ...editData, [f.name]: value });
-                                setEditErrors(prev => ({
-                                  ...prev,
-                                  [f.name]: !value ? "Seleccione un tipo" : ""
-                                }));
+                                setEditErrors(prev => ({ ...prev, [f.name]: !value ? "Seleccione un tipo" : "" }));
                               }}
                               options={typesOfBooks.map(type => ({ value: type.cod_item, label: type.item_name }))}
                               sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
@@ -197,10 +203,7 @@ const DinamicTable = ({
                               onChange={e => {
                                 const value = Number(e.target.value);
                                 setEditData({ ...editData, [f.name]: value });
-                                setEditErrors(prev => ({
-                                  ...prev,
-                                  [f.name]: value === undefined ? "Seleccione un estado" : ""
-                                }));
+                                setEditErrors(prev => ({ ...prev, [f.name]: value === undefined ? "Seleccione un estado" : "" }));
                               }}
                               options={STATUS_OPTIONS}
                               sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
@@ -211,19 +214,13 @@ const DinamicTable = ({
                               type={f.type || "text"}
                               value={editData[f.name] || ""}
                               setIsUnique={setIsUnique}
-                              restriction= {f.restriction}
+                              restriction={f.restriction}
                               currentId={editingId}
-                              uniqueValues={data.map((ex) => ({
-                              id: ex.cod_book,
-                              value: ex[f.name],
-                            }))} 
+                              uniqueValues={data.map(ex => ({ id: ex.cod_book, value: ex[f.name] }))}
                               onChange={e => {
                                 const value = e.target.value;
                                 setEditData({ ...editData, [f.name]: value });
-                                setEditErrors(prev => ({
-                                  ...prev,
-                                  [f.name]: !value.trim() ? "Campo obligatorio" : ""
-                                }));
+                                setEditErrors(prev => ({ ...prev, [f.name]: !value.trim() ? "Campo obligatorio" : "" }));
                               }}
                               sx={whiteInputStyle}
                             />
@@ -245,13 +242,18 @@ const DinamicTable = ({
                           onChange={e => {
                             const file = e.target.files[0];
                             setEditData({ ...editData, book_file: file });
-                            setEditErrors(prev => ({
-                              ...prev,
-                              book_file: file && file.type !== "application/pdf" ? "Debe ser PDF" : ""
-                            }));
+                            setEditErrors(prev => ({ ...prev, book_file: file && file.type !== "application/pdf" ? "Debe ser PDF" : "" }));
                           }}
                           accept=".pdf"
                           placeholder="Archivo PDF"
+                          fullWidth
+                          sx={{
+                            "& .MuiOutlinedInput-root": {
+                              width: "20rem",
+                              minHeight: "3rem",
+                              boxSizing: "border-box"
+                            }
+                          }}
                         />
                       ) : (
                         row.book_file && (
@@ -310,4 +312,4 @@ const DinamicTable = ({
   );
 };
 
-export default DinamicTable;
+export default DynamicTable;

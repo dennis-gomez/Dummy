@@ -9,21 +9,6 @@ export const getBooks = async () => {
             headers: { "Content-Type": "application/json" },
         });
 
-        // Aquí mostramos los datos de los libros en consola
-        // response.data debería ser un array de objetos
-        console.log("getBooks data:", response.data);
-
-        // Opcional: mostrar info de cada archivo
-        response.data.forEach(book => {
-            console.log(`Libro: ${book.book_name} (${book.cod_book})`);
-            console.log(`- Tiene archivo: ${!!book.book_file}`);
-            if (book.book_file) {
-                console.log(`- Tamaño (bytes): ${book.book_file.length}`);
-                // si querés base64 parcial para ver que no está vacío
-                console.log(`- Base64 parcial: ${book.book_file.slice(0, 50)}...`);
-            }
-        });
-
         return response;
     } catch (error) {
         throw error;

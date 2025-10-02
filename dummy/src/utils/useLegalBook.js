@@ -180,7 +180,7 @@ const handleEditBook = async (cod_book, formData) => {
   try {
     console.log("Datos del formulario antes de enviar:", formData);
 
-    // Convertimos el archivo a Base64 si se seleccionó uno nuevo
+    // Convertimos el archivo a Base64 si es un File
     let fileBase64 = null;
     if (formData.book_file instanceof File) {
       fileBase64 = await new Promise((resolve, reject) => {
@@ -189,13 +189,13 @@ const handleEditBook = async (cod_book, formData) => {
         reader.onload = () => resolve(reader.result.split(",")[1]); // solo contenido
         reader.onerror = error => reject(error);
       });
-    }else{
+    } else {
       delete formData.book_file;
     }
 
     const dataToSend = {
       ...formData,
-      book_file: fileBase64 || formData.book_file, // si no hay nuevo archivo, se mantiene el existente
+      book_file: fileBase64 || formData.book_file,
       book_service_code: Number(import.meta.env.VITE_BOOK_SERVICE_CODE),
       book_category_code: Number(import.meta.env.VITE_BOOK_CATEGORY_CODE),
     };
@@ -207,26 +207,33 @@ const handleEditBook = async (cod_book, formData) => {
     if (resp.status === 200) {
       ModalAlert("Éxito", "Libro editado exitosamente.", "success");
       fetchBooks();
+      setError(null);
     }
   } catch (err) {
-    setError("Error al editar libro");
-    ModalAlert("Error", "Error al editar libro", "error");
+    // Captura el mensaje real desde el backend
+    const message = err.response?.data?.message || "Error al editar libro.";
+    ModalAlert("Error", message, "error");
+    setError(message);
   }
 };
 
 
-  const handleDeleteBook = async (cod_book) => {
-    try {
-      const resp = await deleteBook(cod_book);
-      if (resp.status === 200) {
-        ModalAlert("Éxito", resp.data.message || "Libro eliminado.", "success");
-        fetchBooks();
-      }
-    } catch (err) {
-      setError("Error al eliminar libro");
-      ModalAlert("Error", "Error al eliminar libro", "error");
+ const handleDeleteBook = async (cod_book) => {
+  try {
+    const resp = await deleteBook(cod_book);
+    if (resp.status === 200) {
+      ModalAlert("Éxito", resp.data.message || "Libro eliminado.", "success");
+      fetchBooks();
+      setError(null);
     }
-  };
+  } catch (err) {
+    // Captura el mensaje real desde el backend
+    const message = err.response?.data?.message || "Error al eliminar libro.";
+    ModalAlert("Error", message, "error");
+    setError(message);
+  }
+};
+
 
   useEffect(() => {
     fetchBooks();
