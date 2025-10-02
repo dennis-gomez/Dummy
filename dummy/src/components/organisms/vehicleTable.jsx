@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -25,15 +25,18 @@ const VehicleTable = ({
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
-  const [fieldErrors, setFieldErrors] = useState({});
+
+  const [editErrors, setEditErrors] = useState({}); // Estado de errores
+  const [isUnique, setIsUnique] = useState(true);
 
   const handleEditClick = (vehicle) => {
     setEditingId(vehicle.cod_vehicle);
     setEditData({ ...vehicle });
+    setEditErrors({});
   };
 
   const handleSaveEdit = async () => {
-    const hasError = Object.values(fieldErrors).some((err) => err);
+    const hasError = Object.values(editErrors).some((err) => err);
     if (hasError) {
       Swal.fire("Error", "Hay campos vacíos.", "error");
       return;
@@ -44,15 +47,22 @@ const VehicleTable = ({
     if (isSaved) {
       setEditingId(null);
       setEditData({});
-      setFieldErrors({});
+      setEditErrors({});
     }
   };
 
   const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
-    setFieldErrors({});
+    setEditErrors({});
   };
+
+    const handleError = useCallback((name, errorMessage) => {
+  setEditErrors((prev) => {
+    if (prev[name] === errorMessage) return prev;
+    return { ...prev, [name]: errorMessage };
+  });
+}, []);
 
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
@@ -105,15 +115,11 @@ const VehicleTable = ({
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
                 {fields.map((f) => (
                   <th
-                    key={f.name}
-                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
-                  >
+                    key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
                     {f.placeholder}
                   </th>
                 ))}
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">
-                  Acciones
-                </th>
+                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32"> Acciones </th>
               </tr>
             </thead>
             <tbody>
@@ -121,15 +127,14 @@ const VehicleTable = ({
                 const isEditing = editingId === vehicle.cod_vehicle;
                 return (
                   <tr
-                    key={vehicle.cod_vehicle}
-                    className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
-                  >
+                    key={vehicle.cod_vehicle} className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}>
                     <td className="py-4 px-6 text-center">{index + 1}</td>
 
-                    {fields.map((f) => {
+                    {fields.map((f) => { 
                       const fieldEdit = editFields.find((ef) => ef.name === f.name);
                       return (
                         <td key={f.name} className="py-4 px-6 text-center">
+
                           {isEditing && fieldEdit ? (
                             <InputValidated
                               name={fieldEdit.name}
@@ -138,13 +143,17 @@ const VehicleTable = ({
                               placeholder={fieldEdit.placeholder}
                               options={fieldEdit.options || []}
                               restriction={fieldEdit.restriction}
-                              validations={fieldEdit.validations} 
+                              validations={fieldEdit.validations}
                               required={fieldEdit.required}
+                              onError={handleError}
+                              setIsUnique={setIsUnique}
+                              currentId={editingId}
+                              uniqueValues={vehicles.map((vh) => ({
+                                id: vh.cod_vehicle,
+                                value: vh[fieldEdit.name],
+                              }))}
                               onChange={(e) =>
                                 setEditData({ ...editData, [fieldEdit.name]: e.target.value })
-                              }
-                              onError={(name, errorMsg) =>
-                                setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
                               }
                               sx={{
                                 "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
@@ -163,20 +172,14 @@ const VehicleTable = ({
                         <>
                           <button
                             onClick={handleSaveEdit}
-                            disabled={Object.values(fieldErrors).some((err) => err)}
-                            className={`rounded-lg px-3 py-2 transition flex items-center text-sm ${
-                              Object.values(fieldErrors).some((err) => err)
-                                ? "bg-gray-400 cursor-not-allowed text-white"
-                                : "bg-blue-600 hover:bg-blue-700 text-white"
-                            }`}
-                          >
+                            disabled={Object.values(editErrors).some(err => err) || !isUnique}
+                            className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) || !isUnique ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
                             <SaveIcon className="mr-1" fontSize="small" /> Guardar
                           </button>
                           <button
                             onClick={handleCancelEdit}
-                            className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
-                          >
-                            <CancelIcon className="mr-1" fontSize="small" /> Cancelar
+                            className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm">
+                            <CancelIcon className="mr-1" fontSize="small" />Cancelar
                           </button>
                         </>
                       ) : (
