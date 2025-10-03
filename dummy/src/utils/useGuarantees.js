@@ -29,12 +29,6 @@ export const useGuarantees = () => {
     { label: "Efectivo", value: "Efectivo" },
   ];
 
-  const NOTIFIED_OPTIONS = [
-    { label: "sin notificar", value: 0 },
-    { label: "Notificado", value: 1 },
-    { label: "leido", value: 2 }
-  ];
-
   const [guaranteesList, setGuaranteesList] = useState([]);
   const [selectedGuaranteeId, setSelectedGuaranteeId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -43,6 +37,7 @@ export const useGuarantees = () => {
   const [applicantItems, setApplicantItems] = useState([]);
   const [alertItems, setAlertItems] = useState([]);
   const [resumeData, setResumeData] = useState([]);
+  const [isCreatingGuarantee, setIsCreatingGuarantee] = useState(false);
 
   const resumeFields = [
     { name: "entidad", label: "Entidad" },
@@ -58,30 +53,28 @@ export const useGuarantees = () => {
   const fields = [
     { name: "cod_guarantee", label: "Código", type: "text", editable: false, grid: 4, width: 200 },
 
-    { name: "guarantee_entity_service_code", label: "Servicio Entidad", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_entity_category_code", label: "Categoría Entidad", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_entity_item_code", label: "Entidad", type: "select", editable: true, grid: 4, width: 250, options: entityItems },
+{ name: "guarantee_entity_item_code", placeholder: "Entidad", label: "Entidad", type: "select", editable: true, grid: 4, width: 150, options: entityItems },
+{ name: "guarantee_applicant_item_code", placeholder: "Solicitante", label: "Solicitante", type: "select", editable: true, grid: 4, width: 150, options: applicantItems },
+{ name: "guarantee_number", placeholder: "Número", label: "Número", type: "text", editable: true, grid: 4, width: 225 },
+{ name: "guarantee_type", placeholder: "Tipo", label: "Tipo", type: "text", editable: true, grid: 4, width: 225 },
 
-    { name: "guarantee_applicant_service_code", label: "Servicio Solicitante", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_applicant_category_code", label: "Categoría Solicitante", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_applicant_item_code", label: "Solicitante", type: "select", editable: true, grid: 4, width: 250, options: applicantItems },
 
-    { name: "guarantee_number", label: "Número", type: "text", editable: true, grid: 4, width: 250 },
-    { name: "guarantee_type", label: "Tipo", type: "text", editable: true, grid: 4, width: 250 },
-    { name: "guarantee_beneficiary", label: "Beneficiario", type: "textarea", editable: true, grid: 4, width: '49rem' },
-    { name: "guarantee_currency", label: "Moneda", type: "select", editable: true, grid: 4, width: 150, options: CURRENCY_OPTIONS },
-    { name: "guarantee_amount", label: "Monto", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_issue_date", label: "Fecha de Emisión", type: "date", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_expiration_date", label: "Fecha de Expiración", type: "date", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_category", label: "Categoría", type: "select", editable: true, grid: 4, width: 200, options: CATEGORY_OPTIONS },
-    { name: "guarantee_status", label: "Estado", type: "select", editable: true, grid: 4, width: 200, options: STATUS_OPTIONS },
-    { name: "guarantee_procedure", label: "Procedimiento", type: "text", editable: true, grid: 4, width: 250 },
-    { name: "guarantee_email_contact_alert", label: "Email de alerta", type: "text", editable: true, grid: 4, width: 250 },
-    { name: "guarantee_is_notified", label: "Notificado", type: "select", editable: true, grid: 2, width: 100, options: NOTIFIED_OPTIONS },
 
-    { name: "guarantee_alert_time_service_code", label: "Servicio Alerta", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_alert_time_category_code", label: "Categoría Alerta", type: "number", editable: true, grid: 4, width: 200 },
-    { name: "guarantee_alert_time_item_code", label: "Alerta", type: "select", editable: true, grid: 4, width: 250, options: alertItems },
+{ name: "guarantee_issue_date", placeholder: "Fecha de Emisión", label: "Fecha de Emisión", type: "date", editable: true, restriction:"cantAfterToday", grid: 4, width: 150 },
+{ name: "guarantee_expiration_date", placeholder: "Fecha de Expiración", label: "Fecha de Expiración", type: "date", editable: true, grid: 4, width: 150 },
+{ name: "guarantee_procedure", placeholder: "Procedimiento", label: "Procedimiento", type: "text", editable: true, grid: 4, width: 225 },
+{ name: "guarantee_email_contact_alert", placeholder: "Email de alerta", label: "Email de alerta", type: "email", editable: true, grid: 4, width: 225 },
+
+
+{ name: "guarantee_currency", placeholder: "Moneda", label: "Moneda", type: "select", editable: true, grid: 4, width: 150, options: CURRENCY_OPTIONS },
+{ name: "guarantee_alert_time_item_code", placeholder: "Alerta", label: "Alerta", type: "select", editable: true, grid: 4, width: 150, options: alertItems },
+{ name: "guarantee_amount", placeholder: "Monto", label: "Monto", type: "number", editable: true, grid: 4, width: 225 },
+{ name: "guarantee_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 225, options: STATUS_OPTIONS },
+{ name: "guarantee_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 225, options: CATEGORY_OPTIONS },
+
+
+{ name: "guarantee_beneficiary", placeholder: "Beneficiario", label: "Beneficiario", type: "textarea", editable: true, grid: 4, width: 800 }, // 49rem ≈ 784px
+ 
   ];
 
   // Campos buscables dinámicos
@@ -160,16 +153,35 @@ const handleSearchGuarantees = async (feature, text) => {
   }
 };
 
+const handleAddGuarantee = async (formData) => {
+  const { cod_guarantee, guarantee_status, ...rest } = formData; // quitamos si acaso vienen del formulario
+  const dataToSend = {
+    ...rest,
 
-  const handleAddGuarantee = async (formData) => {
-    try {
-      const resp = await addGuarantee(formData);
-      ModalAlert("Éxito", "Garantía agregada exitosamente", "success");
-      fetchGuarantees();
-    } catch (err) {
-      ModalAlert("Error", "Error al agregar garantía", "error");
-    }
+    // Garantías → todos los service_code = 7
+    guarantee_entity_service_code: Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+    guarantee_applicant_service_code: Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+    guarantee_alert_time_service_code: Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+
+    // Categorías
+    guarantee_entity_category_code: Number(import.meta.env.VITE_GUARANTEE_ENTITY_CATEGORY_CODE),
+    guarantee_applicant_category_code: Number(import.meta.env.VITE_GUARANTEE_APPLICANT_CATEGORY_CODE),
+    guarantee_alert_time_category_code: Number(import.meta.env.VITE_GUARANTEE_ALERT_TIME_CATEGORY_CODE),
+
+    // Flags
+    guarantee_is_notified: 0,
   };
+
+  try {
+    await addGuarantee(dataToSend);
+    ModalAlert("Éxito", "Garantía agregada exitosamente", "success");
+    setIsCreatingGuarantee(false);
+    fetchGuarantees();
+  } catch (err) {
+    ModalAlert("Error", "Error al agregar garantía", "error");
+  }
+};
+
 
   const handleEditGuarantee = async (id, formData) => {
     try {
@@ -233,9 +245,10 @@ const handleSearchGuarantees = async (feature, text) => {
     CURRENCY_OPTIONS,
     CATEGORY_OPTIONS,
     resumeFields,
-    NOTIFIED_OPTIONS,
     entityOptionsForSelect,
     applicantOptionsForSelect,
-    alertOptionsForSelect
+    alertOptionsForSelect,
+    isCreatingGuarantee,
+    setIsCreatingGuarantee,
   };
 };

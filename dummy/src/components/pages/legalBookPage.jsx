@@ -45,12 +45,13 @@ function LegalBookPage() {
           </h3>
 
           <Form
-            fields={fields.slice(1)}
-            formTitle="Agregar Nuevo Libro Legal"
-            onSubmit={handleAddBook}
-            titleBtn="Guardar Libro Legal"
-            values={booksList.map(e => ({ value: e.book_code, id: e.cod_book }))}
-          />
+  fields={fields.filter(f => f.name !== "cod_book" && f.name !== "book_status")} // ocultamos código y estado
+  formTitle="Agregar Nuevo Libro Legal"
+  onSubmit={handleAddBook}
+  titleBtn="Guardar Libro Legal"
+  values={booksList.map(e => ({ value: e.book_code, id: e.cod_book }))}
+/>
+
         </Box>
       )}
 

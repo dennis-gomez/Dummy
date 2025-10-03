@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
+import { useEffect } from 'react';
 
 const navConfig = [
   {
@@ -92,6 +93,12 @@ function Navbar() {
     setMobileSubMenu(null);
     setDesktopSubMenu({ anchor: null, index: null });
   };
+
+   useEffect(() => {
+   console.log("Navbar mounted");
+}, []);
+
+
 
   return (
     <nav className="bg-blue-600 text-white shadow-lg">
