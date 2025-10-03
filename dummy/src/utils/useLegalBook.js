@@ -28,9 +28,9 @@ export const useBooks = () => {
   const fields = [
 
     { name: "cod_book", label: "Código", type: "text", placeholder: "Código", editable: false, grid: 4,   width: 250 },
-    { name: "book_items_code", label: "Tipo de libro", type: "select", placeholder: "Tipo de libro", options: bookOptions, editable: false, grid: 4,   width: 250, },
+    { name: "book_items_code", label: "Tipo de libro", type: "select", placeholder: "Tipo de libro", options: bookOptions, editable: false, grid: 4,   width: 384, },
         { name: "book_status", label: "Estado", type: "select", placeholder: "Estado", options: STATUS_OPTIONS, editable: true, grid: 4,   width: 250 },
-    { name: "book_code", label: "Código de libro", type: "text", placeholder: "Código de libro", editable: true, grid: 4,   width: 250, restriction: "unique"},
+    { name: "book_code", label: "Código de libro", type: "text", placeholder: "Código de libro", editable: true, grid: 4,   width: 384, restriction: "unique"},
     { name: "book_name", label: "Nombre", type: "textarea", placeholder: "Nombre", editable: true, grid: 4,   width: '49rem' },
     { name: "book_location", label: "Ubicación", type: "textarea", placeholder: "Ubicación", editable: true, grid: 4 ,  width: '49rem'},
     { name: "book_file", label: "Archivo", type: "file", required:false, placeholder: "Archivo", editable: true, grid: 4 ,  width: '49rem', accept: ".pdf"},

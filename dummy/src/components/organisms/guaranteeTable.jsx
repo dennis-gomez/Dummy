@@ -8,6 +8,7 @@ import ModalElimination from "../molecules/modalElimination";
 import Seeker from "../molecules/seeker";
 import { Box } from "@mui/material";
 import { ValidateValues } from "../../utils/validateValues";
+import Button from "../atoms/button";
 
 const GuaranteesTable = ({
   data,
@@ -15,13 +16,14 @@ const GuaranteesTable = ({
   STATUS_OPTIONS,
   CURRENCY_OPTIONS,
   CATEGORY_OPTIONS,
-  NOTIFIED_OPTIONS,
   singularName = "Garantía",
   isLoading,
   onEdit,
   onDelete,
   handleSearch,
   searchFields,
+  isCreatingGuarantee,
+  setIsCreatingGuarantee,
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
@@ -49,6 +51,7 @@ const GuaranteesTable = ({
     setEditingId(row.cod_guarantee);
     setEditData({ ...row });
     setEditErrors({});
+    setIsCreatingGuarantee(false); // cierra formulario si se abre edición
   };
 
   const handleCancelEdit = () => {
@@ -90,7 +93,6 @@ const GuaranteesTable = ({
       if (field.name === "guarantee_status") options = STATUS_OPTIONS;
       else if (field.name === "guarantee_currency") options = CURRENCY_OPTIONS;
       else if (field.name === "guarantee_category") options = CATEGORY_OPTIONS;
-      else if (field.name === "guarantee_is_notified") options = NOTIFIED_OPTIONS;
       else options = field.options || [];
 
       return (
@@ -152,22 +154,36 @@ const GuaranteesTable = ({
   );
 
   return (
-    <div className="p-6 mt-6 bg-white rounded-2xl">
-      {/* Seeker */}
-      <Box className="mb-4">
-        <Seeker
-          inputName="searchText"
-          inputPlaceholder={`Buscar ${singularName}`}
-          btnName="Buscar"
-          selectName="Filtrar por"
-          fields={searchFields}
-          valueText={searchText}
-          valueFeature={searchFeature}
-          onChangeText={setSearchText}
-          onChangeFeature={setSearchFeature}
-          onClick={() => handleSearch(searchFeature, searchText)}
-        />
-      </Box>
+   <div className="dinamic-table-container p-6 mt-6 bg-white rounded-2xl">
+      {/* Buscador + botón agregar */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
+        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
+          <Seeker
+            inputName="searchText"
+            inputPlaceholder={`Buscar ${singularName}`}
+            btnName="Buscar"
+            selectName="Filtrar por"
+            fields={searchFields}
+            valueText={searchText}
+            valueFeature={searchFeature}
+            onChangeText={setSearchText}
+            onChangeFeature={setSearchFeature}
+            onClick={() => handleSearch(searchFeature, searchText)}
+          />
+        </Box>
+        <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
+          <div className="p-4 h-fit">
+            <Button
+              text={isCreatingGuarantee ? "Cancelar" : `Agregar ${singularName}`}
+              onClick={() => {
+                if (!isCreatingGuarantee && editingId) handleCancelEdit(); // cancela edición si se abre formulario
+                setIsCreatingGuarantee(!isCreatingGuarantee);
+              }}
+              className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            />
+          </div>
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
