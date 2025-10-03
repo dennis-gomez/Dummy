@@ -30,7 +30,7 @@ export const useFuelLogs = () => {
         { name: "fuel_log_route", placeholder: "Ruta", required: true, type: "textarea", width: 780},
         { name: "fuel_log_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 382, restriction: "cantAfterToday" },
         { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 382},
-        { name: "fuel_log_quantity", placeholder: "Cantidad", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250},
+        { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250},
         { name: "fuel_log_price", placeholder: "Precio", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250},
         { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250}, 
     ];
@@ -38,16 +38,16 @@ export const useFuelLogs = () => {
     const editFields = [
         { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 200},
         { name: "fuel_log_route", placeholder: "Ruta", required: true, type: "textarea", width: 200},
-        { name: "fuel_log_date", placeholder: "Fecha de registro", required: true, type: "date", width: 150, restriction: "cantAfterToday" },
-        { name: "fuel_log_type_item_code", placeholder: "Tipo de combustible", required: true, type: "select", options: fuelTypes, width: 200},
-        { name: "fuel_log_final_km", placeholder: "Kilometraje recorrido", type: "number", restriction: "vehicle_initial_km_restrictions", width: 200},
+        { name: "fuel_log_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 150, restriction: "cantAfterToday" },
+        { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 200},
+        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", restriction: "vehicle_initial_km_restrictions", width: 200},
         { name: "fuel_log_price", placeholder: "Precio", type: "number", restriction: "vehicle_initial_km_restrictions", width: 150},
-        { name: "fuel_log_quantity", placeholder: "Cantidad", type: "number", restriction: "vehicle_initial_km_restrictions", width: 150},
+        { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", restriction: "vehicle_initial_km_restrictions", width: 150},
     ];
 
     // Estados para filtrado
     const [selectedVehicle, setSelectedVehicle] = useState("Todos"); //vehiculos a filtrar 
-    const [searchField, setSearchField] = useState(fields[0]?.name || ""); //caracteristicas del vehiculo a filtrar
+    const [searchField, setSearchField] = useState(fields[1]?.name || ""); //caracteristicas del vehiculo a filtrar
     const [searchText, setSearchText] = useState(""); //texto a buscar
 
     // Cargado de tipos de combustible
@@ -168,23 +168,19 @@ export const useFuelLogs = () => {
                 setActiveVehiclesItems(
                     activeVehicles.data.map((i) => ({
                         name: i.cod_vehicle,
-                        placeholder: i.vehicle_brand + " - " + i.vehicle_plate,
+                        placeholder: i.vehicle_brand + "  -  " + i.vehicle_plate,
                         value: i.cod_vehicle,
-                        label: i.vehicle_brand + " - " + i.vehicle_plate,
+                        label: i.vehicle_brand + "  -  " + i.vehicle_plate,
                     }))
                 );
                 setAllVehiclesItems(
                     allVehicles.data.map((i) => ({
                         name: i.cod_vehicle,
-                        placeholder: i.vehicle_brand + " - " + i.vehicle_plate,
+                        placeholder: i.vehicle_brand + "  -  " + i.vehicle_plate,
                         value: i.cod_vehicle,
-                        label: i.vehicle_brand + " - " + i.vehicle_plate,
+                        label: i.vehicle_brand + "  -  " + i.vehicle_plate,
                     }))
                 )
-
-                console.log("SI", activeVehicles);
-                console.log("NO", allVehicles.data);
-
                 setError(null);
             } catch (error) {
                 const message = error.response?.data?.message || "Error al obtener los catálogos de libros.";
