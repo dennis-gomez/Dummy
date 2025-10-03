@@ -1,17 +1,19 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuIcon from '@mui/icons-material/Menu';
-import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import { useEffect } from 'react';
+import Badge from '@mui/material/Badge';
+import MailIcon from '@mui/icons-material/Mail';
+import NotificationDrawer from './drawer';
+import { fetchAllNotifications, getAllNotifications } from '../../services/useNotifications';
 
 const navConfig = [
   {
-    label: 'Veh\u00EDculos',
+    label: 'Vehículos',
     sub: [
-      { label: 'Gestión de Veh\u00EDculos', path: '/vehiculos' },
+      { label: 'Gestión de Vehículos', path: '/vehiculos' },
       { label: 'Registro de Combustible', path: '/vehiculos/registro-combustible' },
-      { label: 'Mantenimiento de Veh\u00EDculos', path: '/vehiculos/tipos' },
+      { label: 'Mantenimiento de Vehículos', path: '/vehiculos/tipos' },
     ],
   },
   {
@@ -28,9 +30,9 @@ const navConfig = [
     sub: [
       { label: 'Proveedores', path: '/suministros/proveedores' },
       { label: 'Servicios', path: '/suministros/servicios' },
-      { label: 'Categor\u00EDas', path: '/suministros/categorias' },
+      { label: 'Categorías', path: '/suministros/categorias' },
       { label: 'Items', path: '/suministros/items' },
-      { label: '\u00D3rdenes de Compra', path: '/suministros/ordenes' },
+      { label: 'Órdenes de Compra', path: '/suministros/ordenes' },
     ],
   },
   {
@@ -64,7 +66,6 @@ const navConfig = [
       { label: 'Cuadro de Resumen', path: '/garantias/resumen' },
     ],
   },
-  
   {
     label: 'TI',
     sub: [
@@ -74,18 +75,17 @@ const navConfig = [
     ],
   },
   {
-    label: 'Cat\u00E1logo',
-    sub: [{ label: 'Gestionar Cat\u00E1logo', path: '/catalogo/gestionar' }]
-  }
+    label: 'Catálogo',
+    sub: [{ label: 'Gestionar Catálogo', path: '/catalogo/gestionar' }],
+  },
 ];
 
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-function Navbar() {
+export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileSubMenu, setMobileSubMenu] = React.useState(null);
   const [desktopSubMenu, setDesktopSubMenu] = React.useState({ anchor: null, index: null });
-  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [notifications, setNotifications] = React.useState([]);
   const navigate = useNavigate();
 
   const handleNavigate = (path) => {
@@ -95,30 +95,30 @@ function Navbar() {
     setDesktopSubMenu({ anchor: null, index: null });
   };
 
-   useEffect(() => {
-   console.log("Navbar mounted");
-}, []);
+  // Traer notificaciones cada 15 segundos
+  React.useEffect(() => {
+    const fetchNotifications = async () => {
+      await fetchAllNotifications(); // actualiza backend
+      setNotifications(getAllNotifications()); // actualiza estado
+    };
 
-
+    fetchNotifications(); // fetch inicial
+    const interval = setInterval(fetchNotifications, 15000); // cada 15s
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <nav className="bg-blue-600 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* Logo */}
           <div className="flex items-center">
-           <img
-  src="/src/assets/logo.png"   
-  alt="FleetManager Logo"
-  className="h-10 w-10 rounded cursor-pointer hover:opacity-80 transition"
-  onClick={() => handleNavigate("/")}   // 👈 Navegar al inicio
-/>
-
-            <div className="hidden md:flex items-center">
-              <span className="text-xl font-bold"></span>
-            </div>
-            <div className="md:hidden flex items-center">
-              <span className="text-xl font-bold"></span>
-            </div>
+            <img
+              src="/src/assets/logo.png"
+              alt="FleetManager Logo"
+              className="h-10 w-10 rounded cursor-pointer hover:opacity-80 transition"
+              onClick={() => handleNavigate("/")}
+            />
 
             {/* Menú desktop */}
             <div className="hidden md:flex ml-10 space-x-4">
@@ -152,30 +152,18 @@ function Navbar() {
             </div>
           </div>
 
-          {/* Menú usuario */}
+          {/* Notificaciones */}
           <div className="flex items-center">
-            <Tooltip title="Open settings">
-              <button
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="p-1 rounded-full hover:bg-blue-700 transition-colors"
+            <Tooltip title="Notificaciones">
+              <Badge
+                badgeContent={notifications.length}
+                color="primary"
+                onClick={() => setDrawerOpen(true)}
+                className="cursor-pointer"
               >
-                <Avatar className="w-8 h-8" alt="User" src="/static/images/avatar/2.jpg" />
-              </button>
+                <MailIcon color="action" />
+              </Badge>
             </Tooltip>
-
-            {userMenuOpen && (
-              <div className="absolute right-4 top-16 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-50">
-                {settings.map((setting) => (
-                  <button
-                    key={setting}
-                    onClick={() => setUserMenuOpen(false)}
-                    className="block w-full text-left px-4 py-2 text-sm hover:bg-blue-100 transition-colors"
-                  >
-                    {setting}
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
 
           {/* Botón menú móvil */}
@@ -195,7 +183,6 @@ function Navbar() {
         <div className="md:hidden bg-blue-700">
           <div className="px-2 pt-2 pb-3 space-y-1">
             {mobileSubMenu === null ? (
-              // Menú principal móvil
               navConfig.map((page, idx) => (
                 <button
                   key={page.label}
@@ -206,7 +193,6 @@ function Navbar() {
                 </button>
               ))
             ) : (
-              // Submenú móvil
               <>
                 <button
                   onClick={() => setMobileSubMenu(null)}
@@ -228,8 +214,14 @@ function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Drawer de notificaciones */}
+      <NotificationDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        notifications={notifications}
+        setNotifications={setNotifications}
+      />
     </nav>
   );
 }
-
-export default Navbar;
