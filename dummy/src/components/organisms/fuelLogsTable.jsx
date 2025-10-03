@@ -293,9 +293,9 @@ function FuelLogsTable({
                             <td className="py-4 px-6 text-center">{record.fuel_log_route || "-"}</td>
                             <td className="py-4 px-6 text-center">{formatDateDDMMYYYY(record.fuel_log_date)}</td>
                             <td className="py-4 px-6 text-center">{getFuelTypeName(record.fuel_log_type_item_code)}</td>
-                            <td className="py-4 px-6 text-center">{record.fuel_log_quantity}</td>
-                            <td className="py-4 px-6 text-center">{record.fuel_log_price}</td>
-                            <td className="py-4 px-6 text-center">{record.fuel_log_final_km}</td>
+                            <td className="py-4 px-6 text-center">{record.fuel_log_quantity} L</td>
+                            <td className="py-4 px-6 text-center">₡ {record.fuel_log_price}</td>
+                            <td className="py-4 px-6 text-center">{record.fuel_log_final_km} km</td>
                             <td className="py-4 px-6 text-center">
                             <div className="flex justify-center space-x-3">
                                 <button
