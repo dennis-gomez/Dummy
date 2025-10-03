@@ -36,6 +36,7 @@ const navConfig = [
   {
     label: 'Caja Chica',
     sub: [
+       { label: 'Gestión de Cajas Chicas', path: '/caja/gestion' },
       { label: 'Fondos', path: '/caja/fondos' },
       { label: 'Gastos', path: '/caja/gastos' },
       { label: 'Reportes', path: '/caja/reportes' },
