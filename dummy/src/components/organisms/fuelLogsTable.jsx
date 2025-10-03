@@ -116,13 +116,16 @@ function FuelLogsTable({
         {/* Buscador y botón agregar */}
         <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
             <Box className="flex flex-wrap gap-3 bg-white shadow-md rounded-xl p-4 flex-1">
-            <FormControl className={searchInputClass}>
+            <FormControl 
+                className={searchInputClass}
+                sx={{ minWidth: 150, flex: 1 }} 
+            >
                 <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Seleccione un vehículo</InputLabel>
                 <Select
                     value={selectedVehicle}
                     onChange={(e) => setSelectedVehicle(e.target.value)}
                 >
-                <MenuItem value="Todos">Todos los vehículos</MenuItem>
+                <MenuItem value="Todos">Todos</MenuItem>
                 {allVehiclesItems.map((veh) => (
                     <MenuItem key={veh.value} value={veh.value}>
                         {veh.label}
@@ -132,9 +135,11 @@ function FuelLogsTable({
             </FormControl>
 
             <FormControl className={searchInputClass}>
-                <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Buscar por</InputLabel>
+                <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
                 <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
-                {fields.map((field) => (
+                {fields
+                .filter((field) => field.name !== "cod_vehicle")
+                .map((field) => (
                     <MenuItem key={field.name} value={field.name}>
                     {field.placeholder}
                     </MenuItem>
@@ -160,7 +165,7 @@ function FuelLogsTable({
                 </FormControl>
             ) : (
                 <TextField
-                    label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar"}
+                    label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar..."}
                     type={dateFields.includes(searchField) ? "date" : "text"}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
