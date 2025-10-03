@@ -45,24 +45,10 @@ export const useLegalBookRecord = () => {
         { name: "lb_record_requested_by", placeholder: "Solicitado", required: true, width: 220 },
         { name: "lb_record_delivered_to", placeholder: "Entregado", required: true, width: 220 },
         { name: "lb_record_return_by", placeholder: "Regresado por", required: false, width: 220 },  
-        { name: "lb_record_date", placeholder: "Fecha de registro", type: "date", restriction: "cantAfterToday", 
-             validations: [
-                (value, allValues) => {
-                    if (!value) return "Debe seleccionar la fecha de registro.";
-                    const recordDate = new Date(value);
-                    const recordReturnDate = new Date(allValues.lb_record_return_date);
-                    if (recordReturnDate && recordDate > recordReturnDate) {
-                        return "La fecha de registro no puede ser posterior a la fecha de retorno.";
-                    }
-                return null;
-                },
-            ],
-            required: true, width: 150 
-        },
+        { name: "lb_record_date", placeholder: "Fecha de registro", type: "date", restriction: "cantAfterToday", required: true, width: 150 },
         { name: "lb_record_return_date", placeholder: "Fecha de retorno", type: "date", restriction: "cantAfterToday", 
             validations: [
                 (value, allValues) => {
-                    console.log("ISISISIISSII")
                     if (!value) return null;
                     const recordReturnDate = new Date(value);
                     const recordDate = new Date(allValues.lb_record_date);
