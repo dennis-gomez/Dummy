@@ -28,6 +28,13 @@ export function ValidateValues({
     return null;
   }
 
+  if (type === "email" && value !== "") {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(value)) {
+      err = "Email inválido";
+    }
+  }
+
 if (restriction === "unique" && value !== "") {
   const exists = uniqueValues.some(
     (item) => String(item.value).trim() === String(value).trim() && item.id !== currentId

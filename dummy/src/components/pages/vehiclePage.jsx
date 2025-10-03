@@ -41,7 +41,7 @@ function VehiclePage() {
                 >
                     <div>
                         <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                            Agregar vehículo
+                            Agregar Vehículo
                         </h3>
                     </div> 
                     <Form 

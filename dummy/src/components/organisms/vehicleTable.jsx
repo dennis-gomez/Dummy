@@ -72,7 +72,7 @@ const VehicleTable = ({
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           <Seeker
             inputName="search"
-            inputPlaceholder="Buscar vehículo..."
+            inputPlaceholder="Buscar..."
             btnName="Buscar"
             selectName="Filtrar por"
             fields={fields}
@@ -100,7 +100,7 @@ const VehicleTable = ({
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
           <CircularProgress size={24} />
-          <span>Cargando vehículos...</span>
+          <span>Cargando Vehículos...</span>
         </div>
       ) : vehicles.length === 0 ? (
         //Solo mensaje vacío cuando ya cargo pero no hay resultados

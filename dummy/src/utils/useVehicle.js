@@ -13,7 +13,7 @@ export const useVehicles = () => {
         { name: "vehicle_model", placeholder: "Modelo", validations: [(value) => value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,], width: 250 },
         { name: "vehicle_year", placeholder: "A\u00F1o", type: "number", restriction: "vehicle_year_restrictions", width: 250 },
         { name: "vehicle_plate", placeholder: "Placa", restriction: "unique", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 250, },
-        { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number", restriction: "vehicle_initial_km_restrictions", 
+        { name: "vehicle_initial_km", placeholder: "Kilometraje Inicial", type: "number", restriction: "vehicle_initial_km_restrictions", 
             validations: [
                 (value, allValues) => {
                 if (
@@ -27,7 +27,7 @@ export const useVehicles = () => {
             ],
             width: 250
         },
-        { name: "vehicle_last_km_maintenance", placeholder: "\u00DAltimo mantenimiento (km)", type: "number", restriction: "vehicle_last_km_maintenance_restrictions", 
+        { name: "vehicle_last_km_maintenance", placeholder: "\u00DAltimo Mantenimiento (km)", type: "number", restriction: "vehicle_last_km_maintenance_restrictions", 
             validations: [
                 (value, allValues) => {
                 if (
@@ -41,12 +41,12 @@ export const useVehicles = () => {
             ],
             width: 250
         },
-        { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia de cambio (km)", type: "number", width: 250 },
-        { name: "vehicle_type_of_oil", placeholder: "Tipo de aceite", validations: [ (value) => value && value.length > 50 ? "El tipo de aceite debe tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
+        { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia De Cambio (km)", type: "number", width: 250 },
+        { name: "vehicle_type_of_oil", placeholder: "Tipo De Aceite", validations: [ (value) => value && value.length > 50 ? "El tipo de aceite debe tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
         { name: "vehicle_spark_plug_model", placeholder: "Buj\u00EDa", validations: [(value) => value && value.length > 50 ? "La bujía debe tener máximo 50 caracteres." : null,], width: 250, multiline: true, rows: 2 },
-        { name: "vehicle_tires_front", placeholder: "Llantas delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
-        { name: "vehicle_tires_back", placeholder: "Llantas traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
-        { name: "bike_brake_pad", placeholder: "Pastillas de freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
+        { name: "vehicle_tires_front", placeholder: "Llantas Delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
+        { name: "vehicle_tires_back", placeholder: "Llantas Traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
+        { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
         { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 250},
     ];
 
@@ -55,14 +55,14 @@ export const useVehicles = () => {
         { name: "vehicle_model", placeholder: "Modelo", validations: [(value) => value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,], width: 150 },
         { name: "vehicle_year", placeholder: "A\u00F1o", type: "number", restriction: "vehicle_year_restrictions", width: 100 },
         { name: "vehicle_plate", placeholder: "Placa", restriction: "unique", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 130 },
-        { name: "vehicle_initial_km", placeholder: "Kilometraje inicial", type: "number", restriction: "vehicle_initial_km_restrictions", width: 175, required: false},
-        { name: "vehicle_last_km_maintenance", placeholder: "\u00DAltimo mantenimiento", type: "number", restriction: "vehicle_last_km_maintenance_restrictions", width: 205, required: false},
-        { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia de cambio", type: "number", width: 205 },
-        { name: "vehicle_type_of_oil", placeholder: "Tipo de aceite", validations: [ (value) => value && value.length > 50 ? "El tipo de aceite debe tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
+        { name: "vehicle_initial_km", placeholder: "Kilometraje Inicial", type: "number", restriction: "vehicle_initial_km_restrictions", width: 175, required: false},
+        { name: "vehicle_last_km_maintenance", placeholder: "\u00DAltimo Mantenimiento", type: "number", restriction: "vehicle_last_km_maintenance_restrictions", width: 205, required: false},
+        { name: "vehicle_frecuency_of_change", placeholder: "Frecuencia De Cambio", type: "number", width: 205 },
+        { name: "vehicle_type_of_oil", placeholder: "Tipo De Aceite", validations: [ (value) => value && value.length > 50 ? "El tipo de aceite debe tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
         { name: "vehicle_spark_plug_model", placeholder: "Buj\u00EDa", validations: [(value) => value && value.length > 50 ? "La bujía debe tener máximo 50 caracteres." : null,], width: 150, multiline: true, rows: 2 },
-        { name: "vehicle_tires_front", placeholder: "Llantas delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
-        { name: "vehicle_tires_back", placeholder: "Llantas traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
-        { name: "bike_brake_pad", placeholder: "Pastillas de freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
+        { name: "vehicle_tires_front", placeholder: "Llantas Delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
+        { name: "vehicle_tires_back", placeholder: "Llantas Traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
+        { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
         { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 120},
     ];
 
