@@ -15,6 +15,7 @@ import ErrorPage from './components/pages/errorPage'
 import ScrollToTop from './components/organisms/scrollToTop';
 import ResumePage from './components/pages/resumePage'
 import GuaranteePage from './components/pages/guaranteePage'
+import ActionPlanAndRevisionPage from './components/pages/actionPlanAndRevisionPage'
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
             <Route path="/vehiculos/registro-combustible" element={<FuelLogPage />} />
             <Route path="/garantias/resumen" element={<ResumePage />} />
             <Route path="/garantias/gestion" element={<GuaranteePage />} />
+            <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
           </Routes>
         </main>
         <Footer />

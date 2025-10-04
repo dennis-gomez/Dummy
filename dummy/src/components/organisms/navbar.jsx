@@ -17,10 +17,8 @@ const navConfig = [
   {
     label: 'Mantenimiento Preventivo',
     sub: [
-      { label: 'Planes de Mantenimiento', path: '/mp/planes' },
-      { label: 'Tareas de Mantenimiento', path: '/mp/tareas' },
-      { label: 'Frecuencias', path: '/mp/frecuencias' },
-      { label: 'Historial de Mantenimiento', path: '/mp/historial' },
+      { label: 'Gestion del Edificio', path: '/mantenimiento_edificio/gestion' },
+      { label: 'Historial de Mantenimiento', path: '/mantenimiento_edificio/historial' },
     ],
   },
   {
