@@ -16,6 +16,9 @@ import ResumePage from './components/pages/resumePage'
 import GuaranteePage from './components/pages/guaranteePage'
 import PettyCashPage from './components/pages/pettyCashPage'
 import PettyCashDetailPage from './components/pages/pettyCashDetailPage'
+import ActionPlanAndRevisionPage from './components/pages/actionPlanAndRevisionPage'
+
+
 function App() {
   return (
     <BrowserRouter>
@@ -38,8 +41,9 @@ function App() {
             <Route path="/vehiculos/registro-combustible" element={<FuelLogPage />} />
             <Route path="/garantias/resumen" element={<ResumePage />} />
             <Route path="/garantias/gestion" element={<GuaranteePage />} />
-                <Route path="/caja/gestion" element={<PettyCashPage />} />
-              <Route path="/caja/registros-desembolsos/:cashBoxId" element={<PettyCashDetailPage />} />
+            <Route path="/caja/gestion" element={<PettyCashPage />} />
+            <Route path="/caja/registros-desembolsos/:cashBoxId" element={<PettyCashDetailPage />} />
+            <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
           </Routes>
         </main>
         <Footer />
