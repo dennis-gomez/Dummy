@@ -46,3 +46,13 @@ export const getGuaranteesResume = async () => {
   const res = await axios.get(`${API_URL}/resume`);
   return res.data;
 };
+
+export const getNotifiedGuarantees = async () => {
+  const res = await axios.get(`${API_URL}/notified`);
+  return res.data;
+}
+
+export const getExpiredGuarantees = async () => {
+  const res = await axios.get(`${API_URL}/expired`);
+  return res.data;
+}
