@@ -112,10 +112,20 @@ export const useGuarantees = () => {
 
   const fetchItems = async () => {
     try {
-      const entity = await getItems(7, 1);
-      const applicant = await getItems(7, 2);
-      const alert = await getItems(7, 3);
 
+     const entity = await getItems(
+  Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+  Number(import.meta.env.VITE_GUARANTEE_ENTITY_CATEGORY_CODE)
+);
+      const applicant = await getItems(
+  Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+  Number(import.meta.env.VITE_GUARANTEE_APPLICANT_CATEGORY_CODE)
+);
+
+      const alert = await getItems(
+  Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+  Number(import.meta.env.VITE_GUARANTEE_ALERT_TIME_CATEGORY_CODE)
+);
       setEntityItems(entity.map(e => ({ label: e.item_name, value: e.cod_item })));
       setApplicantItems(applicant.map(a => ({ label: a.item_name, value: a.cod_item })));
       setAlertItems(alert.map(a => ({ label: a.item_name, value: a.cod_item })));
@@ -123,6 +133,7 @@ export const useGuarantees = () => {
       ModalAlert("Error", "Error al obtener items", "error");
     }
   };
+
 const handleSearchGuarantees = async (feature, text) => {
   try {
     setLoading(true);
@@ -185,6 +196,10 @@ const handleAddGuarantee = async (formData) => {
 
   const handleEditGuarantee = async (id, formData) => {
     try {
+
+    formData = { ...formData, guarantee_is_notified: 0 }; // reset notificación al editar
+
+
       const resp = await updateGuarantee(id, formData);
       ModalAlert("Éxito", "Garantía actualizada exitosamente", "success");
       fetchGuarantees();

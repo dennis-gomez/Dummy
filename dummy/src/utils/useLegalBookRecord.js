@@ -65,7 +65,7 @@ export const useLegalBookRecord = () => {
     // Estados para filtrado
     const [searchText, setSearchText] = useState("");
     const [selectedBook, setSelectedBook] = useState("Todos");
-    const [searchField, setSearchField] = useState(fields[0]?.name || "");
+    const [searchField, setSearchField] = useState(fields.find(field => field.name !== 'cod_book_catalog')?.name || '');
 
     // Listado de registros
     const fetchRecords = async (bookId = "", field = "", text = "") => {
