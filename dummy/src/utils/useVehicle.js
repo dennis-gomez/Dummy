@@ -9,11 +9,11 @@ export const useVehicles = () => {
   const [loading, setLoading] = useState(false);
 
       const fields = [
-        { name: "vehicle_brand", placeholder: "Marca", validations: [(value) => value && value.length > 20 ? "La marca debe tener máximo 20 caracteres." : null,], width: 250 },
-        { name: "vehicle_model", placeholder: "Modelo", validations: [(value) => value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,], width: 250 },
+        { name: "vehicle_brand", placeholder: "Marca", validations: [(value) => value && value.length > 20 ? "La marca debe tener máximo 20 caracteres." : null,], width: 383 },
+        { name: "vehicle_model", placeholder: "Modelo", validations: [(value) => value && value.length > 50 ? "El modelo debe tener máximo 50 caracteres." : null,], width: 383 },
         { name: "vehicle_year", placeholder: "A\u00F1o", type: "number", restriction: "vehicle_year_restrictions", width: 250 },
         { name: "vehicle_plate", placeholder: "Placa", restriction: "unique", validations: [(value) => value && value.length > 10 ? "La placa debe tener máximo 10 caracteres." : null, ], width: 250, },
-        { name: "vehicle_initial_km", placeholder: "Kilometraje Inicial", type: "number", restriction: "vehicle_initial_km_restrictions", 
+        { name: "vehicle_initial_km", placeholder: "Kilometraje Inicial", type: "number", restriction: "vehicle_initial_km_restrictions",   
             validations: [
                 (value, allValues) => {
                 if (
@@ -46,8 +46,8 @@ export const useVehicles = () => {
         { name: "vehicle_spark_plug_model", placeholder: "Buj\u00EDa", validations: [(value) => value && value.length > 50 ? "La bujía debe tener máximo 50 caracteres." : null,], width: 250, multiline: true, rows: 2 },
         { name: "vehicle_tires_front", placeholder: "Llantas Delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
         { name: "vehicle_tires_back", placeholder: "Llantas Traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
-        { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
-        { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 250},
+        { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 383, multiline: true, rows: 2 },
+        { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 383},
     ];
 
     const editFields = [
