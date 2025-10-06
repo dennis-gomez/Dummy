@@ -9,6 +9,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
+import ModalAlert from "../molecules/ModalAlert"; // Asegúrate de tener la ruta correcta
+import ModalElimination from "../molecules/ModalElimination"; // Asegúrate de tener la ruta correcta
 
 function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
   const [editRowId, setEditRowId] = useState(null);
@@ -31,10 +33,81 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
     setEditData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSave = () => {
-    onEdit(editRowId, editData);
-    setEditRowId(null);
-    setEditData({});
+  const handleSave = async () => {
+    try {
+      // Mostrar confirmación antes de guardar usando Swal directamente
+      const Swal = (await import('sweetalert2')).default;
+      const result = await Swal.fire({
+        title: '¿Guardar cambios?',
+        text: '¿Estás seguro de que deseas actualizar este movimiento?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (result.isConfirmed) {
+        await onEdit(editRowId, editData);
+        setEditRowId(null);
+        setEditData({});
+        
+        // Usar tu ModalAlert para éxito
+        ModalAlert(
+          '¡Guardado!', 
+          'El movimiento ha sido actualizado correctamente.', 
+          'success', 
+          2000
+        );
+      }
+    } catch (error) {
+      // Usar tu ModalAlert para error
+      ModalAlert(
+        'Error', 
+        error.message || 'Error al actualizar el movimiento', 
+        'error', 
+        3000
+      );
+    }
+  };
+
+  const handleDeleteWithModal = (id, detailData) => {
+    // Crear mensaje personalizado para el movimiento
+    const deleteMessage = `
+      <div class="text-left">
+        <p><strong>Movimiento #${detailData.cod_petty_cash_details}</strong></p>
+        <p><strong>Fecha:</strong> ${detailData.petty_cash_details_date}</p>
+        <p><strong>Proveedor:</strong> ${detailData.petty_cash_details_provider}</p>
+        <p><strong>Solicitante:</strong> ${detailData.petty_cash_details_requester}</p>
+        <p><strong>Monto:</strong> ₡${parseFloat(detailData.petty_cash_details_amount).toFixed(2)}</p>
+        <p><strong>Descripción:</strong> ${detailData.petty_cash_details_description}</p>
+      </div>
+    `;
+
+    return (
+      <ModalElimination
+        message={deleteMessage}
+        onClick={async () => {
+          try {
+            await onDelete(id);
+            ModalAlert(
+              '¡Eliminado!', 
+              'El movimiento ha sido eliminado correctamente.', 
+              'success', 
+              2000
+            );
+          } catch (error) {
+            ModalAlert(
+              'Error', 
+              error.message || 'Error al eliminar el movimiento', 
+              'error', 
+              3000
+            );
+          }
+        }}
+      />
+    );
   };
 
   // 🟦 Estado cargando
@@ -144,7 +217,11 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
                     sx={{ backgroundColor: "white", borderRadius: 1 }}
                   />
                 ) : (
-                  detail.petty_cash_details_description
+                  <span title={detail.petty_cash_details_description}>
+                    {detail.petty_cash_details_description?.length > 50 
+                      ? `${detail.petty_cash_details_description.substring(0, 50)}...` 
+                      : detail.petty_cash_details_description}
+                  </span>
                 )}
               </td>
 
@@ -196,15 +273,10 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
+                    
+                    {/* Usar tu ModalElimination personalizado */}
                     <Tooltip title="Eliminar">
-                      <IconButton
-                        onClick={() =>
-                          onDelete(detail.cod_petty_cash_details)
-                        }
-                        sx={{ color: "error.main" }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      {handleDeleteWithModal(detail.cod_petty_cash_details, detail)}
                     </Tooltip>
                   </>
                 )}
