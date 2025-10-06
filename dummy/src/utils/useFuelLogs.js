@@ -36,7 +36,7 @@ export const useFuelLogs = () => {
     ];
 
     const editFields = [
-        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 200},
+        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: allVehiclesItems, width: 200},
         { name: "fuel_log_route", placeholder: "Ruta", required: true, type: "textarea", width: 200},
         { name: "fuel_log_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 150, restriction: "cantAfterToday" },
         { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 200},
@@ -180,7 +180,7 @@ export const useFuelLogs = () => {
                         value: i.cod_vehicle,
                         label: i.vehicle_brand + "  -  " + i.vehicle_plate,
                     }))
-                )
+                );
                 setError(null);
             } catch (error) {
                 const message = error.response?.data?.message || "Error al obtener los catálogos de libros.";
