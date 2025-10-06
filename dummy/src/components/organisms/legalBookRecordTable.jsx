@@ -125,11 +125,14 @@ function LegalBookRecordTable({
           <FormControl className={searchInputClass}>
             <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Buscar por característica</InputLabel>
             <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
-              {fields.map((field) => (
-                <MenuItem key={field.name} value={field.name}>
-                  {field.placeholder}
-                </MenuItem>
-              ))}
+              {fields
+                .filter(field => field.name !== 'cod_book_catalog')
+                .map(field => (
+                  <MenuItem key={field.name} value={field.name}>
+                    {field.placeholder}
+                  </MenuItem>
+                ))
+              }
             </Select>
           </FormControl>
 
