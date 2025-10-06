@@ -15,6 +15,7 @@ import {
   createPettyCashDetail,
   updatePettyCashDetail,
   deletePettyCashDetail,
+  searchPettyCashDetails
 } from "../../services/pettyCashDetailService";
 
 function PettyCashDetailPage() {
@@ -27,7 +28,7 @@ function PettyCashDetailPage() {
 
   // búsqueda
   const [searchText, setSearchText] = useState("");
-  const [searchFeature, setSearchFeature] = useState("movement_date");
+  const [searchFeature, setSearchFeature] = useState("petty_cash_details_date");
 
   useEffect(() => {
     if (cashBoxId) {
@@ -43,6 +44,28 @@ function PettyCashDetailPage() {
     } catch (err) {
       setError(err.message || "Error al cargar movimientos");
       setDetails([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearch = async () => {
+   if (!searchFeature || !searchText.trim()) {
+  await fetchDetails();
+  return;
+}
+    try {
+      setLoading(true);
+      const results = await searchPettyCashDetails(searchFeature, searchText);
+
+      if (Array.isArray(results)) {
+        setDetails(results);
+      } else {
+        setDetails([]);
+      }
+    } catch (err) {
+      console.error("Error en búsqueda de detalles:", err);
+      setError("Error al realizar la búsqueda.");
     } finally {
       setLoading(false);
     }
@@ -76,90 +99,94 @@ function PettyCashDetailPage() {
     }
   };
 
- return (
-  <div style={{ padding: 24 }}>
-    {/* Botón volver */}
-    <Box sx={{ mb: 3 }}>
-      <IconButton
-        onClick={() => navigate("/caja/gestion")}
-        sx={{ color: "primary.main" }}
-      >
-        <ArrowBackIcon />
-      </IconButton>
-      <span style={{ marginLeft: 8 }}>Volver a Cajas Chicas</span>
-    </Box>
-
-    <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-      Movimientos de Caja Chica #{cashBoxId}
-    </h1>
-
-    {/* Mensaje de error */}
-    {error && (
-      <div className="p-2 mb-4 bg-red-100 text-red-600 rounded-md text-center">
-        {error}
-      </div>
-    )}
-
-    {/* Formulario de movimiento (arriba del buscador) */}
-    {showForm && (
-      <Box
-        sx={{
-          maxWidth: 800,
-          margin: "20px auto",
-          p: 3,
-          boxShadow: 3,
-          borderRadius: 2,
-           backgroundColor: "#d9d9d9",
-        }}
-      >
-        <PettyCashDetailForm
-          onAddDetail={handleAddDetail}
-          cashBoxId={cashBoxId}
-        />
-      </Box>
-    )}
-
-    {/* Buscador + Botón */}
-    <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4 mt-6">
-      <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-        <Seeker
-          inputName="search"
-          inputPlaceholder="Buscar movimiento..."
-          btnName="Buscar"
-          selectName="Filtrar por"
-          fields={[
-            { name: "movement_date", placeholder: "Fecha" },
-            { name: "movement_amount", placeholder: "Monto" },
-            { name: "movement_description", placeholder: "Descripción" },
-          ]}
-          valueText={searchText}
-          valueFeature={searchFeature}
-          onChangeText={setSearchText}
-          onChangeFeature={setSearchFeature}
-          onClick={() => console.log("buscar", searchText, searchFeature)}
-        />
+  return (
+    <div style={{ padding: 24 }}>
+      {/* Botón volver */}
+      <Box sx={{ mb: 3 }}>
+        <IconButton
+          onClick={() => navigate("/caja/gestion")}
+          sx={{ color: "primary.main" }}
+        >
+          <ArrowBackIcon />
+        </IconButton>
+        <span style={{ marginLeft: 8 }}>Volver a Cajas Chicas</span>
       </Box>
 
-      <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
-        <div className="p-4 h-fit">
-          <Button
-            text={showForm ? "Cancelar" : "Agregar Movimiento"}
-            onClick={() => setShowForm(!showForm)}
-            className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Movimientos de Caja Chica #{cashBoxId}
+      </h1>
+
+      {/* Mensaje de error */}
+      {error && (
+        <div className="p-2 mb-4 bg-red-100 text-red-600 rounded-md text-center">
+          {error}
+        </div>
+      )}
+
+      {/* Formulario de movimiento (arriba del buscador) */}
+      {showForm && (
+        <Box
+          sx={{
+            maxWidth: 800,
+            margin: "20px auto",
+            p: 3,
+            boxShadow: 3,
+            borderRadius: 2,
+            backgroundColor: "#d9d9d9",
+          }}
+        >
+          <PettyCashDetailForm
+            onAddDetail={handleAddDetail}
+            cashBoxId={cashBoxId}
           />
+        </Box>
+      )}
+
+      {/* Buscador + Botón */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4 mt-6">
+        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
+  <Seeker
+  inputName="search"
+  inputPlaceholder="Buscar detalle..."
+  btnName="Buscar"
+  selectName="Filtrar por"
+  fields={[
+    { name: "petty_cash_details_date", placeholder: "Fecha (YYYY-MM-DD)" },
+    { name: "petty_cash_details_provider", placeholder: "Proveedor" },
+    { name: "petty_cash_details_description", placeholder: "Descripción" },
+    { name: "petty_cash_details_requester", placeholder: "Solicitante" },
+    { name: "petty_cash_details_amount", placeholder: "Monto" },
+    { name: "petty_cash_details_is_active", placeholder: "Activo (true/false)" },
+  ]}
+  valueText={searchText}
+  valueFeature={searchFeature}
+  onChangeText={setSearchText}
+  onChangeFeature={setSearchFeature}
+  onClick={handleSearch}
+/>
+
+        </Box>
+
+        <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
+          <div className="p-4 h-fit">
+            <Button
+              text={showForm ? "Cancelar" : "Agregar Movimiento"}
+              onClick={() => setShowForm(!showForm)}
+              className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            />
+          </div>
         </div>
       </div>
-    </div>
 
-    {/* Tabla de detalles */}
-    <PettyCashDetailTable
-      details={details}
-      isLoading={loading}
-      onDelete={handleDeleteDetail}
-      onEdit={handleEditDetail}
-    />
-  </div>
-);
+      {/* Tabla de detalles */}
+      <PettyCashDetailTable
+        details={details}
+        isLoading={loading}
+        onDelete={handleDeleteDetail}
+        onEdit={handleEditDetail}
+      />
+    </div>
+  );
 }
 
 export default PettyCashDetailPage;

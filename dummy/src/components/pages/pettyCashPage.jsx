@@ -4,7 +4,7 @@ import Button from "../atoms/button";
 import Seeker from "../molecules/seeker";
 import PettyCashForm from "../organisms/formPettyCash";
 import PettyCashTable from "../organisms/tablePettyCash";
-import { useNavigate } from "react-router-dom"; // ✅ Añadido
+import { useNavigate } from "react-router-dom";
 
 // servicios
 import {
@@ -12,6 +12,7 @@ import {
   createPettyCash,
   updatePettyCash,
   deletePettyCash,
+  searchPettyCash, // ✅ agregado para el buscador
 } from "../../services/pettyCashService";
 
 function PettyCashPage() {
@@ -21,7 +22,7 @@ function PettyCashPage() {
   const [searchFeature, setSearchFeature] = useState("petty_cash_creation_date");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // ✅ Añadido
+  const navigate = useNavigate();
 
   // cargar cajas chicas al inicio
   useEffect(() => {
@@ -39,6 +40,31 @@ function PettyCashPage() {
       setLoading(false);
     }
   };
+
+  // 🔍 Buscar caja chica por campo y texto
+  const handleSearch = async () => {
+    if (!searchText.trim()) {
+      fetchCashBoxes(); // si no hay texto, recarga todo
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const data = await searchPettyCash(searchFeature, searchText);
+      setCashBoxes(data);
+    } catch (err) {
+      setError(err.message || "Error al buscar caja chica");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // opcional: restaurar lista cuando se limpia el campo de búsqueda
+  useEffect(() => {
+    if (!searchText.trim()) {
+      fetchCashBoxes();
+    }
+  }, [searchText]);
 
   // Agregar caja chica
   const handleAdd = async (newCashBox) => {
@@ -71,7 +97,7 @@ function PettyCashPage() {
     }
   };
 
-  // ✅ MODIFICADO: Navegar a página de detalles
+  // Navegar a página de detalles
   const handleViewRecords = (id) => {
     navigate(`/caja/registros-desembolsos/${id}`);
   };
@@ -128,7 +154,7 @@ function PettyCashPage() {
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() => console.log("buscar")}
+            onClick={handleSearch} // ✅ ahora funcional
           />
         </Box>
 

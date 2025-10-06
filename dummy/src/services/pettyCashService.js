@@ -51,3 +51,14 @@ export const deletePettyCash = async (id) => {
     throw error.response?.data || { message: "Error al eliminar caja chica" };
   }
 };
+// Buscar cajas chicas por campo y valor
+export const searchPettyCash = async (field, value) => {
+  try {
+    const { data } = await axios.get(`${API_URL}/search`, {
+      params: { field, value },
+    });
+    return data;
+  } catch (error) {
+    throw error.response?.data || { message: "Error al buscar caja chica" };
+  }
+};

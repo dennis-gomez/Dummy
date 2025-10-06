@@ -14,4 +14,6 @@ function ModalAlert( title, text, icon, timeout = 2500) {
     });
 }
 
+
+
 export default ModalAlert;
