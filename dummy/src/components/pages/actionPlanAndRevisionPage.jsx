@@ -31,9 +31,16 @@ const RevisionActionPage = () => {
         revisionAreaCategories,
         revisionAreaItem,
         revisionTasksItem,
-        revisionStatusOptions
+        revisionStatusOptions,
+
+        revisionAreaItem2,
+        fetchAllCategoryItems,
+        getSpecificOptions
+
+
   } = usePMRevisionAndPlan();
 
+  console.log("Revision Area Item:", revisionAreaItem);
 
   const combinedData = revisions.map(rev => ({
   ...rev,
@@ -90,37 +97,46 @@ const RevisionActionPage = () => {
         </Box>
       )}
 
-      
 
       {/* Tabla de revisiones con planes de acción */}
       <RevisionActionTable
-        data={combinedData}
-        subData={actionPlans}
         fields={fields}
         fieldsRevision={fieldsRevision}
         fieldsActionPlan={fieldsActionPlan}
-        singularName="Revisión"
-        tableName="Revisiones"
-        isLoading={loading}
-        onEditRevision={handleEditRevision}
+        
+        data={combinedData}
+        subData={actionPlans}
+        revisionAreaCategories={revisionAreaCategories}
+        revisionAreaItem={revisionAreaItem}
+        revisionTasksItem={revisionTasksItem}
+        revisionStatusOptions={revisionStatusOptions}
+        
+
         onDeleteRevision={handleDeleteRevision}
-        onEditActionPlan={handleEditActionPlan}
         onDeleteActionPlan={handleDeleteActionPlan}
-        handleSearch={handleSearchRevisionsAndPlans}
-        searchFields={fields}
+        onEditRevision={handleEditRevision}
+        onEditActionPlan={handleEditActionPlan}
+
+        onSearch={handleSearchRevisionsAndPlans}        
+        isLoading={loading}
         valueText={searchText}
         valueFeature={searchFeature}
         onChangeText={setSearchText}
         onChangeFeature={setSearchFeature}
+
         showForm={showForm}
         setShowForm={setShowForm}
-
-        revisionAreaCategories={revisionAreaCategories}
-        revisionAreaItem={revisionAreaItem}
-        revisionTasksItem ={revisionTasksItem}
-        revisionStatusOptions={revisionStatusOptions}
-        fetchAreaItems={fetchAreaItems}
         setError={setError}
+
+        fetchAreaItems={fetchAreaItems}
+        singularName="Revisión"
+        tableName="Revisiones"
+
+        revisionAreaItem2={revisionAreaItem2}
+        fetchAllCategoryItems={fetchAllCategoryItems}
+
+
+        getSpecificOptions={getSpecificOptions}
       />
     </div>
   );
