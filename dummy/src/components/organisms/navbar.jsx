@@ -103,7 +103,7 @@ export default function Navbar() {
     };
 
     fetchNotifications(); // fetch inicial
-    const interval = setInterval(fetchNotifications, 15000); // cada 15s
+    const interval = setInterval(fetchNotifications, 3600000); // cada hora
     return () => clearInterval(interval);
   }, []);
 

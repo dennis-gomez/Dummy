@@ -197,17 +197,24 @@ const DynamicTable = ({
                             />
                           ) : f.name === "book_status" ? (
                             <InputValidated
-                              name={f.name}
-                              type="select"
-                              value={editData[f.name]}
-                              onChange={e => {
-                                const value = Number(e.target.value);
-                                setEditData({ ...editData, [f.name]: value });
-                                setEditErrors(prev => ({ ...prev, [f.name]: value === undefined ? "Seleccione un estado" : "" }));
-                              }}
-                              options={STATUS_OPTIONS}
-                              sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
-                            />
+  name={f.name}
+  type="select"
+  value={editData[f.name]}
+  onChange={e => {
+    const value = Number(e.target.value);
+    setEditData({ ...editData, [f.name]: value });
+    setEditErrors(prev => ({ 
+      ...prev, 
+      [f.name]: value === undefined ? "Seleccione un estado" : "" 
+    }));
+  }}
+  options={STATUS_OPTIONS.map(opt => ({
+    ...opt,
+    disabled: opt.value === 2 // deshabilita "En uso"
+  }))}
+  sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
+/>
+
                           ) : (
                             <InputValidated
                               name={f.name}

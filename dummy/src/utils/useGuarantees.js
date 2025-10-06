@@ -123,6 +123,7 @@ export const useGuarantees = () => {
       ModalAlert("Error", "Error al obtener items", "error");
     }
   };
+
 const handleSearchGuarantees = async (feature, text) => {
   try {
     setLoading(true);
@@ -185,6 +186,10 @@ const handleAddGuarantee = async (formData) => {
 
   const handleEditGuarantee = async (id, formData) => {
     try {
+
+    formData = { ...formData, guarantee_is_notified: 0 }; // reset notificación al editar
+
+
       const resp = await updateGuarantee(id, formData);
       ModalAlert("Éxito", "Garantía actualizada exitosamente", "success");
       fetchGuarantees();
