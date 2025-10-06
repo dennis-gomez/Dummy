@@ -120,7 +120,7 @@ useEffect(() => {
     >
       {type === "select" &&
         options.map((opt) => (
-          <MenuItem key={opt.value} value={opt.value}>
+          <MenuItem key={opt.value} value={opt.value} disabled={opt.disabled || false} >
             {opt.label}
           </MenuItem>
         ))}

@@ -20,6 +20,23 @@ export const getItems = async (cod_service, cod_category) => {
   }
 };
 
+export const getAllItemsByService = async (cod_service) => {
+  try {
+    const response = await axios.get(
+      API_URL + "all",
+      {
+        params: { cod_service },
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Agregar item
 export const addItem = async (cod_service, cod_category, item_name) => {
   try {

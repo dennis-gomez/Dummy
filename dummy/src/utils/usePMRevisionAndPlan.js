@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
-import { getItems } from "../services/itemService";
+import { getItems, getAllItemsByService } from "../services/itemService";
 import { getCategorys } from "../services/categoryService";
 
 import { getAllRevisions, getFindRevisions, updateRevision, deleteRevision, addRevisionWithPlan } from "../services/pmRevisionService";
@@ -20,22 +20,22 @@ export const usePMRevisionAndPlan = () => {
     const [revisionAreaItem, setRevisionAreaItem] = useState([]);
     const [revisionTasksItem, setRevisionTasksItem] = useState([]);
 
+
     const revisionStatusOptions = [
-        { value: true, label: "Pasó" },
-        { value: false, label: "No pasó" }
+        { value: "true", label: "Pasó" },
+        { value: "false", label: "No pasó" }
     ];
 
     const fields = [
-        { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "text", required: true },
-        { name: "revision_quantity", placeholder: "Cantidad", width: 250, type: "number", required: true },
-        { name: "revision_status", placeholder: "Estado de la Revisión", width: 250, type: "select", options: revisionStatusOptions, required: true },
-        { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
-        { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
-
         { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
         { name: "revision_area_item_code", placeholder: "Categoría", type: "select", width: 250, options: revisionAreaItem, required: true },
         { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
 
+        { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday" },
+        { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
+        { name: "revision_quantity", placeholder: "Cantidad", width: 250, type: "number", required: true },
+        { name: "revision_status", placeholder: "Estado de la Revisión", width: 250, type: "select", options: revisionStatusOptions, required: true },
+        { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
         { name: "revision_date_follow_up", placeholder: "Fecha de Seguimiento", type: "date", width: 250, restriction: "cantBeforeToday" },
 
         { name: "action_plan_rev_quantity_failed", placeholder: "Cantidad Fallida", type: "number", width: 250, required: true },
@@ -44,30 +44,32 @@ export const usePMRevisionAndPlan = () => {
     ];
 
     const fieldsRevision = [
-        { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "text", required: true },
-        { name: "revision_quantity", placeholder: "Cantidad", width: 250, type: "number", required: true },
-        { name: "revision_status", placeholder: "Estado de la Revisión", width: 250, type: "select", options: revisionStatusOptions, required: true },
-        { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
-        { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
-
         { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
         { name: "revision_area_item_code", placeholder: "Categoría", type: "select", width: 250, options: revisionAreaItem, required: true },
         { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
 
+        { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday"},
+        { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
+        { name: "revision_quantity", placeholder: "Cantidad", width: 250, type: "number", required: true },
+        { name: "revision_status", placeholder: "Estado de la Revisión", width: 250, type: "select", options: revisionStatusOptions, required: true },
+        { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
         { name: "revision_date_follow_up", placeholder: "Fecha de Seguimiento", type: "date", width: 250, restriction: "cantBeforeToday" },
- ];
+    ];
 
-        const fieldsActionPlan = [
+    const fieldsActionPlan = [
         { name: "action_plan_rev_quantity_failed", placeholder: "Cantidad Fallida", type: "number", width: 250, required: true },
         { name: "action_plan_details", placeholder: "Detalles del Plan de Acción", type: "textarea", width: 780, required: true },
         { name: "action_plan_responsible_name", placeholder: "Responsable a Cargo", type: "text", width: 250, required: true },
     ];
 
-
-
-
     const [searchText, setSearchText] = useState("");
     const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
+
+const getSpecificOptions = (categoryCode) => {
+  console.log("Category Code:", categoryCode);
+  return revisionAreaItem.filter(item => item.category_cod === categoryCode);
+};
+
 
 
     // 🔹 Obtener todos los planes y revisiones
@@ -75,6 +77,8 @@ export const usePMRevisionAndPlan = () => {
         try {
             setError(null);
             const data1 = await getAllRevisions();
+
+
             const data2 = await getAllActionPlans();
             setRevisions(data1);
             setActionPlans(data2);
@@ -89,9 +93,7 @@ export const usePMRevisionAndPlan = () => {
     const fetchAreaCategory = async () => {
         try {
             setError(null);
-            const areas = await getCategorys(
-                Number(import.meta.env.VITE_PM_AREAS_SERVICE_CODE),
-            );
+            const areas = await getCategorys(Number(import.meta.env.VITE_PM_AREAS_SERVICE_CODE));
             setRevisionAreaCategories(
                 areas.map((a) => ({
                     name: a.cod_category,
@@ -101,20 +103,43 @@ export const usePMRevisionAndPlan = () => {
                     service_cod: a.cod_service,
                 }))
             );
+
         } catch (err) {
-            const message = err.response?.data?.message || "Error al obtener las Areas de mantenimiento.";
+            const message = err.response?.data?.message || "Error al obtener las áreas de mantenimiento.";
             setError(message);
             ModalAlert("Error", message, "error");
         }
     };
 
+    const fetchAllCategoryItems = async () => {
+        try {
+            setError(null);
+            const items = await getAllItemsByService(Number(import.meta.env.VITE_PM_AREAS_SERVICE_CODE));
+            setRevisionAreaItem(
+                items.map((i) => ({
+                    name: i.cod_item,
+                    placeholder: i.item_name,
+                    value: i.cod_item,
+                    label: i.item_name,
+                    service_cod: i.cod_service,
+                    category_cod: i.cod_category,
+                }))
+            );
 
-    const fetchAreaItems = async (cod_category) => {
+        } catch (err) {
+            const message = err.response?.data?.message || "Error al obtener items de las categorías.";
+            setError(message);
+            ModalAlert("Error", message, "error");
+        }
+    };
+
+    const fetchAreaItems = async (revision_area_category_code) => {
+
         try {
             setError(null);
             const items = await getItems(
                 Number(import.meta.env.VITE_PM_AREAS_SERVICE_CODE),
-                Number(cod_category)
+                Number(revision_area_category_code)
             );
             setRevisionAreaItem(
                 items.map((i) => ({
@@ -126,12 +151,14 @@ export const usePMRevisionAndPlan = () => {
                     category_cod: i.cod_category,
                 }))
             );
+            fetchAllCategoryItems();
         } catch (err) {
             const message = err.response?.data?.message || "Error al obtener items.";
             setError(message);
             ModalAlert("Error", message, "error");
         }
     };
+
 
     const fetchTaskItems = async () => {
         try {
@@ -226,8 +253,12 @@ export const usePMRevisionAndPlan = () => {
     const handleEditRevision = async (cod_revision, formData) => {
         try {
             setError(null);
+            /*
             const selectedAction1 = revisionTasksItem.find((i) => i.value === formData.revision_task_item_code);
             const selectedAction2 = revisionAreaItem.find((i) => i.value === formData.revision_area_item_code);
+
+            console.log("Selected Action 1:", selectedAction1);
+            console.log("Selected Action 2:", selectedAction2);
 
             const payload = {
                 ...formData,
@@ -242,8 +273,9 @@ export const usePMRevisionAndPlan = () => {
                     revision_area_item_code: selectedAction2.name,
                 }),
             };
+            */
 
-            await updateRevision(cod_revision, payload);
+            await updateRevision(cod_revision, formData);
             ModalAlert("Éxito", "Registro editado exitosamente.", "success");
             fetchData();
             return true;
@@ -269,9 +301,6 @@ export const usePMRevisionAndPlan = () => {
             ModalAlert("Error", message, "error");
         }
     };
-
-
-
 
 
 
@@ -310,6 +339,7 @@ export const usePMRevisionAndPlan = () => {
         fetchData();
         fetchAreaCategory();
         fetchTaskItems();
+        fetchAllCategoryItems();
     }, []);
 
 
@@ -339,7 +369,10 @@ export const usePMRevisionAndPlan = () => {
         revisionAreaCategories,
         revisionAreaItem,
         revisionTasksItem,
-        revisionStatusOptions
+        revisionStatusOptions,
+
+        fetchAllCategoryItems,
+        getSpecificOptions
     };
 };
 

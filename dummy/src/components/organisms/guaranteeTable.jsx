@@ -117,10 +117,15 @@ const GuaranteesTable = ({
           multiline
           rows={2}
           onChange={(e) => handleFieldChange(field.name, e.target.value, fieldType)}
-          sx={{
-            ...whiteInputStyle,
-            "& .MuiOutlinedInput-root": { minHeight: "4rem", resize: "vertical" },
-          }}
+            sx={{
+                                ...whiteInputStyle,
+                                "& .MuiOutlinedInput-root": {
+                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                  minHeight: "4rem",
+                                  width: "12rem",
+                                  resize: "vertical",
+                                },
+                              }}
         />
       );
     }
