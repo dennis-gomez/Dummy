@@ -38,6 +38,21 @@ export const useGuarantees = () => {
   const [alertItems, setAlertItems] = useState([]);
   const [resumeData, setResumeData] = useState([]);
   const [isCreatingGuarantee, setIsCreatingGuarantee] = useState(false);
+  const [sortOrder, setSortOrder] = useState(""); // "asc" o "desc"
+  
+  const [totalPages, setTotalPages] = useState(1); // Estado para total de páginas
+  const [currentPage, setCurrentPage] = useState(1); // Estado para página actual
+
+const handleSortByExpirationDate = (searchFeature,searchText) => {
+  let newSortOrder = "";
+
+  if (sortOrder.trim() === "") newSortOrder = "asc";
+  else if (sortOrder.trim() === "asc") newSortOrder = "";
+
+  setSortOrder(newSortOrder); // actualizar el estado para render
+  fetchGuarantees(currentPage, 2, searchFeature, searchText, newSortOrder); // usar el nuevo valor
+};
+
 
   const resumeFields = [
     { name: "entidad", label: "Entidad" },
@@ -45,9 +60,9 @@ export const useGuarantees = () => {
     { name: "vencidas", label: "Vencidas" },
     { name: "proximas_a_vencer", label: "Próximas a vencer" },
     { name: "dinero_activo", label: "Dinero Activo" },
-    { name: "dinero_pendiente", label: "Dinero Pendiente" },
+    { name: "dinero_por_vencer", label: "Dinero por vencer" },
     { name: "dinero_activo_usd", label: "Dinero Activo USD" },
-    { name: "dinero_pendiente_usd", label: "Dinero Pendiente USD" },
+    { name: "dinero_por_vencer_usd", label: "Dinero por vencer USD" },
   ];
 
   const fields = [
@@ -97,18 +112,35 @@ export const useGuarantees = () => {
     }));
 
   // Funciones fetch, add, edit, delete, search (igual que tu código original)
-  const fetchGuarantees = async () => {
-    try {
-      setLoading(true);
-      const resp = await getAllGuarantees();
-      setGuaranteesList(resp.data || resp || []);
-    } catch (err) {
-      setError("Error al obtener garantías");
-      ModalAlert("Error", "Error al obtener garantías", "error");
-    } finally {
-      setLoading(false);
+  const fetchGuarantees = async (page = 1, limit = 2, searchFeature = "", searchText = "", sortOrder = "") => {
+  try {
+    setLoading(true);
+
+    let resp;
+
+    if (searchText && searchFeature) {
+      // 👇 Llama a la API de búsqueda con paginación
+      resp = await findGuarantees(searchFeature, searchText, page, limit, sortOrder);
+    } else {
+      // 👇 Llama al listado general con paginación
+      resp = await getAllGuarantees(page, 2, sortOrder);
     }
-  };
+
+    // 👇 Ajusta según lo que retorne tu backend (count, rows)
+    setGuaranteesList(resp.guarantees || []);
+    setTotalPages(resp.totalPages || 1);
+    setCurrentPage(resp.page || 1);
+
+  } catch (err) {
+    console.error(err);
+    setError("Error al obtener garantías");
+    ModalAlert("Error", "Error al obtener garantías", "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
 
   const fetchItems = async () => {
     try {
@@ -133,36 +165,45 @@ export const useGuarantees = () => {
       ModalAlert("Error", "Error al obtener items", "error");
     }
   };
-
-const handleSearchGuarantees = async (feature, text) => {
+const handleSearchGuarantees = async (feature, text, page = 1, limit = 2) => {
   try {
     setLoading(true);
 
-    // Convierte a string para evitar errores
     const searchText = String(text || "").trim();
 
+    // 👇 Si no hay texto, vuelve al fetch general
     if (!searchText) {
-      fetchGuarantees();
+      await fetchGuarantees(page, limit,sortOrder);
       return;
     }
 
-    const resp = await findGuarantees(feature, searchText);
+    // 👇 Llama a la API de búsqueda con paginación
+    const resp = await findGuarantees(feature, searchText, page, limit, sortOrder);
 
-    if (!resp || resp.length === 0) {
-      // No se encontraron garantías
+    //Manejo del formato según tu backend
+    const guarantees = resp.guarantees || resp.rows || [];
+    const totalPages = resp.totalPages || 1;
+
+    if (guarantees.length === 0) {
       ModalAlert("Información", "No se encontraron garantías con ese término", "info");
-      return; // No actualiza la lista
+      setGuaranteesList([]);
+      setTotalPages(1);
+      setCurrentPage(1);
+      return;
     }
 
-    // Solo actualiza si hay resultados
-    setGuaranteesList(resp);
+    setGuaranteesList(guarantees);
+    setTotalPages(totalPages);
+    setCurrentPage(resp.page || page);
 
   } catch (err) {
+    console.error(err);
     ModalAlert("Error", "Error al buscar garantías", "error");
   } finally {
     setLoading(false);
   }
 };
+
 
 const handleAddGuarantee = async (formData) => {
   const { cod_guarantee, guarantee_status, ...rest } = formData; // quitamos si acaso vienen del formulario
@@ -265,5 +306,8 @@ const handleAddGuarantee = async (formData) => {
     alertOptionsForSelect,
     isCreatingGuarantee,
     setIsCreatingGuarantee,
+    totalPages,
+    currentPage,
+    handleSortByExpirationDate
   };
 };

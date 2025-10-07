@@ -9,6 +9,12 @@ import Seeker from "../molecules/seeker";
 import { Box } from "@mui/material";
 import { ValidateValues } from "../../utils/validateValues";
 import Button from "../atoms/button";
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import SortIcon from '@mui/icons-material/Sort';
 
 const GuaranteesTable = ({
   data,
@@ -24,12 +30,19 @@ const GuaranteesTable = ({
   searchFields,
   isCreatingGuarantee,
   setIsCreatingGuarantee,
+  totalPages = 1,        // 🟢 total de páginas (del backend)
+  currentPage = 1,       // 🟢 página actual
+  onPageChange,
+  handleSortByExpirationDate
+  
+
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
   const [editErrors, setEditErrors] = useState({});
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+
 
   const whiteInputStyle = {
     "& .MuiOutlinedInput-root": {
@@ -205,9 +218,31 @@ const GuaranteesTable = ({
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
                 {displayFields.map(f => (
-                  <th key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
-                    {f.label}
-                  </th>
+                <th 
+  key={f.name} 
+  className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
+>
+  <span className="inline-flex items-center justify-center gap-1">
+    {f.label}
+    {f.name === "guarantee_expiration_date" && (
+      <button onClick={() => handleSortByExpirationDate(searchFeature,searchText)} title="Ordenar por fecha de vencimiento">
+        <SortIcon
+          fontSize="small"
+          sx={{
+            color: "white",
+            cursor: "pointer",
+            transition: "0.2s",
+            "&:hover": {
+              opacity: 0.7,
+              transform: "scale(1.1)"
+            }
+          }}
+        />
+      </button>
+    )}
+  </span>
+</th>
+
                 ))}
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">Acciones</th>
               </tr>
@@ -267,7 +302,24 @@ const GuaranteesTable = ({
                 );
               })}
             </tbody>
+            
           </table>
+          {/* paginado */}
+          <Stack spacing={30 } alignItems="center" marginY={2}>
+      <Pagination
+        count={totalPages}
+        page={currentPage}
+        color="primary"
+        onChange={(e, value) => onPageChange(value, searchFeature, searchText)} // ← callback al cambiar
+        renderItem={(item) => (
+          <PaginationItem
+            slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+            {...item}
+          />
+        )}
+      />
+    </Stack>
+
         </div>
       )}
     </div>

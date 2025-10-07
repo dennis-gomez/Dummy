@@ -19,6 +19,10 @@ const GuaranteePage = () => {
     handleAddGuarantee,
     isCreatingGuarantee,
     setIsCreatingGuarantee,
+      totalPages = 1,        // 🟢 total de páginas (del backend)
+  currentPage = 1,       // 🟢 página actual
+  fetchGuarantees,      // 🟢 función para obtener garantías
+  handleSortByExpirationDate
   } = useGuarantees();
 
   return (
@@ -66,6 +70,10 @@ const GuaranteePage = () => {
         searchFields={searchFields}
         isCreatingGuarantee={isCreatingGuarantee}
         setIsCreatingGuarantee={setIsCreatingGuarantee}
+        totalPages={totalPages}        // 🟢 total de páginas (del backend)
+        currentPage={currentPage}       // 🟢 página actual
+        onPageChange={fetchGuarantees}
+        handleSortByExpirationDate={handleSortByExpirationDate}
       />
     </div>
   );
