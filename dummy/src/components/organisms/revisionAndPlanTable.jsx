@@ -1,15 +1,17 @@
-import { useState, Fragment } from "react";
+import { useState, useCallback, Fragment } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidated";
-import Button from "../atoms/button";
-import Seeker from "../molecules/seeker";
 import InputValidatedDate from "../atoms/inputValidatedDate";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import DoubleSeeker from "../molecules/doubleSeeker";
 import { CircularProgress, Box } from "@mui/material";
+import Button from "../atoms/button";
+import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+
 
 const RevisionActionTable = ({
   fields,
@@ -18,7 +20,6 @@ const RevisionActionTable = ({
   data,
   subData,
   revisionAreaCategories,
-  revisionAreaItem,
   revisionTasksItem,
   revisionStatusOptions,
   onDeleteRevision,
@@ -27,20 +28,20 @@ const RevisionActionTable = ({
   onEditActionPlan,
   onSearch,
   isLoading,
+
   valueText,
   valueFeature,
   onChangeText,
   onChangeFeature,
+  selectedArea,
+  setSelectedArea,
+
   showForm,
   setShowForm,
   setError,
-  fetchAreaItems,
   singularName,
   tableName,
-  revisionAreaItemAll,
   getSpecificOptions
-
-
 
 }) => {
   const [editingRevisionId, setEditingRevisionId] = useState(null);
@@ -78,8 +79,6 @@ const RevisionActionTable = ({
     setEditErrors({});
   };
 
-
-
   // ====== PLAN DE ACCIÓN ======
   const handleEditPlanClick = (plan) => {
     setEditingPlanId(plan.cod_accion_plan);
@@ -97,29 +96,49 @@ const RevisionActionTable = ({
     setEditPlanData({});
   };
 
+
   // ====== OTROS ======
   const toggleRow = (id) => setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
-  const hasErrors = Object.values(editErrors).some((err) => err);
 
-  // ====== Render ======
+  const handleError = useCallback((name, errorMessage) => {
+    setEditErrors((prev) => {
+      if (prev[name] === errorMessage) return prev;
+      return { ...prev, [name]: errorMessage };
+    });
+  }, []);
+
+
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
-      {/* Búsqueda y agregar */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-          <Seeker
-            inputName="search"
-            inputPlaceholder="Buscar..."
-            btnName="Buscar"
-            selectName="Características"
-            fields={fields}
-            onClick={() => onSearch(valueFeature, valueText)}
-            valueText={valueText}
-            valueFeature={valueFeature}
-            onChangeText={onChangeText}
-            onChangeFeature={onChangeFeature}
-          />
-        </Box>
+<Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
+<DoubleSeeker
+  primaryOptions={revisionAreaCategories} // Primer select: Áreas
+  secondaryFields={fields.filter(f => f.name !== "revision_area_category_code")} // Campos menos área
+  primaryLabel="Área"
+  secondaryLabel="Filtrar por"
+  dynamicLabel="Valor"
+  primaryValue={valueFeature}
+  setPrimaryValue={onChangeFeature}
+  secondaryValue={valueFeature}
+  setSecondaryValue={onChangeFeature}
+  dynamicValue={valueText}
+  setDynamicValue={onChangeText}
+  onSearch={() => handleSearchRevisionsAndPlans(valueFeature, valueText)}
+  // Filtrado dinámico según el segundo select
+  dynamicOptions={(secondaryValue) => {
+    const field = fields.find(f => f.name === secondaryValue);
+    if (!field) return [];
+    if (field.name === "revision_area_item_code") {
+      // Filtrar por área seleccionada
+      return field.options.filter(item => item.category_cod === valueFeature);
+    }
+    return field.options || [];
+  }}
+/>
+
+</Box>
+
         <div className="flex items-center justify-center lg:justify-start lg:ml-9 w-full sm:w-auto">
           <div className="p-5 h-fit">
             <Button
@@ -134,7 +153,6 @@ const RevisionActionTable = ({
         </div>
       </div>
 
-      {/* Loading */}
       {isLoading && (
         <div className="flex items-center justify-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-5xl mx-auto mb-4">
           <CircularProgress size={24} />
@@ -170,7 +188,7 @@ const RevisionActionTable = ({
                 return (
                   <Fragment key={row.cod_revision}>
                     <tr className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-blue-50 transition`}>
-                      <td className="text-center py-3">{index + 1}</td>
+                      <td className="py-4 px-6 text-center">{index + 1}</td>
                       <td className="text-center">
                         {row.accion_plan?.length > 0 ? (
                           <button onClick={() => toggleRow(row.cod_revision)}>
@@ -185,73 +203,113 @@ const RevisionActionTable = ({
 
                       {fieldsRevision.map((f) => {
                         const options =
-                          f.name === "revision_area_category_code"
-                            ? revisionAreaCategories
-                            : f.name === "revision_area_item_code"
-                              ? isEditing
-                                ? getSpecificOptions(editRevisionData.revision_area_category_code)
-                                : getSpecificOptions(row.revision_area_category_code) // ✅ filtramos según la fila actual
-                              : f.name === "revision_task_item_code"
-                                ? revisionTasksItem
-                                : f.name === "revision_status"
-                                  ? revisionStatusOptions
+                          f.name === "revision_area_category_code" ? revisionAreaCategories
+                            : f.name === "revision_area_item_code" ? isEditing
+                              ? getSpecificOptions(editRevisionData.revision_area_category_code)
+                              : getSpecificOptions(row.revision_area_category_code)
+                              : f.name === "revision_task_item_code" ? revisionTasksItem
+                                : f.name === "revision_status" ? revisionStatusOptions
                                   : [];
 
+                        //Para visualizacion de valores
                         let value = row[f.name];
 
                         if (f.type === "select" && !isEditing) {
                           const option = options.find(opt => String(opt.value) === String(row[f.name]));
                           value = option ? option.label : value;
+                        } if (f.type === "date" && value) {
+                          value = formatDateDDMMYYYY(value);
                         }
 
-
                         return (
-                          <td key={f.name} className="text-center py-3 px-2">
+                          <td key={f.name} className="py-4 px-6 text-center align-middle text-gray-700">
                             {isEditing ? (
+
                               f.type === "select" ? (
                                 <InputValidated
                                   type="select"
                                   name={f.name}
-                                  value={String(editRevisionData[f.name] ?? "")}
+                                  placeholder={f.placeholder}
+                                  required={f.required ?? true}
+                                  validations={f.validations || []}
+                                  onError={handleError}
+                                  restriction={f.restriction}
                                   options={options}
+                                  value={String(editRevisionData[f.name] ?? "")}
                                   onChange={(e) => {
                                     const value = e.target.value;
-                                    setEditRevisionData({
-                                      ...editRevisionData,
-                                      [f.name]: value,
-                                    });
+                                    setEditRevisionData({ ...editRevisionData, [f.name]: value });
                                   }}
-                                  sx={whiteInputStyle}
+                                  sx={{
+                                    ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                      ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                      minWidth: "200px", width: "100%", minHeight: "3rem"
+                                    },
+                                  }}
                                 />
                               ) : f.type === "textarea" ? (
                                 <InputValidated
-                                  type="textarea"
                                   name={f.name}
+                                  type="textarea"
                                   value={editRevisionData[f.name] || ""}
-                                  onChange={(e) =>
-                                    setEditRevisionData({ ...editRevisionData, [f.name]: e.target.value })
-                                  }
-                                  sx={whiteInputStyle}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    setEditRevisionData({ ...editRevisionData, [f.name]: value });
+                                  }}
+                                  placeholder={f.placeholder}
+                                  validations={f.validations || []}
+                                  onError={handleError}
+                                  restriction={f.restriction}
+                                  required={f.required ?? true}
+                                  multiline
                                   rows={2}
+                                  sx={{
+                                    ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                      ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                      minHeight: "2rem", width: '200px', resize: "vertical",
+                                    },
+                                  }}
                                 />
                               ) : f.type === "date" ? (
                                 <InputValidatedDate
                                   name={f.name}
-                                  value={editRevisionData[f.name]?.split("T")[0] || ""}
-                                  onChange={(e) =>
-                                    setEditRevisionData({ ...editRevisionData, [f.name]: e.target.value })
-                                  }
-                                  sx={whiteInputStyle}
+                                  value={editRevisionData[f.name] ? editRevisionData[f.name].split("T")[0] : ""}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    setEditRevisionData({ ...editRevisionData, [f.name]: value })
+                                  }}
+                                  onError={handleError}
+                                  placeholder={f.placeholder}
+                                  restriction={f.restriction}
+                                  required={f.required ?? true}
+                                  sx={{
+                                    ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                      ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                      minWidth: "200px", width: "100%", minHeight: "3rem"
+                                    },
+                                  }}
                                 />
                               ) : (
                                 <InputValidated
-                                  type="text"
+                                  type={f.type || "text"}
                                   name={f.name}
                                   value={editRevisionData[f.name] || ""}
-                                  onChange={(e) =>
-                                    setEditRevisionData({ ...editRevisionData, [f.name]: e.target.value })
-                                  }
-                                  sx={whiteInputStyle}
+                                  placeholder={f.placeholder}
+                                  required={f.required ?? true}
+                                  restriction={f.restriction}
+                                  validations={f.validations || []}
+                                  onError={handleError}
+                                  currentId={editingRevisionId}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    setEditRevisionData({ ...editRevisionData, [f.name]: value })
+                                  }}
+                                  sx={{
+                                    ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                      ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                      minWidth: "200px", width: "100%", minHeight: "3rem"
+                                    },
+                                  }}
                                 />
                               )
                             ) : (
@@ -298,78 +356,95 @@ const RevisionActionTable = ({
 
                     {/* Planes de acción */}
                     {isOpen && row.accion_plan?.length > 0 && (
+
                       <tr>
-                        <td colSpan={fieldsRevision.length + 3} className="bg-gray-50 p-4">
-                          <div className="bg-white shadow-md rounded-lg p-4">
+                        <td colSpan={fieldsRevision.length + 3} className="px-8 py-6 bg-gray-50 text-center">
+                          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
                             <table className="min-w-full">
                               <thead>
-                                <tr>
+                                <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                                   {fieldsActionPlan.map((f) => (
-                                    <th key={f.name} className="py-3 px-2 text-center">{f.placeholder}</th>
+                                    <th key={f.name} className="py-4 px-6 font-semibold text-md capitalize tracking-wider text-center">{f.placeholder}</th>
                                   ))}
-                                  <th className="py-3 px-2 text-center">Acciones</th>
+                                  <th className="py-4 px-6 font-semibold text-md capitalize tracking-wider rounded-tr-xl text-center">Acciones</th>
                                 </tr>
                               </thead>
                               <tbody>
-                                {subData.filter(ap => ap.action_plan_cod_revision === row.cod_revision)
-                                  .map(ap => {
-                                    const isEditingPlan = editingPlanId === ap.cod_accion_plan;
-                                    return (
-                                      <tr key={ap.cod_accion_plan}>
-                                        {fieldsActionPlan.map(f => (
-                                          <td key={f.name} className="text-center py-2 px-2">
-                                            {isEditingPlan ? (
-                                              <InputValidated
-                                                type={f.type || "text"}
-                                                name={f.name}
-                                                value={editPlanData[f.name] || ""}
-                                                onChange={(e) =>
-                                                  setEditPlanData({ ...editPlanData, [f.name]: e.target.value })
-                                                }
-                                                sx={whiteInputStyle}
-                                              />
-                                            ) : (
-                                              ap[f.name] || "—"
-                                            )}
-                                          </td>
-                                        ))}
-                                        <td className="py-4 px-6 text-center align-middle">
-                                          <div className="flex justify-center space-x-3">
-                                            {isEditingPlan ? (
-                                              <>
-                                                <button
-                                                  onClick={handleSavePlan}
-                                                  disabled={Object.values(editErrors).some(err => err)}
-                                                  className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
-                                                  <SaveIcon className="mr-1" fontSize="small" /> Guardar
-                                                </button>
 
-                                                <button
-                                                  onClick={handleCancelPlan}
-                                                  className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm">
-                                                  <CancelIcon className="mr-1" fontSize="small" />Cancelar
-                                                </button>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <button
-                                                  onClick={() => handleEditPlanClick(ap)}
-                                                  aria-label="Editar Plan"
-                                                  className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"> <EditIcon />
-                                                </button>
-                                                <ModalElimination
-                                                  message={"Eliminar Plan"}
-                                                  onClick={() => onDeleteActionPlan(ap.cod_accion_plan)}
-                                                />
-                                              </>
-                                            )}
-                                          </div>
+                                {subData.filter(ap => ap.action_plan_cod_revision === row.cod_revision).map(ap => {
+                                  const isEditingPlan = editingPlanId === ap.cod_accion_plan;
+
+                                  return (
+                                    <tr key={ap.cod_accion_plan} className="hover:bg-blue-50 transition-all duration-200 even:bg-gray-50 text-center" >
+
+                                      {fieldsActionPlan.map(f => (
+                                        <td key={f.name} className="py-4 px-6 align-middle text-center">
+
+                                          {isEditingPlan ? (
+
+                                            <InputValidated
+                                              type={f.type || "text"}
+                                              name={f.name}
+                                              value={editPlanData[f.name] || ""}
+                                              placeholder={f.placeholder}
+                                              required={f.required ?? true}
+                                              restriction={f.restriction}
+                                              validations={f.validations || []}
+                                              onError={handleError}
+                                              currentId={editingRevisionId}
+                                              onChange={(e) => {
+                                                const value = e.target.value;
+                                                setEditPlanData({ ...editPlanData, [f.name]: value })
+                                              }}
+                                              sx={{
+                                                ...whiteInputStyle,
+                                                "& .MuiOutlinedInput-root": {
+                                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                                  minHeight: f.type === "textarea" ? "4rem" : "auto",
+                                                  resize: f.type === "textarea" ? "vertical" : "none",
+                                                },
+                                              }}
+                                            />
+                                          ) : (
+                                            ap[f.name] || "—"
+                                          )}
                                         </td>
+                                      ))}
+                                      <td className="py-4 px-6 text-center align-middle">
+                                        <div className="flex justify-center space-x-3">
+                                          {isEditingPlan ? (
+                                            <>
+                                              <button
+                                                onClick={handleSavePlan}
+                                                disabled={Object.values(editErrors).some(err => err)}
+                                                className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
+                                                <SaveIcon className="mr-1" fontSize="small" /> Guardar
+                                              </button>
 
-
-                                      </tr>
-                                    );
-                                  })}
+                                              <button
+                                                onClick={handleCancelPlan}
+                                                className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm">
+                                                <CancelIcon className="mr-1" fontSize="small" />Cancelar
+                                              </button>
+                                            </>
+                                          ) : (
+                                            <>
+                                              <button
+                                                onClick={() => handleEditPlanClick(ap)}
+                                                aria-label="Editar Plan"
+                                                className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"> <EditIcon />
+                                              </button>
+                                              <ModalElimination
+                                                message={"Eliminar Plan"}
+                                                onClick={() => onDeleteActionPlan(ap.cod_accion_plan)}
+                                              />
+                                            </>
+                                          )}
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
                               </tbody>
                             </table>
                           </div>
