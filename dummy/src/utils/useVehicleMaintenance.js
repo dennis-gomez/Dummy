@@ -31,20 +31,19 @@ export const useVehicleMaintenance = () => {
     const [error, setError] = useState(null); // manejo de errores
 
     const fields = [
-        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 780},
-        { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 382},
-        { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250}, 
-        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 780},
-        { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 382, restriction: "cantAfterToday" },
+        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 390},
+        { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 390},
+        { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 390}, 
+        { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 390, restriction: "cantAfterToday" },
+        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 798},
     ];
 
     const editFields = [
-        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 780},
-        { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 382},
-        { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250}, 
-        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 780},
-        { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 382, restriction: "cantAfterToday" },
-        { name: "maintenance_log_is_active", placeholder: "Estado", required: true, width: 382 },
+        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: allVehiclesItems, width: 200},
+        { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 200},
+        { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 170}, 
+        { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 170, restriction: "cantAfterToday" },
+        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 300},
     ];
 
     // Estados para filtrado
@@ -72,10 +71,13 @@ export const useVehicleMaintenance = () => {
         try {
             setLoading(true);
             let response;
+            console.log("no")
             if (vehicleId === "Todos" && !String(text).trim()) {
+                console.log("SI")
                 response = await getActiveMaintenanceLogs();
                 setError(null);
             } else {
+                console.log("NO");
                 response = await findMaintenanceLogs(vehicleId, field, text, currentPage);
                 setError(null);
             }
@@ -147,9 +149,9 @@ export const useVehicleMaintenance = () => {
     };
 
     // Inhabilitar registro
-    const handleDelete = async (cod_fuel_log) => {
+    const handleDelete = async (cod_maintenance) => {
         try {
-            const response = await deleteMaintenanceLog(cod_fuel_log);
+            const response = await deleteMaintenanceLog(cod_maintenance);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
                 await fetchMaintenance();
@@ -197,28 +199,32 @@ export const useVehicleMaintenance = () => {
 
     return {
         logs,
+        allVehiclesItems,
         //page,
         //totalPages,
-        //loading,
-        //error,
-        //showForm,
-        //setShowForm,
+        loading,
+        error,
+        setError,
+        showForm,
+        setShowForm,
 
-        //fields,
-        //editFields,
+        fields,
+        editFields,
 
-        //selectedVehicle,
-        //setSelectedVehicle,
-        //searchField,
-        //setSearchField,
-        //searchText,
-        //setSearchText,
+        maintenanceTypes, 
 
-        //handleSearch,
+        selectedVehicle,
+        setSelectedVehicle,
+        searchField,
+        setSearchField,
+        searchText,
+        setSearchText,
+
+        handleSearch,
         //handleResetSearch,
-        //handleSubmit,
-        //handleEdit,
-        //handleDelete,
+        handleSubmit,
+        handleEdit,
+        handleDelete,
         //setPage,
     };
 };

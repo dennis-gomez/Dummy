@@ -55,7 +55,7 @@ export const addMaintenanceLog = async (formData) => {
         const response = await axios.post(API_URL + "add", formData, {
             headers: { "Content-Type": "application/json" },
         });
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
@@ -74,7 +74,7 @@ export const deleteMaintenanceLog = async (cod_maintenance) => {
                 headers: { "Content-Type": "application/json" },
             }
         );
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
@@ -88,7 +88,7 @@ export const updateMaintenanceLog = async (formData) => {
         const response = await axios.put(API_URL + "update", formData, {
             headers: { "Content-Type": "application/json" },
         });
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
