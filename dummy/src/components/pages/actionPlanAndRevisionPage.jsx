@@ -33,7 +33,7 @@ const RevisionActionPage = () => {
         revisionTasksItem,
         revisionStatusOptions,
 
-        revisionAreaItem2,
+        revisionAreaItemAll,
         fetchAllCategoryItems,
         getSpecificOptions
 
@@ -72,6 +72,7 @@ const RevisionActionPage = () => {
             fields={fields}
             onSubmit={handleAdd}
             titleBtn="Guardar Revisión"
+            funct={fetchAreaItems}
           />
         </Box>
       )}
@@ -132,7 +133,7 @@ const RevisionActionPage = () => {
         singularName="Revisión"
         tableName="Revisiones"
 
-        revisionAreaItem2={revisionAreaItem2}
+        revisionAreaItemAll={revisionAreaItemAll}
         fetchAllCategoryItems={fetchAllCategoryItems}
 
 

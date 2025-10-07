@@ -6,7 +6,9 @@ import InputValidatedDate from "../atoms/inputValidatedDate";
 import InputValidatedFile from "../atoms/inputValidatedFile";
 import { useState } from "react";
 
-function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
+function Form({ fields, onSubmit, titleBtn, onCancel, values, funct, }) {
+  
+  
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
   );
@@ -17,8 +19,13 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
+    console.log("Handle Change - Name:", name);
+    console.log("Handle Change - Name target:", e.target.name);
+
     if (e.target.type === "file") {
       setFormData({ ...formData, [name]: files[0] || null });
+    } else if (e.target.name === "revision_area_item_code") {
+      funct();
     } else {
       setFormData({ ...formData, [name]: value });
     }
