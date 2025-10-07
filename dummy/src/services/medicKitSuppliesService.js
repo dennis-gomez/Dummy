@@ -3,12 +3,12 @@ import axios from "axios";
 const API_URL = "http://localhost:3000/supplies/";
 
 // Obtener kitMedico
-export const getSuppliesById = async (cod_medic_kit) => {
+export const getSuppliesById = async (cod_medic_kit,searchActive) => {
     try {
         const response = await axios.get(
             API_URL,
             {
-                 params: { cod_medic_kit },
+                 params: { cod_medic_kit,searchActive },
                 headers: {
                 "Content-Type": "application/json"
                 },

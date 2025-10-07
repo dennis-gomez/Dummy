@@ -16,6 +16,8 @@ export const useMedicKits = () => {
   const [isCreatingSupply, setIsCreatingSupply] = useState(false);
   const [error, setError] = useState(null);
 
+  const [searchActive, setSearchActive] = useState(true);
+
   const [searchAnSupply, setSearchAnSupply] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -33,10 +35,16 @@ export const useMedicKits = () => {
     { key: "supply_description", label: "Descripción", type: "textarea", placeholder: "Descripción", required: true },
   ];
 
+
+  const options = [
+  { name: 1, placeholder: 'Activos' },
+  { name: 0, placeholder: 'Desactivados' },
+];
   const searchFields = [
     { name: "medic_kit_location", placeholder: "Localización de botiquín" },
     { name: "medic_kit_details", placeholder: "Detalles de botiquín" },
     { name: "supply_description", placeholder: "Suplementos" },
+    {name: "medic_kit_is_active", placeholder: "Estados" , options:options, type: "select" }
   ];
 
   const SubTittle = "Lista de suplementos médicos";
@@ -88,7 +96,15 @@ export const useMedicKits = () => {
         setSearchTerm(text);
         setError(null);
       } else {
+        console.log("Searching medic kits by feature:", feature, "with text:", text);
         const medicKitsResp = await searchMedicKitsByFeature(text, feature);
+        
+        if(feature==="medic_kit_is_active" && text===1){
+        setSearchActive(true);
+        }else if(feature==="medic_kit_is_active" && text===0){
+          setSearchActive(false);
+        }
+
         if (!medicKitsResp?.length) {
           ModalAlert("Error", "No se encontró ningún botiquín con esos criterios.", "error");
           return;
@@ -119,7 +135,7 @@ export const useMedicKits = () => {
 
       const supplies = searchAnSupply && searchTerm
         ? await orderSuppliesByRelevance(cod_medic_kit, searchTerm)
-        : await getSuppliesById(cod_medic_kit);
+        : await getSuppliesById(cod_medic_kit,searchActive);
 
       setSuppliesList(supplies);
       setError(null);
@@ -207,10 +223,12 @@ export const useMedicKits = () => {
   // -------------------------
   // Eliminar botiquín
   // -------------------------
-  const handleEliminateMedicKit = async (cod_MedicKit) => {
+  const handleEliminateMedicKit = async (cod_MedicKit,is_Active) => {
     try {
+
+      setSearchActive(true);
       
-      await deleteMedicKit(cod_MedicKit);
+      await deleteMedicKit(cod_MedicKit,is_Active);
       await fetchMedicKits();
       ModalAlert("Éxito", "Kit médico eliminado", "success");
     } catch (err) {
@@ -266,5 +284,6 @@ export const useMedicKits = () => {
     handleEditSupply,
     handleEliminateMedicKit,
     handleEliminateSupply,
+    
   };
 };
