@@ -18,6 +18,7 @@ export const usePMRevisionAndPlan = () => {
 
     const [revisionAreaCategories, setRevisionAreaCategories] = useState([]);
     const [revisionAreaItem, setRevisionAreaItem] = useState([]);
+    const [revisionAreaItemAll, setRevisionAreaItemAll] = useState([]);
     const [revisionTasksItem, setRevisionTasksItem] = useState([]);
 
 
@@ -45,7 +46,7 @@ export const usePMRevisionAndPlan = () => {
 
     const fieldsRevision = [
         { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
-        { name: "revision_area_item_code", placeholder: "Categoría", type: "select", width: 250, options: revisionAreaItem, required: true },
+        { name: "revision_area_item_code", placeholder: "Categoría", type: "select", width: 250, options: revisionAreaItemAll, required: true },
         { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
 
         { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday"},
@@ -67,7 +68,7 @@ export const usePMRevisionAndPlan = () => {
 
 const getSpecificOptions = (categoryCode) => {
   console.log("Category Code:", categoryCode);
-  return revisionAreaItem.filter(item => item.category_cod === categoryCode);
+  return revisionAreaItemAll.filter(item => item.category_cod === categoryCode);
 };
 
 
@@ -115,7 +116,7 @@ const getSpecificOptions = (categoryCode) => {
         try {
             setError(null);
             const items = await getAllItemsByService(Number(import.meta.env.VITE_PM_AREAS_SERVICE_CODE));
-            setRevisionAreaItem(
+            setRevisionAreaItemAll(
                 items.map((i) => ({
                     name: i.cod_item,
                     placeholder: i.item_name,
@@ -253,7 +254,7 @@ const getSpecificOptions = (categoryCode) => {
     const handleEditRevision = async (cod_revision, formData) => {
         try {
             setError(null);
-            /*
+            
             const selectedAction1 = revisionTasksItem.find((i) => i.value === formData.revision_task_item_code);
             const selectedAction2 = revisionAreaItem.find((i) => i.value === formData.revision_area_item_code);
 
@@ -273,7 +274,6 @@ const getSpecificOptions = (categoryCode) => {
                     revision_area_item_code: selectedAction2.name,
                 }),
             };
-            */
 
             await updateRevision(cod_revision, formData);
             ModalAlert("Éxito", "Registro editado exitosamente.", "success");
@@ -368,6 +368,7 @@ const getSpecificOptions = (categoryCode) => {
 
         revisionAreaCategories,
         revisionAreaItem,
+        revisionAreaItemAll,
         revisionTasksItem,
         revisionStatusOptions,
 

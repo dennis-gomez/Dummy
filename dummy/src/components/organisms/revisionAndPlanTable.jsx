@@ -37,8 +37,9 @@ const RevisionActionTable = ({
   fetchAreaItems,
   singularName,
   tableName,
-
+  revisionAreaItemAll,
   getSpecificOptions
+
 
 
 }) => {
@@ -187,7 +188,9 @@ const RevisionActionTable = ({
                           f.name === "revision_area_category_code"
                             ? revisionAreaCategories
                             : f.name === "revision_area_item_code"
-                              ? isEditing ? revisionAreaItem.filter(item => item.category_cod === editRevisionData.revision_area_category_code) : revisionAreaItem
+                              ? isEditing
+                                ? getSpecificOptions(editRevisionData.revision_area_category_code)
+                                : getSpecificOptions(row.revision_area_category_code) // ✅ filtramos según la fila actual
                               : f.name === "revision_task_item_code"
                                 ? revisionTasksItem
                                 : f.name === "revision_status"
@@ -195,9 +198,12 @@ const RevisionActionTable = ({
                                   : [];
 
                         let value = row[f.name];
-                        if (f.type === "select") {
-                          value = options.find(opt => String(opt.value) === String(row[f.name]))?.label || "";
+
+                        if (f.type === "select" && !isEditing) {
+                          const option = options.find(opt => String(opt.value) === String(row[f.name]));
+                          value = option ? option.label : value;
                         }
+
 
                         return (
                           <td key={f.name} className="text-center py-3 px-2">
@@ -210,10 +216,10 @@ const RevisionActionTable = ({
                                   options={options}
                                   onChange={(e) => {
                                     const value = e.target.value;
-                                      setEditRevisionData({
-                                        ...editRevisionData,
-                                        [f.name]: value,
-                                      });
+                                    setEditRevisionData({
+                                      ...editRevisionData,
+                                      [f.name]: value,
+                                    });
                                   }}
                                   sx={whiteInputStyle}
                                 />
@@ -255,21 +261,38 @@ const RevisionActionTable = ({
                         );
                       })}
 
-                      <td className="text-center">
-                        {isEditing ? (
-                          <>
-                            <button onClick={handleSaveRevision} disabled={hasErrors}><SaveIcon /></button>
-                            <button onClick={handleCancelRevision}><CancelIcon /></button>
-                          </>
-                        ) : (
-                          <>
-                            <button onClick={() => handleEditRevisionClick(row)}><EditIcon /></button>
-                            <ModalElimination
-                              message={`Eliminar ${singularName}`}
-                              onClick={() => onDeleteRevision(row.cod_revision)}
-                            />
-                          </>
-                        )}
+
+                      <td className="py-4 px-6 text-center align-middle">
+                        <div className="flex justify-center space-x-3">
+                          {isEditing ? (
+                            <>
+                              <button
+                                onClick={handleSaveRevision}
+                                disabled={Object.values(editErrors).some(err => err)}
+                                className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
+                                <SaveIcon className="mr-1" fontSize="small" /> Guardar
+                              </button>
+
+                              <button
+                                onClick={handleCancelRevision}
+                                className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm">
+                                <CancelIcon className="mr-1" fontSize="small" />Cancelar
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleEditRevisionClick(row)}
+                                aria-label="Editar PM"
+                                className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"> <EditIcon />
+                              </button>
+                              <ModalElimination
+                                message={`Eliminar ${singularName}`}
+                                onClick={() => onDeleteRevision(row.cod_revision)}
+                              />
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
 
@@ -310,22 +333,40 @@ const RevisionActionTable = ({
                                             )}
                                           </td>
                                         ))}
-                                        <td className="text-center">
-                                          {isEditingPlan ? (
-                                            <>
-                                              <button onClick={handleSavePlan}><SaveIcon /></button>
-                                              <button onClick={handleCancelPlan}><CancelIcon /></button>
-                                            </>
-                                          ) : (
-                                            <>
-                                              <button onClick={() => handleEditPlanClick(ap)}><EditIcon /></button>
-                                              <ModalElimination
-                                                message="Eliminar Plan"
-                                                onClick={() => onDeleteActionPlan(ap.cod_accion_plan)}
-                                              />
-                                            </>
-                                          )}
+                                        <td className="py-4 px-6 text-center align-middle">
+                                          <div className="flex justify-center space-x-3">
+                                            {isEditingPlan ? (
+                                              <>
+                                                <button
+                                                  onClick={handleSavePlan}
+                                                  disabled={Object.values(editErrors).some(err => err)}
+                                                  className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
+                                                  <SaveIcon className="mr-1" fontSize="small" /> Guardar
+                                                </button>
+
+                                                <button
+                                                  onClick={handleCancelPlan}
+                                                  className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm">
+                                                  <CancelIcon className="mr-1" fontSize="small" />Cancelar
+                                                </button>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <button
+                                                  onClick={() => handleEditPlanClick(ap)}
+                                                  aria-label="Editar Plan"
+                                                  className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"> <EditIcon />
+                                                </button>
+                                                <ModalElimination
+                                                  message={"Eliminar Plan"}
+                                                  onClick={() => onDeleteActionPlan(ap.cod_accion_plan)}
+                                                />
+                                              </>
+                                            )}
+                                          </div>
                                         </td>
+
+
                                       </tr>
                                     );
                                   })}
