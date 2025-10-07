@@ -19,9 +19,6 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    console.log("Handle Change - Name:", name);
-    console.log("Handle Change - Name target:", e.target.name);
-
     if (e.target.type === "file") {
       setFormData({ ...formData, [name]: files[0] || null });
     } else {

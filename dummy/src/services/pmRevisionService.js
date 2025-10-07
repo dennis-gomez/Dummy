@@ -17,6 +17,11 @@ export const getFindRevisions = async (feature, text) => {
   return res.data;
 };
 
+export const getFindRevisionsAt = async (revision_area_category_code, feature, text) => {
+  const res = await axios.get(`${API_URL}/find`, { params: { VITE_PM_AREAS_SERVICE_CODE, revision_area_category_code, feature, text } });
+  return res.data;
+};
+
 export const addRevision = async (data) => {
   const res = await axios.post(`${API_URL}/add`, data);
   return res.data;
