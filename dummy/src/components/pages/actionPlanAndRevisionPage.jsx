@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import Button from "../atoms/button";
 import RevisionActionTable from "../organisms/revisionAndPlanTable";
-import Form from "../organisms/form"; // formulario para agregar revisión
+import Form from "../organisms/formDouble"; // formulario para agregar revisión
 import { usePMRevisionAndPlan } from "../../utils/usePMRevisionAndPlan";
 
 const RevisionActionPage = () => {

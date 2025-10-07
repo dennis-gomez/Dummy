@@ -6,11 +6,13 @@ import InputValidatedDate from "../atoms/inputValidatedDate";
 import InputValidatedFile from "../atoms/inputValidatedFile";
 import { useState } from "react";
 
-function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
-  
-  
+function Form({ fields, onSubmit, titleBtn, onCancel, values, funct }) {
+  // 🔹 Inicializar revision_status en "true" (Pasó)
   const [formData, setFormData] = useState(
-    fields.reduce((acc, field) => ({ ...acc, [field.name]: "" }), {})
+    fields.reduce((acc, field) => ({
+      ...acc,
+      [field.name]: field.name === "revision_status" ? "true" : "",
+    }), {})
   );
 
   const [errors, setErrors] = useState({});
@@ -19,13 +21,15 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
-    console.log("Handle Change - Name:", name);
-    console.log("Handle Change - Name target:", e.target.name);
-
     if (e.target.type === "file") {
       setFormData({ ...formData, [name]: files[0] || null });
     } else {
-      setFormData({ ...formData, [name]: value });
+      setFormData((prev) => ({ ...prev, [name]: value }));
+
+      // 🔹 Llamar fetchAreaItems si cambia el área
+      if (name === "revision_area_category_code") {
+        funct(value);
+      }
     }
   };
 
@@ -42,11 +46,17 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, }) {
 
   const hasError = Object.values(errors).some((err) => !!err);
 
+  // 🔹 Determinar si mostrar campos de action_plan
+  const showActionPlan = formData.revision_status !== "true";
+
   return (
     <Box sx={{ p: 3, margin: "0 auto", maxWidth: 850, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           {fields.map((field) => {
+            // 🔹 Omitir campos de action_plan si showActionPlan es false
+            if (field.name.startsWith("action_plan") && !showActionPlan) return null;
+
             const xs = field.grid || (field.type === "textarea" ? 12 : 4);
 
             return (
