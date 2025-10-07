@@ -7,7 +7,7 @@ const API_URL = "http://localhost:3000/vehicle-maintenance/";
  */
 export const getAllMaintenanceLogs = async (page = 1, limit = 10) => {
     try {
-        const response = await axios.get(API_URL + "all", {
+        const response = await axios.get(API_URL, {
             params: { page, limit },
             headers: { "Content-Type": "application/json" },
         });

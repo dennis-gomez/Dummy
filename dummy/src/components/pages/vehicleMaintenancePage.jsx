@@ -7,8 +7,9 @@ function VehicleMaintenance() {
     const {
         logs,
         allVehiclesItems,
-        //page,
-        //totalPages,
+        page,
+        totalPages,
+
         loading,
         error,
         setError,
@@ -30,6 +31,7 @@ function VehicleMaintenance() {
         handleSubmit,
         handleEdit,
         handleDelete,
+        handlePageChange
         //setPage,
     } = useVehicleMaintenance();
 
@@ -90,6 +92,9 @@ function VehicleMaintenance() {
             {/* Tabla de registros */}
             <MaintenanceTable
                 fields={fields}
+                totalPages={totalPages}
+                currentPage={page}
+                onPageChange={handlePageChange}
                 editFields={editFields}
                 logs={logs}
                 allVehiclesItems={allVehiclesItems} 

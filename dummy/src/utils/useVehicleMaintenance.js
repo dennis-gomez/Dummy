@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { 
     getActiveMaintenanceLogs, 
+    getAllMaintenanceLogs,
     findMaintenanceLogs, 
     addMaintenanceLog, 
     deleteMaintenanceLog, 
@@ -22,6 +23,8 @@ export const useVehicleMaintenance = () => {
     const [logs, setLogs] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5); // 10 registros por página por defecto
+
 
     const [activeVehiclesItems, setActiveVehiclesItems] = useState([]); //opciones de combobox de vehiculos activos (agregar)
     const [allVehiclesItems, setAllVehiclesItems] = useState([]); //opciones de combobox de vehiculos activos y inactivos (editar)
@@ -71,18 +74,19 @@ export const useVehicleMaintenance = () => {
         try {
             setLoading(true);
             let response;
-            console.log("no")
-            if (vehicleId === "Todos" && !String(text).trim()) {
-                console.log("SI")
-                response = await getActiveMaintenanceLogs();
+            if (field === "Inactivos") {
+                response = await getAllMaintenanceLogs(currentPage, pageSize);
+                setError(null);
+            } else if (vehicleId === "Todos" && !String(text).trim()) {
+                response = await getActiveMaintenanceLogs(currentPage, pageSize);
                 setError(null);
             } else {
-                console.log("NO");
-                response = await findMaintenanceLogs(vehicleId, field, text, currentPage);
+                response = await findMaintenanceLogs(vehicleId, field, text, currentPage, pageSize);
                 setError(null);
             }
             setLogs(response.data);
-            setTotalPages(response.data.totalPages || 1);
+            setTotalPages(response.totalPages || 1);
+
         } catch (error) {
             const message = error.response?.data?.message || "Error al obtener los registros.";
             ModalAlert("Error", message, "error");
@@ -197,11 +201,17 @@ export const useVehicleMaintenance = () => {
         init();
     }, []);
 
+    const handlePageChange = async (newPage) => {
+        setPage(newPage);
+        await fetchMaintenance(selectedVehicle, searchField, searchText, newPage);
+    };
+
+
     return {
         logs,
         allVehiclesItems,
-        //page,
-        //totalPages,
+        page,
+        totalPages,
         loading,
         error,
         setError,
@@ -225,6 +235,7 @@ export const useVehicleMaintenance = () => {
         handleSubmit,
         handleEdit,
         handleDelete,
+        handlePageChange,
         //setPage,
     };
 };

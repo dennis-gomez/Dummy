@@ -16,9 +16,17 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import SortIcon from '@mui/icons-material/Sort';
 
 function MaintenanceTable({
     logs,
+    totalPages,
+    currentPage,
     allVehiclesItems,
     isLoading,
     showForm,
@@ -35,6 +43,7 @@ function MaintenanceTable({
     onEdit,
     onSearch,
     onToggleForm,
+    onPageChange,
 }){
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
@@ -124,12 +133,12 @@ function MaintenanceTable({
                     value={selectedVehicle}
                     onChange={(e) => setSelectedVehicle(e.target.value)}
                 >
-                <MenuItem value="Todos">Todos</MenuItem>
-                {allVehiclesItems.map((veh) => (
-                    <MenuItem key={veh.value} value={veh.value}>
-                        {veh.label}
-                    </MenuItem>
-                ))}
+                    <MenuItem value="Todos">Todos</MenuItem>
+                    {allVehiclesItems.map((veh) => (
+                        <MenuItem key={veh.value} value={veh.value}>
+                            {veh.label}
+                        </MenuItem>
+                    ))}
                 </Select>
             </FormControl>
 
@@ -137,12 +146,13 @@ function MaintenanceTable({
                 <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
                 <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
                 {fields
-                .filter((field) => field.name !== "cod_vehicle")
-                .map((field) => (
-                    <MenuItem key={field.name} value={field.name}>
-                    {field.placeholder}
-                    </MenuItem>
-                ))}
+                    .filter((field) => field.name !== "cod_vehicle")
+                    .map((field) => (
+                        <MenuItem key={field.name} value={field.name}>
+                        {field.placeholder}
+                        </MenuItem>
+                    ))}
+                    <MenuItem value="Inactivos">Inactivos</MenuItem>
                 </Select>
             </FormControl>
 
@@ -313,6 +323,20 @@ function MaintenanceTable({
                 })}
                 </tbody>
             </table>
+            <Stack spacing={30 } alignItems="center" marginY={2}>
+                <Pagination
+                    count={totalPages}
+                    page={currentPage}
+                    color="primary"
+                    onChange={(e, value) => onPageChange(value)}
+                    renderItem={(item) => (
+                    <PaginationItem
+                        slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                        {...item}
+                    />
+                    )}
+                />
+            </Stack>
             </div>
         )}
         </>
