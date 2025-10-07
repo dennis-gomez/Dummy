@@ -28,31 +28,31 @@ export const usePMRevisionAndPlan = () => {
     ];
 
     const fields = [
-        { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
-        { name: "revision_area_item_code", placeholder: "Categoría", type: "select", width: 250, options: revisionAreaItem, required: true },
-        { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
+        { name: "revision_area_category_code", placeholder: "Área revisada", type: "select", width: 250, options: revisionAreaCategories, required: true },
+        { name: "revision_area_item_code", placeholder: "Objetos revisados", type: "select", width: 250, options: revisionAreaItem, required: true },
+        { name: "revision_task_item_code", placeholder: "Tarea realizada", type: "select", width: 250, options: revisionTasksItem, required: true },
 
-        { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday" },
+        { name: "revision_date", placeholder: "Fecha de Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday" },
+        { name: "revision_quantity", placeholder: "Cantidad Revisada", width: 250, type: "number", required: true },
         { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
-        { name: "revision_quantity", placeholder: "Cantidad", width: 250, type: "number", required: true },
         { name: "revision_status", placeholder: "Estado de la Revisión", width: 250, type: "select", options: revisionStatusOptions, required: true },
-        { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
         { name: "revision_date_follow_up", placeholder: "Fecha de Seguimiento", type: "date", width: 250, restriction: "cantBeforeToday" },
+        { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
 
         { name: "action_plan_rev_quantity_failed", placeholder: "Cantidad Fallida", type: "number", width: 250, required: true },
-        { name: "action_plan_details", placeholder: "Detalles del Plan de Acción", type: "textarea", width: 780, required: true },
         { name: "action_plan_responsible_name", placeholder: "Responsable a Cargo", type: "text", width: 250, required: true },
+        { name: "action_plan_details", placeholder: "Detalles del Plan de Acción", type: "textarea", width: 780, required: true },
+
     ];
 
     const fieldsRevision = [
+        { name: "revision_date", placeholder: "Fecha de Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday"},
         { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
-        { name: "revision_area_item_code", placeholder: "Categoría", type: "select", width: 250, options: revisionAreaItemAll, required: true },
+        { name: "revision_area_item_code", placeholder: "Item", type: "select", width: 250, options: revisionAreaItemAll, required: true },
         { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
-
-        { name: "revision_date", placeholder: "Fecha de la Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday"},
-        { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
-        { name: "revision_quantity", placeholder: "Cantidad", width: 250, type: "number", required: true },
+        { name: "revision_quantity", placeholder: "Cantidad Revisada", width: 250, type: "number", required: true },
         { name: "revision_status", placeholder: "Estado de la Revisión", width: 250, type: "select", options: revisionStatusOptions, required: true },
+        { name: "revision_responsible_name", placeholder: "Responsable", width: 250, type: "text" },
         { name: "revision_observations", placeholder: "Observaciones", width: 780, type: "textarea", required: false },
         { name: "revision_date_follow_up", placeholder: "Fecha de Seguimiento", type: "date", width: 250, restriction: "cantBeforeToday" },
     ];
@@ -63,6 +63,7 @@ export const usePMRevisionAndPlan = () => {
         { name: "action_plan_responsible_name", placeholder: "Responsable a Cargo", type: "text", width: 250, required: true },
     ];
 
+    const [selectedArea, setSelectedArea] = useState("Todos");
     const [searchText, setSearchText] = useState("");
     const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
 
@@ -135,7 +136,6 @@ const getSpecificOptions = (categoryCode) => {
     };
 
     const fetchAreaItems = async (revision_area_category_code) => {
-
         try {
             setError(null);
             const items = await getItems(
@@ -152,7 +152,6 @@ const getSpecificOptions = (categoryCode) => {
                     category_cod: i.cod_category,
                 }))
             );
-            fetchAllCategoryItems();
         } catch (err) {
             const message = err.response?.data?.message || "Error al obtener items.";
             setError(message);
@@ -184,6 +183,45 @@ const getSpecificOptions = (categoryCode) => {
             ModalAlert("Error", message, "error");
         }
     };
+
+
+
+
+
+/*
+    // Listado de registros para 3 selects y búsqueda
+    const handleFuncSearch = async (revision_area_category_code = "", field = "", text = "") => {
+        try {
+            setLoading(true);
+            let response;
+            if (revision_area_category_code === "Todos" && !String(text).trim()) {
+                response = await fetchData();
+                setError(null);
+            } else {
+                response = await getFindRevisionsAt(revision_area_category_code, field, text);
+                setError(null);
+            }
+            setFuelLogs(response.data);
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al obtener los registros.";
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+    // Resetear filtros y cargar todos los registros
+    const handleResetSearch = async () => {
+        setSelectedVehicle("Todos");
+        setSearchField(fields[0]?.name || "");
+        setSearchText("");
+        await fetchFuelLogs();
+    };
+
+*/
+
+
 
 
 
