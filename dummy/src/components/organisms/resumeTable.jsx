@@ -7,9 +7,9 @@ const ResumeTable = ({ fields, data, tableName }) => {
     vencidas: 0,
     proximas_a_vencer: 0,
     dinero_activo: 0,
-    dinero_pendiente: 0,
+    dinero_por_vencer: 0,
     dinero_activo_usd: 0,
-    dinero_pendiente_usd: 0,
+    dinero_por_vencer_usd: 0,
   };
 
   return (
@@ -43,18 +43,18 @@ const ResumeTable = ({ fields, data, tableName }) => {
             <tbody>
               {data.map((row, index) => {
                 // Totales por fila
-                const totalGarantias = (row.activas ?? 0) + (row.vencidas ?? 0) + (row.proximas_a_vencer ?? 0);
-                const totalUSD = (row.dinero_activo_usd ?? 0) + (row.dinero_pendiente_usd ?? 0);
-                const totalColones = (row.dinero_activo ?? 0) + (row.dinero_pendiente ?? 0);
+                const totalGarantias = (row.activas ?? 0) + (row.vencidas ?? 0);
+                const totalUSD = (row.dinero_activo_usd ?? 0);
+                const totalColones = (row.dinero_activo ?? 0);
 
                 // Acumular para totales globales
                 globalTotals.activas += row.activas ?? 0;
                 globalTotals.vencidas += row.vencidas ?? 0;
                 globalTotals.proximas_a_vencer += row.proximas_a_vencer ?? 0;
                 globalTotals.dinero_activo += row.dinero_activo ?? 0;
-                globalTotals.dinero_pendiente += row.dinero_pendiente ?? 0;
+                globalTotals.dinero_por_vencer += row.dinero_por_vencer ?? 0;
                 globalTotals.dinero_activo_usd += row.dinero_activo_usd ?? 0;
-                globalTotals.dinero_pendiente_usd += row.dinero_pendiente_usd ?? 0;
+                globalTotals.dinero_por_vencer_usd += row.dinero_por_vencer_usd ?? 0;
 
                 return (
                   <tr
@@ -84,21 +84,21 @@ const ResumeTable = ({ fields, data, tableName }) => {
                   if (f.name === "vencidas") val = globalTotals.vencidas;
                   if (f.name === "proximas_a_vencer") val = globalTotals.proximas_a_vencer;
                   if (f.name === "dinero_activo") val = globalTotals.dinero_activo;
-                  if (f.name === "dinero_pendiente") val = globalTotals.dinero_pendiente;
+                  if (f.name === "dinero_por_vencer") val = globalTotals.dinero_por_vencer;
                   if (f.name === "dinero_activo_usd") val = globalTotals.dinero_activo_usd;
-                  if (f.name === "dinero_pendiente_usd") val = globalTotals.dinero_pendiente_usd;
+                  if (f.name === "dinero_por_vencer_usd") val = globalTotals.dinero_por_vencer_usd;
                   return (
                     <td key={f.name} className="py-4 px-6 text-center">{val}</td>
                   );
                 })}
                 <td className="py-4 px-6 text-center font-semibold">
-                  {globalTotals.activas + globalTotals.vencidas + globalTotals.proximas_a_vencer}
+                  {globalTotals.activas + globalTotals.vencidas}
                 </td>
                 <td className="py-4 px-6 text-center font-semibold">
-                  {globalTotals.dinero_activo_usd + globalTotals.dinero_pendiente_usd}
+                  {globalTotals.dinero_activo_usd}
                 </td>
                 <td className="py-4 px-6 text-center font-semibold">
-                  {globalTotals.dinero_activo + globalTotals.dinero_pendiente}
+                  {globalTotals.dinero_activo}
                 </td>
                 <td></td>
               </tr>
