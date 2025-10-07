@@ -13,7 +13,7 @@ const navConfig = [
     sub: [
       { label: 'Gestión de Vehículos', path: '/vehiculos' },
       { label: 'Registro de Combustible', path: '/vehiculos/registro-combustible' },
-      { label: 'Mantenimiento de Vehículos', path: '/vehiculos/tipos' },
+      { label: 'Mantenimiento de Vehículos', path: '/vehiculos/registro-mantenimientos' },
     ],
   },
   {

@@ -17,6 +17,7 @@ import GuaranteePage from './components/pages/guaranteePage'
 import PettyCashPage from './components/pages/pettyCashPage'
 import PettyCashDetailPage from './components/pages/pettyCashDetailPage'
 import ActionPlanAndRevisionPage from './components/pages/actionPlanAndRevisionPage'
+import VehicleMaintenance from './components/pages/vehicleMaintenancePage'
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             <Route path="/caja/gestion" element={<PettyCashPage />} />
             <Route path="/caja/registros-desembolsos/:cashBoxId" element={<PettyCashDetailPage />} />
             <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
+            <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} />
           </Routes>
         </main>
         <Footer />
