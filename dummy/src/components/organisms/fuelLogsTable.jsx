@@ -7,6 +7,9 @@ import {
   MenuItem,
   TextField,
   Box,
+  Stack,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
 import Button from "../atoms/button";
 import Swal from "sweetalert2";
@@ -14,11 +17,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
 function FuelLogsTable({
     fields,
+    page,
+    onPageChange,
+    totalPages,
     editFields,
     fuelLogs,
     allVehiclesItems,
@@ -216,6 +224,7 @@ function FuelLogsTable({
         {/* Tabla */}
         {fuelLogs.length > 0 && (
             <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
+
             <table className="min-w-full">
                 <thead>
                 <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
@@ -319,6 +328,22 @@ function FuelLogsTable({
                 })}
                 </tbody>
             </table>
+            
+            <Stack spacing={30 } alignItems="center" marginY={2}>
+                <Pagination
+                    count= {totalPages}
+                    page={page}
+                    color="primary"
+                    onChange={(e, value) => onPageChange(value)}
+                    renderItem={(item) => (
+                    <PaginationItem
+                        slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                        {...item}
+                    />
+                    )}
+                />
+            </Stack>
+
             </div>
         )}
         </>

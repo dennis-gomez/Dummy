@@ -45,7 +45,7 @@ function App() {
             <Route path="/caja/gestion" element={<PettyCashPage />} />
             <Route path="/caja/registros-desembolsos/:cashBoxId" element={<PettyCashDetailPage />} />
             <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
-            <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} />
+            <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} /> {/*mantenimientos de vehiculos*/}
           </Routes>
         </main>
         <Footer />
