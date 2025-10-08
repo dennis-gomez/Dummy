@@ -15,6 +15,7 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SortIcon from '@mui/icons-material/Sort';
+import ReactivationModal from "../molecules/reactivationModal";
 
 const GuaranteesTable = ({
   data,
@@ -43,6 +44,12 @@ const GuaranteesTable = ({
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
   const [valueOrder, setSortOrder] = useState(true); // Estado para orden de clasificación
+
+const deleteGuaranteOrReactivated = (id,status) => {
+  setSearchFeature("");
+  setSearchText("");
+  onDelete(id,status)
+}
 
   const change=()=>{
     setSortOrder(!valueOrder)
@@ -291,6 +298,7 @@ const GuaranteesTable = ({
                           </button>
                         </div>
                       ) : (
+                          row.guarantee_status!=4 ? (
                         <div className="flex justify-center gap-3">
                           <button
                             onClick={() => handleEditClick(row)}
@@ -300,9 +308,15 @@ const GuaranteesTable = ({
                           </button>
                           <ModalElimination
                             message={`Eliminar ${singularName}`}
-                            onClick={() => onDelete(row.cod_guarantee)}
+                            onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee,4)}
                           />
                         </div>
+                        ):(
+                          <ReactivationModal
+                            message={"¿Quieres reactivar esta garantía?"}
+                            onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee,1)}
+                          />
+                        )
                       )}
                     </td>
                   </tr>

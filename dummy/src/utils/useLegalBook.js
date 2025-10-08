@@ -22,7 +22,8 @@ export const useBooks = () => {
     { value: 1, label: "Activo" },
     { value: 2, label: "En uso" },
     { value: 3, label: "Archivado" },
-    { value: 4, label: "Dado de baja" }
+    { value: 4, label: "Dado de baja" },
+    { value: 5, label: "Desactivados" },
   ];
 
   const fields = [
@@ -59,6 +60,7 @@ export const useBooks = () => {
 
   const fetchBooks = async () => {
     try {
+      
       setLoading(true);
       const resp = await getBooks();
       setBooksList(resp.data); // <- aquí accedes al array real
@@ -100,7 +102,7 @@ export const useBooks = () => {
       setLoading(true);
 
       if (!text.trim()) {
-        fetchBooks();
+        await fetchBooks();
         return;
       }
    
@@ -218,11 +220,17 @@ const handleEditBook = async (cod_book, formData) => {
 };
 
 
- const handleDeleteBook = async (cod_book) => {
+ const handleDeleteBook = async (cod_book,status) => {
   try {
-    const resp = await deleteBook(cod_book);
+    const resp = await deleteBook(cod_book,status);
+    console.log("el tipo de estado es:", status ,"y es de tipo:", typeof status);
     if (resp.status === 200) {
-      ModalAlert("Éxito", resp.data.message || "Libro eliminado.", "success");
+      if(status === 5){
+        ModalAlert("Éxito", "Libro desactivado.", "success");
+      }else{
+        ModalAlert("Éxito", "Libro reactivado.", "success");
+      }
+     
       fetchBooks();
       setError(null);
     }

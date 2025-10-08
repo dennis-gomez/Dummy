@@ -9,6 +9,7 @@ import Button from "../atoms/button";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedFile from "../atoms/inputValidatedFile";
+import ReactivationModal from "../molecules/reactivationModal";
 
 const DynamicTable = ({
   fields,
@@ -294,6 +295,7 @@ const DynamicTable = ({
                           </button>
                         </div>
                       ) : (
+                        (row.book_status !== 5 ? (
                         <div className="flex justify-center gap-3">
                           <button
                             onClick={() => handleEditClick(row)}
@@ -303,10 +305,17 @@ const DynamicTable = ({
                           </button>
                           <ModalElimination
                             message={`Eliminar ${singularName}`}
-                            onClick={() => onDelete(row[fields[0].name])}
+                            onClick={() => onDelete(row[fields[0].name],5)}
                           />
                         </div>
-                      )}
+                      ) : (
+                        <ReactivationModal
+                  message={"¿Quieres reactivar este kit médico?"}
+                  onClick={() => onDelete(row[fields[0].name], 1)}
+                />
+                      )
+                      ))
+                    }
                     </td>
                   </tr>
                 );
