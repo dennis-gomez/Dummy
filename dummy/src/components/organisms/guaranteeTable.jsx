@@ -200,7 +200,10 @@ const deleteGuaranteOrReactivated = (id,status) => {
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() =>  handleSortByExpirationDate(searchFeature,searchText,currentPage,2,1,!valueOrder ? "ASC" : "")} // 🟢 al buscar, mantiene orden actual
+            onClick={() => { handleSortByExpirationDate(searchFeature,searchText,1,2,1,!valueOrder ? "ASC" : "")
+            setSearchText("");
+            }
+            } // 🟢 al buscar, mantiene orden actual
           />
         </Box>
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
@@ -243,7 +246,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
         <SortIcon
           fontSize="small"
           sx={{
-            color: "white",
+            color: valueOrder ? "white" : "#18d046ff",
             cursor: "pointer",
             transition: "0.2s",
             "&:hover": {
