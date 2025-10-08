@@ -21,6 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import ReactivationModal from "../molecules/reactivationModal";
 
 function FuelLogsTable({
     fields,
@@ -34,6 +35,7 @@ function FuelLogsTable({
     onEdit,
     onSearch,
     onToggleForm,
+    onReactivate,
     showForm,
     isLoading,
     searchText,
@@ -152,6 +154,7 @@ function FuelLogsTable({
                     {field.placeholder}
                     </MenuItem>
                 ))}
+                <MenuItem value="estados">Estados</MenuItem>
                 </Select>
             </FormControl>
 
@@ -169,6 +172,17 @@ function FuelLogsTable({
                                 {type.label}
                             </MenuItem>
                         ))}
+                    </Select>
+                </FormControl>
+            ) : searchField === "estados" ? (
+                <FormControl className={searchInputClass}>
+                    <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Estado</InputLabel>
+                    <Select
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                    >
+                        <MenuItem value="Activos">Activos</MenuItem>
+                        <MenuItem value="Desactivados">Desactivados</MenuItem>
                     </Select>
                 </FormControl>
             ) : (
@@ -307,18 +321,28 @@ function FuelLogsTable({
                             <td className="py-4 px-6 text-center">{record.fuel_log_final_km} km</td>
                             <td className="py-4 px-6 text-center">
                             <div className="flex justify-center space-x-3">
-                                <button
-                                onClick={() => handleEditClick(record)}
-                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                                >
-                                <EditIcon fontSize="small" />
-                                </button>
-                                <button
-                                onClick={() => handleValidatedDelete(record.cod_fuel_log)}
-                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                                >
-                                <DeleteIcon fontSize="small" />
-                                </button>
+
+                                {record.fuel_log_is_active ? (
+                                    <>
+                                        <button
+                                            onClick={() => handleEditClick(record)}
+                                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                        >
+                                            <EditIcon fontSize="small" />
+                                        </button>
+                                        <button
+                                            onClick={() => handleValidatedDelete(record.cod_fuel_log)}
+                                            className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <ReactivationModal
+                                        message={"¿Quieres reactivar este registro?"}
+                                        onClick={() => onReactivate(record.cod_fuel_log)}
+                                    />
+                                )}
                             </div>
                             </td>
                         </>

@@ -29,7 +29,8 @@ function FuelLogPage() {
         handleResetSearch,
         handleSubmit,
         handleEdit,
-        handleDelete
+        handleDelete, 
+        handleReactivate,
     } = useFuelLogs();
 
     return(
@@ -101,6 +102,7 @@ function FuelLogPage() {
                     setShowForm(!showForm);
                     setError(null);
                 }}
+                onReactivate={handleReactivate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}

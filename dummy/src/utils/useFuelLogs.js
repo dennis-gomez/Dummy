@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
 import { 
     getActiveFuelLogs, 
+    getAllFuelLogs,
     findFuelLogs, 
     addFuelLog, 
     deleteFuelLog, 
     updateFuelLog, 
+    reactivateFuelLogs, 
 } from "../services/fuelLogsService";
 
 import { getItems } from "../services/itemService";
@@ -74,7 +76,12 @@ export const useFuelLogs = () => {
         try {
             setLoading(true);
             let response;
-            if (vehicleId === "Todos" && !String(text).trim()) {
+            if (text === "Activos"){
+                response = await getActiveFuelLogs(currentPage, pageSize);
+            } else if (text === "Desactivados") {
+                response = await getAllFuelLogs(currentPage, pageSize);
+                setError(null);
+            } else if (vehicleId === "Todos" && !String(text).trim()) {
                 response = await getActiveFuelLogs(currentPage, pageSize);
                 setError(null);
             } else {
@@ -162,6 +169,22 @@ export const useFuelLogs = () => {
         }
     };
 
+    // Reactivar registros inhabilitados
+    const handleReactivate = async (cod_fuel_log) => {
+        try {
+            const response = await reactivateFuelLogs(cod_fuel_log);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
+                await fetchFuelLogs();
+                setError(null);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al reactivar registro.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        }
+    };
+
     useEffect(() => {
         fetchFuelLogs();
         const loadVehicles = async () => {
@@ -226,7 +249,8 @@ export const useFuelLogs = () => {
         handleResetSearch,
         handleSubmit,
         handleEdit,
-        handleDelete
+        handleDelete, 
+        handleReactivate
     };
 
 } 
