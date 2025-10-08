@@ -50,26 +50,49 @@ function PettyCashDetailPage() {
   };
 
   const handleSearch = async () => {
-   if (!searchFeature || !searchText.trim()) {
-  await fetchDetails();
-  return;
-}
+    if (!searchText.trim()) {
+      fetchPettyCashDetails();
+      return;
+    }
     try {
       setLoading(true);
-      const results = await searchPettyCashDetails(searchFeature, searchText);
+      let formattedSearch = searchText.trim();
 
-      if (Array.isArray(results)) {
-        setDetails(results);
-      } else {
-        setDetails([]);
+      // 🗓 Normalizar fecha (acepta DD/MM/YY o DD-MM-YYYY)
+      if (searchFeature === "petty_cash_details_date") {
+        const match = formattedSearch.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+        if (match) {
+          let [_, day, month, year] = match;
+          if (year.length === 2) year = "20" + year;
+          formattedSearch = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+        }
       }
+
+      // 🔁 Mapear al nombre que espera el backend
+      const fieldMap = {
+        petty_cash_details_date: "movement_date",
+        petty_cash_details_amount: "movement_amount",
+        petty_cash_details_description: "movement_description",
+        petty_cash_details_provider: "movement_provider",
+        petty_cash_details_requester: "movement_requester",
+        petty_cash_details_is_active: "movement_is_active"
+      };
+      const backendField = fieldMap[searchFeature] || searchFeature;
+
+      // 🔸 Llamada al backend
+      const data = await searchPettyCashDetails(backendField, formattedSearch);
+      setDetails(data);
     } catch (err) {
       console.error("Error en búsqueda de detalles:", err);
-      setError("Error al realizar la búsqueda.");
     } finally {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (!searchText.trim()) {
+      fetchDetails();
+    }
+  }, [searchText]);
 
   const handleAddDetail = async (detail) => {
     try {
@@ -145,25 +168,25 @@ function PettyCashDetailPage() {
       {/* Buscador + Botón */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4 mt-6">
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-  <Seeker
-  inputName="search"
-  inputPlaceholder="Buscar detalle..."
-  btnName="Buscar"
-  selectName="Filtrar por"
-  fields={[
-    { name: "petty_cash_details_date", placeholder: "Fecha (YYYY-MM-DD)" },
-    { name: "petty_cash_details_provider", placeholder: "Proveedor" },
-    { name: "petty_cash_details_description", placeholder: "Descripción" },
-    { name: "petty_cash_details_requester", placeholder: "Solicitante" },
-    { name: "petty_cash_details_amount", placeholder: "Monto" },
-    { name: "petty_cash_details_is_active", placeholder: "Activo (true/false)" },
-  ]}
-  valueText={searchText}
-  valueFeature={searchFeature}
-  onChangeText={setSearchText}
-  onChangeFeature={setSearchFeature}
-  onClick={handleSearch}
-/>
+          <Seeker
+            inputName="search"
+            inputPlaceholder="Buscar detalle..."
+            btnName="Buscar"
+            selectName="Filtrar por"
+            fields={[
+              { name: "petty_cash_details_date", placeholder: "Fecha (DD-MM-YYYY)" },
+              { name: "petty_cash_details_provider", placeholder: "Proveedor" },
+              { name: "petty_cash_details_description", placeholder: "Descripción" },
+              { name: "petty_cash_details_requester", placeholder: "Solicitante" },
+              { name: "petty_cash_details_amount", placeholder: "Monto" },
+              { name: "petty_cash_details_is_active", placeholder: "Activo (true/false)" },
+            ]}
+            valueText={searchText}
+            valueFeature={searchFeature}
+            onChangeText={setSearchText}
+            onChangeFeature={setSearchFeature}
+            onClick={handleSearch}
+          />
 
         </Box>
 

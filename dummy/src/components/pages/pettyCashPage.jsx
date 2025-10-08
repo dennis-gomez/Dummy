@@ -41,24 +41,39 @@ function PettyCashPage() {
     }
   };
 
-  // 🔍 Buscar caja chica por campo y texto
-  const handleSearch = async () => {
-    if (!searchText.trim()) {
-      fetchCashBoxes(); // si no hay texto, recarga todo
-      return;
+
+ // 🔍 Buscar caja chica por campo y texto (acepta DD-MM-YY o DD/MM/YY)
+const handleSearch = async () => {
+  if (!searchText.trim()) {
+    fetchCashBoxes();
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    let formattedSearch = searchText.trim();
+
+    // 🧩 Si estamos buscando por fecha, normalizamos formato
+    if (searchFeature === "petty_cash_creation_date") {
+      // Acepta DD-MM-YY o DD/MM/YY
+      const match = formattedSearch.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+      if (match) {
+        let [_, day, month, year] = match;
+        if (year.length === 2) year = "20" + year; // convierte "25" → "2025"
+        formattedSearch = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`; // → YYYY-MM-DD
+      }
     }
 
-    try {
-      setLoading(true);
-      const data = await searchPettyCash(searchFeature, searchText);
-      setCashBoxes(data);
-    } catch (err) {
-      setError(err.message || "Error al buscar caja chica");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    // 🔸 Llamamos al servicio con el texto normalizado
+    const data = await searchPettyCash(searchFeature, formattedSearch);
+    setCashBoxes(data);
+  } catch (err) {
+    setError(err.message || "Error al buscar caja chica");
+  } finally {
+    setLoading(false);
+  }
+};
   // opcional: restaurar lista cuando se limpia el campo de búsqueda
   useEffect(() => {
     if (!searchText.trim()) {
@@ -146,7 +161,7 @@ function PettyCashPage() {
             btnName="Buscar"
             selectName="Filtrar por"
             fields={[
-              { name: "petty_cash_creation_date", placeholder: "Fecha de creación" },
+              { name: "petty_cash_creation_date", placeholder: "Fecha (DD-MM-YYYY)" },
               { name: "petty_cash_original_amount", placeholder: "Monto original" },
               { name: "petty_cash_actual_amount", placeholder: "Monto actual" },
             ]}
