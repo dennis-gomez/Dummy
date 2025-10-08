@@ -230,7 +230,11 @@ export const useMedicKits = () => {
       
       await deleteMedicKit(cod_MedicKit,is_Active);
       await fetchMedicKits();
-      ModalAlert("Éxito", "Kit médico eliminado", "success");
+      if(is_Active === 0){
+      ModalAlert("Éxito", "Kit médico Desactivado", "success");
+      }else{
+        ModalAlert("Éxito", "Kit médico reactivado", "success");
+      } 
     } catch (err) {
       setError("Error al eliminar kit médico");
       ModalAlert("Error", err.message, "error");

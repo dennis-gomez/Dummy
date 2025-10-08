@@ -45,8 +45,8 @@ export const updateGuarantee = async (id, data) => {
 
 
 // 🔹 Eliminar garantía (cambia status a vencida)
-export const deleteGuarantee = async (id) => {
-  const res = await axios.delete(`${API_URL}/delete`, { params: { cod_guarantee: id } });
+export const deleteGuarantee = async (id,status) => {
+  const res = await axios.delete(`${API_URL}/delete`, { params: { cod_guarantee: id,status } });
   return res.data;
 };
 

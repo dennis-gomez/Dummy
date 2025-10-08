@@ -17,6 +17,7 @@ export const useGuarantees = () => {
     { label: "Activa", value: 1 },
     { label: "Vencida", value: 2 },
     { label: "Próxima a vencer", value: 3 },
+    { label: "Desactivada", value: 4 },
   ];
 
   const CURRENCY_OPTIONS = [
@@ -253,10 +254,15 @@ const handleAddGuarantee = async (formData) => {
     }
   };
 
-  const handleDeleteGuarantee = async (id) => {
+  const handleDeleteGuarantee = async (id,status) => {
     try {
-      const resp = await deleteGuarantee(id);
-      ModalAlert("Éxito", "Garantía eliminada exitosamente", "success");
+      const resp = await deleteGuarantee(id,status);
+      if(status==4){
+      ModalAlert("Éxito", "Garantía Desactivada exitosamente", "success");
+      } else {
+      ModalAlert("Éxito", "Garantía reactivada exitosamente", "success");
+      }
+      
       fetchGuarantees();
     } catch (err) {
       const message = err.response?.data?.message || "Error al eliminar garantía";

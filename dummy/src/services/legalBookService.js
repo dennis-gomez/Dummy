@@ -68,10 +68,10 @@ export const updateBook = async (cod_book, formData) => {
 };
 
 // 🔹 Eliminar un libro (cambiar estado a eliminado)
-export const deleteBook = async (cod_book) => {
+export const deleteBook = async (cod_book,status) => {
     try {
         const response = await axios.delete(API_URL + "delete", {
-            params: { cod_book }, // se envía por query
+            params: { cod_book,status }, // se envía por query
             headers: { "Content-Type": "application/json" },
         });
         return response;
