@@ -18,6 +18,10 @@ import ModalAlert from "../components/molecules/modalAlert";
 
 export const useFuelLogs = () => {
     const [fuelLogs, setFuelLogs] = useState([]); //manejo de listado de registros de combustibles
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
     const [activeVehiclesItems, setActiveVehiclesItems] = useState([]); //opciones de combobox de vehiculos activos (agregar)
     const [allVehiclesItems, setAllVehiclesItems] = useState([]); //opciones de combobox de vehiculos activos y inactivos (editar)
     const [fuelTypes, setFuelTypes] = useState([]); //opciones de combobox de combustibles
@@ -66,18 +70,19 @@ export const useFuelLogs = () => {
     };
 
     // Listado de registros de combustibles
-    const fetchFuelLogs = async (vehicleId = "", field = "", text = "") => {
+    const fetchFuelLogs = async (vehicleId = "", field = "", text = "", currentPage = page) => {
         try {
             setLoading(true);
             let response;
             if (vehicleId === "Todos" && !String(text).trim()) {
-                response = await getActiveFuelLogs();
+                response = await getActiveFuelLogs(currentPage, pageSize);
                 setError(null);
             } else {
-                response = await findFuelLogs(vehicleId, field, text);
+                response = await findFuelLogs(vehicleId, field, text, currentPage, pageSize);
                 setError(null);
             }
-            setFuelLogs(response.data);
+            setFuelLogs(response.data.data);
+            setTotalPages(response.data.totalPages || 1);
         } catch (error) {
             const message = error.response?.data?.message || "Error al obtener los registros.";
             ModalAlert("Error", message, "error");
@@ -190,11 +195,21 @@ export const useFuelLogs = () => {
         };
         loadVehicles();
     }, []);
+
+    const handlePageChange = async (newPage) => {
+        setPage(newPage);
+        await fetchFuelLogs(selectedVehicle, searchField, searchText, newPage);
+    };
     
     return {
         fields,
         editFields,
         fuelLogs,
+
+        page,
+        totalPages,
+        handlePageChange,
+
         allVehiclesItems,
         showForm,
         loading,

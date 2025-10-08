@@ -206,7 +206,6 @@ export const useVehicleMaintenance = () => {
         await fetchMaintenance(selectedVehicle, searchField, searchText, newPage);
     };
 
-
     return {
         logs,
         allVehiclesItems,
