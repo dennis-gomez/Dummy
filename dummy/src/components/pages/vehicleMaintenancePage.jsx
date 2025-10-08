@@ -9,16 +9,13 @@ function VehicleMaintenance() {
         allVehiclesItems,
         page,
         totalPages,
-
         loading,
         error,
         setError,
         showForm,
         setShowForm,
-
         fields,
         editFields,
-
         maintenanceTypes,
         selectedVehicle,
         setSelectedVehicle,
@@ -26,13 +23,13 @@ function VehicleMaintenance() {
         setSearchField,
         searchText,
         setSearchText,
-
         handleSearch,
         handleSubmit,
         handleEdit,
         handleDelete,
         handlePageChange,
         handleReactivate,
+        handleSortByDate
         //setPage,
     } = useVehicleMaintenance();
 
@@ -107,6 +104,7 @@ function VehicleMaintenance() {
                     setError(null);
                 }}
                 onReactivate={handleReactivate}
+                onSortByDate={handleSortByDate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}

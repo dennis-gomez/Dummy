@@ -22,6 +22,7 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ReactivationModal from "../molecules/reactivationModal";
+import SortIcon from '@mui/icons-material/Sort';
 
 function MaintenanceTable({
     logs,
@@ -39,6 +40,7 @@ function MaintenanceTable({
     searchField,
     setSearchField,
     setSearchText,
+    onSortByDate, 
     onReactivate,
     onDelete,
     onEdit,
@@ -49,6 +51,7 @@ function MaintenanceTable({
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
     const [fieldErrors, setFieldErrors] = useState({});
+    const [sortOrder, setSortOrder] = useState("DESC");
     const dateFields = ["maintenance_date"];
     
     const getVehicleName = (cod_vehicle) => {
@@ -116,6 +119,12 @@ function MaintenanceTable({
             await onDelete(id);
             Swal.fire("Inhabilitado", "El registro fue inhabilitado", "success");
         }
+    };
+
+    const toggleSort = () => {
+        const newSortOrder = sortOrder === "ASC" ? "DESC" : "ASC";
+        setSortOrder(newSortOrder);
+        onSortByDate(newSortOrder); 
     };
     
     const searchInputClass = "w-full sm:w-48 h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
@@ -242,7 +251,23 @@ function MaintenanceTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Vehículo</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Mantenimiento</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha de Mantenimiento</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                        Fecha de Mantenimiento
+                         <button onClick={() => toggleSort()} title="Ordenar por fecha de vencimiento">
+                            <SortIcon
+                            fontSize="small"
+                            sx={{
+                                color: "white",
+                                cursor: "pointer",
+                                transition: "0.2s",
+                                "&:hover": {
+                                opacity: 0.7,
+                                transform: "scale(1.1)"
+                                }
+                            }}
+                            />
+                        </button>
+                    </th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Kilometraje Acumulado</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Detalles</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
@@ -350,7 +375,7 @@ function MaintenanceTable({
                     count={totalPages}
                     page={currentPage}
                     color="primary"
-                    onChange={(e, value) => onPageChange(value)}
+                    onChange={(e, value) => onPageChange(value, sortOrder)}
                     renderItem={(item) => (
                     <PaginationItem
                         slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}

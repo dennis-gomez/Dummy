@@ -5,10 +5,10 @@ const API_URL = "http://localhost:3000/vehicle-maintenance/";
 /**
  * Obtener todos los registros de mantenimiento activos e inactivos
  */
-export const getAllMaintenanceLogs = async (page = 1, limit = 10) => {
+export const getAllMaintenanceLogs = async (page = 1, limit = 10, sortField = "maintenance_date", sortOrder = "DESC") => {
     try {
         const response = await axios.get(API_URL, {
-            params: { page, limit },
+            params: { page, limit, sortField, sortOrder },
             headers: { "Content-Type": "application/json" },
         });
         return response.data;
@@ -20,10 +20,10 @@ export const getAllMaintenanceLogs = async (page = 1, limit = 10) => {
 /**
  * Obtener solo registros de mantenimiento activos
  */
-export const getActiveMaintenanceLogs = async (page = 1, limit = 10) => {
+export const getActiveMaintenanceLogs = async (page = 1, limit = 10, sortField = "maintenance_date", sortOrder = "DESC") => {
     try {
         const response = await axios.get(API_URL + "active", {
-            params: { page, limit },
+            params: { page, limit, sortField, sortOrder },
             headers: { "Content-Type": "application/json" },
         });
         return response.data;
@@ -35,10 +35,11 @@ export const getActiveMaintenanceLogs = async (page = 1, limit = 10) => {
 /**
  * Buscar registros de mantenimiento por vehiculo, campo y texto
  */
-export const findMaintenanceLogs = async (vehicleId, feature, text, page = 1, limit = 10) => {
+export const findMaintenanceLogs = async (vehicleId, feature, text, page, limit, sortField, sortOrder) => {
+    console.log("vehiculo", vehicleId, "feature", feature, "text", text, "sortField", sortField, "sortOrder", sortOrder )
     try {
         const response = await axios.get(API_URL + "find", {
-            params: { vehicleId, feature, text, page, limit },
+            params: { vehicleId, feature, text, page, limit, sortField, sortOrder },
             headers: { "Content-Type": "application/json" },
         });
         return response.data;
