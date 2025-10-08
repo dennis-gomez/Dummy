@@ -7,6 +7,11 @@ function FuelLogPage() {
     const {
         fields,
         editFields,
+
+        page,
+        totalPages,
+        handlePageChange,
+
         fuelLogs,
         allVehiclesItems,
         showForm,
@@ -83,6 +88,9 @@ function FuelLogPage() {
             {/* Tabla de registros */}
             <FuelLogsTable
                 fields={fields}
+                page={page}
+                onPageChange={handlePageChange}
+                totalPages={totalPages}
                 editFields={editFields}
                 fuelLogs={fuelLogs}
                 allVehiclesItems={allVehiclesItems} 
