@@ -42,7 +42,13 @@ const GuaranteesTable = ({
   const [editErrors, setEditErrors] = useState({});
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
+  const [valueOrder, setSortOrder] = useState(true); // Estado para orden de clasificación
 
+  const change=()=>{
+    setSortOrder(!valueOrder)
+    
+    handleSortByExpirationDate(searchFeature,searchText,currentPage,2,1,valueOrder ? "ASC" : "")
+  }
 
   const whiteInputStyle = {
     "& .MuiOutlinedInput-root": {
@@ -99,6 +105,7 @@ const GuaranteesTable = ({
   const renderInput = (field) => {
     const value = editData[field.name] ?? "";
     const fieldType = field.type || "text";
+    
 
     // Select
     if (fieldType === "select") {
@@ -186,7 +193,7 @@ const GuaranteesTable = ({
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() => handleSearch(searchFeature, searchText)}
+            onClick={() =>  handleSortByExpirationDate(searchFeature,searchText,currentPage,2,1,!valueOrder ? "ASC" : "")} // 🟢 al buscar, mantiene orden actual
           />
         </Box>
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
@@ -225,7 +232,7 @@ const GuaranteesTable = ({
   <span className="inline-flex items-center justify-center gap-1">
     {f.label}
     {f.name === "guarantee_expiration_date" && (
-      <button onClick={() => handleSortByExpirationDate(searchFeature,searchText)} title="Ordenar por fecha de vencimiento">
+      <button onClick={() => change()} title="Ordenar por fecha de vencimiento">
         <SortIcon
           fontSize="small"
           sx={{
@@ -310,7 +317,7 @@ const GuaranteesTable = ({
         count={totalPages}
         page={currentPage}
         color="primary"
-        onChange={(e, value) => onPageChange(value, searchFeature, searchText)} // ← callback al cambiar
+        onChange={(e, value) =>  handleSortByExpirationDate(searchFeature,searchText,value,2,1,!valueOrder ? "ASC" : "")} // ← callback al cambiar
         renderItem={(item) => (
           <PaginationItem
             slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
