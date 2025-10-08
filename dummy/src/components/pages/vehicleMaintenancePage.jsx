@@ -31,7 +31,8 @@ function VehicleMaintenance() {
         handleSubmit,
         handleEdit,
         handleDelete,
-        handlePageChange
+        handlePageChange,
+        handleReactivate,
         //setPage,
     } = useVehicleMaintenance();
 
@@ -105,6 +106,7 @@ function VehicleMaintenance() {
                     setShowForm(!showForm);
                     setError(null);
                 }}
+                onReactivate={handleReactivate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}

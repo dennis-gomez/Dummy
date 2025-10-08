@@ -93,3 +93,23 @@ export const updateMaintenanceLog = async (formData) => {
         throw error;
     }
 };
+
+/**
+ * Reactivar un registro de mantenimiento inactivo
+ */
+export const reactivateMaintenanceLog = async (cod_maintenance) => {
+    try {
+        const response = await axios.put(
+            API_URL + "reactivate",
+            {},
+            {
+                params: { cod_maintenance },
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+

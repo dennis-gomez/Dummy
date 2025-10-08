@@ -6,6 +6,7 @@ import {
     addMaintenanceLog, 
     deleteMaintenanceLog, 
     updateMaintenanceLog, 
+    reactivateMaintenanceLog,
 } from "../services/vehicleMaintenanceService";
 
 import { getItems } from "../services/itemService";
@@ -74,7 +75,9 @@ export const useVehicleMaintenance = () => {
         try {
             setLoading(true);
             let response;
-            if (field === "Inactivos") {
+            if (text === "Activos"){
+                response = await getActiveMaintenanceLogs(currentPage, pageSize);
+            } else if (text === "Desactivados") {
                 response = await getAllMaintenanceLogs(currentPage, pageSize);
                 setError(null);
             } else if (vehicleId === "Todos" && !String(text).trim()) {
@@ -168,6 +171,22 @@ export const useVehicleMaintenance = () => {
         }
     };
 
+    // Reactivar registros inhabilitados
+    const handleReactivate = async (cod_maintenance) => {
+        try {
+            const response = await reactivateMaintenanceLog(cod_maintenance);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
+                await fetchMaintenance();
+                setError(null);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al reactivar registro.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        }
+    };
+
     useEffect(() => {
         fetchMaintenance();
         const init = async () => {
@@ -216,25 +235,20 @@ export const useVehicleMaintenance = () => {
         setError,
         showForm,
         setShowForm,
-
         fields,
         editFields,
-
         maintenanceTypes, 
-
         selectedVehicle,
         setSelectedVehicle,
         searchField,
         setSearchField,
         searchText,
         setSearchText,
-
         handleSearch,
-        //handleResetSearch,
         handleSubmit,
         handleEdit,
         handleDelete,
         handlePageChange,
-        //setPage,
+        handleReactivate,
     };
 };
