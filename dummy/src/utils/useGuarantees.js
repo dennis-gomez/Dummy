@@ -17,6 +17,7 @@ export const useGuarantees = () => {
     { label: "Activa", value: 1 },
     { label: "Vencida", value: 2 },
     { label: "Próxima a vencer", value: 3 },
+    { label: "Desactivada", value: 4 },
   ];
 
   const CURRENCY_OPTIONS = [
@@ -43,14 +44,15 @@ export const useGuarantees = () => {
   const [totalPages, setTotalPages] = useState(1); // Estado para total de páginas
   const [currentPage, setCurrentPage] = useState(1); // Estado para página actual
 
-const handleSortByExpirationDate = (searchFeature,searchText) => {
-  let newSortOrder = "";
+const handleSortByExpirationDate = (searchFeature,searchText,currentPage,limit=2,options,order) => {
 
-  if (sortOrder.trim() === "") newSortOrder = "asc";
-  else if (sortOrder.trim() === "asc") newSortOrder = "";
-
-  setSortOrder(newSortOrder); // actualizar el estado para render
-  fetchGuarantees(currentPage, 2, searchFeature, searchText, newSortOrder); // usar el nuevo valor
+console.log("Ordenando por fecha de vencimiento:", { searchFeature,searchText,currentPage,limit,options,order });
+if (options==1) {
+  // actualizar el estado para render
+  fetchGuarantees(currentPage, limit, searchFeature, searchText, order); // usar el nuevo valor
+} else {
+  handleSearchGuarantees(searchFeature, searchText, currentPage, limit, order); // usar el nuevo valor
+}
 };
 
 
@@ -117,6 +119,8 @@ const handleSortByExpirationDate = (searchFeature,searchText) => {
     setLoading(true);
 
     let resp;
+
+    console.log("Fetching guarantees with:", { page, limit, searchFeature, searchText, sortOrder });
 
     if (searchText && searchFeature) {
       // 👇 Llama a la API de búsqueda con paginación
@@ -250,10 +254,15 @@ const handleAddGuarantee = async (formData) => {
     }
   };
 
-  const handleDeleteGuarantee = async (id) => {
+  const handleDeleteGuarantee = async (id,status) => {
     try {
-      const resp = await deleteGuarantee(id);
-      ModalAlert("Éxito", "Garantía eliminada exitosamente", "success");
+      const resp = await deleteGuarantee(id,status);
+      if(status==4){
+      ModalAlert("Éxito", "Garantía Desactivada exitosamente", "success");
+      } else {
+      ModalAlert("Éxito", "Garantía reactivada exitosamente", "success");
+      }
+      
       fetchGuarantees();
     } catch (err) {
       const message = err.response?.data?.message || "Error al eliminar garantía";

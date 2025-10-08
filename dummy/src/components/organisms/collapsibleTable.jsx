@@ -24,6 +24,7 @@ export default function CollapsibleTable({
   isCreatingMedicKit,
   isCreatingSupply,
   onAddClick,
+  statusOptions
 }) {
   const [openRowId, setOpenRowId] = useState(null);
   const [searchText, setSearchText] = useState("");
@@ -36,7 +37,7 @@ export default function CollapsibleTable({
     setOpenRowId(closing ? null : id);
 
     if (!closing && typeof onSelect === "function") {
-      onSelect(id);
+      onSelect(id,);
     }
     if (closing) {
       changeStateSupply(false);

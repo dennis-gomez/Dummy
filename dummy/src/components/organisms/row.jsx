@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModalElimination from "../molecules/modalElimination";
+import ReactivationModal from "../molecules/reactivationModal";
 import DetailsTable from "../organisms/detailTable";
 import InputValidated from "../atoms/inputValidated";
 import Button from "../atoms/button";
@@ -143,6 +144,7 @@ export default function Row({
               </>
             ) : (
               <>
+              {item.medic_kit_is_active &&(
                 <button
                   type="button"
                   onClick={() => {
@@ -154,10 +156,20 @@ export default function Row({
                 >
                   <EditIcon fontSize="small" />
                 </button>
+                )}
+
+{item.medic_kit_is_active ? (
+
                 <ModalElimination
                   message={"¿Quieres eliminar este kit médico?"}
-                  onClick={() => onDeleteMedicKit(id)}
+                  onClick={() => onDeleteMedicKit(id, 0)}
                 />
+) : (
+                <ReactivationModal
+                  message={"¿Quieres reactivar este kit médico?"}
+                  onClick={() => onDeleteMedicKit(id, 1)}
+                />
+)}
               </>
             )}
           </div>
@@ -170,11 +182,14 @@ export default function Row({
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">{subTitle}</h3>
+                {item.medic_kit_is_active &&(
                 <Button
                   text="Agregar Suplemento"
                   onClick={() => changeStateSupply(id)}
                 />
+                )}
               </div>
+              
               <DetailsTable
                 fields={subfields.filter(
                   (col) => col.key !== "cod_medic_kit" && col.key !== "cod_supply"

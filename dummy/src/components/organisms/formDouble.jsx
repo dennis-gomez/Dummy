@@ -23,10 +23,11 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, funct }) {
 
     if (e.target.type === "file") {
       setFormData({ ...formData, [name]: files[0] || null });
+    } else if (e.target.type === "number") {
+      setFormData((prev) => ({ ...prev, [name]: value === "" ? "" : Number(value) }));
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
 
-      // 🔹 Llamar fetchAreaItems si cambia el área
       if (name === "revision_area_category_code") {
         funct(value);
       }
