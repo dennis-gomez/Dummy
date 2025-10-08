@@ -48,7 +48,7 @@ function DoubleSeeker({
             value={primaryValue}
             onChange={(e) => setPrimaryValue(e.target.value)}
           >
-            <MenuItem value="">Todos</MenuItem>
+            <MenuItem value={0}>Todos</MenuItem>
             {primaryOptions.map((opt) => (
               <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
             ))}
