@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { addVehicle, getVehicles, updateVehicle, deleteVehicle, getVehicleByFeature } from "../services/vehicleService";
+import { addVehicle, getVehicles, getVehiclesInactive, updateVehicle, deleteVehicle, getVehicleByFeature, reactivateVehicle } from "../services/vehicleService";
 import Swal from "sweetalert2";
+import ModalAlert from "../components/molecules/modalAlert";
 
 export const useVehicles = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -48,6 +49,11 @@ export const useVehicles = () => {
         { name: "vehicle_tires_back", placeholder: "Llantas Traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
         { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 383, multiline: true, rows: 2 },
         { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 383},
+        { name: "vehicle_is_active", placeholder: "Estados", type: "select", 
+          options: [
+            { name: "Activos", placeholder: "Activos" , value: "Activos", label: "Activos"},
+            { name: "Desactivados", placeholder: "Desactivados", value: "Desactivados", label: "Desactivados" }
+          ]},
     ];
 
     const editFields = [
@@ -86,7 +92,15 @@ export const useVehicles = () => {
   const handleSearchVehicles = async (feature, text) => {
     try {
       setLoading(true);
-      const response = await getVehicleByFeature(feature, text);
+      let response;
+
+      if(text === "Activos"){
+        response = await getVehicles();
+      } else if (text === "Desactivados") {
+        response = await getVehiclesInactive();
+      } else {
+        response = await getVehicleByFeature(feature, text);
+      }
       setVehicles(response.data);
       setError(null);
     } catch (err) {
@@ -165,6 +179,22 @@ export const useVehicles = () => {
     }
   };
 
+// Reactivar registros inhabilitados
+  const handleReactivate = async (cod_vehicle) => {
+    try {
+      const response = await reactivateVehicle(cod_vehicle);
+      if (response.status === 200) {
+        ModalAlert("Éxito", response.data.message || "Vehículo reactivado exitosamente.", "success");
+        await fetchVehicles();
+        setError(null);
+      }
+    } catch (error) {
+      const message = error.response?.data?.message || "Error al reactivar vehículo.";
+      ModalAlert("Error", message, "error");
+      setError(message);
+    }
+  };
+
   useEffect(() => {
     fetchVehicles();
   }, []);
@@ -186,5 +216,6 @@ export const useVehicles = () => {
     handleEdit,
     handleDelete,
     handleSearchVehicles,
+    handleReactivate,
   };
 };

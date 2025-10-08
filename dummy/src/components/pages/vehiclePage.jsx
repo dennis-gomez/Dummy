@@ -21,6 +21,7 @@ function VehiclePage() {
         handleEdit,
         handleDelete,
         handleSearchVehicles,
+        handleReactivate,
     } = useVehicles();
 
     return (
@@ -89,6 +90,7 @@ function VehiclePage() {
                     setShowForm(!showForm);
                     setError(null);
                 }}
+                onReactivate={handleReactivate}
                 showForm={showForm}
             />
         </div>

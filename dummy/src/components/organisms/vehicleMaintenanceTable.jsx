@@ -332,7 +332,7 @@ function MaintenanceTable({
                                         </>
                                     ):(
                                         <ReactivationModal
-                                            message={"¿Quieres reactivar este kit médico?"}
+                                            message={"¿Quieres reactivar este registro?"}
                                             onClick={() => onReactivate(record.cod_maintenance)}
                                         />
                                     )}
