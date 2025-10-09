@@ -172,7 +172,7 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
   .toLocaleDateString('es-CR', {
     day: '2-digit',
     month: '2-digit',
-    year: '2-digit',
+     year: "numeric",
     timeZone: 'UTC' // fuerza que no se aplique la zona local
   })
   .replace(/\//g, '-')
