@@ -49,3 +49,8 @@ export const addRevisionWithPlan = async (data) => {
   const res = await axios.post(`${API_URL}/addRevisionWithPlan`, data);
   return res.data;
 };
+
+export const getNotifiedRevisions = async () => {
+  const res = await axios.get(`${API_URL}/notified`);
+  return res.data;
+};
