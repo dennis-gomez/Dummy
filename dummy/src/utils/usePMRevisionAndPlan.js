@@ -63,7 +63,7 @@ export const usePMRevisionAndPlan = () => {
         { name: "action_plan_responsible_name", placeholder: "Responsable a Cargo", type: "text", width: 250, required: true },
     ];
 
-    const [selectedArea, setSelectedArea] = useState("");
+    const [selectedArea, setSelectedArea] = useState(0);
     const [searchText, setSearchText] = useState("");
     const [searchFeature, setSearchFeature] = useState(fields[1]?.name || "");
 
@@ -78,8 +78,6 @@ export const usePMRevisionAndPlan = () => {
         try {
             setError(null);
             const data1 = await getAllRevisions();
-
-
             const data2 = await getAllActionPlans();
             setRevisions(data1);
             setActionPlans(data2);
@@ -184,74 +182,73 @@ export const usePMRevisionAndPlan = () => {
     };
 
 
-
-    // Listado de registros para 3 selects y búsqueda
-    const handleCompositeSearch = async (revision_area_category_code = "", field = "", text = "") => {
-        try {
-            setLoading(true);
-            let response;
-
-            if (revision_area_category_code === 0 && !String(text).trim()) {
-                response = await fetchData();
-                setError(null);
-            } else {
-                
-                response = await getFindRevisionsAt(revision_area_category_code, field, text);
-                setError(null);
-            }
-            return response;
-        } catch (error) {
-            const message = error.response?.data?.message || "Error al obtener los registros.";
-            ModalAlert("Error", message, "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-
     // 🔹 Buscar revisiones y planes
     const handleSearchRevisionsAndPlans = async (revision_area_category_code = "", field = "", text = "") => {
-
-        
         try {
             setError(null);
             setLoading(true);
 
-            if (field === "action_plan_rev_quantity_failed" || field === "action_plan_details" || field === "action_plan_responsible_name") {
-                const data2 = await findActionPlans(field, text);
 
-                if (data2.length != 0) {
-                    const newRequest = await getFindRevisions("cod_revision", data2[0].action_plan_cod_revision);
-                    setActionPlans(data2);
-                    setRevisions(newRequest);
-                }
-
+            if (revision_area_category_code === 0 && !String(text).trim()) {
+                fetchData();
+                setError(null);
             } else {
-                const data1 = await handleCompositeSearch(revision_area_category_code, field, text);
-                console.log("Data1:", data1);
-
-if (data1.length !== 0) {
-  const requests = data1.map(rev =>
-    findActionPlans("action_plan_cod_revision", rev.cod_revision)
-  );
-
-  const results = await Promise.all(requests);
-
-  // Aplanamos los resultados (porque Promise.all devuelve un array de arrays)
-  const allActionPlans = results.flat().filter(Boolean);
-
-  console.log("✅ Todos los planes de acción:", allActionPlans);
-
-  setRevisions(data1);
-  setActionPlans(allActionPlans);
-}
 
 
+                if (
+                    field === "action_plan_rev_quantity_failed" ||
+                    field === "action_plan_details" ||
+                    field === "action_plan_responsible_name"
+                ) {
+                    const data2 = await findActionPlans(field, text);
 
+                    if (data2.length !== 0) {
+                        const requests = data2.map(rev =>
+                            getFindRevisions("cod_revision", rev.action_plan_cod_revision)
+                        );
+
+                        // ✅ Cambiamos Promise.all() por Promise.allSettled()
+                        const results = await Promise.allSettled(requests);
+
+                        // ✅ Filtramos solo las promesas que se resolvieron correctamente
+                        const fulfilledResults = results
+                            .filter(r => r.status === "fulfilled")
+                            .map(r => r.value)
+                            .flat()
+                            .filter(Boolean);
+
+                        console.log("✅ Todos los planes de acción:", fulfilledResults);
+
+                        setRevisions(fulfilledResults);
+                        setActionPlans(data2);
+                    }
+
+                } else {
+                    const data1 = await getFindRevisionsAt(revision_area_category_code, field, text);
+                    console.log("Data1:", data1);
+
+                    if (data1.length !== 0) {
+                        const requests = data1.map(rev =>
+                            findActionPlans("action_plan_cod_revision", rev.cod_revision)
+                        );
+
+                        // ✅ Igual que arriba: Promise.allSettled() en lugar de Promise.all()
+                        const results = await Promise.allSettled(requests);
+
+                        // ✅ Tomamos solo las promesas exitosas
+                        const fulfilledResults = results
+                            .filter(r => r.status === "fulfilled")
+                            .map(r => r.value)
+                            .flat()
+                            .filter(Boolean);
+
+                        console.log("✅ Todos los planes de acción:", fulfilledResults);
+
+                        setRevisions(data1);
+                        setActionPlans(fulfilledResults);
+                    }
+                }
             }
-
-
         } catch (err) {
             const message = err.response?.data?.message || "No se encontraron resultados.";
             setError(message);
@@ -260,6 +257,7 @@ if (data1.length !== 0) {
             setLoading(false);
         }
     };
+
 
     // 🔹 Agregar plan/revisión
     const handleAdd = async (formData) => {
@@ -405,7 +403,7 @@ if (data1.length !== 0) {
         fetchAreaItems,
         searchText,
         searchFeature,
-        selectedArea, 
+        selectedArea,
         setSearchText,
         setSearchFeature,
         setSelectedArea,
@@ -418,6 +416,8 @@ if (data1.length !== 0) {
         revisionAreaItemAll,
         revisionTasksItem,
         revisionStatusOptions,
+
+        setRevisionAreaItem,
 
         fetchAllCategoryItems,
         getSpecificOptions
