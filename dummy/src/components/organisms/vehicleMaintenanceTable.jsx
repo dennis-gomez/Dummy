@@ -154,7 +154,13 @@ function MaintenanceTable({
 
             <FormControl className={searchInputClass}>
                 <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
-                <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+                <Select 
+                    value={searchField} 
+                    onChange={
+                        (e) => {setSearchField(e.target.value)
+                        setSearchText("")
+                    }}
+                >
                 {fields
                     .filter((field) => field.name !== "cod_vehicle")
                     .map((field) => (

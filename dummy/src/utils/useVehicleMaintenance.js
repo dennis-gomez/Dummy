@@ -39,7 +39,7 @@ export const useVehicleMaintenance = () => {
         { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 390},
         { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 390}, 
         { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 390, restriction: "cantAfterToday" },
-        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 798},
+        { name: "maintenance_detail", placeholder: "Detalles", required: false, type: "textarea", width: 798},
     ];
 
     const editFields = [
@@ -47,7 +47,7 @@ export const useVehicleMaintenance = () => {
         { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 200},
         { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 170}, 
         { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 170, restriction: "cantAfterToday" },
-        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 300},
+        { name: "maintenance_detail", placeholder: "Detalles", required: false, type: "textarea", width: 300},
     ];
 
     // Estados para filtrado

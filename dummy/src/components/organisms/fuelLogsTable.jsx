@@ -66,7 +66,6 @@ function FuelLogsTable({
         return type ? type.label : "Desconocido";
     };
 
-
     const handleSaveEdit = async () => {
         const hasError = Object.values(fieldErrors).some((err) => err);
         if (hasError) {
@@ -146,7 +145,14 @@ function FuelLogsTable({
 
             <FormControl className={searchInputClass}>
                 <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
-                <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+                <Select 
+                    value={searchField} 
+                    onChange={
+                        (e) => {
+                        setSearchField(e.target.value)
+                        setSearchText("")
+                    }}
+                >
                 {fields
                 .filter((field) => field.name !== "cod_vehicle")
                 .map((field) => (
