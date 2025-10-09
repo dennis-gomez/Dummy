@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { IconButton, Tooltip, TextField, CircularProgress } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import Button from "../atoms/button";
@@ -172,7 +171,7 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
   .toLocaleDateString('es-CR', {
     day: '2-digit',
     month: '2-digit',
-    year: '2-digit',
+     year: "numeric",
     timeZone: 'UTC' // fuerza que no se aplique la zona local
   })
   .replace(/\//g, '-')

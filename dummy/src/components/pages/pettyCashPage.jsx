@@ -42,7 +42,7 @@ function PettyCashPage() {
   };
 
 
- // 🔍 Buscar caja chica por campo y texto (acepta DD-MM-YY o DD/MM/YY)
+ // Buscar caja chica por campo y texto (acepta DD-MM-YY o DD/MM/YY)
 const handleSearch = async () => {
   if (!searchText.trim()) {
     fetchCashBoxes();
@@ -65,7 +65,7 @@ const handleSearch = async () => {
       }
     }
 
-    // 🔸 Llamamos al servicio con el texto normalizado
+    // Llamamos al servicio con el texto normalizado
     const data = await searchPettyCash(searchFeature, formattedSearch);
     setCashBoxes(data);
   } catch (err) {
@@ -169,7 +169,7 @@ const handleSearch = async () => {
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={handleSearch} // ✅ ahora funcional
+            onClick={handleSearch} 
           />
         </Box>
 
@@ -183,8 +183,6 @@ const handleSearch = async () => {
           </div>
         </div>
       </div>
-
-      {/* Tabla principal */}
       <PettyCashTable
         cashBoxes={cashBoxes}
         isLoading={loading}

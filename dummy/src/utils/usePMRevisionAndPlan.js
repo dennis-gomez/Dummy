@@ -3,7 +3,7 @@ import ModalAlert from "../components/molecules/modalAlert";
 import { getItems, getAllItemsByService } from "../services/itemService";
 import { getCategorys } from "../services/categoryService";
 
-import { getAllRevisions, getFindRevisions, updateRevision, deleteRevision, addRevisionWithPlan } from "../services/pmRevisionService";
+import { getAllRevisions, getFindRevisions, updateRevision, deleteRevision, addRevisionWithPlan, getFindRevisionsAt } from "../services/pmRevisionService";
 import { getAllActionPlans, findActionPlans, addActionPlan, updateActionPlan, deleteActionPlan } from "../services/pmActionPlanService";
 
 export const usePMRevisionAndPlan = () => {
@@ -28,9 +28,9 @@ export const usePMRevisionAndPlan = () => {
     ];
 
     const fields = [
-        { name: "revision_area_category_code", placeholder: "Área revisada", type: "select", width: 250, options: revisionAreaCategories, required: true },
-        { name: "revision_area_item_code", placeholder: "Objetos revisados", type: "select", width: 250, options: revisionAreaItem, required: true },
-        { name: "revision_task_item_code", placeholder: "Tarea realizada", type: "select", width: 250, options: revisionTasksItem, required: true },
+        { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
+        { name: "revision_area_item_code", placeholder: "Item", type: "select", width: 250, options: revisionAreaItem, required: true },
+        { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
 
         { name: "revision_date", placeholder: "Fecha de Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday" },
         { name: "revision_quantity", placeholder: "Cantidad Revisada", width: 250, type: "number", required: true },
@@ -46,7 +46,7 @@ export const usePMRevisionAndPlan = () => {
     ];
 
     const fieldsRevision = [
-        { name: "revision_date", placeholder: "Fecha de Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday"},
+        { name: "revision_date", placeholder: "Fecha de Revisión", width: 250, type: "date", required: true, restriction: "cantAfterToday" },
         { name: "revision_area_category_code", placeholder: "Área", type: "select", width: 250, options: revisionAreaCategories, required: true },
         { name: "revision_area_item_code", placeholder: "Item", type: "select", width: 250, options: revisionAreaItemAll, required: true },
         { name: "revision_task_item_code", placeholder: "Tarea", type: "select", width: 250, options: revisionTasksItem, required: true },
@@ -63,15 +63,14 @@ export const usePMRevisionAndPlan = () => {
         { name: "action_plan_responsible_name", placeholder: "Responsable a Cargo", type: "text", width: 250, required: true },
     ];
 
-    const [selectedArea, setSelectedArea] = useState("Todos");
+    const [selectedArea, setSelectedArea] = useState(0);
     const [searchText, setSearchText] = useState("");
-    const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
+    const [searchFeature, setSearchFeature] = useState(fields[1]?.name || "");
 
-const getSpecificOptions = (categoryCode) => {
-  console.log("Category Code:", categoryCode);
-  return revisionAreaItemAll.filter(item => item.category_cod === categoryCode);
-};
 
+    const getSpecificOptions = (categoryCode) => {
+        return revisionAreaItemAll.filter(item => item.category_cod === categoryCode);
+    };
 
 
     // 🔹 Obtener todos los planes y revisiones
@@ -79,8 +78,6 @@ const getSpecificOptions = (categoryCode) => {
         try {
             setError(null);
             const data1 = await getAllRevisions();
-
-
             const data2 = await getAllActionPlans();
             setRevisions(data1);
             setActionPlans(data2);
@@ -185,66 +182,73 @@ const getSpecificOptions = (categoryCode) => {
     };
 
 
-
-
-
-/*
-    // Listado de registros para 3 selects y búsqueda
-    const handleFuncSearch = async (revision_area_category_code = "", field = "", text = "") => {
-        try {
-            setLoading(true);
-            let response;
-            if (revision_area_category_code === "Todos" && !String(text).trim()) {
-                response = await fetchData();
-                setError(null);
-            } else {
-                response = await getFindRevisionsAt(revision_area_category_code, field, text);
-                setError(null);
-            }
-            setFuelLogs(response.data);
-        } catch (error) {
-            const message = error.response?.data?.message || "Error al obtener los registros.";
-            ModalAlert("Error", message, "error");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-
-    // Resetear filtros y cargar todos los registros
-    const handleResetSearch = async () => {
-        setSelectedVehicle("Todos");
-        setSearchField(fields[0]?.name || "");
-        setSearchText("");
-        await fetchFuelLogs();
-    };
-
-*/
-
-
-
-
-
-
     // 🔹 Buscar revisiones y planes
-    const handleSearchRevisionsAndPlans = async (feature, text) => {
+    const handleSearchRevisionsAndPlans = async (revision_area_category_code = "", field = "", text = "") => {
         try {
             setError(null);
             setLoading(true);
-            const data1 = await getFindRevisions(feature, text);
-            const data2 = await findActionPlans(feature, text);
 
-            if (data1.length != 0) {
-                const newRequest = await findActionPlans("action_plan_cod_revision", data1[0].cod_revision);
-                setRevisions(data1);
-                setActionPlans(newRequest);
-            }
-            else if (data2.length != 0) {
-                const newRequest = await getFindRevisions("cod_revision", data2[0].action_plan_cod_revision);
-                setActionPlans(data2);
-                setRevisions(newRequest);
-            }
 
+            if (revision_area_category_code === 0 && !String(text).trim()) {
+                fetchData();
+                setError(null);
+            } else {
+
+
+                if (
+                    field === "action_plan_rev_quantity_failed" ||
+                    field === "action_plan_details" ||
+                    field === "action_plan_responsible_name"
+                ) {
+                    const data2 = await findActionPlans(field, text);
+
+                    if (data2.length !== 0) {
+                        const requests = data2.map(rev =>
+                            getFindRevisions("cod_revision", rev.action_plan_cod_revision)
+                        );
+
+                        // ✅ Cambiamos Promise.all() por Promise.allSettled()
+                        const results = await Promise.allSettled(requests);
+
+                        // ✅ Filtramos solo las promesas que se resolvieron correctamente
+                        const fulfilledResults = results
+                            .filter(r => r.status === "fulfilled")
+                            .map(r => r.value)
+                            .flat()
+                            .filter(Boolean);
+
+                        console.log("✅ Todos los planes de acción:", fulfilledResults);
+
+                        setRevisions(fulfilledResults);
+                        setActionPlans(data2);
+                    }
+
+                } else {
+                    const data1 = await getFindRevisionsAt(revision_area_category_code, field, text);
+                    console.log("Data1:", data1);
+
+                    if (data1.length !== 0) {
+                        const requests = data1.map(rev =>
+                            findActionPlans("action_plan_cod_revision", rev.cod_revision)
+                        );
+
+                        // ✅ Igual que arriba: Promise.allSettled() en lugar de Promise.all()
+                        const results = await Promise.allSettled(requests);
+
+                        // ✅ Tomamos solo las promesas exitosas
+                        const fulfilledResults = results
+                            .filter(r => r.status === "fulfilled")
+                            .map(r => r.value)
+                            .flat()
+                            .filter(Boolean);
+
+                        console.log("✅ Todos los planes de acción:", fulfilledResults);
+
+                        setRevisions(data1);
+                        setActionPlans(fulfilledResults);
+                    }
+                }
+            }
         } catch (err) {
             const message = err.response?.data?.message || "No se encontraron resultados.";
             setError(message);
@@ -253,6 +257,7 @@ const getSpecificOptions = (categoryCode) => {
             setLoading(false);
         }
     };
+
 
     // 🔹 Agregar plan/revisión
     const handleAdd = async (formData) => {
@@ -292,7 +297,7 @@ const getSpecificOptions = (categoryCode) => {
     const handleEditRevision = async (cod_revision, formData) => {
         try {
             setError(null);
-            
+
             const selectedAction1 = revisionTasksItem.find((i) => i.value === formData.revision_task_item_code);
             const selectedAction2 = revisionAreaItem.find((i) => i.value === formData.revision_area_item_code);
 
@@ -398,8 +403,10 @@ const getSpecificOptions = (categoryCode) => {
         fetchAreaItems,
         searchText,
         searchFeature,
+        selectedArea,
         setSearchText,
         setSearchFeature,
+        setSelectedArea,
         setError,
         loading,
         handleSearchRevisionsAndPlans,
@@ -409,6 +416,8 @@ const getSpecificOptions = (categoryCode) => {
         revisionAreaItemAll,
         revisionTasksItem,
         revisionStatusOptions,
+
+        setRevisionAreaItem,
 
         fetchAllCategoryItems,
         getSpecificOptions

@@ -1,4 +1,4 @@
-import { useState, useCallback, Fragment } from "react";
+import { useState,  useEffect, useCallback, Fragment } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -33,12 +33,14 @@ const RevisionActionTable = ({
   valueFeature,
   onChangeText,
   onChangeFeature,
-  selectedArea,
-  setSelectedArea,
+  valueArea,
+  onChangeArea,
 
   showForm,
   setShowForm,
   setError,
+  setRevisionAreaItem,
+  fetchAreaItems,
   singularName,
   tableName,
   getSpecificOptions
@@ -108,35 +110,50 @@ const RevisionActionTable = ({
   }, []);
 
 
+useEffect(() => {
+  if (valueArea === 0) {
+
+    setRevisionAreaItem([]);   // limpia items cargados
+    onChangeFeature("");       // limpia el campo secundario
+    onChangeText("");          // limpia el valor dinámico
+    return;                    // evita llamar al fetch
+  }
+
+  // Si selecciona un área válida
+  if (valueArea) {
+    fetchAreaItems(valueArea);
+  }
+}, [valueArea]);
+
+
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
 <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-<DoubleSeeker
-  primaryOptions={revisionAreaCategories} // Primer select: Áreas
-  secondaryFields={fields.filter(f => f.name !== "revision_area_category_code")} // Campos menos área
-  primaryLabel="Área"
-  secondaryLabel="Filtrar por"
-  dynamicLabel="Valor"
-  primaryValue={valueFeature}
-  setPrimaryValue={onChangeFeature}
-  secondaryValue={valueFeature}
-  setSecondaryValue={onChangeFeature}
-  dynamicValue={valueText}
-  setDynamicValue={onChangeText}
-  onSearch={() => handleSearchRevisionsAndPlans(valueFeature, valueText)}
-  // Filtrado dinámico según el segundo select
-  dynamicOptions={(secondaryValue) => {
-    const field = fields.find(f => f.name === secondaryValue);
-    if (!field) return [];
-    if (field.name === "revision_area_item_code") {
-      // Filtrar por área seleccionada
-      return field.options.filter(item => item.category_cod === valueFeature);
-    }
-    return field.options || [];
-  }}
-/>
-
+  <DoubleSeeker
+    primaryOptions={revisionAreaCategories} // Primer select: Áreas
+    secondaryFields={fields.filter(f => f.name !== "revision_area_category_code")} // Campos menos área
+    primaryLabel="Área"
+    secondaryLabel="Filtrar por"
+    dynamicLabel="Valor"
+    primaryValue={valueArea}
+    setPrimaryValue={onChangeArea}
+    secondaryValue={valueFeature}
+    setSecondaryValue={onChangeFeature}
+    dynamicValue={valueText}
+    setDynamicValue={onChangeText}
+    onSearch={() => (onSearch(valueArea, valueFeature, valueText), console.log(valueArea, valueFeature, valueText))}
+    
+    dynamicOptions={(options) => {
+      const field = fields.find(f => f.name === options);
+      if (!field) return [];
+      if (field.name === "revision_area_item_code") {
+        // Filtrar por área seleccionada
+        return field.options.filter(item => item.category_cod === valueFeature);
+      }
+      return field.options || [];
+    }}
+  />
 </Box>
 
         <div className="flex items-center justify-center lg:justify-start lg:ml-9 w-full sm:w-auto">

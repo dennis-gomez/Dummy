@@ -146,7 +146,7 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
       <table className="min-w-full table-auto">
         <thead>
           <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-            <th className="py-4 px-6 text-center font-semibold text-md w-12">#</th>
+            <th className="py-4 px-6 text-center font-semibold text-md">#</th>
             <th className="py-4 px-6 text-center font-semibold text-md">Fecha</th>
             <th className="py-4 px-6 text-center font-semibold text-md">Proveedor</th>
             <th className="py-4 px-6 text-center font-semibold text-md">Solicitante</th>

@@ -18,6 +18,7 @@ import PettyCashPage from './components/pages/pettyCashPage'
 import PettyCashDetailPage from './components/pages/pettyCashDetailPage'
 import ActionPlanAndRevisionPage from './components/pages/actionPlanAndRevisionPage'
 import VehicleMaintenance from './components/pages/vehicleMaintenancePage'
+import SupplierPage from './components/pages/supplierPage'
 import InventaryPage from './components/pages/inventaryPage'
 
 
@@ -48,6 +49,7 @@ function App() {
             <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
             <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} /> {/*mantenimientos de vehiculos*/}
             <Route path="/suministros/inventario" element={<InventaryPage/>} /> {/*inventario de suministros*/}
+            <Route path="/supplier" element={<SupplierPage />} /> 
           </Routes>
         </main>
         <Footer />
