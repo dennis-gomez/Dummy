@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import RevisionActionTable from "../organisms/revisionAndPlanTable";
-import Form from "../organisms/formDouble"; // formulario para agregar revisión
+import Form from "../organisms/form"; // formulario para agregar revisión
 import { usePMRevisionAndPlan } from "../../utils/usePMRevisionAndPlan";
 
 const RevisionActionPage = () => {
@@ -33,6 +33,7 @@ const RevisionActionPage = () => {
         revisionAreaItem,
         revisionTasksItem,
         revisionStatusOptions,
+        setRevisionAreaItem,
 
         revisionAreaItemAll,
         fetchAllCategoryItems,
@@ -49,7 +50,7 @@ const RevisionActionPage = () => {
   return (
     <div style={{ padding: 24 }}>
       <h1 className="text-2xl font-bold text-gray-800 text-center flex-1">
-        Gestión de Revisiones y Planes de Acción
+        Gestión del Mantenimiento Preventivo del Edificio
       </h1>
 
       {/* Formulario para agregar revisión + plan de acción */}
@@ -110,8 +111,8 @@ const RevisionActionPage = () => {
         revisionAreaItem={revisionAreaItem}
         revisionTasksItem={revisionTasksItem}
         revisionStatusOptions={revisionStatusOptions}
+        setRevisionAreaItem={setRevisionAreaItem}
         
-
         onDeleteRevision={handleDeleteRevision}
         onDeleteActionPlan={handleDeleteActionPlan}
         onEditRevision={handleEditRevision}
