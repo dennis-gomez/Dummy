@@ -84,16 +84,7 @@ export const useVehicleMaintenance = () => {
 
     //manejo de filtrado
     const handleSearch = async () => {
-        try{
-            setError(null)
-            const response = await findMaintenanceLogs(selectedVehicle, searchField, searchText, 1, pageSize, "maintenance_date", "ASC");
-            setLogs(response.data);
-            setTotalPages(response.totalPages);
-        }catch (error) {
-            const message = error.response?.data?.message || "Error al encontrar el registro.";
-            ModalAlert("Error", message, "error");
-            setError(message);
-        }
+        handlePageChange(1, "DESC");
     };
 
     const handleSortByDate = async (sortOrder) => {

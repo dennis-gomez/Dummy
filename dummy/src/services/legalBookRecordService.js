@@ -4,11 +4,30 @@ const API_URL = "http://localhost:3000/book-record/";
 const API_URL_BOOK = "http://localhost:3000/books/";
 
 // Obtener registros
-export const getRecords = async () => {
+export const getInactivesRecords = async (page = 1, limit = 10) => {
+    try {
+        const response = await axios.get(
+            API_URL,
+            {
+                params: { page, limit },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// Obtener registros
+export const getRecords = async (page = 1, limit = 10) => {
     try {
         const response = await axios.get(
             API_URL + "active",
             {
+                params: { page, limit },
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -21,12 +40,12 @@ export const getRecords = async () => {
 };
 
 //Obtener registros por caracteristica del registro
-export const getRecordByFeature = async ( bookId, field, text ) => {
-    try{
+export const getRecordByFeature = async ( bookId, field, text, page = 1, limit = 10 ) => {
+    try{       
         const response = await axios.get(
             API_URL + "find", 
             {
-                params: { bookId, field, text },
+                params: { bookId, field, text, page, limit },
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -67,6 +86,23 @@ export const deleteRecord = async ( cod_registration_application ) => {
                 headers: {
                     "Content-Type": "application/json"
                 },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+//Reactivar registro
+export const reactivateRecord = async (cod_registration_application) => {
+    try {
+        const response = await axios.put(
+            API_URL + "reactivate",
+            {},
+            {
+                params: { cod_registration_application },
+                headers: { "Content-Type": "application/json" },
             }
         );
         return response;
