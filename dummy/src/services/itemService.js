@@ -20,6 +20,26 @@ export const getItems = async (cod_service, cod_category) => {
   }
 };
 
+export const getAllFromServicesWithRelationships = async (cod_service) => {
+  try {
+    const response = await axios.get(
+      API_URL + "allWithRelationships",
+      {
+        params: { cod_service },
+        headers: {
+          "Content-Type": "application/json"
+        },
+      }
+    );
+    return response.data;
+  }catch (error) {
+    console.error("Error fetching items with relationships:", error);
+    throw error;
+  }
+   
+    
+}
+
 export const getAllItemsByService = async (cod_service) => {
   try {
     const response = await axios.get(
