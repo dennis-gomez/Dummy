@@ -159,12 +159,12 @@ export const useLegalBookRecord = () => {
         try {
             const response = await deleteRecord(cod_registration_application);
             if (response.status === 200) {
-                ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
+                ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
                 await handlePageChange(1);
                 setError(null);
             }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al eliminar registro.";
+            const message = error.response?.data?.message || "Error al desactivar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }

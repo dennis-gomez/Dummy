@@ -102,11 +102,11 @@ function FuelLogsTable({
 
     const handleValidatedDelete = async (id) => {
         const result = await Swal.fire({
-        title: "¿Eliminar este registro?",
-        text: "No podrás deshacer esta acción",
+        title: "¿Desactivar este registro?",
+        text: "Podrás deshacer esta acción",
         icon: "error",
         showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
+        confirmButtonText: "Sí, desactivar",
         cancelButtonText: "Cancelar",
         confirmButtonColor: "#dc2626",
         cancelButtonColor: "#9ca3af",
@@ -114,7 +114,7 @@ function FuelLogsTable({
 
         if (result.isConfirmed) {
             await onDelete(id);
-            Swal.fire("Eliminado", "El registro fue borrado", "success");
+            Swal.fire("Desactivado", "El registro fue desactivado", "success");
         }
     };
 

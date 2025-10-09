@@ -150,12 +150,12 @@ export const useVehicleMaintenance = () => {
         try {
             const response = await deleteMaintenanceLog(cod_maintenance);
             if (response.status === 200) {
-                ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
+                ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
                 await getActiveMaintenance();
                 setError(null);
             }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al eliminar registro.";
+            const message = error.response?.data?.message || "Error al desactivar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }

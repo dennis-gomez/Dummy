@@ -185,12 +185,12 @@ export const useVehicles = () => {
       setLoading(true);
       const response = await deleteVehicle(id);
       if (response.status === 200) {
-        Swal.fire("Eliminado", response.data.message, "success");
+        Swal.fire("Desactivado", response.data.message, "success");
         await fetchVehicles();
         setError(null);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || "Error al eliminar vehículo.";
+      const msg = err.response?.data?.message || "Error al desactivar vehículo.";
       Swal.fire("Error", msg, "error");
     } finally {
       setLoading(false);

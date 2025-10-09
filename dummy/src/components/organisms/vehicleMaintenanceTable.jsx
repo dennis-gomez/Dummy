@@ -105,11 +105,11 @@ function MaintenanceTable({
     
     const handleValidatedDelete = async (id) => {
         const result = await Swal.fire({
-            title: "Inhabilitar este registro?",
-            text: "No podrás deshacer esta acción",
+            title: "¿Desactivar este registro?",
+            text: "Podrás deshacer esta acción",
             icon: "error",
             showCancelButton: true,
-            confirmButtonText: "Sí, inhabilitar",
+            confirmButtonText: "Sí, desactivar",
             cancelButtonText: "Cancelar",
             confirmButtonColor: "#dc2626",
             cancelButtonColor: "#9ca3af",
@@ -117,7 +117,7 @@ function MaintenanceTable({
     
         if (result.isConfirmed) {
             await onDelete(id);
-            Swal.fire("Inhabilitado", "El registro fue inhabilitado", "success");
+            Swal.fire("Desactivado", "El registro fue desactivado", "success");
         }
     };
 
