@@ -64,7 +64,10 @@ export default function CollapsibleTable({
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={handleSearch}
+            onClick={() => {handleSearch(searchFeature,searchText)
+              setSearchText("");
+            }
+            }
             selectName="Filtrar por"
             fields={searchFields}
           />

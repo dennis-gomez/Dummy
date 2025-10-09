@@ -54,6 +54,8 @@ if (restriction === "unique" && value !== "") {
       err = "Debe ser un número";
     } else if (Number(value) < 1 && !restriction) {
       err = "solo valores mayores a 0";
+    }else if(restriction === "allowZero" && Number(value)<0 && value.startsWith("-")){
+err="solo valores mayores o iguales a 0";
     }
 
     // Validación del año (Vehículos)

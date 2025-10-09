@@ -27,7 +27,7 @@ const navConfig = [
     label: 'Suministros',
     sub: [
       { label: 'Proveedores', path: '/suministros/proveedores' },
-      { label: 'Servicios', path: '/suministros/servicios' },
+      { label: 'Inventario', path: '/suministros/inventario' },
       { label: 'Categorías', path: '/suministros/categorias' },
       { label: 'Items', path: '/suministros/items' },
       { label: 'Órdenes de Compra', path: '/suministros/ordenes' },
