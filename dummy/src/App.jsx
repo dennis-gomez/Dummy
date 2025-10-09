@@ -18,7 +18,7 @@ import PettyCashPage from './components/pages/pettyCashPage'
 import PettyCashDetailPage from './components/pages/pettyCashDetailPage'
 import ActionPlanAndRevisionPage from './components/pages/actionPlanAndRevisionPage'
 import VehicleMaintenance from './components/pages/vehicleMaintenancePage'
-
+import SupplierPage from './components/pages/supplierPage'
 
 function App() {
   return (
@@ -46,6 +46,7 @@ function App() {
             <Route path="/caja/registros-desembolsos/:cashBoxId" element={<PettyCashDetailPage />} />
             <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
             <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} /> {/*mantenimientos de vehiculos*/}
+            <Route path="/supplier" element={<SupplierPage />} /> 
           </Routes>
         </main>
         <Footer />
