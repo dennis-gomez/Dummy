@@ -18,7 +18,10 @@ export const getFindRevisions = async (feature, text) => {
 };
 
 export const getFindRevisionsAt = async (revision_area_category_code, feature, text) => {
-  const res = await axios.get(`${API_URL}/find`, { params: { VITE_PM_AREAS_SERVICE_CODE, revision_area_category_code, feature, text } });
+  const revision_area_service_code = import.meta.env.VITE_PM_AREAS_SERVICE_CODE;
+
+  console.log("Searching with:", revision_area_service_code, revision_area_category_code, feature, text);
+  const res = await axios.get(`${API_URL}/find/composite`, { params: { revision_area_service_code, revision_area_category_code, feature, text } });
   return res.data;
 };
 

@@ -1,5 +1,4 @@
 import { Box, Typography } from "@mui/material";
-import Button from "../atoms/button";
 import RevisionActionTable from "../organisms/revisionAndPlanTable";
 import Form from "../organisms/formDouble"; // formulario para agregar revisión
 import { usePMRevisionAndPlan } from "../../utils/usePMRevisionAndPlan";
@@ -22,8 +21,10 @@ const RevisionActionPage = () => {
         fetchAreaItems,
         searchText,
         searchFeature,
+        selectedArea,
         setSearchText,
         setSearchFeature,
+        setSelectedArea,
         setError,
         loading,
         handleSearchRevisionsAndPlans,
@@ -39,8 +40,6 @@ const RevisionActionPage = () => {
 
 
   } = usePMRevisionAndPlan();
-
-  console.log("Revision Area Item:", revisionAreaItem);
 
   const combinedData = revisions.map(rev => ({
   ...rev,
@@ -122,8 +121,10 @@ const RevisionActionPage = () => {
         isLoading={loading}
         valueText={searchText}
         valueFeature={searchFeature}
+        valueArea={selectedArea}
         onChangeText={setSearchText}
         onChangeFeature={setSearchFeature}
+        onChangeArea={setSelectedArea}
 
         showForm={showForm}
         setShowForm={setShowForm}

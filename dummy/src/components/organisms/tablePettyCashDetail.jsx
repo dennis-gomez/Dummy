@@ -6,17 +6,16 @@ import {
   CircularProgress,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import ModalAlert from "../molecules/ModalAlert"; // Asegúrate de tener la ruta correcta
-import ModalElimination from "../molecules/ModalElimination"; // Asegúrate de tener la ruta correcta
+import ModalAlert from "../molecules/ModalAlert";
+import ModalElimination from "../molecules/ModalElimination";
 
 function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
   const [editRowId, setEditRowId] = useState(null);
   const [editData, setEditData] = useState({});
 
-  // 🔒 Blindaje para evitar undefined/null
+  // Asegurarse que details es un array
   const safeDetails = Array.isArray(details) ? details : [];
 
   const handleEditClick = (detail) => {
@@ -52,21 +51,21 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
         await onEdit(editRowId, editData);
         setEditRowId(null);
         setEditData({});
-        
+
         // Usar tu ModalAlert para éxito
         ModalAlert(
-          '¡Guardado!', 
-          'El movimiento ha sido actualizado correctamente.', 
-          'success', 
+          '¡Guardado!',
+          'El movimiento ha sido actualizado correctamente.',
+          'success',
           2000
         );
       }
     } catch (error) {
       // Usar tu ModalAlert para error
       ModalAlert(
-        'Error', 
-        error.message || 'Error al actualizar el movimiento', 
-        'error', 
+        'Error',
+        error.message || 'Error al actualizar el movimiento',
+        'error',
         3000
       );
     }
@@ -92,16 +91,16 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
           try {
             await onDelete(id);
             ModalAlert(
-              '¡Eliminado!', 
-              'El movimiento ha sido eliminado correctamente.', 
-              'success', 
+              '¡Eliminado!',
+              'El movimiento ha sido eliminado correctamente.',
+              'success',
               2000
             );
           } catch (error) {
             ModalAlert(
-              'Error', 
-              error.message || 'Error al eliminar el movimiento', 
-              'error', 
+              'Error',
+              error.message || 'Error al eliminar el movimiento',
+              'error',
               3000
             );
           }
@@ -110,7 +109,7 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
     );
   };
 
-  // 🟦 Estado cargando
+  //Estado cargando
   if (isLoading) {
     return (
       <div className="flex items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-4xl mx-auto">
@@ -120,7 +119,7 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
     );
   }
 
-  // 🟦 Estado vacío
+  //Estado vacío
   if (safeDetails.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-4xl mx-auto mb-4">
@@ -128,6 +127,19 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
       </div>
     );
   }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString + "T00:00:00Z"); // evita desfase por zona horaria
+    return date
+      .toLocaleDateString("es-CR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        timeZone: "UTC", // mantiene la fecha exacta
+      })
+      .replace(/\//g, "-"); // cambia / por -
+  };
 
   return (
     <div className="overflow-x-auto rounded-xl shadow-lg">
@@ -149,12 +161,13 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
           {safeDetails.map((detail, index) => (
             <tr
               key={detail.cod_petty_cash_details ?? index}
-              className={`${
-                index % 2 === 0 ? "bg-white" : "bg-gray-50"
-              } hover:bg-gray-100`}
+              className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                } hover:bg-gray-100`}
             >
               {/* Número */}
-              <td className="py-4 px-6 text-center">{index + 1}</td>
+              <td className="py-4 px-6 text-center font-semibold text-gray-700">
+                {detail.cod_petty_cash_details}
+              </td>
 
               {/* Fecha */}
               <td className="py-4 px-6 text-center">
@@ -169,7 +182,7 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
                     sx={{ backgroundColor: "white", borderRadius: 1 }}
                   />
                 ) : (
-                  detail.petty_cash_details_date
+                  formatDate(detail.petty_cash_details_date)
                 )}
               </td>
 
@@ -218,8 +231,8 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
                   />
                 ) : (
                   <span title={detail.petty_cash_details_description}>
-                    {detail.petty_cash_details_description?.length > 50 
-                      ? `${detail.petty_cash_details_description.substring(0, 50)}...` 
+                    {detail.petty_cash_details_description?.length > 50
+                      ? `${detail.petty_cash_details_description.substring(0, 50)}...`
                       : detail.petty_cash_details_description}
                   </span>
                 )}
@@ -273,7 +286,7 @@ function PettyCashDetailTable({ details, onDelete, onEdit, isLoading }) {
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    
+
                     {/* Usar tu ModalElimination personalizado */}
                     <Tooltip title="Eliminar">
                       {handleDeleteWithModal(detail.cod_petty_cash_details, detail)}

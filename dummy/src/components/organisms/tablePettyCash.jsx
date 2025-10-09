@@ -45,21 +45,21 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
         await onEdit(editRowId, editData);
         setEditRowId(null);
         setEditData({});
-        
+
         // Usar tu ModalAlert para éxito
         ModalAlert(
-          '¡Guardado!', 
-          'La caja chica ha sido actualizada correctamente.', 
-          'success', 
+          '¡Guardado!',
+          'La caja chica ha sido actualizada correctamente.',
+          'success',
           2000
         );
       }
     } catch (error) {
       // Usar tu ModalAlert para error
       ModalAlert(
-        'Error', 
-        error.message || 'Error al actualizar la caja chica', 
-        'error', 
+        'Error',
+        error.message || 'Error al actualizar la caja chica',
+        'error',
         3000
       );
     }
@@ -83,16 +83,16 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
           try {
             await onDelete(id);
             ModalAlert(
-              '¡Eliminada!', 
-              'La caja chica ha sido eliminada correctamente.', 
-              'success', 
+              '¡Eliminada!',
+              'La caja chica ha sido eliminada correctamente.',
+              'success',
               2000
             );
           } catch (error) {
             ModalAlert(
-              'Error', 
-              error.message || 'Error al eliminar la caja chica', 
-              'error', 
+              'Error',
+              error.message || 'Error al eliminar la caja chica',
+              'error',
               3000
             );
           }
@@ -109,7 +109,7 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
       'info',
       2000
     );
-    
+
     // Navegar después de un breve delay
     setTimeout(() => {
       onViewRecords(box.cod_petty_cash);
@@ -156,8 +156,7 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
               key={box.cod_petty_cash}
               className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
             >
-              <td className="py-4 px-6 text-center">{index + 1}</td>
-
+              <td className="py-4 px-6 text-center">{box.cod_petty_cash}</td>
               {/* Fecha creación */}
               <td className="py-4 px-6 text-center">
                 {editRowId === box.cod_petty_cash ? (
@@ -169,7 +168,14 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
                     sx={{ backgroundColor: "white", borderRadius: 1 }}
                   />
                 ) : (
-                  box.petty_cash_creation_date
+            new Date(box.petty_cash_creation_date + "T00:00:00Z")
+  .toLocaleDateString('es-CR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+    timeZone: 'UTC' // fuerza que no se aplique la zona local
+  })
+  .replace(/\//g, '-')
                 )}
               </td>
 
@@ -248,7 +254,7 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
-                    
+
                     {/* Usar tu ModalElimination personalizado */}
                     <Tooltip title="Eliminar">
                       {handleDeleteWithModal(box.cod_petty_cash, box)}
