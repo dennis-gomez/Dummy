@@ -49,11 +49,14 @@ if (restriction === "unique" && value !== "") {
 
 
   // Validaciones base
-  if (type === "number") {
-    if (value !== "" && isNaN(Number(value))) {
-      err = "Debe ser un número";
-    } else if (Number(value) < 1 && !restriction) {
-      err = "solo valores mayores a 0";
+    if (type === "number") {
+      if (value !== "") {
+        const onlyDigitsRegex = /^\d+$/;
+      if (!onlyDigitsRegex.test(String(value).trim())) {
+        err = "Solo se permiten números enteros válidos";
+      } else if (Number(value) < 1 && !restriction) {
+        err = "Solo valores mayores a 0";
+      }
     }
 
     // Validación del año (Vehículos)

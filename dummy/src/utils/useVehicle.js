@@ -48,12 +48,22 @@ export const useVehicles = () => {
         { name: "vehicle_tires_front", placeholder: "Llantas Delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
         { name: "vehicle_tires_back", placeholder: "Llantas Traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 250, multiline: true, rows: 2 },
         { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 383, multiline: true, rows: 2 },
-        { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 383},
-        { name: "vehicle_is_active", placeholder: "Estados", type: "select", 
+        {
+          name: "vehicle_color",
+          placeholder: "Color",
+          validations: [
+            (value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,
+            (value) => value && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value) ? "El color solo puede contener letras." : null,
+          ],
+          width: 383
+        },
+        { 
+          name: "vehicle_is_active", placeholder: "Estados", type: "select", 
           options: [
             { name: "Activos", placeholder: "Activos" , value: "Activos", label: "Activos"},
             { name: "Desactivados", placeholder: "Desactivados", value: "Desactivados", label: "Desactivados" }
-          ]},
+          ]
+        },
     ];
 
     const editFields = [
@@ -69,7 +79,15 @@ export const useVehicles = () => {
         { name: "vehicle_tires_front", placeholder: "Llantas Delanteras", validations: [ (value) => value && value.length > 50 ? "Las llantas delanteras deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
         { name: "vehicle_tires_back", placeholder: "Llantas Traseras", validations: [ (value) => value && value.length > 50 ? "Las llantas traseras deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
         { name: "bike_brake_pad", placeholder: "Pastillas De Freno", validations: [ (value) => value && value.length > 50 ? "Las pastillas de freno deben tener máximo 50 caracteres." : null, ], width: 150, multiline: true, rows: 2 },
-        { name: "vehicle_color", placeholder: "Color", validations: [(value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,],width: 120},
+        { 
+          name: "vehicle_color", 
+          placeholder: "Color", 
+          validations: [
+            (value) => value && value.length > 30 ? "El color debe tener máximo 30 caracteres." : null,
+            (value) => value && !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(value) ? "El color solo puede contener letras." : null,
+          ],
+          width: 120
+        },
     ];
 
   const [searchText, setSearchText] = useState("");
