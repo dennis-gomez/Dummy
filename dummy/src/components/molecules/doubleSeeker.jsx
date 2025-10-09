@@ -3,8 +3,20 @@ import { FormControl, InputLabel, Select, MenuItem, TextField } from "@mui/mater
 import Button from "../atoms/button";
 
 /**
+ * Componente DoubleSeeker genérico
+ *
+ * Props:
+ * - primaryOptions: opciones para el primer select [{ value, label }]
+ * - secondaryFields: campos del segundo select [{ name, placeholder, type, options? }]
+ * - dynamicOptions: opciones dinámicas para el campo dinámico (solo si tipo 'select')
+ * - primaryLabel, secondaryLabel, dynamicLabel: etiquetas de los campos
+ * - primaryValue, setPrimaryValue
+ * - secondaryValue, setSecondaryValue
+ * - dynamicValue, setDynamicValue
+ * - onSearch: callback al hacer clic en "Buscar"
  * Componente DoubleSeeker estilizado para mantener coherencia visual con Seeker
  */
+
 function DoubleSeeker({
   primaryOptions = [],
   secondaryFields = [],
