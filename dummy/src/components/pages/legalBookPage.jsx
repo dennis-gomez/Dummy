@@ -1,5 +1,5 @@
 import React from 'react';
-import DynamicTable from '../organisms/dinamicTable';
+import DynamicTable from '../organisms/lagalBookTable';
 import { useBooks } from '../../utils/useLegalBook';
 import Form from '../organisms/form';
 import { Box } from "@mui/material";

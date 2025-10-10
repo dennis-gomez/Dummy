@@ -1,4 +1,6 @@
 import { getNotifiedGuarantees, updateGuarantee, getExpiredGuarantees } from "./guaranteeService";
+import { getNotifiedRevisions, updateRevision } from "./pmRevisionService";
+import { formatDateDDMMYYYY } from "../utils/generalUtilities";
 
 // Array general de notificaciones
 export const notifications = [];
@@ -56,13 +58,44 @@ export const fetchExpiredGuaranteeNotifications = async () => {
   }
 };
 
+
+export const fetchRevisionNotifications = async () => {
+  try {
+    const revisions = await getNotifiedRevisions();
+    return revisions.map(r => {
+      const areaCategoryName = r.areaCategory?.category_name || "N/A";
+      const areaItemName = r.areaItem?.item_name || "N/A";
+
+      return {
+        id: `revision-${r.cod_revision}`, // prefijo para diferenciar IDs
+        titulo: `Mantenimiento Preventivo: ${areaCategoryName}`,
+        isNotified: r.revision_is_notified,
+        descripcion: `La fecha de seguimiento propuesta para el mantenimento de "${areaItemName}", esta programada para el ${formatDateDDMMYYYY(r.revision_date_follow_up)}. Responsable: ${r.revision_responsible_name}`,
+        type: "upcoming-revision",
+        updateFn: async () => {
+          // Marcar como vista
+          await updateRevision(r.cod_revision, { revision_is_notified: 2 }); // 2 = vista
+          // Eliminar del array de notificaciones
+          const index = notifications.findIndex(n => n.id === `revision-${r.cod_revision}`);
+          if (index !== -1) notifications.splice(index, 1);
+        },
+      };
+    });
+  } catch (err) {
+    console.error("Error trayendo notificaciones de revisiones próximas:", err);
+    return [];
+  }
+}
+
+
 // 🔹 Función que llama a todos los fetchers y devuelve un array combinado
 export const fetchAllNotifications = async () => {
   try {
     const upcoming = await fetchGuaranteeNotifications();
     const expired = await fetchExpiredGuaranteeNotifications();
+    const upcomingRevisions = await fetchRevisionNotifications();
     // Sobrescribir array global
-    notifications.splice(0, notifications.length, ...upcoming, ...expired);
+    notifications.splice(0, notifications.length, ...upcoming, ...expired, ...upcomingRevisions);
     return [...notifications];
   } catch (err) {
     console.error("Error fetching all notifications:", err);

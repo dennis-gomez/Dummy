@@ -50,7 +50,7 @@ function Seeker({
       </div>
 
       {/* Segundo Select dinámico o Input */}
-      {type === "select" ? (
+      {type === "select" && valueFeature!=="" ? (
         <div className="flex-1 min-w-[200px]">
           <CustomSelect
             selectLabel={inputPlaceholder}
@@ -59,7 +59,7 @@ function Seeker({
             onChange={(e) => onChangeText(e.target.value)}
           />
         </div>
-) : type === "date" ? (
+) : type === "date" && valueFeature!=="" ? (
   <div className="flex-1 min-w-[200px]">
     <CustomDatePicker
       label={inputPlaceholder}
@@ -68,7 +68,7 @@ function Seeker({
       name={inputName}
     />
   </div>
-) : (
+) : ( valueFeature!=="" &&
   <div className="flex-1 min-w-[200px]">
     <Input 
       name={inputName}

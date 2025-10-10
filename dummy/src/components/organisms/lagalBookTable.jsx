@@ -109,7 +109,10 @@ const DynamicTable = ({
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() => handleSearch(searchFeature, searchText)}
+            onClick={() => {
+              handleSearch(searchFeature, searchText)
+              setSearchText("");
+              }}
           />
         </Box>
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">

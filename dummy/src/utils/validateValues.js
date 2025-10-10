@@ -49,15 +49,25 @@ if (restriction === "unique" && value !== "") {
 
 
   // Validaciones base
-    if (type === "number") {
-      if (value !== "") {
-        const onlyDigitsRegex = /^\d+$/;
+  if (type === "number") {
+    if (value !== "") {
+      const onlyDigitsRegex = /^\d+$/;
+
+      // Validar que sea un número entero
       if (!onlyDigitsRegex.test(String(value).trim())) {
         err = "Solo se permiten números enteros válidos";
-      } else if (Number(value) < 1 && !restriction) {
+      } 
+      // Validar si es menor que 1 y no tiene restricción
+      else if (Number(value) < 1 && !restriction) {
         err = "Solo valores mayores a 0";
+      } 
+      // Validar si la restricción permite cero
+      else if (restriction === "allowZero" && Number(value) < 0) {
+        err = "Solo valores mayores o iguales a 0";
       }
     }
+  }
+
 
     // Validación del año (Vehículos)
     if (restriction === "vehicle_year_restrictions" && value !== "") {
