@@ -1,5 +1,6 @@
 import { getNotifiedGuarantees, updateGuarantee, getExpiredGuarantees } from "./guaranteeService";
 import { getNotifiedRevisions, updateRevision } from "./pmRevisionService";
+import { getNotifiedExtinguishers, updateExtinguisher } from "./extinguisherService";
 import { formatDateDDMMYYYY } from "../utils/generalUtilities";
 
 // Array general de notificaciones
@@ -87,6 +88,32 @@ export const fetchRevisionNotifications = async () => {
   }
 }
 
+export const fetchExtinguisherNotifications = async () => {
+  try {
+    const extinguishers = await getNotifiedExtinguishers();
+    return extinguishers.map(r => {
+
+      return {
+        id: `extinguisher-${r.cod_extinguisher}`, // prefijo para diferenciar IDs
+        titulo: `Extintor: ${r.extinguisher_serial_number}`,
+        isNotified: r.extinguisher_is_notified,
+        descripcion: `El extintor marca "${r.extinguisher_brand}", tipo "${r.extinguisher_type}" caduca el ${formatDateDDMMYYYY(r.extinguisher_next_date_inspection)}.`,
+        type: "upcoming-extinguisher",
+        updateFn: async () => {
+          // Marcar como vista
+          await updateExtinguisher(r.cod_extinguisher, { extinguisher_is_notified: 2 }); // 2 = vista
+          // Eliminar del array de notificaciones
+          const index = notifications.findIndex(n => n.id === `extinguisher-${r.cod_extinguisher}`);
+          if (index !== -1) notifications.splice(index, 1);
+        },
+      };
+    });
+  } catch (err) {
+    console.error("Error trayendo notificaciones de extintores próximas:", err);
+    return [];
+  }
+}
+
 
 // 🔹 Función que llama a todos los fetchers y devuelve un array combinado
 export const fetchAllNotifications = async () => {
@@ -94,8 +121,9 @@ export const fetchAllNotifications = async () => {
     const upcoming = await fetchGuaranteeNotifications();
     const expired = await fetchExpiredGuaranteeNotifications();
     const upcomingRevisions = await fetchRevisionNotifications();
+    const upcomingExtinguishers = await fetchExtinguisherNotifications();
     // Sobrescribir array global
-    notifications.splice(0, notifications.length, ...upcoming, ...expired, ...upcomingRevisions);
+    notifications.splice(0, notifications.length, ...upcoming, ...expired, ...upcomingRevisions, ...upcomingExtinguishers);
     return [...notifications];
   } catch (err) {
     console.error("Error fetching all notifications:", err);
