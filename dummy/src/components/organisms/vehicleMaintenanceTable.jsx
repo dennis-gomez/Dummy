@@ -289,28 +289,36 @@ function MaintenanceTable({
                         {isEditing ? (
                         <>
                             {editFields.map((field) => (
-                            <td key={field.name} className="py-4 px-6 text-center">
-                                <InputValidated
-                                name={field.name}
-                                type={field.type || "text"}
-                                value={editData[field.name] || ""}
-                                placeholder={field.placeholder}
-                                options={field.options || []}
-                                restriction={field.restriction}
-                                required={field.required}
-                                onChange={(e) =>
-                                    setEditData({ ...editData, [field.name]: e.target.value })
-                                }
-                                onError={(name, errorMsg) =>
-                                    setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
-                                }
-                                sx={{
-                                    "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
-                                    ...(field.width ? { width: field.width } : {}),
-                                }}
-                                formValues={editData}
-                                />
-                            </td>
+
+
+                                <td key={field.name} className="py-4 px-6 text-center">
+                                    <InputValidated
+                                        name={field.name}
+                                        type={field.type || "text"}
+                                        value={editData[field.name] || ""}
+                                        placeholder={field.placeholder}
+                                        options={field.options || []}
+                                        restriction={field.restriction}
+                                        required={field.required}
+                                        onChange={(e) =>
+                                            setEditData({ ...editData, [field.name]: e.target.value })
+                                        }
+                                        onError={(name, errorMsg) =>
+                                            setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
+                                        }
+                                        sx={{
+                                            "& .MuiInputBase-input": {
+                                            backgroundColor: "#fff !important",
+                                            ...(field.type === "textarea"
+                                                ? { resize: "vertical", }
+                                                : {}),
+                                            },
+                                            ...(field.width ? { width: field.width } : {}),
+                                        }}
+                                        formValues={editData}
+                                    />
+                                </td>
+
                             ))}
 
                             <td className="py-4 px-6 text-center">

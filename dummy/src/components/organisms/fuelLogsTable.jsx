@@ -285,7 +285,12 @@ function FuelLogsTable({
                                     setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
                                 }
                                 sx={{
-                                    "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                    "& .MuiInputBase-input": {
+                                        backgroundColor: "#fff !important",
+                                        ...(field.type === "textarea"
+                                        ? { resize: "vertical", }
+                                        : {}),
+                                    },
                                     ...(field.width ? { width: field.width } : {}),
                                 }}
                                 formValues={editData}
