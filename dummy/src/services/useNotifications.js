@@ -7,7 +7,6 @@ import { formatDateDDMMYYYY } from "../utils/generalUtilities";
 // Array general de notificaciones
 export const notifications = [];
 
-// 🔹 Fetcher de garantías próximas a vencer
 export const fetchGuaranteeNotifications = async () => {
   try {
     const guarantees = await getNotifiedGuarantees();
@@ -33,7 +32,6 @@ export const fetchGuaranteeNotifications = async () => {
   }
 };
 
-// 🔹 Fetcher de garantías vencidas
 export const fetchExpiredGuaranteeNotifications = async () => {
   try {
     const expired = await getExpiredGuarantees();
@@ -42,7 +40,7 @@ export const fetchExpiredGuaranteeNotifications = async () => {
       titulo: `Garantía vencida: ${g.guarantee_number}`,
       isNotified: g.guarantee_is_notified,
       descripcion: `La garantía ${g.guarantee_number} venció el ${new Date(
-        
+
         g.guarantee_expiration_date
       ).toLocaleDateString('es-CR')}`,
       type: "expired",
@@ -75,7 +73,7 @@ export const fetchRevisionNotifications = async () => {
         type: "upcoming-revision",
         updateFn: async () => {
           // Marcar como vista
-          await updateRevision(r.cod_revision, { revision_is_notified: 2 }); // 2 = vista
+          await updateRevision(r.cod_revision, { revision_is_notified: 2 });
           // Eliminar del array de notificaciones
           const index = notifications.findIndex(n => n.id === `revision-${r.cod_revision}`);
           if (index !== -1) notifications.splice(index, 1);
@@ -94,14 +92,14 @@ export const fetchExtinguisherNotifications = async () => {
     return extinguishers.map(r => {
 
       return {
-        id: `extinguisher-${r.cod_extinguisher}`, // prefijo para diferenciar IDs
+        id: `extinguisher-${r.cod_extinguisher}`,
         titulo: `Extintor: ${r.extinguisher_serial_number}`,
         isNotified: r.extinguisher_is_notified,
         descripcion: `El extintor marca "${r.extinguisher_brand}", tipo "${r.extinguisher_type}" caduca el ${formatDateDDMMYYYY(r.extinguisher_next_date_inspection)}.`,
         type: "upcoming-extinguisher",
         updateFn: async () => {
           // Marcar como vista
-          await updateExtinguisher(r.cod_extinguisher, { extinguisher_is_notified: 2 }); // 2 = vista
+          await updateExtinguisher(r.cod_extinguisher, { extinguisher_is_notified: 2 });
           // Eliminar del array de notificaciones
           const index = notifications.findIndex(n => n.id === `extinguisher-${r.cod_extinguisher}`);
           if (index !== -1) notifications.splice(index, 1);
@@ -114,24 +112,23 @@ export const fetchExtinguisherNotifications = async () => {
   }
 }
 
-//notificaciones de mantenimientos de vehiculos
 export const fetchVehicleMaintenancesNotifications = async () => {
-  try{
+  try {
     console.log("notificacion? ")
     const maintenances = await getMaintenanceNotifications();
     console.log(maintenances)
-    return maintenances.map( m => {
+    return maintenances.map(m => {
       return {
         id: `vehicle-${m.cod_vehicle}`,
         titulo: `Mantenimiento para vehículo`,
-        descripcion: `El vehículo ${m.vehicle_brand}, modelo ${m.vehicle_model} y placa ${m.vehicle_plate}, superó el kilometraje establacido para su revisión.`, 
+        descripcion: `El vehículo ${m.vehicle_brand}, modelo ${m.vehicle_model} y placa ${m.vehicle_plate}, superó el kilometraje establacido para su revisión.`,
         isNotified: m.vehicle_is_notified,
         updateFn: async () => {
-            // Marcar como vista
-            await updateVehicleNotification(m.cod_vehicle, { vehicle_is_notified: 2 }); // 2 = vista
-            // Eliminar del array de notificaciones
-            const index = notifications.findIndex(n => n.id ===  `vehicle-${m.cod_vehicle}`);
-            if (index !== -1) notifications.splice(index, 1);
+          // Marcar como vista
+          await updateVehicleNotification(m.cod_vehicle, { vehicle_is_notified: 2 });
+          // Eliminar del array de notificaciones
+          const index = notifications.findIndex(n => n.id === `vehicle-${m.cod_vehicle}`);
+          if (index !== -1) notifications.splice(index, 1);
         },
       };
     });
