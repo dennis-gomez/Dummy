@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react"
 import { 
     getActiveFuelLogs, 
+    getAllFuelLogs,
     findFuelLogs, 
     addFuelLog, 
     deleteFuelLog, 
     updateFuelLog, 
+    reactivateFuelLogs, 
 } from "../services/fuelLogsService";
 
 import { getItems } from "../services/itemService";
@@ -34,19 +36,19 @@ export const useFuelLogs = () => {
         { name: "fuel_log_route", placeholder: "Ruta", required: true, type: "textarea", width: 780},
         { name: "fuel_log_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 382, restriction: "cantAfterToday" },
         { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 382},
-        { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250},
-        { name: "fuel_log_price", placeholder: "Precio", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250},
-        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", restriction: "vehicle_initial_km_restrictions", width: 250}, 
+        { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", width: 250},
+        { name: "fuel_log_price", placeholder: "Precio", type: "number", width: 250},
+        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", width: 250}, 
     ];
 
     const editFields = [
-        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: allVehiclesItems, width: 200},
+        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 200},
         { name: "fuel_log_route", placeholder: "Ruta", required: true, type: "textarea", width: 200},
         { name: "fuel_log_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 150, restriction: "cantAfterToday" },
         { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 200},
-        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", restriction: "vehicle_initial_km_restrictions", width: 200},
-        { name: "fuel_log_price", placeholder: "Precio", type: "number", restriction: "vehicle_initial_km_restrictions", width: 150},
-        { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", restriction: "vehicle_initial_km_restrictions", width: 150},
+        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", width: 200},
+        { name: "fuel_log_price", placeholder: "Precio", type: "number", width: 150},
+        { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", width: 150},
     ];
 
     // Estados para filtrado
@@ -74,7 +76,12 @@ export const useFuelLogs = () => {
         try {
             setLoading(true);
             let response;
-            if (vehicleId === "Todos" && !String(text).trim()) {
+            if (text === "Activos"){
+                response = await getActiveFuelLogs(currentPage, pageSize);
+            } else if (text === "Desactivados") {
+                response = await getAllFuelLogs(currentPage, pageSize);
+                setError(null);
+            } else if (vehicleId === "Todos" && !String(text).trim()) {
                 response = await getActiveFuelLogs(currentPage, pageSize);
                 setError(null);
             } else {
@@ -151,12 +158,28 @@ export const useFuelLogs = () => {
         try {
             const response = await deleteFuelLog(cod_fuel_log);
             if (response.status === 200) {
-                ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
+                ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
                 await fetchFuelLogs();
                 setError(null);
             }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al eliminar registro.";
+            const message = error.response?.data?.message || "Error al desactivar registro.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        }
+    };
+
+    // Reactivar registros inhabilitados
+    const handleReactivate = async (cod_fuel_log) => {
+        try {
+            const response = await reactivateFuelLogs(cod_fuel_log);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
+                await fetchFuelLogs();
+                setError(null);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al reactivar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }
@@ -211,6 +234,8 @@ export const useFuelLogs = () => {
         handlePageChange,
 
         allVehiclesItems,
+        activeVehiclesItems,
+
         showForm,
         loading,
         error,
@@ -226,7 +251,8 @@ export const useFuelLogs = () => {
         handleResetSearch,
         handleSubmit,
         handleEdit,
-        handleDelete
+        handleDelete, 
+        handleReactivate
     };
 
 } 

@@ -7,18 +7,16 @@ function VehicleMaintenance() {
     const {
         logs,
         allVehiclesItems,
+        activeVehiclesItems,
         page,
         totalPages,
-
         loading,
         error,
         setError,
         showForm,
         setShowForm,
-
         fields,
         editFields,
-
         maintenanceTypes,
         selectedVehicle,
         setSelectedVehicle,
@@ -26,12 +24,13 @@ function VehicleMaintenance() {
         setSearchField,
         searchText,
         setSearchText,
-
         handleSearch,
         handleSubmit,
         handleEdit,
         handleDelete,
-        handlePageChange
+        handlePageChange,
+        handleReactivate,
+        handleSortByDate
         //setPage,
     } = useVehicleMaintenance();
 
@@ -97,7 +96,8 @@ function VehicleMaintenance() {
                 onPageChange={handlePageChange}
                 editFields={editFields}
                 logs={logs}
-                allVehiclesItems={allVehiclesItems} 
+                allVehiclesItems={allVehiclesItems}
+                activeVehiclesItems={activeVehiclesItems} 
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onSearch={handleSearch}
@@ -105,6 +105,8 @@ function VehicleMaintenance() {
                     setShowForm(!showForm);
                     setError(null);
                 }}
+                onReactivate={handleReactivate}
+                onSortByDate={handleSortByDate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}

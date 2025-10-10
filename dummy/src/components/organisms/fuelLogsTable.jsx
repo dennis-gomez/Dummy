@@ -21,6 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import ReactivationModal from "../molecules/reactivationModal";
 
 function FuelLogsTable({
     fields,
@@ -30,10 +31,12 @@ function FuelLogsTable({
     editFields,
     fuelLogs,
     allVehiclesItems,
+    activeVehiclesItems,
     onDelete,
     onEdit,
     onSearch,
     onToggleForm,
+    onReactivate,
     showForm,
     isLoading,
     searchText,
@@ -63,7 +66,6 @@ function FuelLogsTable({
         const type = fuelTypes.find((t) => t.value === typeCode);
         return type ? type.label : "Desconocido";
     };
-
 
     const handleSaveEdit = async () => {
         const hasError = Object.values(fieldErrors).some((err) => err);
@@ -101,11 +103,11 @@ function FuelLogsTable({
 
     const handleValidatedDelete = async (id) => {
         const result = await Swal.fire({
-        title: "¿Eliminar este registro?",
-        text: "No podrás deshacer esta acción",
+        title: "¿Desactivar este registro?",
+        text: "Podrás deshacer esta acción",
         icon: "error",
         showCancelButton: true,
-        confirmButtonText: "Sí, eliminar",
+        confirmButtonText: "Sí, desactivar",
         cancelButtonText: "Cancelar",
         confirmButtonColor: "#dc2626",
         cancelButtonColor: "#9ca3af",
@@ -113,7 +115,7 @@ function FuelLogsTable({
 
         if (result.isConfirmed) {
             await onDelete(id);
-            Swal.fire("Eliminado", "El registro fue borrado", "success");
+            Swal.fire("Desactivado", "El registro fue desactivado", "success");
         }
     };
 
@@ -134,7 +136,7 @@ function FuelLogsTable({
                     onChange={(e) => setSelectedVehicle(e.target.value)}
                 >
                 <MenuItem value="Todos">Todos</MenuItem>
-                {allVehiclesItems.map((veh) => (
+                {activeVehiclesItems.map((veh) => (
                     <MenuItem key={veh.value} value={veh.value}>
                         {veh.label}
                     </MenuItem>
@@ -144,7 +146,14 @@ function FuelLogsTable({
 
             <FormControl className={searchInputClass}>
                 <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
-                <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+                <Select 
+                    value={searchField} 
+                    onChange={
+                        (e) => {
+                        setSearchField(e.target.value)
+                        setSearchText("")
+                    }}
+                >
                 {fields
                 .filter((field) => field.name !== "cod_vehicle")
                 .map((field) => (
@@ -152,6 +161,7 @@ function FuelLogsTable({
                     {field.placeholder}
                     </MenuItem>
                 ))}
+                <MenuItem value="estados">Estados</MenuItem>
                 </Select>
             </FormControl>
 
@@ -169,6 +179,17 @@ function FuelLogsTable({
                                 {type.label}
                             </MenuItem>
                         ))}
+                    </Select>
+                </FormControl>
+            ) : searchField === "estados" ? (
+                <FormControl className={searchInputClass}>
+                    <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Estado</InputLabel>
+                    <Select
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                    >
+                        <MenuItem value="Activos">Activos</MenuItem>
+                        <MenuItem value="Desactivados">Desactivados</MenuItem>
                     </Select>
                 </FormControl>
             ) : (
@@ -235,8 +256,16 @@ function FuelLogsTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Combustible</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Cantidad</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Precio</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Km Recorridos</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                    {fuelLogs.some((log) => log.fuel_log_is_active) ? (
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Km Recorridos</th>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                        </>
+                    ):(
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Km Recorridos</th>
+                        </>
+                    )}
                 </tr>
                 </thead>
                 <tbody>
@@ -265,7 +294,12 @@ function FuelLogsTable({
                                     setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
                                 }
                                 sx={{
-                                    "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                    "& .MuiInputBase-input": {
+                                        backgroundColor: "#fff !important",
+                                        ...(field.type === "textarea"
+                                        ? { resize: "vertical", }
+                                        : {}),
+                                    },
                                     ...(field.width ? { width: field.width } : {}),
                                 }}
                                 formValues={editData}
@@ -305,22 +339,26 @@ function FuelLogsTable({
                             <td className="py-4 px-6 text-center">{record.fuel_log_quantity} L</td>
                             <td className="py-4 px-6 text-center">₡ {record.fuel_log_price}</td>
                             <td className="py-4 px-6 text-center">{record.fuel_log_final_km} km</td>
-                            <td className="py-4 px-6 text-center">
-                            <div className="flex justify-center space-x-3">
-                                <button
-                                onClick={() => handleEditClick(record)}
-                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                                >
-                                <EditIcon fontSize="small" />
-                                </button>
-                                <button
-                                onClick={() => handleValidatedDelete(record.cod_fuel_log)}
-                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                                >
-                                <DeleteIcon fontSize="small" />
-                                </button>
-                            </div>
-                            </td>
+                            {record.fuel_log_is_active && (
+                                <td className="py-4 px-6 text-center">
+                                <div className="flex justify-center space-x-3">
+                                        <>
+                                            <button
+                                                onClick={() => handleEditClick(record)}
+                                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                            >
+                                                <EditIcon fontSize="small" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleValidatedDelete(record.cod_fuel_log)}
+                                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </button>
+                                        </>
+                                </div>
+                                </td>
+                            )}
                         </>
                         )}
                     </tr>
