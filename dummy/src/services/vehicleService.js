@@ -159,3 +159,39 @@ export const reactivateVehicle = async (cod_vehicle) => {
         throw error;
     }
 };
+
+//Obtener notificaciones de mantenimientos de vehiculos
+export const getMaintenanceNotifications = async () => {
+    try{
+        const response = await axios.get(
+            API_URL + "notifications", 
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//actualizar el visto a las notificaciones
+export const updateVehicleNotification = async (cod_vehicle, updateData) => {
+    try {
+        const response = await axios.put(
+            API_URL + "update-notification",
+            updateData,
+            {
+                params: { cod_vehicle },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
