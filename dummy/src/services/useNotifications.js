@@ -1,6 +1,7 @@
 import { getNotifiedGuarantees, updateGuarantee, getExpiredGuarantees } from "./guaranteeService";
 import { getNotifiedRevisions, updateRevision } from "./pmRevisionService";
 import { getNotifiedExtinguishers, updateExtinguisher } from "./extinguisherService";
+import { getMaintenanceNotifications, updateVehicleNotification } from "./vehicleService";
 import { formatDateDDMMYYYY } from "../utils/generalUtilities";
 
 // Array general de notificaciones
@@ -59,7 +60,6 @@ export const fetchExpiredGuaranteeNotifications = async () => {
   }
 };
 
-
 export const fetchRevisionNotifications = async () => {
   try {
     const revisions = await getNotifiedRevisions();
@@ -114,6 +114,33 @@ export const fetchExtinguisherNotifications = async () => {
   }
 }
 
+//notificaciones de mantenimientos de vehiculos
+export const fetchVehicleMaintenancesNotifications = async () => {
+  try{
+    console.log("notificacion? ")
+    const maintenances = await getMaintenanceNotifications();
+    console.log(maintenances)
+    return maintenances.map( m => {
+      return {
+        id: `vehicle-${m.cod_vehicle}`,
+        titulo: `Mantenimiento para vehículo`,
+        descripcion: `El vehículo ${m.vehicle_brand}, modelo ${m.vehicle_model} y placa ${m.vehicle_plate}, superó el kilometraje establacido para su revisión.`, 
+        isNotified: m.vehicle_is_notified,
+        updateFn: async () => {
+            // Marcar como vista
+            await updateVehicleNotification(m.cod_vehicle, { vehicle_is_notified: 2 }); // 2 = vista
+            // Eliminar del array de notificaciones
+            const index = notifications.findIndex(n => n.id ===  `vehicle-${m.cod_vehicle}`);
+            if (index !== -1) notifications.splice(index, 1);
+        },
+      };
+    });
+  } catch (err) {
+    console.error("Error trayendo notificaciones de revisiones próximas:", err);
+    return [];
+  }
+};
+
 
 // 🔹 Función que llama a todos los fetchers y devuelve un array combinado
 export const fetchAllNotifications = async () => {
@@ -122,8 +149,9 @@ export const fetchAllNotifications = async () => {
     const expired = await fetchExpiredGuaranteeNotifications();
     const upcomingRevisions = await fetchRevisionNotifications();
     const upcomingExtinguishers = await fetchExtinguisherNotifications();
+    const vehicleMaintenances = await fetchVehicleMaintenancesNotifications();
     // Sobrescribir array global
-    notifications.splice(0, notifications.length, ...upcoming, ...expired, ...upcomingRevisions, ...upcomingExtinguishers);
+    notifications.splice(0, notifications.length, ...upcoming, ...expired, ...upcomingRevisions, ...upcomingExtinguishers, ...vehicleMaintenances);
     return [...notifications];
   } catch (err) {
     console.error("Error fetching all notifications:", err);
