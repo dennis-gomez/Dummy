@@ -126,9 +126,9 @@ function LegalBookRecordTable({
             <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Seleccione un libro</InputLabel>
             <Select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)}>
               <MenuItem value="Todos">Todos los libros</MenuItem>
-              {books.map((book) => (
-                <MenuItem key={book.cod_book} value={book.cod_book}>
-                  {book.book_name}
+              {booksItems.map((book) => (
+                <MenuItem key={book.value} value={book.value}>
+                  {book.label}
                 </MenuItem>
               ))}
             </Select>
@@ -150,6 +150,9 @@ function LegalBookRecordTable({
                     {field.placeholder}
                   </MenuItem>
                 ))}
+                <MenuItem key={'lb_record_return_date'} value={'lb_record_return_date'}>
+                    {'Fecha de retorno'}
+                </MenuItem>
                 <MenuItem value="estados">Estados</MenuItem>
             </Select>
           </FormControl>
@@ -228,8 +231,16 @@ function LegalBookRecordTable({
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Regresado</th>
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha registro</th>
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha retorno</th>
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Observaciones</th>
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                {legalBookRecords.some((log) => log.lb_record_is_active) ? (
+                  <>
+                  <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Observaciones</th>
+                  <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                  </>
+                ):(
+                  <>
+                  <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Observaciones</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -308,8 +319,9 @@ function LegalBookRecordTable({
                         <td className="py-4 px-6 text-center text-gray-700 max-w-xs truncate" title={record.lb_record_observation}>
                           {record.lb_record_observation}
                         </td>
+                        {record.lb_record_is_active && (
                         <td className="py-4 px-6 text-center">
-                         {record.lb_record_is_active ? (
+                        
                           <div className="flex justify-center space-x-3">
                             <button
                               onClick={() => handleEditClick(record)}
@@ -324,13 +336,14 @@ function LegalBookRecordTable({
                               <DeleteIcon fontSize="small" />
                             </button>
                           </div>
-                          ):(
+                          {/*:(
                             <ReactivationModal
                               message={"¿Quieres reactivar este registro?"}
                               onClick={() => onReactivate(record.cod_registration_application)}
                             />
-                          )}
+                          )}*/}
                         </td>
+                        )}
                       </>
                     )}
                   </tr>

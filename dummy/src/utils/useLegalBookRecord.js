@@ -47,7 +47,7 @@ export const useLegalBookRecord = () => {
 
     // Campos para editar
     const editFields = [
-        { name: "cod_book_catalog", placeholder: "Libro legal", type: "select", options: formattedBook, width: 200, required: true },
+        { name: "cod_book_catalog", placeholder: "Libro legal", type: "select", options: booksItems, width: 200, required: true },
         { name: "lb_record_requested_by", placeholder: "Solicitado", required: true, width: 220 },
         { name: "lb_record_delivered_to", placeholder: "Entregado", required: true, width: 220 },
         { name: "lb_record_return_by", placeholder: "Regresado por", required: false, width: 220 },  
@@ -203,6 +203,8 @@ export const useLegalBookRecord = () => {
                     }))
                 );
 
+            
+
                 setBooks(allBooks.data);
 
                 setFormattedBook(
@@ -231,8 +233,13 @@ export const useLegalBookRecord = () => {
         }else if( (selectedBook === "Todos" && !String(searchText).trim()) || searchText === "Activos"){
             await getActivesRecords(newPage);
         }else{
-            response = await getRecordByFeature(selectedBook, searchField, searchText, newPage, pageSize);
-            setLogs(response.data)
+            try {
+                const response = await getRecordByFeature(selectedBook, searchField, searchText, newPage, pageSize);
+                setLegalBookRecords(response.data.data)
+            } catch (error) {
+                const msg = error.response?.data?.message || "Error al encontrar registro.";
+                Swal.fire("Error", msg, "error");
+            }
         }
     };
 
