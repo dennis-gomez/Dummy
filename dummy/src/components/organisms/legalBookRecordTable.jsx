@@ -7,6 +7,9 @@ import {
   MenuItem,
   TextField,
   Box,
+  Stack,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
 import Button from "../atoms/button";
 import Swal from "sweetalert2";
@@ -16,11 +19,19 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import ReactivationModal from "../molecules/reactivationModal";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 function LegalBookRecordTable({
   books,
   booksItems,
   legalBookRecords,
+
+  page,
+  onPageChange,
+  totalPages,
+
   isLoading,
   onDelete,
   onEdit,
@@ -34,6 +45,7 @@ function LegalBookRecordTable({
   searchField,
   setSearchField,
   onToggleForm,
+  onReactivate,
   showForm,
 }) {
   const [editingId, setEditingId] = useState(null);
@@ -87,11 +99,11 @@ function LegalBookRecordTable({
 
   const handleValidatedDelete = async (id) => {
     const result = await Swal.fire({
-      title: "¿Eliminar este registro?",
-      text: "No podrás deshacer esta acción",
+      title: "¿Desactivar este registro?",
+      text: "Podrás deshacer esta acción",
       icon: "error",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Sí, desactivar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -99,7 +111,7 @@ function LegalBookRecordTable({
 
     if (result.isConfirmed) {
       await onDelete(id);
-      Swal.fire("Eliminado", "El registro fue borrado", "success");
+      Swal.fire("Desactivado", "El registro fue desactivado", "success");
     }
   };
 
@@ -123,31 +135,50 @@ function LegalBookRecordTable({
           </FormControl>
 
           <FormControl className={searchInputClass}>
-            <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Buscar por característica</InputLabel>
-            <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+            <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
+            <Select 
+              value={searchField} 
+              onChange={(e) => { 
+                setSearchField(e.target.value) 
+                setSearchText("")
+              }}
+            >
               {fields
                 .filter(field => field.name !== 'cod_book_catalog')
                 .map(field => (
                   <MenuItem key={field.name} value={field.name}>
                     {field.placeholder}
                   </MenuItem>
-                ))
-              }
+                ))}
+                <MenuItem value="estados">Estados</MenuItem>
             </Select>
           </FormControl>
 
-          <TextField
-            label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar"}
-            type={dateFields.includes(searchField) ? "date" : "text"}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className={searchInputClass}
-            InputLabelProps={{
-              ...(dateFields.includes(searchField) ? { shrink: true } : {}),
-              sx: { backgroundColor: "white", px: 1 },
-            }}
-            placeholder={dateFields.includes(searchField) ? "Seleccione fecha" : "Ingrese texto..."}
-          />
+          {searchField === "estados" ? (
+            <FormControl className={searchInputClass}>
+              <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Estado</InputLabel>
+                <Select
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                >
+                  <MenuItem value="Activos">Activos</MenuItem>
+                  <MenuItem value="Desactivados">Desactivados</MenuItem>
+                </Select>
+            </FormControl>
+          ) : (
+            <TextField
+              label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar"}
+              type={dateFields.includes(searchField) ? "date" : "text"}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className={searchInputClass}
+              InputLabelProps={{
+                ...(dateFields.includes(searchField) ? { shrink: true } : {}),
+                sx: { backgroundColor: "white", px: 1 },
+              }}
+              placeholder={dateFields.includes(searchField) ? "Seleccione fecha" : "Ingrese texto..."}
+            />
+          )}
 
           <div className="flex items-center justify-center lg:ml-9 w-full sm:w-auto">
             <Button
@@ -228,7 +259,12 @@ function LegalBookRecordTable({
                                 setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
                               }
                               sx={{
-                                "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                "& .MuiInputBase-input": {
+                                  backgroundColor: "#fff !important",
+                                  ...(field.type === "textarea"
+                                  ? { resize: "vertical", }
+                                  : {}),
+                                },
                                 ...(field.width ? { width: field.width } : {}),
                               }}
                               formValues={editData}
@@ -273,6 +309,7 @@ function LegalBookRecordTable({
                           {record.lb_record_observation}
                         </td>
                         <td className="py-4 px-6 text-center">
+                         {record.lb_record_is_active ? (
                           <div className="flex justify-center space-x-3">
                             <button
                               onClick={() => handleEditClick(record)}
@@ -287,6 +324,12 @@ function LegalBookRecordTable({
                               <DeleteIcon fontSize="small" />
                             </button>
                           </div>
+                          ):(
+                            <ReactivationModal
+                              message={"¿Quieres reactivar este registro?"}
+                              onClick={() => onReactivate(record.cod_registration_application)}
+                            />
+                          )}
                         </td>
                       </>
                     )}
@@ -295,6 +338,20 @@ function LegalBookRecordTable({
               })}
             </tbody>
           </table>
+          <Stack spacing={30 } alignItems="center" marginY={2}>
+            <Pagination
+              count= {totalPages}
+              page={page}
+              color="primary"
+              onChange={(e, value) => onPageChange(value)}
+              renderItem={(item) => (
+              <PaginationItem
+                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                {...item}
+              />
+              )}
+            />
+          </Stack>
         </div>
       )}
     </>

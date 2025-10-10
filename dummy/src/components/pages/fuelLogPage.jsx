@@ -11,9 +11,11 @@ function FuelLogPage() {
         page,
         totalPages,
         handlePageChange,
-
         fuelLogs,
+
         allVehiclesItems,
+        activeVehiclesItems,
+
         showForm,
         loading,
         error,
@@ -29,7 +31,8 @@ function FuelLogPage() {
         handleResetSearch,
         handleSubmit,
         handleEdit,
-        handleDelete
+        handleDelete, 
+        handleReactivate,
     } = useFuelLogs();
 
     return(
@@ -94,6 +97,7 @@ function FuelLogPage() {
                 editFields={editFields}
                 fuelLogs={fuelLogs}
                 allVehiclesItems={allVehiclesItems} 
+                activeVehiclesItems={activeVehiclesItems}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onSearch={handleSearch}
@@ -101,6 +105,7 @@ function FuelLogPage() {
                     setShowForm(!showForm);
                     setError(null);
                 }}
+                onReactivate={handleReactivate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}
