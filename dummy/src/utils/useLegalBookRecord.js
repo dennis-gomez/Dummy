@@ -73,6 +73,11 @@ export const useLegalBookRecord = () => {
     const [selectedBook, setSelectedBook] = useState("Todos");
     const [searchField, setSearchField] = useState(fields.find(field => field.name !== 'cod_book_catalog')?.name || '');
 
+    //Estados para busqueda aplicada anteriormente, evita una mala paginacion
+    const [appliedVehicle, setAppliedVehicle] = useState("Todos");
+    const [appliedField, setAppliedField] = useState(fields[1]?.name || "");
+    const [appliedText, setAppliedText] = useState("");
+
     const getActivesRecords = async (newPage) => {
         try {
             const response = await getRecords(newPage, pageSize);
@@ -99,16 +104,41 @@ export const useLegalBookRecord = () => {
         }
     }
 
+    const fetchRecords = async (pageNum = page, filters = {}) => {
+        try {
+            setLoading(true);
+            let response;
+
+            const { book = appliedBook, field = appliedField, text = appliedText } = filters;
+
+            if (text === "Desactivados") {
+                response = await getInactivesRecords(pageNum, pageSize);
+            } else if ((book === "Todos" && !String(text).trim()) || text === "Activos") {
+                response = await getRecords(pageNum, pageSize);
+            } else {
+                response = await getRecordByFeature(book, field, text, pageNum, pageSize);
+            }
+
+            setLegalBookRecords(response.data.data || []);
+            setTotalPages(response.data.totalPages || 1);
+            setPage(pageNum);
+            setError(null);
+        } catch (error) {
+            setLegalBookRecords([]);
+            const message = error.response?.data?.message || "Error al obtener los registros.";
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
+        }
+    }; 
+
     // Búsqueda específica
     const handleSearch = async () => {
-        try{
-            setError(null)
-            handlePageChange(1)
-        }catch (error) {
-            const message = error.response?.data?.message || "Error al encontrar el registro.";
-            ModalAlert("Error", message, "error");
-            setError(message);
-        }
+        //guardar estados antiguos
+        setAppliedVehicle(selectedBook);
+        setAppliedField(searchField);
+        setAppliedText(searchText);
+        await fetchRecords(1, { book: selectedBook, field: searchField, text: searchText });
     };
 
     // Agregar registro
@@ -124,7 +154,7 @@ export const useLegalBookRecord = () => {
 
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                await getActivesRecords(page);
+                await fetchRecords(1, { book: appliedVehicle, field: appliedField, text: appliedText });
                 setShowForm(false);
                 setError(null);
             }
@@ -142,7 +172,7 @@ export const useLegalBookRecord = () => {
             const response = await updateRecord(updatedData);
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
-                await getActivesRecords(page);
+                await fetchRecords(page, { book: appliedVehicle, field: appliedField, text: appliedText });
                 setError(null);
             }
             return true;
@@ -160,7 +190,7 @@ export const useLegalBookRecord = () => {
             const response = await deleteRecord(cod_registration_application);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
-                await handlePageChange(1);
+                await fetchRecords(1, { book: appliedVehicle, field: appliedField, text: appliedText });
                 setError(null);
             }
         } catch (error) {
@@ -176,7 +206,7 @@ export const useLegalBookRecord = () => {
             const response = await reactivateRecord(cod_registration_application);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
-                await handlePageChange(1);
+                await fetchRecords(1, { book: appliedVehicle, field: appliedField, text: appliedText });
                 setError(null);
             }
         } catch (error) {
@@ -202,8 +232,6 @@ export const useLegalBookRecord = () => {
                         label: i.book_name
                     }))
                 );
-
-            
 
                 setBooks(allBooks.data);
 
@@ -234,7 +262,7 @@ export const useLegalBookRecord = () => {
             await getActivesRecords(newPage);
         }else{
             try {
-                const response = await getRecordByFeature(selectedBook, searchField, searchText, newPage, pageSize);
+                const response = await getRecordByFeature(appliedVehicle, appliedField, appliedText, newPage, pageSize);
                 setLegalBookRecords(response.data.data)
             } catch (error) {
                 const msg = error.response?.data?.message || "Error al encontrar registro.";

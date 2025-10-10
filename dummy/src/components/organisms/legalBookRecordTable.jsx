@@ -212,14 +212,14 @@ function LegalBookRecordTable({
       )}
 
       {/* Contenedor gris cuando no hay registros */}
-      {!isLoading && legalBookRecords.length === 0 && (
+      {!isLoading && (!legalBookRecords || legalBookRecords.length === 0)&& (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
           No se encontraron registros
         </div>
       )}
 
       {/* Tabla de registros */}
-      {legalBookRecords.length > 0 && (
+      {legalBookRecords && legalBookRecords.length > 0 && (
         <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
           <table className="min-w-full">
             <thead>
