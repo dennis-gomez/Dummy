@@ -31,6 +31,7 @@ function FuelLogsTable({
     editFields,
     fuelLogs,
     allVehiclesItems,
+    activeVehiclesItems,
     onDelete,
     onEdit,
     onSearch,
@@ -135,7 +136,7 @@ function FuelLogsTable({
                     onChange={(e) => setSelectedVehicle(e.target.value)}
                 >
                 <MenuItem value="Todos">Todos</MenuItem>
-                {allVehiclesItems.map((veh) => (
+                {activeVehiclesItems.map((veh) => (
                     <MenuItem key={veh.value} value={veh.value}>
                         {veh.label}
                     </MenuItem>
@@ -255,8 +256,16 @@ function FuelLogsTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Combustible</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Cantidad</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Precio</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Km Recorridos</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                    {fuelLogs.some((log) => log.fuel_log_is_active) ? (
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Km Recorridos</th>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                        </>
+                    ):(
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Km Recorridos</th>
+                        </>
+                    )}
                 </tr>
                 </thead>
                 <tbody>
@@ -330,32 +339,26 @@ function FuelLogsTable({
                             <td className="py-4 px-6 text-center">{record.fuel_log_quantity} L</td>
                             <td className="py-4 px-6 text-center">₡ {record.fuel_log_price}</td>
                             <td className="py-4 px-6 text-center">{record.fuel_log_final_km} km</td>
-                            <td className="py-4 px-6 text-center">
-                            <div className="flex justify-center space-x-3">
-
-                                {record.fuel_log_is_active ? (
-                                    <>
-                                        <button
-                                            onClick={() => handleEditClick(record)}
-                                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                                        >
-                                            <EditIcon fontSize="small" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleValidatedDelete(record.cod_fuel_log)}
-                                            className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </button>
-                                    </>
-                                ) : (
-                                    <ReactivationModal
-                                        message={"¿Quieres reactivar este registro?"}
-                                        onClick={() => onReactivate(record.cod_fuel_log)}
-                                    />
-                                )}
-                            </div>
-                            </td>
+                            {record.fuel_log_is_active && (
+                                <td className="py-4 px-6 text-center">
+                                <div className="flex justify-center space-x-3">
+                                        <>
+                                            <button
+                                                onClick={() => handleEditClick(record)}
+                                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                            >
+                                                <EditIcon fontSize="small" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleValidatedDelete(record.cod_fuel_log)}
+                                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </button>
+                                        </>
+                                </div>
+                                </td>
+                            )}
                         </>
                         )}
                     </tr>

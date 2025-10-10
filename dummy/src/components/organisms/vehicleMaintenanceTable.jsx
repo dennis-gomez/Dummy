@@ -29,6 +29,7 @@ function MaintenanceTable({
     totalPages,
     currentPage,
     allVehiclesItems,
+    activeVehiclesItems,
     isLoading,
     showForm,
     fields,
@@ -144,7 +145,7 @@ function MaintenanceTable({
                     onChange={(e) => setSelectedVehicle(e.target.value)}
                 >
                     <MenuItem value="Todos">Todos</MenuItem>
-                    {allVehiclesItems.map((veh) => (
+                    {activeVehiclesItems.map((veh) => (
                         <MenuItem key={veh.value} value={veh.value}>
                             {veh.label}
                         </MenuItem>
@@ -275,8 +276,16 @@ function MaintenanceTable({
                         </button>
                     </th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Kilometraje Acumulado</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Detalles</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                    {logs.some((log) => log.maintenance_log_is_active) ? (
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Detalles</th>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                        </>
+                    ):(
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Detalles</th>
+                        </>
+                    )}
                 </tr>
                 </thead>
                 <tbody>
@@ -289,8 +298,6 @@ function MaintenanceTable({
                         {isEditing ? (
                         <>
                             {editFields.map((field) => (
-
-
                                 <td key={field.name} className="py-4 px-6 text-center">
                                     <InputValidated
                                         name={field.name}
@@ -350,33 +357,37 @@ function MaintenanceTable({
                             <td className="py-4 px-6 text-center">{getMaintenanceName(record.maintenance_type_item_code)}</td>
                             <td className="py-4 px-6 text-center">{formatDateDDMMYYYY(record.maintenance_date)}</td>
                             <td className="py-4 px-6 text-center">{record.maintenance_km_acumulate} km</td>
-                            <td className="py-4 px-6 text-center">{record.maintenance_detail}</td>                           
-                            <td className="py-4 px-6 text-center">
-                                <div className="flex justify-center space-x-3">
-                                    {record.maintenance_log_is_active ? (
-                                        <>
-                                            <button
-                                                onClick={() => handleEditClick(record)}
-                                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                                            >
-                                                <EditIcon fontSize="small" />
-                                            </button>
+                            <td className="py-4 px-6 text-center">{record.maintenance_detail}</td>   
+                            {record.maintenance_log_is_active && (                        
+                                <td className="py-4 px-6 text-center">
+                                    <div className="flex justify-center space-x-3">
+                                            <>
+                                                <button
+                                                    onClick={() => handleEditClick(record)}
+                                                    className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </button>
 
-                                            <button
-                                                onClick={() => handleValidatedDelete(record.cod_maintenance)}
-                                                className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                                            >
-                                                <DeleteIcon fontSize="small" />
-                                            </button>
-                                        </>
-                                    ):(
-                                        <ReactivationModal
-                                            message={"¿Quieres reactivar este registro?"}
-                                            onClick={() => onReactivate(record.cod_maintenance)}
-                                        />
-                                    )}
-                                </div>
-                            </td>
+                                                <button
+                                                    onClick={() => handleValidatedDelete(record.cod_maintenance)}
+                                                    className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                                >
+                                                    <DeleteIcon fontSize="small" />
+                                                </button>
+                                            </>
+                                        
+                                        {/*
+                                        :(
+                                            <ReactivationModal
+                                                message={"¿Quieres reactivar este registro?"}
+                                                onClick={() => onReactivate(record.cod_maintenance)}
+                                            />
+                                        )}
+                                        */}
+                                    </div>
+                                </td>
+                            )}
                         </>
                         )}
                     </tr>

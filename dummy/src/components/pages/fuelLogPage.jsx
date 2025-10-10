@@ -11,9 +11,11 @@ function FuelLogPage() {
         page,
         totalPages,
         handlePageChange,
-
         fuelLogs,
+
         allVehiclesItems,
+        activeVehiclesItems,
+
         showForm,
         loading,
         error,
@@ -95,6 +97,7 @@ function FuelLogPage() {
                 editFields={editFields}
                 fuelLogs={fuelLogs}
                 allVehiclesItems={allVehiclesItems} 
+                activeVehiclesItems={activeVehiclesItems}
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onSearch={handleSearch}

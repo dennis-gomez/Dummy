@@ -7,6 +7,7 @@ function VehicleMaintenance() {
     const {
         logs,
         allVehiclesItems,
+        activeVehiclesItems,
         page,
         totalPages,
         loading,
@@ -95,7 +96,8 @@ function VehicleMaintenance() {
                 onPageChange={handlePageChange}
                 editFields={editFields}
                 logs={logs}
-                allVehiclesItems={allVehiclesItems} 
+                allVehiclesItems={allVehiclesItems}
+                activeVehiclesItems={activeVehiclesItems} 
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onSearch={handleSearch}

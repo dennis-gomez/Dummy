@@ -43,7 +43,7 @@ export const useVehicleMaintenance = () => {
     ];
 
     const editFields = [
-        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: allVehiclesItems, width: 200},
+        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 200},
         { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 200},
         { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 170}, 
         { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 170, restriction: "cantAfterToday" },
@@ -234,6 +234,7 @@ export const useVehicleMaintenance = () => {
     return {
         logs,
         allVehiclesItems,
+        activeVehiclesItems,
         page,
         totalPages,
         loading,
