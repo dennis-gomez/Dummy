@@ -55,6 +55,16 @@ export const useVehicleMaintenance = () => {
     const [searchField, setSearchField] = useState(fields[1]?.name || ""); //caracteristicas del vehiculo a filtrar
     const [searchText, setSearchText] = useState(""); //texto a buscar
 
+    const [appliedRecord, setAppliedRecord] = useState("Todos");
+    const [appliedField, setAppliedField] = useState(fields[1]?.name || "");
+    const [appliedText, setAppliedText] = useState("");
+
+    //manejo de ordenamiento de fecha maintenance_date
+    const [sortConfig, setSortConfig] = useState({
+        field: "maintenance_date",
+        order: "DESC"
+    });
+
     // Cargado de tipos de mantenimientos
     const fetchTypesOfMaintenance = async () => {
         try {
@@ -70,23 +80,56 @@ export const useVehicleMaintenance = () => {
         }
     };
 
-    const getActiveMaintenance = async (newPage, sortOrder) => {
-        const response = await getActiveMaintenanceLogs(newPage, pageSize, "maintenance_date", sortOrder);
-        setLogs(response.data);
-        setTotalPages(response.totalPages);
-    };
+    const fetchRecords = async (pageNum = page, filters = {}, customSortConfig = null) => {
+        try {
+            setLoading(true);
+            let response;
+            const { veh = appliedRecord, field = appliedField, text = appliedText } = filters;
 
-    const getInactiveMaintenance = async (newPage, sortOrder) => {
-        const response = await getAllMaintenanceLogs(newPage, pageSize, "maintenance_date", sortOrder);
-        setLogs(response.data);
-        setTotalPages(response.totalPages);
+            const currentSortConfig = customSortConfig || sortConfig;
+    
+            if (text === "Desactivados") {
+                response = await getAllMaintenanceLogs(pageNum, pageSize, currentSortConfig.field, currentSortConfig.order);
+            } else if ((veh === "Todos" && !String(text).trim()) || text === "Activos") {
+                response = await getActiveMaintenanceLogs(pageNum, pageSize, currentSortConfig.field, currentSortConfig.order);
+            } else {
+                response = await findMaintenanceLogs(veh, field, text, pageNum, pageSize, currentSortConfig.field, currentSortConfig.order);
+            }
+            setLogs(response.data)
+            setTotalPages(response.totalPages || 1);
+            setPage(pageNum);
+            setError(null);
+        } catch (error) {
+            setLogs([]);
+            const message = error.response?.data?.message || "Error al obtener los registros.";
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
+        }
+    }; 
+
+    const handleSort = async (field = "maintenance_date", order = null) => {
+        const newOrder = order || (sortConfig.field === field && sortConfig.order === "ASC" ? "DESC" : "ASC");
+        const newSortConfig = { field, order: newOrder };
+
+        console.log("🔀 Ordenamiento solicitado:");
+        console.log(" - Campo:", field);
+        console.log(" - Orden:", newOrder);
+        console.log(" - Configuración anterior:", sortConfig);
+        console.log(" - Configuración nueva:", newSortConfig);
+
+        setSortConfig(newSortConfig);
+        await fetchRecords(1, {}, newSortConfig);
     };
 
     //manejo de filtrado
     const handleSearch = async () => {
-        handlePageChange(1, "DESC");
+        setAppliedRecord(selectedVehicle);
+        setAppliedField(searchField);
+        setAppliedText(searchText);
+        await fetchRecords(1, { veh: selectedVehicle, field: searchField, text: searchText });
     };
-
+    /*
     const handleSortByDate = async (sortOrder) => {
          try {
             setError(null);
@@ -102,7 +145,7 @@ export const useVehicleMaintenance = () => {
             setLoading(false);
         }
     };
-
+    */
     // Agregar registro
     const handleSubmit = async (formData) => {
         try {
@@ -116,7 +159,7 @@ export const useVehicleMaintenance = () => {
 
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                await getActiveMaintenance();
+                await fetchRecords(1, { veh: appliedRecord, field: appliedField, text: appliedText });
                 setShowForm(false);
                 setError(null);
             }
@@ -133,7 +176,7 @@ export const useVehicleMaintenance = () => {
             const response = await updateMaintenanceLog(updatedData);
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
-                await getActiveMaintenance();
+                await fetchRecords(page);
                 setError(null);
             }
             return true;
@@ -151,7 +194,7 @@ export const useVehicleMaintenance = () => {
             const response = await deleteMaintenanceLog(cod_maintenance);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
-                await getActiveMaintenance();
+                await fetchRecords(1);
                 setError(null);
             }
         } catch (error) {
@@ -167,7 +210,7 @@ export const useVehicleMaintenance = () => {
             const response = await reactivateMaintenanceLog(cod_maintenance);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
-                await getActiveMaintenance();
+                await fetchRecords(1);
                 setError(null);
             }
         } catch (error) {
@@ -178,8 +221,8 @@ export const useVehicleMaintenance = () => {
     };
 
     useEffect(() => {
-        getActiveMaintenance();
         const init = async () => {
+            await fetchRecords(1);
             await fetchTypesOfMaintenance();
             try {
                 const activeVehicles = await getActiveVehiclesNames();
@@ -210,25 +253,10 @@ export const useVehicleMaintenance = () => {
         init();
     }, []);
 
-    const handlePageChange = async (newPage, sortOrder) => {
+    const handlePageChange = async (newPage) => {
         setPage(newPage);
         setLoading(true);
-        let response;
-        try {
-            if (searchText === "Desactivados") {
-                await getInactiveMaintenance(newPage, sortOrder);
-                setError(null);
-            }else if( (selectedVehicle === "Todos" && !String(searchText).trim()) || searchText === "Activos"){
-                await getActiveMaintenance(newPage, sortOrder);
-            }else{
-                response = await findMaintenanceLogs(selectedVehicle, searchField, searchText, newPage, pageSize, "maintenance_date", sortOrder);
-                setLogs(response.data)
-            }
-        } catch (e) {
-
-        } finally {
-            setLoading(false);
-        }        
+        await fetchRecords(newPage);
     };
 
     return {
@@ -257,6 +285,9 @@ export const useVehicleMaintenance = () => {
         handleDelete,
         handlePageChange,
         handleReactivate,
-        handleSortByDate,
+        //handleSortByDate,
+
+        handleSort,
+        sortConfig
     };
 };

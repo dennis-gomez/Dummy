@@ -74,7 +74,7 @@ export const useLegalBookRecord = () => {
     const [searchField, setSearchField] = useState(fields.find(field => field.name !== 'cod_book_catalog')?.name || '');
 
     //Estados para busqueda aplicada anteriormente, evita una mala paginacion
-    const [appliedVehicle, setAppliedVehicle] = useState("Todos");
+    const [appliedRecord, setAppliedRecord] = useState("Todos");
     const [appliedField, setAppliedField] = useState(fields[1]?.name || "");
     const [appliedText, setAppliedText] = useState("");
 
@@ -135,7 +135,7 @@ export const useLegalBookRecord = () => {
     // Búsqueda específica
     const handleSearch = async () => {
         //guardar estados antiguos
-        setAppliedVehicle(selectedBook);
+        setAppliedRecord(selectedBook);
         setAppliedField(searchField);
         setAppliedText(searchText);
         await fetchRecords(1, { book: selectedBook, field: searchField, text: searchText });
@@ -154,7 +154,7 @@ export const useLegalBookRecord = () => {
 
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                await fetchRecords(1, { book: appliedVehicle, field: appliedField, text: appliedText });
+                await fetchRecords(1, { book: appliedRecord, field: appliedField, text: appliedText });
                 setShowForm(false);
                 setError(null);
             }
@@ -172,7 +172,7 @@ export const useLegalBookRecord = () => {
             const response = await updateRecord(updatedData);
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
-                await fetchRecords(page, { book: appliedVehicle, field: appliedField, text: appliedText });
+                await fetchRecords(page, { book: appliedRecord, field: appliedField, text: appliedText });
                 setError(null);
             }
             return true;
@@ -190,7 +190,7 @@ export const useLegalBookRecord = () => {
             const response = await deleteRecord(cod_registration_application);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
-                await fetchRecords(1, { book: appliedVehicle, field: appliedField, text: appliedText });
+                await fetchRecords(1, { book: appliedRecord, field: appliedField, text: appliedText });
                 setError(null);
             }
         } catch (error) {
@@ -206,7 +206,7 @@ export const useLegalBookRecord = () => {
             const response = await reactivateRecord(cod_registration_application);
             if (response.status === 200) {
                 ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
-                await fetchRecords(1, { book: appliedVehicle, field: appliedField, text: appliedText });
+                await fetchRecords(1, { book: appliedRecord, field: appliedField, text: appliedText });
                 setError(null);
             }
         } catch (error) {
@@ -255,6 +255,8 @@ export const useLegalBookRecord = () => {
 
     const handlePageChange = async (newPage) => {
         setPage(newPage);
+
+        //quitar
         if (searchText === "Desactivados") {
             await getInactiveLogs(newPage);
             setError(null);
@@ -262,7 +264,7 @@ export const useLegalBookRecord = () => {
             await getActivesRecords(newPage);
         }else{
             try {
-                const response = await getRecordByFeature(appliedVehicle, appliedField, appliedText, newPage, pageSize);
+                const response = await getRecordByFeature(appliedRecord, appliedField, appliedText, newPage, pageSize);
                 setLegalBookRecords(response.data.data)
             } catch (error) {
                 const msg = error.response?.data?.message || "Error al encontrar registro.";
