@@ -20,7 +20,7 @@ export function useOH_Personnel() {
 
     // Campos que puedes usar en formularios y búsquedas
     const fields = [
-        { name: "oh_personnel_UID", placeholder: "Cédula", width: 150, restriction: "unique", type: "text", validations: [(value) => value && value.length > 12 ? "Máximo 12 caracteres." : null,] },
+        { name: "oh_personnel_UID", placeholder: "Cédula", width: 150, restriction: "uniqueUID", type: "text", validations: [(value) => value && value.length > 12 ? "Máximo 12 caracteres." : null,] },
         { name: "oh_personnel_full_name", placeholder: "Nombre completo", width: 290, validations: [(value) => value && value.length > 50 ? "Máximo 50 caracteres." : null,], type: "text" },
         { name: "oh_personnel_brigade_item_code", placeholder: "Brigada", type: "select", width: 330, options: brigadeItems, },
     ];

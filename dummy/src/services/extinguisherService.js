@@ -31,3 +31,8 @@ export const deleteExtinguisher = async (cod_extinguisher) => {
   const res = await axios.delete(`${API_URL}/delete`, { data: { cod_extinguisher: cod_extinguisher } });
   return res.data;
 };
+
+export const getNotifiedExtinguishers = async () => {
+  const res = await axios.get(`${API_URL}/notified`);
+  return res.data;
+};
