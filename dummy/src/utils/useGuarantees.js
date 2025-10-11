@@ -14,6 +14,7 @@ import {
 export const useGuarantees = () => {
 
   const STATUS_OPTIONS = [
+    { label: "Todas", value: "Todas" },
     { label: "Activa", value: 1 },
     { label: "Vencida", value: 2 },
     { label: "Próxima a vencer", value: 3 },
@@ -122,7 +123,7 @@ if (options==1) {
 
     console.log("Fetching guarantees with:", { page, limit, searchFeature, searchText, sortOrder });
 
-    if (searchText && searchFeature) {
+    if (searchText && searchFeature && searchText !== "Todas") {
       // 👇 Llama a la API de búsqueda con paginación
       resp = await findGuarantees(searchFeature, searchText, page, limit, sortOrder);
     } else {

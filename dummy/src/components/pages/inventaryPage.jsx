@@ -17,7 +17,10 @@ const {
     inventary,
     offices,
     deleteGuaranteOrReactivated,
-    handleEdit
+    handleEdit,
+    avaliableProductsChecks,
+    fetchAvaliableProducts,
+  
 } = useInventory();
 
     return (
@@ -30,7 +33,7 @@ const {
       {isCreatingInventory && (
         <Box
           sx={{
-            maxWidth: 900,
+            maxWidth: 1200,
             margin: "20px auto",
             p: 3,
             boxShadow: 3,
@@ -43,11 +46,15 @@ const {
           </h3>
 
           <FormInventory
-  fields={fields.filter(f => f.name !== "cod_guarantee" && f.name !== "guarantee_status")}
-  formTitle="Agregar Nueva Garantía"
+  fields={fields}
+  formTitle="Agregar productos al inventario"
   onSubmit={handleAddInventory}
-  titleBtn="Guardar Garantía"
+  titleBtn="agregar al inventario"
   headers={offices}
+  checks={avaliableProductsChecks}
+  fetchAvaliableProducts={fetchAvaliableProducts}
+  setIsCreating={setIsCreatingInventory}
+  
 />
 
         </Box>

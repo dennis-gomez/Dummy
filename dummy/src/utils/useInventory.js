@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
-import {getAllFromServicesWithRelationships, getItems } from "../services/itemService";
-import { getInventory, updateInventory,deleteInventory } from "../services/inventoryService";
+import { getItems } from "../services/itemService";
+import { getInventory, updateInventory,deleteInventory, getCategoryInventory,
+     getProductsThatAreNotInInventory, addProductsToInventory } from "../services/inventoryService";
 
 export const useInventory = () => {
     
@@ -10,11 +11,67 @@ export const useInventory = () => {
     const [inventary, setInventary] = useState([]);
     const [offices, setOffices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [categoryInventory, setCategoryInventory] = useState([]);
+    const [avaliableProductsChecks, setAvaliableProductsChecks] = useState([]);
     
 
+const fetchAvaliableProducts = async (filter="0", value="") => {
+  try {
+    const data = await getProductsThatAreNotInInventory(filter, value);
+
+    if(data.length === 0){
+      ModalAlert("Información", "No se encontraron productos disponibles para agregar al inventario.", "info");
+    }else{
+    setChecksOptions(data);
+    }
+    console.log("Productos disponibles obtenidos:", data);
+  } catch (error) {
+    console.error("Error fetching available products:", error);
+  }
+};
+
+
+const fetchCategoryInventory = async () => {
+  try {
+    const data = await getCategoryInventory(9);
+
+    console.log("Datos de categorías recibidos:", data);
+
+    // Transformamos los datos al formato { label, value }
+    const categoryOptions = data.map((category) => ({
+      label: category.category_name,  // o el campo correcto según tu API
+      value: category.cod_category,
+    }));
+
+    categoryOptions.unshift({ label: "Todos", value: "0" }); // opción por defecto
+
+    setCategoryInventory(categoryOptions); // guardamos en el estado
+    console.log("Categorías de inventario obtenidas:", categoryOptions);
+  } catch (error) {
+    console.error("Error fetching category inventory:", error);
+  }
+};
+
      const fields = [
-    { name: "cod_guarantee", label: "Código", type: "text", editable: false, grid: 4, width: 200 },
+   { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 250, options: categoryInventory, required: true },
+   {name: "seecker", placeHolder: "Buscar Producto", label: "Buscar Producto", type: "seeker", editable: true, grid: 4, width: 250, required: false},
        ];
+
+      
+    
+       const setChecksOptions = (data) =>{
+       setAvaliableProductsChecks(data.map(item => ({
+        label: item.item_name,
+        value: [item.cod_item, item.cod_category],
+        placeholder: item.item_name,
+        grid: 12,
+        type: "checkbox",
+        width: 300,
+        heigth: 8,
+       })));
+       }
+
+  
 
      const deleteGuaranteOrReactivated = async (product_cod_item, product_category) => {
 setLoading(true);
@@ -26,18 +83,33 @@ setLoading(true);
         try {
             await deleteInventory(deleteData);
             console.log("producto eliminada:", product_cod_item, product_category);
+            ModalAlert("Éxito", "Producto eliminado o reactivado correctamente", "success");
             fetchInventory();
         } catch (error) {
             console.error("Error eliminando o reactivando producto:", error);
         }
         setLoading(false);
+        fetchAvaliableProducts();
     };
 
-       const handleAddInventory = (newInventory) => {
-    // Lógica para agregar un nuevo inventario
-    console.log("Nuevo inventario agregado:", newInventory);
+       const handleAddInventory = async (newInventory) => {
+    console.log("Nuevo inventario a agregar:", newInventory);
+
+    // Aquí puedes llamar a la función del servicio para agregar el inventario
+    try {
+        const addedInventory = await addProductsToInventory(newInventory);
+        console.log("Inventario agregado:", addedInventory);
+        ModalAlert("Éxito", "Inventario agregado correctamente", "success");
+        fetchInventory();
+    } catch (error) {
+        console.error("Error agregando inventario:", error);
+    }
+
     setIsCreatingInventory(false);
   }
+
+
+
 
   const fetchOffices = async () => {
     try {
@@ -57,6 +129,7 @@ setLoading(true);
 
         try {
             const updatedInventory = await updateInventory(editedInventory);
+            ModalAlert("Éxito", "Inventario actualizado correctamente", "success");
             console.log("Inventario actualizado:", updatedInventory);
             fetchInventory();
             // Aquí puedes actualizar el estado con los datos editados
@@ -84,6 +157,8 @@ setLoading(true);
     useEffect(() => {
     fetchOffices();
     fetchInventory();
+    fetchCategoryInventory();
+    fetchAvaliableProducts();
   }, []);
 
 
@@ -96,7 +171,11 @@ setLoading(true);
         inventary,
         offices,
         handleEdit,
-        deleteGuaranteOrReactivated
+        deleteGuaranteOrReactivated,
+        fetchCategoryInventory,
+        avaliableProductsChecks,
+        fetchAvaliableProducts,
+       
     }
 
 }
