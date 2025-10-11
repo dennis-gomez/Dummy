@@ -41,18 +41,19 @@ function MaintenanceTable({
     searchField,
     setSearchField,
     setSearchText,
-    onSortByDate, 
     onReactivate,
     onDelete,
     onEdit,
     onSearch,
     onToggleForm,
     onPageChange,
+
+    onSort, 
+    sortConfig
 }){
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
     const [fieldErrors, setFieldErrors] = useState({});
-    const [sortOrder, setSortOrder] = useState("DESC");
     const dateFields = ["maintenance_date"];
     
     const getVehicleName = (cod_vehicle) => {
@@ -123,9 +124,7 @@ function MaintenanceTable({
     };
 
     const toggleSort = () => {
-        const newSortOrder = sortOrder === "ASC" ? "DESC" : "ASC";
-        setSortOrder(newSortOrder);
-        onSortByDate(newSortOrder); 
+        onSort("maintenance_date");
     };
     
     const searchInputClass = "w-full sm:w-48 h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
@@ -260,18 +259,22 @@ function MaintenanceTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Mantenimiento</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
                         Fecha de Mantenimiento
-                         <button onClick={() => toggleSort()} title="Ordenar por fecha de vencimiento">
+                        <button 
+                            onClick={() => toggleSort()} 
+                            title={`Ordenar ${sortConfig.order === "ASC" ? "descendente" : "ascendente"}`}
+                        >
                             <SortIcon
-                            fontSize="small"
-                            sx={{
-                                color: "white",
-                                cursor: "pointer",
-                                transition: "0.2s",
-                                "&:hover": {
-                                opacity: 0.7,
-                                transform: "scale(1.1)"
-                                }
-                            }}
+                                fontSize="small"
+                                sx={{
+                                    color: "white",
+                                    cursor: "pointer",
+                                    transition: "0.2s",
+                                    transform: sortConfig.order === "DESC" ? "rotate(180deg)" : "rotate(0deg)",
+                                    "&:hover": {
+                                        opacity: 0.7,
+                                        transform: `scale(1.1) ${sortConfig.order === "DESC" ? "rotate(180deg)" : "rotate(0deg)"}`
+                                    }
+                                }}
                             />
                         </button>
                     </th>
@@ -400,7 +403,7 @@ function MaintenanceTable({
                     count={totalPages}
                     page={currentPage}
                     color="primary"
-                    onChange={(e, value) => onPageChange(value, sortOrder)}
+                    onChange={(e, value) => onPageChange(value)}
                     renderItem={(item) => (
                     <PaginationItem
                         slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}

@@ -30,8 +30,9 @@ function VehicleMaintenance() {
         handleDelete,
         handlePageChange,
         handleReactivate,
-        handleSortByDate
-        //setPage,
+        
+        handleSort,
+        sortConfig
     } = useVehicleMaintenance();
 
     return (
@@ -106,7 +107,6 @@ function VehicleMaintenance() {
                     setError(null);
                 }}
                 onReactivate={handleReactivate}
-                onSortByDate={handleSortByDate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}
@@ -116,6 +116,9 @@ function VehicleMaintenance() {
                 searchField={searchField}
                 setSearchField={setSearchField}
                 maintenanceTypes={fields.find(f => f.name === "maintenance_type_item_code")?.options || []}
+
+                onSort={handleSort}
+                sortConfig={sortConfig}
             />
             </div>
         </>
