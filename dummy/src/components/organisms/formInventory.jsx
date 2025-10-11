@@ -154,7 +154,7 @@ function FormInventory({
   return (
     <>
       {checks.length > 0 ? (
-        <Box sx={{ p: 3, margin: "0 auto", maxWidth: 1300, mt: 3 }}>
+        <Box sx={{ p: 3, margin: "0 auto", maxWidth: 2000, mt: 3 }}>
           <form onSubmit={handleSubmit}>
             {/* ========== CAMPOS DE FORMULARIO ========== */}
             <Grid container spacing={2}>
@@ -197,25 +197,27 @@ function FormInventory({
                           },
                           ...(field.width ? { width: field.width } : {}),
                         }}
-                        required={field.required ?? true}
+                        required={field.required ?? false}
                       />
                     ) : field.type === "seeker" ? (
-                      <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ display: "flex", gap: 2, height: 20 }}>
                         <InputValidated
                           name={field.name}
                           type="text"
                           placeholder={field.placeHolder}
                           value={formData[field.name]}
                           onChange={handleChange}
+                          required={false}
                           sx={{
                             "& .MuiInputBase-root": {
                               backgroundColor: "#fff !important",
 
                             },
                             flex: 1,
+                            ...(field.width ? { width: field.width } : {}),
                           }}
                         />
-                        <Box sx={{ height: 20 }}>
+                        <Box sx={{height: 20 }}>
                           <Button
                             text="Buscar"
                             type="button"
@@ -228,7 +230,7 @@ function FormInventory({
 
                             }
                             }
-                            sx={{ height: 200, paddingBottom: 100 }}
+                            sx={{ height: 20000, marginBottom:1000 }}
                           />
                         </Box>
                       </Box>
