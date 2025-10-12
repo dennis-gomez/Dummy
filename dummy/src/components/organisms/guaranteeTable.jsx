@@ -44,6 +44,8 @@ const GuaranteesTable = ({
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState(() => searchFields?.[0]?.name || "");
   const [valueOrder, setSortOrder] = useState(true); // Estado para orden de clasificación
+  const [trueSearchText, setTrueSearchText] = useState("");
+  let value = ""
 
 const deleteGuaranteOrReactivated = (id,status) => {
   setSearchFeature("");
@@ -200,8 +202,11 @@ const deleteGuaranteOrReactivated = (id,status) => {
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() => { handleSortByExpirationDate(searchFeature,searchText,1,2,1,!valueOrder ? "ASC" : "")
-            setSearchText("");
+            onClick={() => {
+              setTrueSearchText(searchText);
+              value=searchText
+              handleSortByExpirationDate(searchFeature,value,1,2,1,!valueOrder ? "ASC" : "")
+            
             }
             } // 🟢 al buscar, mantiene orden actual
           />
@@ -334,7 +339,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
         count={totalPages}
         page={currentPage}
         color="primary"
-        onChange={(e, value) =>  handleSortByExpirationDate(searchFeature,searchText,value,2,1,!valueOrder ? "ASC" : "")} // ← callback al cambiar
+        onChange={(e, value) =>  handleSortByExpirationDate(searchFeature,trueSearchText,value,2,1,!valueOrder ? "ASC" : "")} // ← callback al cambiar
         renderItem={(item) => (
           <PaginationItem
             slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}

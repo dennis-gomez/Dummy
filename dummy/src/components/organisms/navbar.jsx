@@ -28,8 +28,6 @@ const navConfig = [
     sub: [
       { label: 'Proveedores', path: '/suministros/proveedores' },
       { label: 'Inventario', path: '/suministros/inventario' },
-      { label: 'Categorías', path: '/suministros/categorias' },
-      { label: 'Items', path: '/suministros/items' },
       { label: 'Órdenes de Compra', path: '/suministros/ordenes' },
     ],
   },

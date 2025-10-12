@@ -39,10 +39,9 @@ export const fetchExpiredGuaranteeNotifications = async () => {
       id: g.cod_guarantee,
       titulo: `Garantía vencida: ${g.guarantee_number}`,
       isNotified: g.guarantee_is_notified,
-      descripcion: `La garantía ${g.guarantee_number} venció el ${new Date(
-
+      descripcion: `La garantía ${g.guarantee_number} venció el ${formatDateDDMMYYYY(
         g.guarantee_expiration_date
-      ).toLocaleDateString('es-CR')}`,
+      )}`,
       type: "expired",
       updateFn: async () => {
         // Marcar como vista

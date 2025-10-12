@@ -83,24 +83,21 @@ if (restriction === "unique" && value !== "") {
 
 
   // Validaciones base
-    if (type === "number") {
-      if (value !== "") {
-        const onlyDigitsRegex = /^\d+$/;
+ if (type === "number") {
+  if (value !== "" && isNaN(Number(value))) {
+    err = "Debe ser un número";
+  } 
+  // ❌ Bloquear notación científica (2e3, 1E5, etc.)
+  else if (typeof value === "string" && /e/i.test(value)) {
+    err = "No se permite notación científica (e)";
+  } 
+  else if (Number(value) < 1 && !restriction) {
+    err = "Solo valores mayores a 0";
+  } 
+  else if (restriction === "allowZero" && Number(value) < 0) {
+    err = "Solo valores mayores o iguales a 0";
+  }
 
-        // Validar que sea un número entero
-        if (!onlyDigitsRegex.test(String(value).trim())) {
-          err = "Solo se permiten números enteros válidos";
-        } 
-        // Validar si es menor que 1 y no tiene restricción
-        else if (Number(value) < 1 && !restriction) {
-          err = "Solo valores mayores a 0";
-        } 
-        // Validar si la restricción permite cero
-        else if (restriction === "allowZero" && Number(value) < 0) {
-          err = "Solo valores mayores o iguales a 0";
-        }
-      }
-    }
 
 
     // Validación del año (Vehículos)
@@ -182,4 +179,5 @@ if (restriction === "unique" && value !== "") {
   }
 
   return err;
+}
 }

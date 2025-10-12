@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
 import { getItems } from "../services/itemService";
-import { getInventory, updateInventory,deleteInventory, getCategoryInventory,
-     getProductsThatAreNotInInventory, addProductsToInventory } from "../services/inventoryService";
+import {getCategoryInventory,
+     getProductsThatAreInInventory, addProductsToInventory } from "../services/inventoryService";
+     import { getAllSuppliers } from "../services/supplierService";
 
-export const useInventory = () => {
+export const useOrder = () => {
     
 
     const [isCreatingInventory, setIsCreatingInventory] = useState(false);
@@ -13,12 +14,14 @@ export const useInventory = () => {
     const [loading, setLoading] = useState(false);
     const [categoryInventory, setCategoryInventory] = useState([]);
     const [avaliableProductsChecks, setAvaliableProductsChecks] = useState([]);
+    const [suppliers, setSuppliers] = useState([]);
     
 
 const fetchAvaliableProducts = async (filter="0", value="") => {
+  console.log("fetchAvaliableProducts llamado con filter:", filter, "y value:", value);
   try {
-    const data = await getProductsThatAreNotInInventory(filter, value);
-
+    const data = await getProductsThatAreInInventory(filter, value);
+console.log("buscoo")
     if(data.length === 0){
       ModalAlert("Información", "No se encontraron productos disponibles para agregar al inventario.", "info");
     }else{
@@ -29,6 +32,23 @@ const fetchAvaliableProducts = async (filter="0", value="") => {
     console.error("Error fetching available products:", error);
   }
 };
+
+const getAllSuppliersList = async () => {
+  try {
+    const data = await getAllSuppliers();
+
+    const supplierOptions = data.map((supplier) => ({
+      label: supplier.supplier_name,
+      value: supplier.cod_supplier,
+      placeHolder: supplier.supplier_name,
+    }));
+    setSuppliers(supplierOptions);
+
+  } catch (error) {
+    console.error("Error fetching suppliers:", error);
+  }
+};
+
 
 
 const fetchCategoryInventory = async () => {
@@ -58,12 +78,18 @@ const fetchCategoryInventory = async () => {
        ];
 
       
+const useFullFields = [
+  {name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true},
+  {name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true},
+  {name: "order_facture_number", placeholder: "Número de Factura", label: "Número de Factura", type: "text", editable: true, grid: 6, width: 300, required: true},
+]
     
        const setChecksOptions = (data) =>{
        setAvaliableProductsChecks(data.map(item => ({
         label: item.item_name,
         value: [item.cod_item, item.cod_category],
         placeholder: item.item_name,
+        unit_price: item.unit_price,
         grid: 12,
         type: "checkbox",
         width: 300,
@@ -73,39 +99,9 @@ const fetchCategoryInventory = async () => {
 
   
 
-     const deleteGuaranteOrReactivated = async (product_cod_item, product_category) => {
-setLoading(true);
-        const deleteData = {
-            product_cod_item: product_cod_item,
-            product_cod_category: product_category,
-        };
-
-        try {
-            await deleteInventory(deleteData);
-            console.log("producto eliminada:", product_cod_item, product_category);
-            ModalAlert("Éxito", "Producto eliminado o reactivado correctamente", "success");
-            fetchInventory();
-        } catch (error) {
-            console.error("Error eliminando o reactivando producto:", error);
-        }
-        setLoading(false);
-        fetchAvaliableProducts();
-    };
-
-       const handleAddInventory = async (newInventory) => {
+       const handleAddInventory = async (newInventory,orderData) => {
     console.log("Nuevo inventario a agregar:", newInventory);
-
-    // Aquí puedes llamar a la función del servicio para agregar el inventario
-    try {
-        const addedInventory = await addProductsToInventory(newInventory);
-        console.log("Inventario agregado:", addedInventory);
-        ModalAlert("Éxito", "Inventario agregado correctamente", "success");
-        fetchInventory();
-    } catch (error) {
-        console.error("Error agregando inventario:", error);
-    }
-
-    setIsCreatingInventory(false);
+    console.log("Datos de la orden:", orderData);
   }
 
 
@@ -121,44 +117,13 @@ setLoading(true);
     }
     }
 
-    const handleEdit= async (editedInventory) => {
-        
-        setLoading(true);
-
-        console.log("Inventario editado:", editedInventory);
-
-        try {
-            const updatedInventory = await updateInventory(editedInventory);
-            ModalAlert("Éxito", "Inventario actualizado correctamente", "success");
-            console.log("Inventario actualizado:", updatedInventory);
-            fetchInventory();
-            // Aquí puedes actualizar el estado con los datos editados
-        } catch (error) {
-            console.error("Error updating inventory:", error);
-        }
-        setLoading(false);
-    }
-
-    const fetchInventory = async () => {
-        setLoading(true);
-    try {
-        const data = await getInventory();
-        console.log("Inventario obtenido:", data);
-        console.log(data[0].cantidades);
-        setInventary(data);
-        // Aquí puedes actualizar el estado con los datos obtenidos
-    }
-    catch (error) {
-        console.error("Error fetching inventory:", error);
-    }
-    setLoading(false);
-    }
+  
 
     useEffect(() => {
     fetchOffices();
-    fetchInventory();
     fetchCategoryInventory();
     fetchAvaliableProducts();
+    getAllSuppliersList();
   }, []);
 
 
@@ -170,11 +135,10 @@ setLoading(true);
         loading,
         inventary,
         offices,
-        handleEdit,
-        deleteGuaranteOrReactivated,
         fetchCategoryInventory,
         avaliableProductsChecks,
         fetchAvaliableProducts,
+        useFullFields,
        
     }
 

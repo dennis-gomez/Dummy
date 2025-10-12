@@ -4,7 +4,7 @@ import TableSupplier from "../organisms/tableSupplier";
 import SupplierForm from "../organisms/formSupplier";
 import Seeker from "../molecules/seeker";
 import Button from "../atoms/button";
-import ModalAlert from "../molecules/ModalAlert";
+import ModalAlert from "../molecules/modalAlert";
 import {
   getAllSuppliers,
   createSupplier,

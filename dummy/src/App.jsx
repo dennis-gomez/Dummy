@@ -20,6 +20,7 @@ import ActionPlanAndRevisionPage from './components/pages/actionPlanAndRevisionP
 import VehicleMaintenance from './components/pages/vehicleMaintenancePage'
 import SupplierPage from './components/pages/supplierPage'
 import InventaryPage from './components/pages/inventaryPage'
+import OrderPage from './components/pages/orderPage'
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
             <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} /> {/*mantenimientos de vehiculos*/}
             <Route path="/suministros/inventario" element={<InventaryPage/>} /> {/*inventario de suministros*/}
             <Route path="/suministros/proveedores" element={<SupplierPage />} /> 
+            <Route path="/suministros/ordenes" element={<OrderPage/>} /> {/*ordenes de compra de suministros*/}
           </Routes>
         </main>
         <Footer />
