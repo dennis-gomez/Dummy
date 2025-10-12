@@ -5,6 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
+import InfoTooltip from "../organisms/infoToolTip";
 
 function TableSubcategorie({
   items,
@@ -29,7 +30,6 @@ function TableSubcategorie({
 
   if (!items) return null;
 
-  // Confirmar el agregado
   const handleValidatedAdd = async () => {
     const error = tableValidator({
       value: name,
@@ -45,7 +45,7 @@ function TableSubcategorie({
       title: "¿Quieres agregar este item?",
       icon: "question",
       showCancelButton: true,
-      confirmButtonText: "S\u00ED, agregar",
+      confirmButtonText: "Sí, agregar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -53,16 +53,15 @@ function TableSubcategorie({
 
     if (result.isConfirmed) {
       await handleAdd();
-      Swal.fire("Agregado", "El item fue agregado con \u00E9xito", "success");
+      Swal.fire("Agregado", "El item fue agregado con éxito", "success");
     }
   };
 
-  // Confirmar guardado
   const handleValidatedSave = async (det) => {
     if (editValue.trim().length < 3) {
       Swal.fire({
         icon: "error",
-        title: "Validaci\u00F3n",
+        title: "Validación",
         text: "El nombre del item debe tener al menos 3 caracteres",
       });
       return;
@@ -76,7 +75,7 @@ function TableSubcategorie({
     });
 
     if (error) {
-      Swal.fire({ icon: "error", title: "Validaci\u00F3n", text: error });
+      Swal.fire({ icon: "error", title: "Validación", text: error });
       return;
     }
 
@@ -84,7 +83,7 @@ function TableSubcategorie({
       title: "¿Quieres guardar los cambios?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "S\u00ED, guardar",
+      confirmButtonText: "Sí, guardar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#2563eb",
       cancelButtonColor: "#9ca3af",
@@ -96,14 +95,13 @@ function TableSubcategorie({
     }
   };
 
-  // Confirmar eliminacion
   const handleValidatedDelete = async (codCat, codServ, codItem) => {
     const result = await Swal.fire({
       title: "¿Quieres eliminar este item?",
-      text: "No podr\u00E1s deshacer esta acci\u00F3n",
+      text: "No podrás deshacer esta acción",
       icon: "error",
       showCancelButton: true,
-      confirmButtonText: "S\u00ED, eliminar",
+      confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -116,10 +114,10 @@ function TableSubcategorie({
   };
 
   return (
-    
     <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3">
+      {/* HEADER con input, botones y tooltip */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
             Nombre de item:
           </label>
@@ -129,28 +127,39 @@ function TableSubcategorie({
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
-            className="border bg-white border-gray-300 rounded-lg py-2 px-4 min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+            className="border bg-white border-gray-300 rounded-lg py-2 px-4 w-full sm:w-auto min-w-[220px] focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
           />
           <button
             onClick={handleValidatedAdd}
             disabled={!name.trim()}
-            className={`rounded-lg py-2 px-5 text-white font-semibold transition ${name.trim()
+            className={`rounded-lg py-2 px-5 text-white font-semibold transition w-full sm:w-auto ${
+              name.trim()
                 ? "bg-blue-600 hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-blue-300"
                 : "bg-blue-600 opacity-50 cursor-not-allowed"
-              }`}
+            }`}
           >
             Agregar
           </button>
           <button
             onClick={onClose}
-            className="rounded-lg py-2 px-5 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer border-0 focus:ring-4 focus:ring-blue-300 transition"
+            className="rounded-lg py-2 px-5 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer border-0 focus:ring-4 focus:ring-blue-300 w-full sm:w-auto transition"
           >
             Cerrar
           </button>
         </div>
+
+        {/* Tooltip informativo */}
+        <div className="flex justify-center sm:justify-start mt-2 sm:mt-0 w-full sm:w-auto">
+          <InfoTooltip
+            message="Aquí puedes agregar, editar o eliminar items asociados a una categoría y servicio. Usa los botones de acciones para gestionar cada item."
+            position="left"
+            mobilePosition="bottom"
+          />
+        </div>
       </div>
 
-      <div className="overflow-x-auto shadow-lg  rounded-xl max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+      {/* TABLA RESPONSIVE */}
+      <div className="overflow-x-auto shadow-lg rounded-xl max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <table
           ref={tableRef}
           aria-label="Tabla de Items"
@@ -158,11 +167,21 @@ function TableSubcategorie({
         >
           <thead className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
             <tr>
-              <th className="py-4 px-6 font-semibold text-md text-center">C&oacute;digo Servicio</th>
-              <th className="py-4 px-6 font-semibold text-md text-center">C&oacute;digo Categor&iacute;a</th>
-              <th className="py-4 px-6 font-semibold text-md text-center">C&oacute;digo Item</th>
-              <th className="py-4 px-6 font-semibold text-md text-center">Items</th>
-              <th className="py-4 px-6 font-semibold text-md text-center">Acciones</th>
+              <th className="py-4 px-6 font-semibold text-sm sm:text-md text-center">
+                Cód. Servicio
+              </th>
+              <th className="py-4 px-6 font-semibold text-sm sm:text-md text-center">
+                Cód. Categoría
+              </th>
+              <th className="py-4 px-6 font-semibold text-sm sm:text-md text-center">
+                Cód. Item
+              </th>
+              <th className="py-4 px-6 font-semibold text-sm sm:text-md text-center">
+                Items
+              </th>
+              <th className="py-4 px-6 font-semibold text-sm sm:text-md text-center">
+                Acciones
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -177,36 +196,45 @@ function TableSubcategorie({
                 const isEditing = editingId === det.cod_item;
 
                 return (
-                  <tr key={det.cod_item} className="even:bg-gray-50 hover:bg-blue-50">
-                    <td className="py-4 px-6 text-center">{det.cod_service}</td>
-                    <td className="py-4 px-6 text-center">{det.cod_category}</td>
-                    <td className="py-4 px-6 text-center">{det.cod_item}</td>
-                    <td className="py-4 px-6 text-center">
+                  <tr
+                    key={det.cod_item}
+                    className={`transition-all duration-200 even:bg-gray-50 hover:bg-blue-50`}
+                  >
+                    <td className="py-4 px-4 text-center text-xs sm:text-sm md:text-base">
+                      {det.cod_service}
+                    </td>
+                    <td className="py-4 px-4 text-center text-xs sm:text-sm md:text-base">
+                      {det.cod_category}
+                    </td>
+                    <td className="py-4 px-4 text-center text-xs sm:text-sm md:text-base">
+                      {det.cod_item}
+                    </td>
+                    <td className="py-4 px-4 text-center text-xs sm:text-sm md:text-base">
                       {isEditing ? (
                         <input
                           type="text"
                           value={editValue}
                           onChange={(e) => setEditValue(e.target.value)}
-                          className="w-full max-w-[280px] py-2 px-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition text-center mx-auto block"
+                          className="w-full max-w-[280px] py-2 px-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition text-center mx-auto block"
                         />
                       ) : (
                         det.item_name
                       )}
                     </td>
-                    <td className="py-4 px-6 text-center">
-                      <div className="flex justify-center space-x-3">
+                    <td className="py-4 px-4 text-center">
+                      <div className="flex justify-center space-x-2 sm:space-x-3 flex-wrap gap-y-2">
                         {isEditing ? (
                           <>
                             <button
                               onClick={() => handleValidatedSave(det)}
-                              className="bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition flex items-center text-sm"
+                              className="bg-blue-600 text-white rounded-lg px-3 sm:px-4 py-2 hover:bg-blue-700 transition flex items-center text-xs sm:text-sm"
                             >
                               <SaveIcon className="mr-2" fontSize="small" />
                               Guardar
                             </button>
                             <button
                               onClick={handleCancel}
-                              className="border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-100 transition flex items-center text-sm"
+                              className="border border-gray-300 rounded-lg px-3 sm:px-4 py-2 hover:bg-gray-100 transition flex items-center text-xs sm:text-sm"
                             >
                               <CancelIcon className="mr-2" fontSize="small" />
                               Cancelar
