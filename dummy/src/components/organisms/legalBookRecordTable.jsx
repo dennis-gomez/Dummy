@@ -7,6 +7,9 @@ import {
   MenuItem,
   TextField,
   Box,
+  Stack,
+  Pagination,
+  PaginationItem,
 } from "@mui/material";
 import Button from "../atoms/button";
 import Swal from "sweetalert2";
@@ -16,11 +19,19 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import ReactivationModal from "../molecules/reactivationModal";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 function LegalBookRecordTable({
   books,
   booksItems,
   legalBookRecords,
+
+  page,
+  onPageChange,
+  totalPages,
+
   isLoading,
   onDelete,
   onEdit,
@@ -34,6 +45,7 @@ function LegalBookRecordTable({
   searchField,
   setSearchField,
   onToggleForm,
+  onReactivate,
   showForm,
 }) {
   const [editingId, setEditingId] = useState(null);
@@ -87,11 +99,11 @@ function LegalBookRecordTable({
 
   const handleValidatedDelete = async (id) => {
     const result = await Swal.fire({
-      title: "¿Eliminar este registro?",
-      text: "No podrás deshacer esta acción",
+      title: "¿Desactivar este registro?",
+      text: "Podrás deshacer esta acción",
       icon: "error",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Sí, desactivar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -99,7 +111,7 @@ function LegalBookRecordTable({
 
     if (result.isConfirmed) {
       await onDelete(id);
-      Swal.fire("Eliminado", "El registro fue borrado", "success");
+      Swal.fire("Desactivado", "El registro fue desactivado", "success");
     }
   };
 
@@ -114,40 +126,62 @@ function LegalBookRecordTable({
             <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Seleccione un libro</InputLabel>
             <Select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)}>
               <MenuItem value="Todos">Todos los libros</MenuItem>
-              {books.map((book) => (
-                <MenuItem key={book.cod_book} value={book.cod_book}>
-                  {book.book_name}
+              {booksItems.map((book) => (
+                <MenuItem key={book.value} value={book.value}>
+                  {book.label}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
 
           <FormControl className={searchInputClass}>
-            <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Buscar por característica</InputLabel>
-            <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+            <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
+            <Select 
+              value={searchField} 
+              onChange={(e) => { 
+                setSearchField(e.target.value) 
+                setSearchText("")
+              }}
+            >
               {fields
                 .filter(field => field.name !== 'cod_book_catalog')
                 .map(field => (
                   <MenuItem key={field.name} value={field.name}>
                     {field.placeholder}
                   </MenuItem>
-                ))
-              }
+                ))}
+                <MenuItem key={'lb_record_return_date'} value={'lb_record_return_date'}>
+                    {'Fecha de retorno'}
+                </MenuItem>
+                <MenuItem value="estados">Estados</MenuItem>
             </Select>
           </FormControl>
 
-          <TextField
-            label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar"}
-            type={dateFields.includes(searchField) ? "date" : "text"}
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            className={searchInputClass}
-            InputLabelProps={{
-              ...(dateFields.includes(searchField) ? { shrink: true } : {}),
-              sx: { backgroundColor: "white", px: 1 },
-            }}
-            placeholder={dateFields.includes(searchField) ? "Seleccione fecha" : "Ingrese texto..."}
-          />
+          {searchField === "estados" ? (
+            <FormControl className={searchInputClass}>
+              <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Estado</InputLabel>
+                <Select
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                >
+                  <MenuItem value="Activos">Activos</MenuItem>
+                  <MenuItem value="Desactivados">Desactivados</MenuItem>
+                </Select>
+            </FormControl>
+          ) : (
+            <TextField
+              label={dateFields.includes(searchField) ? "Seleccione fecha" : "Buscar"}
+              type={dateFields.includes(searchField) ? "date" : "text"}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              className={searchInputClass}
+              InputLabelProps={{
+                ...(dateFields.includes(searchField) ? { shrink: true } : {}),
+                sx: { backgroundColor: "white", px: 1 },
+              }}
+              placeholder={dateFields.includes(searchField) ? "Seleccione fecha" : "Ingrese texto..."}
+            />
+          )}
 
           <div className="flex items-center justify-center lg:ml-9 w-full sm:w-auto">
             <Button
@@ -178,14 +212,14 @@ function LegalBookRecordTable({
       )}
 
       {/* Contenedor gris cuando no hay registros */}
-      {!isLoading && legalBookRecords.length === 0 && (
+      {!isLoading && (!legalBookRecords || legalBookRecords.length === 0)&& (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
           No se encontraron registros
         </div>
       )}
 
       {/* Tabla de registros */}
-      {legalBookRecords.length > 0 && (
+      {legalBookRecords && legalBookRecords.length > 0 && (
         <div className="overflow-x-auto rounded-xl shadow-lg mt-4 w-full">
           <table className="min-w-full">
             <thead>
@@ -197,8 +231,16 @@ function LegalBookRecordTable({
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Regresado</th>
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha registro</th>
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha retorno</th>
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Observaciones</th>
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                {legalBookRecords.some((log) => log.lb_record_is_active) ? (
+                  <>
+                  <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Observaciones</th>
+                  <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                  </>
+                ):(
+                  <>
+                  <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Observaciones</th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -228,7 +270,12 @@ function LegalBookRecordTable({
                                 setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
                               }
                               sx={{
-                                "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                "& .MuiInputBase-input": {
+                                  backgroundColor: "#fff !important",
+                                  ...(field.type === "textarea"
+                                  ? { resize: "vertical", }
+                                  : {}),
+                                },
                                 ...(field.width ? { width: field.width } : {}),
                               }}
                               formValues={editData}
@@ -272,7 +319,9 @@ function LegalBookRecordTable({
                         <td className="py-4 px-6 text-center text-gray-700 max-w-xs truncate" title={record.lb_record_observation}>
                           {record.lb_record_observation}
                         </td>
+                        {record.lb_record_is_active && (
                         <td className="py-4 px-6 text-center">
+                        
                           <div className="flex justify-center space-x-3">
                             <button
                               onClick={() => handleEditClick(record)}
@@ -287,7 +336,14 @@ function LegalBookRecordTable({
                               <DeleteIcon fontSize="small" />
                             </button>
                           </div>
+                          {/*:(
+                            <ReactivationModal
+                              message={"¿Quieres reactivar este registro?"}
+                              onClick={() => onReactivate(record.cod_registration_application)}
+                            />
+                          )}*/}
                         </td>
+                        )}
                       </>
                     )}
                   </tr>
@@ -295,6 +351,20 @@ function LegalBookRecordTable({
               })}
             </tbody>
           </table>
+          <Stack spacing={30 } alignItems="center" marginY={2}>
+            <Pagination
+              count= {totalPages}
+              page={page}
+              color="primary"
+              onChange={(e, value) => onPageChange(value)}
+              renderItem={(item) => (
+              <PaginationItem
+                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                {...item}
+              />
+              )}
+            />
+          </Stack>
         </div>
       )}
     </>

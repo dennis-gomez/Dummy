@@ -6,7 +6,9 @@ import {
     deleteRecord, 
     getRecordByFeature, 
     getBooksNames, 
-    getActiveBooksNames
+    getInactivesRecords,
+    getActiveBooksNames, 
+    reactivateRecord,
 } from "../services/legalBookRecordService";
 import Swal from "sweetalert2";
 
@@ -23,6 +25,10 @@ const ModalAlert = (title, text, icon = "info") => {
 export const useLegalBookRecord = () => {
     const [books, setBooks] = useState([]);
     const [legalBookRecords, setLegalBookRecords] = useState([]);
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
     const [showForm, setShowForm] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -41,7 +47,7 @@ export const useLegalBookRecord = () => {
 
     // Campos para editar
     const editFields = [
-        { name: "cod_book_catalog", placeholder: "Libro legal", type: "select", options: formattedBook, width: 200, required: true },
+        { name: "cod_book_catalog", placeholder: "Libro legal", type: "select", options: booksItems, width: 200, required: true },
         { name: "lb_record_requested_by", placeholder: "Solicitado", required: true, width: 220 },
         { name: "lb_record_delivered_to", placeholder: "Entregado", required: true, width: 220 },
         { name: "lb_record_return_by", placeholder: "Regresado por", required: false, width: 220 },  
@@ -67,38 +73,72 @@ export const useLegalBookRecord = () => {
     const [selectedBook, setSelectedBook] = useState("Todos");
     const [searchField, setSearchField] = useState(fields.find(field => field.name !== 'cod_book_catalog')?.name || '');
 
-    // Listado de registros
-    const fetchRecords = async (bookId = "", field = "", text = "") => {
+    //Estados para busqueda aplicada anteriormente, evita una mala paginacion
+    const [appliedRecord, setAppliedRecord] = useState("Todos");
+    const [appliedField, setAppliedField] = useState(fields[1]?.name || "");
+    const [appliedText, setAppliedText] = useState("");
+
+    const getActivesRecords = async (newPage) => {
         try {
-            setLoading(true);
-            let response;
-            if (bookId === "Todos" && !text.trim()) {
-                response = await getRecords();
-                setError(null);
-            } else {
-                response = await getRecordByFeature(bookId, field, text);
-                setError(null);
-            }
-            setLegalBookRecords(response.data);
+            const response = await getRecords(newPage, pageSize);
+            setLegalBookRecords(response.data.data);
+            setTotalPages(response.data.totalPages || 1);
         } catch (error) {
             const message = error.response?.data?.message || "Error al obtener los registros.";
             ModalAlert("Error", message, "error");
         } finally {
             setLoading(false);
         }
-    };
+    }
+
+    const getInactiveLogs = async (newPage) => {
+        try {
+            const response = await getInactivesRecords(newPage, pageSize);
+            setLegalBookRecords(response.data.data);
+            setTotalPages(response.data.totalPages || 1);
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al obtener los registros.";
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const fetchRecords = async (pageNum = page, filters = {}) => {
+        try {
+            setLoading(true);
+            let response;
+
+            const { book = appliedBook, field = appliedField, text = appliedText } = filters;
+
+            if (text === "Desactivados") {
+                response = await getInactivesRecords(pageNum, pageSize);
+            } else if ((book === "Todos" && !String(text).trim()) || text === "Activos") {
+                response = await getRecords(pageNum, pageSize);
+            } else {
+                response = await getRecordByFeature(book, field, text, pageNum, pageSize);
+            }
+
+            setLegalBookRecords(response.data.data || []);
+            setTotalPages(response.data.totalPages || 1);
+            setPage(pageNum);
+            setError(null);
+        } catch (error) {
+            setLegalBookRecords([]);
+            const message = error.response?.data?.message || "Error al obtener los registros.";
+            ModalAlert("Error", message, "error");
+        } finally {
+            setLoading(false);
+        }
+    }; 
 
     // Búsqueda específica
     const handleSearch = async () => {
-        await fetchRecords(selectedBook, searchField, searchText);
-    };
-
-    // Resetear filtros y cargar todos los registros
-    const handleResetSearch = async () => {
-        setSelectedBook("Todos");
-        setSearchField(fields[0]?.name || "");
-        setSearchText("");
-        await fetchRecords();
+        //guardar estados antiguos
+        setAppliedRecord(selectedBook);
+        setAppliedField(searchField);
+        setAppliedText(searchText);
+        await fetchRecords(1, { book: selectedBook, field: searchField, text: searchText });
     };
 
     // Agregar registro
@@ -114,7 +154,7 @@ export const useLegalBookRecord = () => {
 
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                await fetchRecords();
+                await fetchRecords(1, { book: appliedRecord, field: appliedField, text: appliedText });
                 setShowForm(false);
                 setError(null);
             }
@@ -132,7 +172,7 @@ export const useLegalBookRecord = () => {
             const response = await updateRecord(updatedData);
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
-                await fetchRecords();
+                await fetchRecords(page, { book: appliedRecord, field: appliedField, text: appliedText });
                 setError(null);
             }
             return true;
@@ -149,12 +189,28 @@ export const useLegalBookRecord = () => {
         try {
             const response = await deleteRecord(cod_registration_application);
             if (response.status === 200) {
-                ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
-                await fetchRecords();
+                ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
+                await fetchRecords(1, { book: appliedRecord, field: appliedField, text: appliedText });
                 setError(null);
             }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al eliminar registro.";
+            const message = error.response?.data?.message || "Error al desactivar registro.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        }
+    };
+
+    // Reactivar registros inhabilitados
+    const handleReactivate = async (cod_registration_application) => {
+        try {
+            const response = await reactivateRecord(cod_registration_application);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
+                await fetchRecords(1, { book: appliedRecord, field: appliedField, text: appliedText });
+                setError(null);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al reactivar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }
@@ -162,7 +218,7 @@ export const useLegalBookRecord = () => {
 
     // Cargar registros y libros al iniciar
     useEffect(() => {
-        fetchRecords();
+        getActivesRecords(page)
         const loadBooks = async () => {
             try {
                 const activeBooks = await getActiveBooksNames();
@@ -197,10 +253,35 @@ export const useLegalBookRecord = () => {
         loadBooks();
     }, []);
 
+    const handlePageChange = async (newPage) => {
+        setPage(newPage);
+
+        //quitar
+        if (searchText === "Desactivados") {
+            await getInactiveLogs(newPage);
+            setError(null);
+        }else if( (selectedBook === "Todos" && !String(searchText).trim()) || searchText === "Activos"){
+            await getActivesRecords(newPage);
+        }else{
+            try {
+                const response = await getRecordByFeature(appliedRecord, appliedField, appliedText, newPage, pageSize);
+                setLegalBookRecords(response.data.data)
+            } catch (error) {
+                const msg = error.response?.data?.message || "Error al encontrar registro.";
+                Swal.fire("Error", msg, "error");
+            }
+        }
+    };
+
     return {
         books,
         booksItems,
         legalBookRecords,
+
+        page,
+        totalPages,
+        handlePageChange,
+
         fields,
         editFields, 
         searchText,
@@ -217,7 +298,7 @@ export const useLegalBookRecord = () => {
         handleSubmit,
         handleEdit,
         handleDelete,
-        handleSearch,
-        handleResetSearch,
+        handleSearch, 
+        handleReactivate
     };
 };

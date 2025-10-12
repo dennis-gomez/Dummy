@@ -2,6 +2,23 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3000/vehicles/";
 
+// Obtener vehiculos inactivos
+export const getVehiclesInactive = async () => {
+    try {
+        const response = await axios.get(
+            API_URL + "",
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
 // Obtener vehiculos
 export const getVehicles = async () => {
     try {
@@ -121,6 +138,58 @@ export const getAllVehiclesNames = async () => {
             }
         );
         console.log("respuesta", response);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const reactivateVehicle = async (cod_vehicle) => {
+    try {
+        const response = await axios.put(
+            API_URL + "reactivate",
+            {},
+            {
+                params: { cod_vehicle },
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+//Obtener notificaciones de mantenimientos de vehiculos
+export const getMaintenanceNotifications = async () => {
+    try{
+        const response = await axios.get(
+            API_URL + "notifications", 
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+//actualizar el visto a las notificaciones
+export const updateVehicleNotification = async (cod_vehicle, updateData) => {
+    try {
+        const response = await axios.put(
+            API_URL + "update-notification",
+            updateData,
+            {
+                params: { cod_vehicle },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
         return response;
     } catch (error) {
         throw error;

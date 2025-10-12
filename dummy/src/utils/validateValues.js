@@ -35,6 +35,40 @@ export function ValidateValues({
     }
   }
 
+
+if (restriction === "uniqueUID" && value !== "") {
+  const trimmed = value.trim();
+
+  // Validar solo números
+  const isValidCedula1 = /^[0-9]+$/.test(trimmed);
+  // Validar longitud (9 a 12)
+  const isValidCedula2 = trimmed.length >= 9 && trimmed.length <= 12;
+
+  if (!isValidCedula1) {
+    err = "Solo números*";
+    setIsUnique(false);
+  } else if (!isValidCedula2) {
+    err = "Longitud inválida*";
+    setIsUnique(false);
+  } else {
+    // Validar unicidad
+    const exists = uniqueValues.some(
+      (item) =>
+        String(item.value).trim() === trimmed && item.id !== currentId
+    );
+
+    if (exists) {
+      setIsUnique(false);
+      err = "Ya existe*";
+    } else {
+      setIsUnique(true);
+    }
+  }
+}
+
+
+
+
 if (restriction === "unique" && value !== "") {
   const exists = uniqueValues.some(
     (item) => String(item.value).trim() === String(value).trim() && item.id !== currentId
@@ -84,7 +118,7 @@ if (restriction === "unique" && value !== "") {
       Number(value) < 0
     ) {
       err = "No se permiten valores negativos";
-    }
+    
     
   } else if (type === "date") {
     if (value !== "" && value !== "Sin fecha") {

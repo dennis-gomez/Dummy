@@ -40,10 +40,12 @@ function Seeker({
           selectLabel={selectName}
           fields={fields}
           value={valueFeature}
-          onChange={(e) => {onChangeFeature(e.target.value)
-            onChangeText("")
-            console.log(e.target.value)
-          }}
+          onChange={
+            (e) => {
+              onChangeFeature(e.target.value)
+              onChangeText("")
+            }
+          }
         />
       </div>
 

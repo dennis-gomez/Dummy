@@ -7,18 +7,16 @@ function VehicleMaintenance() {
     const {
         logs,
         allVehiclesItems,
+        activeVehiclesItems,
         page,
         totalPages,
-
         loading,
         error,
         setError,
         showForm,
         setShowForm,
-
         fields,
         editFields,
-
         maintenanceTypes,
         selectedVehicle,
         setSelectedVehicle,
@@ -26,13 +24,15 @@ function VehicleMaintenance() {
         setSearchField,
         searchText,
         setSearchText,
-
         handleSearch,
         handleSubmit,
         handleEdit,
         handleDelete,
-        handlePageChange
-        //setPage,
+        handlePageChange,
+        handleReactivate,
+        
+        handleSort,
+        sortConfig
     } = useVehicleMaintenance();
 
     return (
@@ -97,7 +97,8 @@ function VehicleMaintenance() {
                 onPageChange={handlePageChange}
                 editFields={editFields}
                 logs={logs}
-                allVehiclesItems={allVehiclesItems} 
+                allVehiclesItems={allVehiclesItems}
+                activeVehiclesItems={activeVehiclesItems} 
                 onDelete={handleDelete}
                 onEdit={handleEdit}
                 onSearch={handleSearch}
@@ -105,6 +106,7 @@ function VehicleMaintenance() {
                     setShowForm(!showForm);
                     setError(null);
                 }}
+                onReactivate={handleReactivate}
                 searchText={searchText}
                 setSearchText={setSearchText}
                 showForm={showForm}
@@ -114,6 +116,9 @@ function VehicleMaintenance() {
                 searchField={searchField}
                 setSearchField={setSearchField}
                 maintenanceTypes={fields.find(f => f.name === "maintenance_type_item_code")?.options || []}
+
+                onSort={handleSort}
+                sortConfig={sortConfig}
             />
             </div>
         </>

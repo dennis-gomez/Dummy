@@ -7,7 +7,7 @@ const API_URL = "http://localhost:3000/fuel-logs/";
  */
 export const getAllFuelLogs = async (page = 1, limit = 10) => {
     try {
-        const response = await axios.get(API_URL + "all", {
+        const response = await axios.get(API_URL, {
             params: { page, limit },
             headers: {
                 "Content-Type": "application/json"
@@ -82,6 +82,25 @@ export const deleteFuelLog = async (cod_fuel_log) => {
                 headers: {
                     "Content-Type": "application/json"
                 },
+            }
+        );
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};
+
+/**
+ * Reactivar un registro de combustible inactivo
+ */
+export const reactivateFuelLogs = async (cod_fuel_log) => {
+    try {
+        const response = await axios.put(
+            API_URL + "reactivate",
+            {},
+            {
+                params: { cod_fuel_log },
+                headers: { "Content-Type": "application/json" },
             }
         );
         return response;

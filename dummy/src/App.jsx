@@ -50,7 +50,7 @@ function App() {
             <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
             <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} /> {/*mantenimientos de vehiculos*/}
             <Route path="/suministros/inventario" element={<InventaryPage/>} /> {/*inventario de suministros*/}
-            <Route path="/supplier" element={<SupplierPage />} /> 
+            <Route path="/suministros/proveedores" element={<SupplierPage />} /> 
             <Route path="/suministros/ordenes" element={<OrderPage/>} /> {/*ordenes de compra de suministros*/}
           </Routes>
         </main>

@@ -6,6 +6,7 @@ import {
     addMaintenanceLog, 
     deleteMaintenanceLog, 
     updateMaintenanceLog, 
+    reactivateMaintenanceLog,
 } from "../services/vehicleMaintenanceService";
 
 import { getItems } from "../services/itemService";
@@ -38,21 +39,31 @@ export const useVehicleMaintenance = () => {
         { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 390},
         { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 390}, 
         { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 390, restriction: "cantAfterToday" },
-        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 798},
+        { name: "maintenance_detail", placeholder: "Detalles", required: false, type: "textarea", width: 798},
     ];
 
     const editFields = [
-        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: allVehiclesItems, width: 200},
+        { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 200},
         { name: "maintenance_type_item_code", placeholder: "Tipo de Maintenimiento", required: true, type: "select", options: maintenanceTypes, width: 200},
         { name: "maintenance_km_acumulate", placeholder: "Kilometraje Acumulado", type: "number", restriction: "vehicle_initial_km_restrictions", width: 170}, 
         { name: "maintenance_date", placeholder: "Fecha de Registro", required: true, type: "date", width: 170, restriction: "cantAfterToday" },
-        { name: "maintenance_detail", placeholder: "Detalles", required: true, type: "textarea", width: 300},
+        { name: "maintenance_detail", placeholder: "Detalles", required: false, type: "textarea", width: 300},
     ];
 
     // Estados para filtrado
     const [selectedVehicle, setSelectedVehicle] = useState("Todos"); //vehiculos a filtrar 
     const [searchField, setSearchField] = useState(fields[1]?.name || ""); //caracteristicas del vehiculo a filtrar
     const [searchText, setSearchText] = useState(""); //texto a buscar
+
+    const [appliedRecord, setAppliedRecord] = useState("Todos");
+    const [appliedField, setAppliedField] = useState(fields[1]?.name || "");
+    const [appliedText, setAppliedText] = useState("");
+
+    //manejo de ordenamiento de fecha maintenance_date
+    const [sortConfig, setSortConfig] = useState({
+        field: "maintenance_date",
+        order: "DESC"
+    });
 
     // Cargado de tipos de mantenimientos
     const fetchTypesOfMaintenance = async () => {
@@ -69,47 +80,72 @@ export const useVehicleMaintenance = () => {
         }
     };
 
-    // Listado de registros de mantenimientos
-    const fetchMaintenance = async (vehicleId = "", field = "", text = "", currentPage = page) => {
+    const fetchRecords = async (pageNum = page, filters = {}, customSortConfig = null) => {
         try {
             setLoading(true);
             let response;
-            if (field === "Inactivos") {
-                response = await getAllMaintenanceLogs(currentPage, pageSize);
-                setError(null);
-            } else if (vehicleId === "Todos" && !String(text).trim()) {
-                response = await getActiveMaintenanceLogs(currentPage, pageSize);
-                setError(null);
-            } else {
-                response = await findMaintenanceLogs(vehicleId, field, text, currentPage, pageSize);
-                setError(null);
-            }
-            setLogs(response.data);
-            setTotalPages(response.totalPages || 1);
+            const { veh = appliedRecord, field = appliedField, text = appliedText } = filters;
 
+            const currentSortConfig = customSortConfig || sortConfig;
+    
+            if (text === "Desactivados") {
+                response = await getAllMaintenanceLogs(pageNum, pageSize, currentSortConfig.field, currentSortConfig.order);
+            } else if ((veh === "Todos" && !String(text).trim()) || text === "Activos") {
+                response = await getActiveMaintenanceLogs(pageNum, pageSize, currentSortConfig.field, currentSortConfig.order);
+            } else {
+                response = await findMaintenanceLogs(veh, field, text, pageNum, pageSize, currentSortConfig.field, currentSortConfig.order);
+            }
+            setLogs(response.data)
+            setTotalPages(response.totalPages || 1);
+            setPage(pageNum);
+            setError(null);
         } catch (error) {
+            setLogs([]);
             const message = error.response?.data?.message || "Error al obtener los registros.";
             ModalAlert("Error", message, "error");
         } finally {
             setLoading(false);
         }
+    }; 
+
+    const handleSort = async (field = "maintenance_date", order = null) => {
+        const newOrder = order || (sortConfig.field === field && sortConfig.order === "ASC" ? "DESC" : "ASC");
+        const newSortConfig = { field, order: newOrder };
+
+        console.log("🔀 Ordenamiento solicitado:");
+        console.log(" - Campo:", field);
+        console.log(" - Orden:", newOrder);
+        console.log(" - Configuración anterior:", sortConfig);
+        console.log(" - Configuración nueva:", newSortConfig);
+
+        setSortConfig(newSortConfig);
+        await fetchRecords(1, {}, newSortConfig);
     };
 
     //manejo de filtrado
     const handleSearch = async () => {
-        await fetchMaintenance(selectedVehicle, searchField, searchText, 1);
-        setPage(1);
+        setAppliedRecord(selectedVehicle);
+        setAppliedField(searchField);
+        setAppliedText(searchText);
+        await fetchRecords(1, { veh: selectedVehicle, field: searchField, text: searchText });
     };
-
-    // Resetear filtros y cargar todos los registros
-    const handleResetSearch = async () => {
-        setSelectedVehicle("Todos");
-        setSearchField(fields[0]?.name || "");
-        setSearchText("");
-        setPage(1);
-        await fetchMaintenance();
+    /*
+    const handleSortByDate = async (sortOrder) => {
+         try {
+            setError(null);
+            setLoading(true);
+            const response = await findMaintenanceLogs(selectedVehicle, searchField, searchText, 1, pageSize, "maintenance_date", sortOrder);
+            setLogs(response.data);
+            setTotalPages(response.totalPages || 1);
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al ordenar registros.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        } finally {
+            setLoading(false);
+        }
     };
-
+    */
     // Agregar registro
     const handleSubmit = async (formData) => {
         try {
@@ -123,7 +159,7 @@ export const useVehicleMaintenance = () => {
 
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                await fetchMaintenance();
+                await fetchRecords(1, { veh: appliedRecord, field: appliedField, text: appliedText });
                 setShowForm(false);
                 setError(null);
             }
@@ -140,7 +176,7 @@ export const useVehicleMaintenance = () => {
             const response = await updateMaintenanceLog(updatedData);
             if (response.status === 200) {
                 ModalAlert("Éxito", "Registro editado exitosamente.", "success");
-                await fetchMaintenance();
+                await fetchRecords(page);
                 setError(null);
             }
             return true;
@@ -157,20 +193,36 @@ export const useVehicleMaintenance = () => {
         try {
             const response = await deleteMaintenanceLog(cod_maintenance);
             if (response.status === 200) {
-                ModalAlert("Éxito", response.data.message || "Registro eliminado.", "success");
-                await fetchMaintenance();
+                ModalAlert("Éxito", response.data.message || "Registro desactivado.", "success");
+                await fetchRecords(1);
                 setError(null);
             }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al eliminar registro.";
+            const message = error.response?.data?.message || "Error al desactivar registro.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        }
+    };
+
+    // Reactivar registros inhabilitados
+    const handleReactivate = async (cod_maintenance) => {
+        try {
+            const response = await reactivateMaintenanceLog(cod_maintenance);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Registro reactivado exitosamente.", "success");
+                await fetchRecords(1);
+                setError(null);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al reactivar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }
     };
 
     useEffect(() => {
-        fetchMaintenance();
         const init = async () => {
+            await fetchRecords(1);
             await fetchTypesOfMaintenance();
             try {
                 const activeVehicles = await getActiveVehiclesNames();
@@ -203,12 +255,14 @@ export const useVehicleMaintenance = () => {
 
     const handlePageChange = async (newPage) => {
         setPage(newPage);
-        await fetchMaintenance(selectedVehicle, searchField, searchText, newPage);
+        setLoading(true);
+        await fetchRecords(newPage);
     };
 
     return {
         logs,
         allVehiclesItems,
+        activeVehiclesItems,
         page,
         totalPages,
         loading,
@@ -216,25 +270,24 @@ export const useVehicleMaintenance = () => {
         setError,
         showForm,
         setShowForm,
-
         fields,
         editFields,
-
         maintenanceTypes, 
-
         selectedVehicle,
         setSelectedVehicle,
         searchField,
         setSearchField,
         searchText,
         setSearchText,
-
         handleSearch,
-        //handleResetSearch,
         handleSubmit,
         handleEdit,
         handleDelete,
         handlePageChange,
-        //setPage,
+        handleReactivate,
+        //handleSortByDate,
+
+        handleSort,
+        sortConfig
     };
 };

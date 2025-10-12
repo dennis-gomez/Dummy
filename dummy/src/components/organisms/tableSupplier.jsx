@@ -69,7 +69,6 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
             <th className="py-4 px-6 text-center font-semibold text-md">Teléfono</th>
             <th className="py-4 px-6 text-center font-semibold text-md">Correo</th>
             <th className="py-4 px-6 text-center font-semibold text-md">Fecha Registro</th>
-            <th className="py-4 px-6 text-center font-semibold text-md">Activo</th>
             <th className="py-4 px-6 text-center font-semibold text-md rounded-tr-xl">
               Acciones
             </th>
@@ -136,25 +135,6 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
                     .replace(/\//g, "-")
                   : "—"}
               </td>
-              <td className="py-4 px-6 text-center">
-                {editRowId === supplier.cod_supplier ? (
-                  <select
-                    value={editData.supplier_is_active ? 1 : 0}
-                    onChange={(e) =>
-                      handleChange("supplier_is_active", e.target.value === "1")
-                    }
-                    className="border rounded-md p-1"
-                  >
-                    <option value="1">Sí</option>
-                    <option value="0">No</option>
-                  </select>
-                ) : supplier.supplier_is_active ? (
-                  <span className="text-green-600 font-semibold">Sí</span>
-                ) : (
-                  <span className="text-red-600 font-semibold">No</span>
-                )}
-              </td>
-
               {/* Acciones */}
               <td className="py-4 px-6 text-center flex gap-2 justify-center">
                 {editRowId === supplier.cod_supplier ? (

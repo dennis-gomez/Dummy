@@ -7,6 +7,7 @@ import Seeker from "../molecules/seeker";
 import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated"
+import ReactivationModal from "../molecules/reactivationModal";
 
 const VehicleTable = ({
   fields,
@@ -22,6 +23,7 @@ const VehicleTable = ({
   onChangeFeature,
   showForm,
   onToggleForm,
+  onReactivate,
 }) => {
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
@@ -113,7 +115,9 @@ const VehicleTable = ({
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
-                {fields.map((f) => (
+                {fields
+                  .filter((f) => f.name !== "vehicle_is_active")
+                  .map((f) => (
                   <th
                     key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
                     {f.placeholder}
@@ -130,7 +134,9 @@ const VehicleTable = ({
                     key={vehicle.cod_vehicle} className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}>
                     <td className="py-4 px-6 text-center">{index + 1}</td>
 
-                    {fields.map((f) => { 
+                    {fields
+                      .filter((f) => f.name !== "vehicle_is_active")
+                      .map((f) => { 
                       const fieldEdit = editFields.find((ef) => ef.name === f.name);
                       return (
                         <td key={f.name} className="py-4 px-6 text-center">
@@ -183,18 +189,25 @@ const VehicleTable = ({
                           </button>
                         </>
                       ) : (
-                        <>
-                          <button
-                            onClick={() => handleEditClick(vehicle)}
-                            className="text-blue-600 hover:text-blue-800"
-                          >
-                            <EditIcon />
-                          </button>
-                          <ModalElimination
-                            message={"¿Estás seguro de eliminar este vehículo?"}
-                            onClick={() => onDelete(vehicle.cod_vehicle)}
-                          />
-                        </>
+                          vehicle.vehicle_is_active ? (
+                            <>
+                              <button
+                              onClick={() => handleEditClick(vehicle)}
+                              className="text-blue-600 hover:text-blue-800"
+                              >
+                                <EditIcon />
+                              </button>
+                              <ModalElimination
+                                message={"¿Estás seguro de desactivar este vehículo?"}
+                                onClick={() => onDelete(vehicle.cod_vehicle)}
+                              />
+                            </>
+                          ) : (
+                            <ReactivationModal
+                              message={"¿Quieres reactivar este vehículo?"}
+                              onClick={() => onReactivate(vehicle.cod_vehicle)}
+                            />
+                          )
                       )}
                     </td>
                   </tr>

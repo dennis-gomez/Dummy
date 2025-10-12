@@ -21,6 +21,7 @@ import PaginationItem from '@mui/material/PaginationItem';
 import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ReactivationModal from "../molecules/reactivationModal";
 import SortIcon from '@mui/icons-material/Sort';
 
 function MaintenanceTable({
@@ -28,6 +29,7 @@ function MaintenanceTable({
     totalPages,
     currentPage,
     allVehiclesItems,
+    activeVehiclesItems,
     isLoading,
     showForm,
     fields,
@@ -39,11 +41,15 @@ function MaintenanceTable({
     searchField,
     setSearchField,
     setSearchText,
+    onReactivate,
     onDelete,
     onEdit,
     onSearch,
     onToggleForm,
     onPageChange,
+
+    onSort, 
+    sortConfig
 }){
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
@@ -101,11 +107,11 @@ function MaintenanceTable({
     
     const handleValidatedDelete = async (id) => {
         const result = await Swal.fire({
-            title: "Inhabilitar este registro?",
-            text: "No podrás deshacer esta acción",
+            title: "¿Desactivar este registro?",
+            text: "Podrás deshacer esta acción",
             icon: "error",
             showCancelButton: true,
-            confirmButtonText: "Sí, inhabilitar",
+            confirmButtonText: "Sí, desactivar",
             cancelButtonText: "Cancelar",
             confirmButtonColor: "#dc2626",
             cancelButtonColor: "#9ca3af",
@@ -113,8 +119,12 @@ function MaintenanceTable({
     
         if (result.isConfirmed) {
             await onDelete(id);
-            Swal.fire("Inhabilitado", "El registro fue inhabilitado", "success");
+            Swal.fire("Desactivado", "El registro fue desactivado", "success");
         }
+    };
+
+    const toggleSort = () => {
+        onSort("maintenance_date");
     };
     
     const searchInputClass = "w-full sm:w-48 h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
@@ -134,7 +144,7 @@ function MaintenanceTable({
                     onChange={(e) => setSelectedVehicle(e.target.value)}
                 >
                     <MenuItem value="Todos">Todos</MenuItem>
-                    {allVehiclesItems.map((veh) => (
+                    {activeVehiclesItems.map((veh) => (
                         <MenuItem key={veh.value} value={veh.value}>
                             {veh.label}
                         </MenuItem>
@@ -144,7 +154,13 @@ function MaintenanceTable({
 
             <FormControl className={searchInputClass}>
                 <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Filtrar por</InputLabel>
-                <Select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+                <Select 
+                    value={searchField} 
+                    onChange={
+                        (e) => {setSearchField(e.target.value)
+                        setSearchText("")
+                    }}
+                >
                 {fields
                     .filter((field) => field.name !== "cod_vehicle")
                     .map((field) => (
@@ -152,7 +168,7 @@ function MaintenanceTable({
                         {field.placeholder}
                         </MenuItem>
                     ))}
-                    <MenuItem value="Inactivos">Inactivos</MenuItem>
+                    <MenuItem value="estados">Estados</MenuItem>
                 </Select>
             </FormControl>
 
@@ -170,6 +186,17 @@ function MaintenanceTable({
                                 {type.label}
                             </MenuItem>
                         ))}
+                    </Select>
+                </FormControl>
+            ) : searchField === "estados" ? (
+                <FormControl className={searchInputClass}>
+                    <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Estado</InputLabel>
+                    <Select
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                    >
+                        <MenuItem value="Activos">Activos</MenuItem>
+                        <MenuItem value="Desactivados">Desactivados</MenuItem>
                     </Select>
                 </FormControl>
             ) : (
@@ -230,10 +257,38 @@ function MaintenanceTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Vehículo</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Mantenimiento</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha de Mantenimiento</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                        Fecha de Mantenimiento
+                        <button 
+                            onClick={() => toggleSort()} 
+                            title={`Ordenar ${sortConfig.order === "ASC" ? "descendente" : "ascendente"}`}
+                        >
+                            <SortIcon
+                                fontSize="small"
+                                sx={{
+                                    color: "white",
+                                    cursor: "pointer",
+                                    transition: "0.2s",
+                                    transform: sortConfig.order === "DESC" ? "rotate(180deg)" : "rotate(0deg)",
+                                    "&:hover": {
+                                        opacity: 0.7,
+                                        transform: `scale(1.1) ${sortConfig.order === "DESC" ? "rotate(180deg)" : "rotate(0deg)"}`
+                                    }
+                                }}
+                            />
+                        </button>
+                    </th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Kilometraje Acumulado</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Detalles</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                    {logs.some((log) => log.maintenance_log_is_active) ? (
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Detalles</th>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
+                        </>
+                    ):(
+                        <>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Detalles</th>
+                        </>
+                    )}
                 </tr>
                 </thead>
                 <tbody>
@@ -246,28 +301,34 @@ function MaintenanceTable({
                         {isEditing ? (
                         <>
                             {editFields.map((field) => (
-                            <td key={field.name} className="py-4 px-6 text-center">
-                                <InputValidated
-                                name={field.name}
-                                type={field.type || "text"}
-                                value={editData[field.name] || ""}
-                                placeholder={field.placeholder}
-                                options={field.options || []}
-                                restriction={field.restriction}
-                                required={field.required}
-                                onChange={(e) =>
-                                    setEditData({ ...editData, [field.name]: e.target.value })
-                                }
-                                onError={(name, errorMsg) =>
-                                    setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
-                                }
-                                sx={{
-                                    "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
-                                    ...(field.width ? { width: field.width } : {}),
-                                }}
-                                formValues={editData}
-                                />
-                            </td>
+                                <td key={field.name} className="py-4 px-6 text-center">
+                                    <InputValidated
+                                        name={field.name}
+                                        type={field.type || "text"}
+                                        value={editData[field.name] || ""}
+                                        placeholder={field.placeholder}
+                                        options={field.options || []}
+                                        restriction={field.restriction}
+                                        required={field.required}
+                                        onChange={(e) =>
+                                            setEditData({ ...editData, [field.name]: e.target.value })
+                                        }
+                                        onError={(name, errorMsg) =>
+                                            setFieldErrors((prev) => ({ ...prev, [name]: errorMsg }))
+                                        }
+                                        sx={{
+                                            "& .MuiInputBase-input": {
+                                            backgroundColor: "#fff !important",
+                                            ...(field.type === "textarea"
+                                                ? { resize: "vertical", }
+                                                : {}),
+                                            },
+                                            ...(field.width ? { width: field.width } : {}),
+                                        }}
+                                        formValues={editData}
+                                    />
+                                </td>
+
                             ))}
 
                             <td className="py-4 px-6 text-center">
@@ -299,23 +360,37 @@ function MaintenanceTable({
                             <td className="py-4 px-6 text-center">{getMaintenanceName(record.maintenance_type_item_code)}</td>
                             <td className="py-4 px-6 text-center">{formatDateDDMMYYYY(record.maintenance_date)}</td>
                             <td className="py-4 px-6 text-center">{record.maintenance_km_acumulate} km</td>
-                            <td className="py-4 px-6 text-center">{record.maintenance_detail}</td>                           
-                            <td className="py-4 px-6 text-center">
-                                <div className="flex justify-center space-x-3">
-                                    <button
-                                    onClick={() => handleEditClick(record)}
-                                    className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                                    >
-                                    <EditIcon fontSize="small" />
-                                    </button>
-                                    <button
-                                    onClick={() => handleValidatedDelete(record.cod_maintenance)}
-                                    className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                                    >
-                                    <DeleteIcon fontSize="small" />
-                                    </button>
-                                </div>
-                            </td>
+                            <td className="py-4 px-6 text-center">{record.maintenance_detail}</td>   
+                            {record.maintenance_log_is_active && (                        
+                                <td className="py-4 px-6 text-center">
+                                    <div className="flex justify-center space-x-3">
+                                            <>
+                                                <button
+                                                    onClick={() => handleEditClick(record)}
+                                                    className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                                >
+                                                    <EditIcon fontSize="small" />
+                                                </button>
+
+                                                <button
+                                                    onClick={() => handleValidatedDelete(record.cod_maintenance)}
+                                                    className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                                >
+                                                    <DeleteIcon fontSize="small" />
+                                                </button>
+                                            </>
+                                        
+                                        {/*
+                                        :(
+                                            <ReactivationModal
+                                                message={"¿Quieres reactivar este registro?"}
+                                                onClick={() => onReactivate(record.cod_maintenance)}
+                                            />
+                                        )}
+                                        */}
+                                    </div>
+                                </td>
+                            )}
                         </>
                         )}
                     </tr>

@@ -8,6 +8,11 @@ function LegalBookRecordPage() {
     booksItems,
     books,
     legalBookRecords,
+
+    page,
+    totalPages,
+    handlePageChange,
+
     fields,
     editFields, 
     searchText,
@@ -26,6 +31,7 @@ function LegalBookRecordPage() {
     handleDelete,
     handleSearch,
     handleResetSearch,
+    handleReactivate,
   } = useLegalBookRecord();
 
   return (
@@ -87,6 +93,11 @@ function LegalBookRecordPage() {
         booksItems={booksItems} 
         books={books}
         legalBookRecords={legalBookRecords}
+
+        page={page}
+        onPageChange={handlePageChange}
+        totalPages={totalPages}
+
         onDelete={handleDelete}
         onEdit={handleEdit}
         onSearch={handleSearch}
@@ -103,6 +114,7 @@ function LegalBookRecordPage() {
           setError(null);
         }}
         showForm={showForm}
+        onReactivate={handleReactivate}
       />
     </div>
   );
