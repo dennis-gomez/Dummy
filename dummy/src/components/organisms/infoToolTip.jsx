@@ -8,11 +8,10 @@ function InfoTooltip({ message, position = "top", mobilePosition = "bottom" }) {
     <div className="relative inline-flex items-center">
       <InformationCircleIcon
         className="w-10 h-10 text-blue-600 hover:text-blue-800 cursor-pointer transition-colors"
-        onClick={() => setVisible(!visible)} // Toggle en móvil
-        onMouseEnter={() => setVisible(true)} // Hover en escritorio
+        onClick={() => setVisible(!visible)} 
+        onMouseEnter={() => setVisible(true)} 
         onMouseLeave={() => setVisible(false)}
       />
-
       {/* Tooltip */}
       {visible && (
         <div
