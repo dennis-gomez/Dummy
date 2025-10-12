@@ -18,7 +18,8 @@ const InventaryTable = ({
   data,
   headers,
   onEdit, // 👈 función callback para guardar cambios (opcional)
-  deleteGuaranteOrReactivated
+  deleteGuaranteOrReactivated,
+  seeSecker=true,
 }) => {
   const [editingIdx, setEditingIdx] = useState(null);
   const [editData, setEditData] = useState({});
@@ -60,8 +61,12 @@ const InventaryTable = ({
   };
 
   return (
-    <div className="dinamic-table-container p-6 mt-6 bg-white rounded-2xl">
-      {/* Seeker y botón agregar */}
+<div
+  className={`dinamic-table-container p-6 bg-white rounded-2xl ${
+    seeSecker ? "mt-6" : "mt-0"
+  }`}
+>   {/* Seeker y botón agregar */}
+      {seeSecker ? (
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           <Seeker
@@ -82,10 +87,7 @@ const InventaryTable = ({
             <Button
               text={isCreatingInventory ? "Cancelar" : `Agregar ${singularName}`}
               onClick={() => {
-  
   setIsCreatingInventory(!isCreatingInventory);
-console.log("Will cancel create:", willCancelCreate);
-
 }}
 
               className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
@@ -93,6 +95,12 @@ console.log("Will cancel create:", willCancelCreate);
           </div>
         </div>
       </div>
+      ):(
+        //quiero centrar lo de abajo
+        <div className="flex justify-center">
+        <h3 className=" text-xl font-semibold mb-4 text-gray-700 "> Lista de Productos</h3>
+        </div>
+      )}
 
       {/* Contenido de la tabla */}
       {isLoading ? (
@@ -241,6 +249,7 @@ console.log("Will cancel create:", willCancelCreate);
   className={`bg-blue-600 text-white px-3 py-1 rounded flex items-center 
               ${Object.values(editErrors).some(err => err) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
   onClick={handleSaveEdit}
+  type="button"
   disabled={Object.values(editErrors).some(err => err)} // 🔹 desactiva si hay errores
 >
   <SaveIcon fontSize="small" className="mr-1" />
@@ -250,6 +259,7 @@ console.log("Will cancel create:", willCancelCreate);
                         <button
                           className="border border-gray-300 px-3 py-1 rounded hover:bg-gray-100 flex items-center"
                           onClick={handleCancelEdit}
+                          type="button"
                         >
                           <CancelIcon fontSize="small" className="mr-1" />
                           Cancelar
@@ -259,12 +269,14 @@ console.log("Will cancel create:", willCancelCreate);
                       <div className="flex justify-center gap-3">
                         <button
                           className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                          type="button"
                           onClick={() => handleEditClick(row, index)}
                         >
                           <EditIcon />
                         </button>
                         <ModalElimination
                           message={`Eliminar ${singularName}`}
+                          type="button"
                           onClick={() => deleteGuaranteOrReactivated(row.product_cod_item, row.product_cod_category)}
                         />
                       </div>

@@ -77,6 +77,23 @@ export const updateInventory = async (updateData) => {
                 }
                 }
 
+                
+            export const getProductsThatAreInInventory = async (filter,value) => {
+                try {
+                    const response = await axios.get(
+                        `${API_URL}products-in-inventory`,
+                        { params: { filter,value },
+                        headers: {
+                            "Content-Type": "application/json"
+                          }, }
+                    );
+                    return response.data;
+                } catch (error) {
+                    throw error;
+                }
+                }
+
+
                 export const addProductsToInventory = async (data) => {
                     try {
                         const response = await axios.post(

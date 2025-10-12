@@ -67,7 +67,7 @@ function FormInventory({
     console.log("Datos del formulario:", formData);
 
     // Si tu onSubmit espera los productos actualizados:
-    onSubmit(updatedProducts);
+    onSubmit(selectedProducts, formData);
   };
 
 
@@ -113,6 +113,7 @@ function FormInventory({
       label: check.label,
       cod_item: check.value[0],
       cod_category: check.value[1],
+      unit_prices: check.unit_price || 0,
     };
 
     if (checked) {
@@ -126,36 +127,36 @@ function FormInventory({
       );
     }
   };
+const handleSaveSelected = () => {
+  const combined = [
+    ...selectedProducts,
+    ...tempSelectedProducts
+      .filter(
+        (temp) =>
+          !selectedProducts.some(
+            (saved) =>
+              saved.cod_item === temp.cod_item &&
+              saved.cod_category === temp.cod_category
+          )
+      )
+      .map((temp) => ({
+        ...temp,
+        quantities: Array(headers.length).fill(0), // crea [0, 0, 0, ...] según headers
+        unit_prices: temp.unit_prices ?? 0, // mantiene el precio si existe, o pone 0
+      })),
+  ];
 
-  const handleSaveSelected = () => {
-    const combined = [
-      ...selectedProducts,
-      ...tempSelectedProducts
-        .filter(
-          (temp) =>
-            !selectedProducts.some(
-              (saved) =>
-                saved.cod_item === temp.cod_item &&
-                saved.cod_category === temp.cod_category
-            )
-        )
-        .map((temp) => ({
-          ...temp,
-          quantities: Array(headers.length).fill(0), // crea [0, 0, 0, ...] según headers
-          unit_prices: 0,
-        })),
-    ];
+  setSelectedProducts(combined);
+  setTempSelectedProducts([]);
+};
 
-    setSelectedProducts(combined);
-    setTempSelectedProducts([]);
-  };
 
 
   return (
     <>
       {checks.length > 0 ? (
         <Box sx={{ p: 3, margin: "0 auto", maxWidth: 2000, mt: 3 }}>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => e.preventDefault()}>
             {/* ========== CAMPOS DE FORMULARIO ========== */}
             <Grid container spacing={2}>
               {fields.map((field) => {
@@ -276,6 +277,7 @@ function FormInventory({
                     value={formData[field.name]}
                     onChange={handleChange}
                     onError={handleError}
+                    options={field.options}
                     multiline={field.type === "textarea"}
                     rows={field.type === "textarea" ? 3 : undefined}
                     sx={{
@@ -335,6 +337,7 @@ function FormInventory({
             <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
               <Button
                 text="Guardar seleccionados"
+                type="button"
                 onClick={handleSaveSelected}
                 disabled={tempSelectedProducts.length === 0}
                 sx={{ minWidth: 220 }}
@@ -367,13 +370,14 @@ function FormInventory({
                     product_cod_item: prod.cod_item,
                     product_cod_category: prod.cod_category,
                     quantities: prod.quantities,   // 👈 importante
-                    unit_prices: prod.unit_prices, // 👈 importante
+                    unit_prices: prod.unit_prices || 0, // 👈 importante
                     key: idx,
                   }))}
 
                   headers={headers}
                   onEdit={handleEditList}
                   deleteGuaranteOrReactivated={handleDelete}
+                  seeSecker={false}
                 />
               </Box>
             )}
@@ -382,6 +386,7 @@ function FormInventory({
             <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
               <Button
                 text="Agregar al inventario"
+                type="button"
                 onClick={handleAdd}
                 disabled={selectedProducts.length === 0}
                 sx={{ minWidth: 220 }}

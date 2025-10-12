@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import FormInventory from "../../components/organisms/formInventory";
 
-import {useInventory} from "../../utils/useInventory";
+import {useOrder} from "../../utils/useOrder";
 
-const invevtaryPage =() =>{
+const orderPage =() =>{
 
 const {
     isCreatingInventory,
@@ -20,14 +20,15 @@ const {
     handleEdit,
     avaliableProductsChecks,
     fetchAvaliableProducts,
+    useFullFields,
   
-} = useInventory();
+} = useOrder();
 
     return (
         <>
             <div style={{ padding: 24 }}>
             <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Gestión de Inventario
+        Gestión de Ordenes de Compra
       </h1>
 
       {isCreatingInventory && (
@@ -54,13 +55,14 @@ const {
   checks={avaliableProductsChecks}
   fetchAvaliableProducts={fetchAvaliableProducts}
   setIsCreating={setIsCreatingInventory}
+  useFullFields={useFullFields}
   
 />
 
         </Box>
       )}
                 <InventaryTable 
-                singularName="Productos"
+                singularName="Ordenes de Compras"
                 searchFields={[{ name: "product_name", placeholder: "Nombre" }, { name: "product_category", placeholder: "Categoría" }, { name: "product_code", placeholder: "Código" }]}
                 isCreatingInventory={isCreatingInventory}
                 setIsCreatingInventory={setIsCreatingInventory}
@@ -74,4 +76,4 @@ const {
         </>
     );
 }
-export default invevtaryPage;
+export default orderPage;
