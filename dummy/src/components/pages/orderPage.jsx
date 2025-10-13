@@ -56,7 +56,7 @@ const orderPage = () => {
             }}
           >
             <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-              Agregar al inventario
+              Agregar a la orden
             </h3>
 
             <FormInventory
@@ -69,6 +69,8 @@ const orderPage = () => {
               fetchAvaliableProducts={fetchAvaliableProducts}
               setIsCreating={setIsCreatingInventory}
               useFullFields={useFullFields}
+              warinig="No hay productos disponibles para agregar a la orden."
+              tittle="Agregar productos a la orden"
 
             />
 
