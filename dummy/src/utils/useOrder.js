@@ -4,6 +4,7 @@ import { getItems } from "../services/itemService";
 import {getCategoryInventory,
      getProductsThatAreInInventory, addProductsToInventory } from "../services/inventoryService";
      import { getAllSuppliers } from "../services/supplierService";
+     import { addOrder } from "../services/orderService";
 
 export const useOrder = () => {
     
@@ -81,8 +82,7 @@ const fetchCategoryInventory = async () => {
 const useFullFields = [
   {name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true},
   {name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true},
-  {name: "order_facture_number", placeholder: "Número de Factura", label: "Número de Factura", type: "text", editable: true, grid: 6, width: 300, required: true},
-]
+  ]
     
        const setChecksOptions = (data) =>{
        setAvaliableProductsChecks(data.map(item => ({
@@ -100,6 +100,9 @@ const useFullFields = [
   
 
        const handleAddInventory = async (newInventory,orderData) => {
+
+        await addOrder(orderData,newInventory);
+
     console.log("Nuevo inventario a agregar:", newInventory);
     console.log("Datos de la orden:", orderData);
   }
