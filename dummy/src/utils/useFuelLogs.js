@@ -171,7 +171,7 @@ export const useFuelLogs = () => {
                 setError(null);
             }
         } catch (error) {
-            const message = error.response?.data?.message || "Error al desactivar registro.";
+            const message = error.response?.message || "Error al desactivar registro.";
             ModalAlert("Error", message, "error");
             setError(message);
         }
@@ -194,7 +194,7 @@ export const useFuelLogs = () => {
     };
 
     useEffect(() => {
-        fetchFuelLogs();
+        fetchFuelLogs("Todos");
         const loadVehicles = async () => {
             try {
                 const activeVehicles = await getActiveVehiclesNames();

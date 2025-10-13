@@ -232,7 +232,7 @@ export const useLegalBookRecord = () => {
                         label: i.book_name
                     }))
                 );
-
+                console.log(allBooks)
                 setBooks(allBooks.data);
 
                 setFormattedBook(
