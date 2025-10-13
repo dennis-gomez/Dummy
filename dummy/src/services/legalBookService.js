@@ -44,8 +44,6 @@ export const getBookNamesAndIds = async () => {
 // 🔹 Agregar un libro
 export const addBook = async (formData) => {
 
-console.log("addBook - formData:", formData);
-
   try {
     const response = await axios.post(API_URL + "add", formData);
     return response;

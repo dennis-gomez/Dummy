@@ -41,7 +41,6 @@ export const addMedicKit = async (formData) => {
 // Eliminar kitMedico
 export const deleteMedicKit = async ( cod_medic_kit,is_active ) => {
     try {
-        console.log("is_Active en service:", is_active);
         const response = await axios.delete(
             API_URL + "delete",
             {

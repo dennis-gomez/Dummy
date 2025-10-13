@@ -217,15 +217,13 @@ export const usePMRevisionAndPlan = () => {
                             .flat()
                             .filter(Boolean);
 
-                        console.log("✅ Todos los planes de acción:", fulfilledResults);
-
+              
                         setRevisions(fulfilledResults);
                         setActionPlans(data2);
                     }
 
                 } else {
                     const data1 = await getFindRevisionsAt(revision_area_category_code, field, text);
-                    console.log("Data1:", data1);
 
                     if (data1.length !== 0) {
                         const requests = data1.map(rev =>
@@ -242,7 +240,6 @@ export const usePMRevisionAndPlan = () => {
                             .flat()
                             .filter(Boolean);
 
-                        console.log("✅ Todos los planes de acción:", fulfilledResults);
 
                         setRevisions(data1);
                         setActionPlans(fulfilledResults);
@@ -301,8 +298,6 @@ export const usePMRevisionAndPlan = () => {
             const selectedAction1 = revisionTasksItem.find((i) => i.value === formData.revision_task_item_code);
             const selectedAction2 = revisionAreaItem.find((i) => i.value === formData.revision_area_item_code);
 
-            console.log("Selected Action 1:", selectedAction1);
-            console.log("Selected Action 2:", selectedAction2);
 
             const payload = {
                 ...formData,

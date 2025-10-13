@@ -51,6 +51,7 @@ const OrderAndDetailsTable = ({
   onDeleteDetail,
   seeSecker = true,
   onFind,
+  setAddDetailToOrder,
 }) => {
   // Estados para edición de órdenes (padre)
   const [editingOrderId, setEditingOrderId] = useState(null);
@@ -165,7 +166,7 @@ const OrderAndDetailsTable = ({
             <div className="p-4 h-fit">
               <Button
                 text={isCreatingInventory ? "Cancelar" : `Agregar ${singularName}`}
-                onClick={() => setIsCreatingInventory && setIsCreatingInventory(!isCreatingInventory)}
+                onClick={() => setAddDetailToOrder(!isCreatingInventory)}
                 className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
               />
             </div>
@@ -355,6 +356,15 @@ const OrderAndDetailsTable = ({
                       <tr key={`details-${order.order_cod}`}>
                         <td colSpan={orderFields.length + 3} className="px-8 py-6 bg-gray-50 text-center">
                           <div className="overflow-x-auto rounded-xl shadow-md p-4 bg-white">
+                            <div className="flex justify-between items-center mb-6">
+                                            <h3 className="text-lg font-semibold text-gray-800">Lista de detalles</h3>
+                                             
+                                            <Button
+                                              text="Agregar detalle"
+                                              onClick={() => setAddDetailToOrder(!isCreatingInventory,order.order_cod)} // pasar el código de la orden para agregar detalle
+                                            />
+                                            
+                                          </div>
                             <table className="min-w-full table-auto text-center">
                               <thead>
                                 <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">

@@ -23,19 +23,21 @@ const orderPage = () => {
     avaliableProductsChecks,
     fetchAvaliableProducts,
     useFullFields,
-
+fetchAvaliableProductsInOrder,
     order,
     orderDetails,
     suppliers,
 
     orderFields,
     orderStatus,
+    setAddDetailToOrder,
+    creatingDetail,
+    closeCreatingDetail,
+    addDetailToOrder,
+    HandleAddOrderDetail
 
   } = useOrder();
 
-    console.log("useOrder montado");
-    console.log("Orders:", order);
-    console.log("Order Details:", orderDetails);
 
   return (
     <>
@@ -62,16 +64,16 @@ const orderPage = () => {
             <FormInventory
               fields={fields}
               formTitle="Agregar productos al inventario"
-              onSubmit={handleAddInventory}
+              onSubmit={addDetailToOrder? HandleAddOrderDetail:handleAddInventory}
               titleBtn="agregar al inventario"
               headers={offices}
               checks={avaliableProductsChecks}
-              fetchAvaliableProducts={fetchAvaliableProducts}
-              setIsCreating={setIsCreatingInventory}
-              useFullFields={useFullFields}
+              fetchAvaliableProducts={addDetailToOrder? fetchAvaliableProductsInOrder:fetchAvaliableProducts}
+              setIsCreating={creatingDetail}
+              useFullFields={addDetailToOrder? []: useFullFields}
               warinig="No hay productos disponibles para agregar a la orden."
               tittle="Agregar productos a la orden"
-
+              
             />
 
           </Box>
@@ -90,6 +92,7 @@ const orderPage = () => {
           suppliers={suppliers}
           headers={offices}
           onEdit={handleEdit}
+          setAddDetailToOrder={creatingDetail}
           deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}
         />
       </div>

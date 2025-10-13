@@ -34,7 +34,6 @@ function FormInventory({
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   const handleEditList = (list) => {
-    console.log("Lista editada:", list);
 
     const updatedList = selectedProducts.map((item) =>
       item.cod_item === list.product_cod_item &&
@@ -48,7 +47,6 @@ function FormInventory({
     );
 
     setSelectedProducts(updatedList);
-    console.log("Lista de productos actualizada:", updatedList);
   };
 
 
@@ -66,8 +64,6 @@ function FormInventory({
       ...formData, // agrega los datos del formulario a cada producto
     }));
 
-    console.log("Enviando productos al inventario:", updatedProducts);
-    console.log("Datos del formulario:", formData);
 
     // Si tu onSubmit espera los productos actualizados:
     onSubmit(selectedProducts, formData);
@@ -75,15 +71,11 @@ function FormInventory({
 
 
   const handleDelete = (cod_item, cod_product) => {
-    console.log("Eliminando item:", cod_item, cod_product);
-
     const updatedList = selectedProducts.filter(
       (item) =>
         !(item.cod_item === cod_item && item.cod_category === cod_product)
     );
     setSelectedProducts(updatedList);
-    console.log("Lista de productos actualizada:", updatedList);
-
   }
 
 
@@ -96,8 +88,7 @@ function FormInventory({
 
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    console.log("Current formData:", { ...formData, [name]: value });
-    fetchAvaliableProducts(value, "");
+    fetchAvaliableProducts(-1,value, "");
   };
 
   const handleError = (name, errorMessage) => {

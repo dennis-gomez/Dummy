@@ -47,7 +47,6 @@ export const useGuarantees = () => {
 
 const handleSortByExpirationDate = (searchFeature,searchText,currentPage,limit=2,options,order) => {
 
-console.log("Ordenando por fecha de vencimiento:", { searchFeature,searchText,currentPage,limit,options,order });
 if (options==1) {
   // actualizar el estado para render
   fetchGuarantees(currentPage, limit, searchFeature, searchText, order); // usar el nuevo valor
@@ -121,7 +120,6 @@ if (options==1) {
 
     let resp;
 
-    console.log("Fetching guarantees with:", { page, limit, searchFeature, searchText, sortOrder });
 
     if (searchText && searchFeature && searchText !== "Todas") {
       // 👇 Llama a la API de búsqueda con paginación

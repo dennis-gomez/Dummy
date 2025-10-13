@@ -112,12 +112,6 @@ export const useVehicleMaintenance = () => {
         const newOrder = order || (sortConfig.field === field && sortConfig.order === "ASC" ? "DESC" : "ASC");
         const newSortConfig = { field, order: newOrder };
 
-        console.log("🔀 Ordenamiento solicitado:");
-        console.log(" - Campo:", field);
-        console.log(" - Orden:", newOrder);
-        console.log(" - Configuración anterior:", sortConfig);
-        console.log(" - Configuración nueva:", newSortConfig);
-
         setSortConfig(newSortConfig);
         await fetchRecords(1, {}, newSortConfig);
     };
