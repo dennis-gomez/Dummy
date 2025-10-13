@@ -29,6 +29,7 @@ const orderPage = () => {
     suppliers,
 
     orderFields,
+    orderStatus,
 
   } = useOrder();
 
@@ -83,6 +84,8 @@ const orderPage = () => {
           isLoading={loading}
           data={order}
           subData={orderDetails}
+          orderStatus={orderStatus}
+          suppliers={suppliers}
           headers={offices}
           onEdit={handleEdit}
           deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}

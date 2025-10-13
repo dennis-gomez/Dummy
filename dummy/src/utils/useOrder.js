@@ -198,6 +198,7 @@ export const useOrder = () => {
     suppliers,
 
     orderFields,
+    orderStatus,
 
   }
 
