@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
 import { getItems } from "../services/itemService";
-import { getCategoryInventory, getProductsThatAreInInventory, addProductsToInventory} from "../services/inventoryService";
-import { getAllSuppliers } from "../services/supplierService";
+import {getCategoryInventory,
+     getProductsThatAreInInventory, addProductsToInventory } from "../services/inventoryService";
+     import { getAllSuppliers } from "../services/supplierService";
+     import { addOrder } from "../services/orderService";
 
 import { getAllOrderDetails, } from "../services/orderDetailService";
 import { getAllOrders } from "../services/orderService";
@@ -128,29 +130,31 @@ export const useOrder = () => {
     { name: "seecker", placeHolder: "Buscar Producto", label: "Buscar Producto", type: "seeker", editable: true, grid: 4, width: 600, required: false },
   ];
 
-
-  const useFullFields = [
-    { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true },
-    { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true },
-    { name: "order_facture_number", placeholder: "Número de Factura", label: "Número de Factura", type: "text", editable: true, grid: 6, width: 300, required: true },
+      
+const useFullFields = [
+  {name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true},
+  {name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true},
   ]
+    
+       const setChecksOptions = (data) =>{
+       setAvaliableProductsChecks(data.map(item => ({
+        label: item.item_name,
+        value: [item.cod_item, item.cod_category],
+        placeholder: item.item_name,
+        unit_price: item.unit_price,
+        grid: 12,
+        type: "checkbox",
+        width: 300,
+        heigth: 8,
+       })));
+       }
 
-  const setChecksOptions = (data) => {
-    setAvaliableProductsChecks(data.map(item => ({
-      label: item.item_name,
-      value: [item.cod_item, item.cod_category],
-      placeholder: item.item_name,
-      unit_price: item.unit_price,
-      grid: 12,
-      type: "checkbox",
-      width: 300,
-      heigth: 8,
-    })));
-  }
 
 
+       const handleAddInventory = async (newInventory,orderData) => {
 
-  const handleAddInventory = async (newInventory, orderData) => {
+        await addOrder(orderData,newInventory);
+
     console.log("Nuevo inventario a agregar:", newInventory);
     console.log("Datos de la orden:", orderData);
   }

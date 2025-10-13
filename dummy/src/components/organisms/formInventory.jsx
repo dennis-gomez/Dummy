@@ -17,6 +17,9 @@ function FormInventory({
   fetchAvaliableProducts,
   headers,
   useFullFields = [],
+  tittle = "Agregar productos al inventario",
+  warinig ="No hay productos disponibles para agregar al inventario."
+  
 }) {
   const [formData, setFormData] = useState(() => {
     const allFields = [...fields, ...useFullFields]; // combina ambos
@@ -385,7 +388,7 @@ const handleSaveSelected = () => {
             {/* BOTÓN FINAL */}
             <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
               <Button
-                text="Agregar al inventario"
+                text={tittle}
                 type="button"
                 onClick={handleAdd}
                 disabled={selectedProducts.length === 0}
@@ -405,7 +408,7 @@ const handleSaveSelected = () => {
           }}
         >
           <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-            No hay productos disponibles para agregar al inventario.
+            {warinig}
           </h3>
         </Box>
       )}
