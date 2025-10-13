@@ -83,20 +83,20 @@ if (restriction === "unique" && value !== "") {
 
 
   // Validaciones base
- if (type === "number") {
-  if (value !== "" && isNaN(Number(value))) {
-    err = "Debe ser un número";
-  } 
-  // ❌ Bloquear notación científica (2e3, 1E5, etc.)
-  else if (typeof value === "string" && /e/i.test(value)) {
-    err = "No se permite notación científica (e)";
-  } 
-  else if (Number(value) < 1 && !restriction) {
-    err = "Solo valores mayores a 0";
-  } 
-  else if (restriction === "allowZero" && Number(value) < 0) {
-    err = "Solo valores mayores o iguales a 0";
-  }
+  if (type === "number") {
+    if (value !== "" && isNaN(Number(value))) {
+      err = "Debe ser un número";
+    } 
+    // ❌ Bloquear notación científica (2e3, 1E5, etc.)
+    else if (typeof value === "string" && /e/i.test(value)) {
+      err = "No se permite notación científica (e)";
+    } 
+    else if (Number(value) < 1 && !restriction) {
+      err = "Solo valores mayores a 0";
+    } 
+    else if (restriction === "allowZero" && Number(value) < 0) {
+      err = "Solo valores mayores o iguales a 0";
+    }
 
 
 
@@ -118,7 +118,7 @@ if (restriction === "unique" && value !== "") {
       Number(value) < 0
     ) {
       err = "No se permiten valores negativos";
-    
+    }
     
   } else if (type === "date") {
     if (value !== "" && value !== "Sin fecha") {
@@ -179,5 +179,5 @@ if (restriction === "unique" && value !== "") {
   }
 
   return err;
-}
+
 }

@@ -111,7 +111,6 @@ function LegalBookRecordTable({
 
     if (result.isConfirmed) {
       await onDelete(id);
-      Swal.fire("Desactivado", "El registro fue desactivado", "success");
     }
   };
 
@@ -126,9 +125,11 @@ function LegalBookRecordTable({
             <InputLabel sx={{ backgroundColor: "white", px: 1 }}>Seleccione un libro</InputLabel>
             <Select value={selectedBook} onChange={(e) => setSelectedBook(e.target.value)}>
               <MenuItem value="Todos">Todos los libros</MenuItem>
-              {booksItems.map((book) => (
-                <MenuItem key={book.value} value={book.value}>
-                  {book.label}
+              {books
+              .filter((book) => ![3, 4, 5].includes(book.book_status))
+              .map((book) => (
+                <MenuItem key={book.cod_book} value={book.cod_book}>
+                  {book.book_name}
                 </MenuItem>
               ))}
             </Select>
@@ -252,8 +253,12 @@ function LegalBookRecordTable({
 
                     {isEditing ? (
                       <>
-                        {editFields.map((field) => (
+                        <td className="py-4 px-6 text-center">{getBookName(record.cod_book_catalog)}</td>
+                        {editFields
+                        .filter((field) => field.name !== "cod_book_catalog")
+                        .map((field) => (
                           <td key={field.name} className="py-4 px-6 text-center">
+                            
                             <InputValidated
                               name={field.name}
                               type={field.type || "text"}
@@ -280,6 +285,7 @@ function LegalBookRecordTable({
                               }}
                               formValues={editData}
                             />
+                          
                           </td>
                         ))}
 
