@@ -31,6 +31,9 @@ const orderPage = () => {
     orderFields,
     orderStatus,
 
+    handleEditOrder,
+    handleEditOrderDetail,
+
   } = useOrder();
 
     console.log("useOrder montado");
@@ -89,7 +92,8 @@ const orderPage = () => {
           orderStatus={orderStatus}
           suppliers={suppliers}
           headers={offices}
-          onEdit={handleEdit}
+          onEditOrder={handleEditOrder}
+          onEditDetail={handleEditOrderDetail}
           deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}
         />
       </div>

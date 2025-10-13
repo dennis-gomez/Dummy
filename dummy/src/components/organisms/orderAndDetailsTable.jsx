@@ -133,14 +133,44 @@ const OrderAndDetailsTable = ({
     setEditErrors({});
   };
 
-  const handleSaveDetail = async () => {
-    // intentar id coherente
-    const id = editDetailData.detail_cod ?? editDetailData.id ?? editDetailData.order_ids ?? editDetailData.product_cod_item ?? null;
-    if (onEditDetail) await onEditDetail(id, editDetailData);
+// dentro de OrderAndDetailsTable component
+
+const handleSaveDetail = async () => {
+  // normalizar datos antes de enviar
+  const payload = {
+    // campos que tu backend espera — asegúrate que coincidan con tu DB/API
+    order_detail_order_code: editDetailData.order_detail_order_code,
+    product_cod_item: editDetailData.product_cod_item ?? editDetailData.product_cod_item,
+    product_cod_category: editDetailData.product_cod_category ?? editDetailData.product_cod_category,
+    product_name: editDetailData.product_name ?? editDetailData.product_description ?? "",
+    unit_prices: (editDetailData.unit_prices ?? editDetailData.unit_price ?? 0),
+    // quantities como array de números
+    quantities: Array.isArray(editDetailData.quantities)
+      ? editDetailData.quantities.map(q => (q === "" ? 0 : Number(q)))
+      : [],
+    // order_ids: mapea desde order_ids (tu estructura actual) o desde inventary_ids si ya viene así
+    order_ids: Array.isArray(editDetailData.order_ids)
+      ? editDetailData.order_ids
+      : Array.isArray(editDetailData.inventary_ids)
+      ? editDetailData.inventary_ids
+      : (Array.isArray(editDetailData.order_ids) ? editDetailData.order_ids : []),
+    detail_cod: editDetailData.detail_cod ?? editDetailData.id ?? null,
+  };
+
+  // opcional: eliminar propiedades null/undefined
+  if (payload.detail_cod === null) delete payload.detail_cod;
+
+  try {
+    if (onEditDetail) await onEditDetail(payload);
+    // limpiar UI luego de guardado
     setEditingDetailId(null);
     setEditDetailData({});
     setEditErrors({});
-  };
+  } catch (err) {
+    console.error("Error saving detail:", err);
+  }
+};
+
 
   return (
     <div className={`dinamic-table-container p-6 bg-white rounded-2xl ${seeSecker ? "mt-6" : "mt-0"}`}>
