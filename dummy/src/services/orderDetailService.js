@@ -13,3 +13,14 @@ export const getAllOrderDetails = async () => {
         throw error;
     }
 };
+
+export const updateOrderDetail = async (updateData) => {
+  try {
+    const res = await axios.put(`${API_URL}/update`, updateData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
+};
