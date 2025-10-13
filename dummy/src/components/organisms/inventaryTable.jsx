@@ -80,7 +80,7 @@ const InventaryTable = ({
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() => onFind(searchText)}
+            onClick={() => onFind(searchFeature, searchText)}
           />
         </Box>
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">

@@ -20,7 +20,9 @@ const {
     handleEdit,
     avaliableProductsChecks,
     fetchAvaliableProducts,
-    handleFindProduct
+    handleFindProduct, 
+
+    categoryToSelect
 } = useInventory();
 
     return (
@@ -61,7 +63,9 @@ const {
       )}
                 <InventaryTable 
                 singularName="Productos"
-                searchFields={[{ name: "product_name", placeholder: "Nombre" }]}
+                
+                searchFields={categoryToSelect}
+
                 isCreatingInventory={isCreatingInventory}
                 setIsCreatingInventory={setIsCreatingInventory}
                 isLoading={loading}

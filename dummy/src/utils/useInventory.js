@@ -13,6 +13,8 @@ export const useInventory = () => {
     const [loading, setLoading] = useState(false);
     const [categoryInventory, setCategoryInventory] = useState([]);
     const [avaliableProductsChecks, setAvaliableProductsChecks] = useState([]);
+
+    const [categoryToSelect, setCategory] = useState(["Todos"]);
     
 
 const fetchAvaliableProducts = async (filter="0", value="") => {
@@ -51,6 +53,26 @@ const fetchCategoryInventory = async () => {
     console.error("Error fetching category inventory:", error);
   }
 };
+
+  //carga de categorias en el select
+  const fetchCategoryInventoryToFind = async () => {
+    try {
+      const data = await getCategoryInventory(9);
+      const categoryOptions = data.map((category) => ({
+        placeholder: category.category_name, 
+        name: category.cod_category,
+      }));
+
+      const optionsWithAll = [
+        { placeholder: "Todos", name: "Todos" },
+        ...categoryOptions,
+      ];
+
+      setCategory(optionsWithAll); 
+    } catch (error) {
+      console.error("Error fetching category inventory:", error);
+    }
+  };
 
      const fields = [
    { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
@@ -159,12 +181,14 @@ setLoading(true);
     fetchInventory();
     fetchCategoryInventory();
     fetchAvaliableProducts();
+    fetchCategoryInventoryToFind();
+
   }, []);
 
-  const handleFindProduct = async ( cod_item_product ) => {
+  const handleFindProduct = async ( freature, cod_item_product ) => {
     setLoading(true);
     try {
-      const data = await findProductsInventory( cod_item_product );
+      const data = await findProductsInventory( freature, cod_item_product );
       ModalAlert("Éxito", "Inventario actualizado correctamente", "success");
       setInventary(data);
     } catch (error) {
@@ -188,6 +212,8 @@ setLoading(true);
         avaliableProductsChecks,
         fetchAvaliableProducts,
         handleFindProduct,
+
+        categoryToSelect
     }
     
 }
