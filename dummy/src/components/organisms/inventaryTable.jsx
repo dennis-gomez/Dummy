@@ -20,6 +20,7 @@ const InventaryTable = ({
   onEdit, // 👈 función callback para guardar cambios (opcional)
   deleteGuaranteOrReactivated,
   seeSecker=true,
+  onFind,
 }) => {
   const [editingIdx, setEditingIdx] = useState(null);
   const [editData, setEditData] = useState({});
@@ -79,7 +80,7 @@ const InventaryTable = ({
             valueFeature={searchFeature}
             onChangeText={setSearchText}
             onChangeFeature={setSearchFeature}
-            onClick={() => setSearchText("")}
+            onClick={() => onFind(searchText)}
           />
         </Box>
         <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">

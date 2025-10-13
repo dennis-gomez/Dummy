@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
 import { getItems } from "../services/itemService";
 import { getInventory, updateInventory,deleteInventory, getCategoryInventory,
-     getProductsThatAreNotInInventory, addProductsToInventory } from "../services/inventoryService";
+     getProductsThatAreNotInInventory, addProductsToInventory, findProductsInventory } from "../services/inventoryService";
 
 export const useInventory = () => {
     
@@ -161,6 +161,18 @@ setLoading(true);
     fetchAvaliableProducts();
   }, []);
 
+  const handleFindProduct = async ( cod_item_product ) => {
+    setLoading(true);
+    try {
+      const data = await findProductsInventory( cod_item_product );
+      ModalAlert("Éxito", "Inventario actualizado correctamente", "success");
+      setInventary(data);
+    } catch (error) {
+      ModalAlert("Error", "Error al buscar productos", "error");
+      console.error("Error al encontrar el inventario");
+    }
+    setLoading(false);
+  }
 
     return {
         isCreatingInventory,
@@ -175,7 +187,7 @@ setLoading(true);
         fetchCategoryInventory,
         avaliableProductsChecks,
         fetchAvaliableProducts,
-       
+        handleFindProduct,
     }
-
+    
 }

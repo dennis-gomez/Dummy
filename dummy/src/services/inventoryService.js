@@ -17,6 +17,23 @@ export const getInventory = async () => {
   }
    }
 
+export const findProductsInventory = async ( text ) => {
+    try {
+        const response = await axios.get(
+            API_URL + "find", 
+            {
+                params: { text },
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            }
+        );
+        return response.data.items
+    } catch (error) {
+        throw error;
+    }
+}
+
 export const updateInventory = async (updateData) => {   
     try {
         const response = await axios.put(
