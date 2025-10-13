@@ -20,7 +20,7 @@ export const getAllOrders = async () => {
 export const addOrder = async (orderData,ordenDetailData) => {
     try {
         const response = await axios.post(
-            `${API_URL}add`,
+            `${API_URL}/add`,
             { orderData,ordenDetailData },
             { headers: {
                 "Content-Type": "application/json"
