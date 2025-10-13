@@ -17,12 +17,12 @@ export const getInventory = async () => {
   }
    }
 
-export const findProductsInventory = async ( text ) => {
+export const findProductsInventory = async ( freature, text ) => {
     try {
         const response = await axios.get(
             API_URL + "find", 
             {
-                params: { text },
+                params: { freature, text },
                 headers: {
                     "Content-Type": "application/json"
                 },
