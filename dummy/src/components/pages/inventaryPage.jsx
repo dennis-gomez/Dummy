@@ -20,7 +20,7 @@ const {
     handleEdit,
     avaliableProductsChecks,
     fetchAvaliableProducts,
-  
+    handleFindProduct
 } = useInventory();
 
     return (
@@ -61,7 +61,7 @@ const {
       )}
                 <InventaryTable 
                 singularName="Productos"
-                searchFields={[{ name: "product_name", placeholder: "Nombre" }, { name: "product_category", placeholder: "Categoría" }, { name: "product_code", placeholder: "Código" }]}
+                searchFields={[{ name: "product_name", placeholder: "Nombre" }]}
                 isCreatingInventory={isCreatingInventory}
                 setIsCreatingInventory={setIsCreatingInventory}
                 isLoading={loading}
@@ -69,6 +69,7 @@ const {
                 headers={offices}
                 onEdit={handleEdit}
                 deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}
+                onFind={handleFindProduct}
                 />
             </div>
         </>
