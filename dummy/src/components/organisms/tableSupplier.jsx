@@ -8,8 +8,8 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
-import ModalAlert from "../molecules/ModalAlert";
-import ModalElimination from "../molecules/ModalElimination";
+import ModalAlert from "../molecules/modalAlert";
+import ModalElimination from "../molecules/modalElimination";
 
 function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoading }) {
   const [editRowId, setEditRowId] = useState(null);
