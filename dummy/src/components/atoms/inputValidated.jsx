@@ -20,6 +20,7 @@ function InputValidated({
   uniqueValues = [],
   currentId = null,
   setIsUnique,
+  disabled,
 }) {
   const [error, setError] = useState("");
 
@@ -84,6 +85,7 @@ useEffect(() => {
       className={className}
       uniqueValues={uniqueValues}
       currentId={currentId}
+      disabled={disabled}
       sx={{
         width: '100%',
         maxWidth: '100%',

@@ -47,6 +47,8 @@ const OrderAndDetailsTable = ({
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState("");
 
+  const [isUnique, setIsUnique] = useState(true);
+
   const whiteInputStyle = {
     "& .MuiOutlinedInput-root": {
       backgroundColor: "#ffffff",
@@ -76,6 +78,13 @@ const OrderAndDetailsTable = ({
   const getDetailOrderCode = (detail) => {
     return detail.order_cod ?? detail.order_detail_order_code ?? detail.order_id ?? detail.orderId ?? null;
   };
+
+  const isFieldDisabled = (fieldName, orderData) => {
+  if (fieldName === "order_facture_number") return Number(orderData.order_status) !== 2;
+  if (fieldName === "order_total_amount") return true;
+  return false;
+};
+
 
 
   // ======= EDICION ORDEN (PADRE) =======
@@ -291,6 +300,11 @@ const OrderAndDetailsTable = ({
                                   restriction={f.restriction}
                                   validations={f.validations || []}
                                   onError={handleError}
+                                  setIsUnique={setIsUnique}
+                                  uniqueValues={data.map((o) => ({
+                                    id: o.order_cod,
+                                    value: o[f.name],
+                            }))}
                                   onChange={(e) => {
                                     const value = e.target.value;
                                     setEditOrderData({ ...editOrderData, [f.name]: value });
@@ -301,6 +315,7 @@ const OrderAndDetailsTable = ({
                                       minWidth: "200px", width: "100%", minHeight: "3rem"
                                     },
                                   }}
+                                  disabled={isFieldDisabled(f.name, editOrderData)}
                                 />
                               )
                             ) : (
@@ -316,7 +331,7 @@ const OrderAndDetailsTable = ({
                             <>
                               <button
                                 onClick={handleSaveOrder}
-                                disabled={Object.values(editErrors).some(err => err)}
+                                disabled={Object.values(editErrors).some(err => err) || !isUnique}
                                 className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}>
                                 <SaveIcon className="mr-1" fontSize="small" /> Guardar
                               </button>
@@ -332,12 +347,18 @@ const OrderAndDetailsTable = ({
                               <button
                                 onClick={() => handleEditOrderClick(order)}
                                 aria-label="Editar Orden"
-                                className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50">
+                                disabled={order.order_status === 2}
+                                className={`text-blue-500 transition p-2 rounded-full flex items-center justify-center
+                                  ${order.order_status === 2
+                                    ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-blue-500"
+                                    : "hover:text-blue-700 hover:bg-blue-50"
+                                  }`}>
                                 <EditIcon />
                               </button>
 
                               <ModalElimination
                                 message={`Eliminar ${singularName}`}
+                                disabled={order.order_status === 2}
                                 onClick={() => onDeleteOrder && onDeleteOrder(order.order_cod)}
                               />
                             </>
@@ -353,11 +374,14 @@ const OrderAndDetailsTable = ({
                           <div className="overflow-x-auto rounded-xl shadow-md p-4 bg-white">
                             <div className="flex justify-between items-center mb-6">
                               <h3 className="text-lg font-semibold text-gray-800">Lista de detalles</h3>
-                              <Button
-                                text="Agregar detalle"
-                                onClick={() => setAddDetailToOrder(!isCreatingInventory, order.order_cod)} 
-                              />
+                              {order.order_status !== 2 && (
+                                <Button
+                                  text="Agregar detalle"
+                                  onClick={() => setAddDetailToOrder(!isCreatingInventory, order.order_cod)}
+                                />
+                              )}
                             </div>
+
                             <table className="min-w-full table-auto text-center">
                               <thead>
                                 <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
@@ -471,16 +495,32 @@ const OrderAndDetailsTable = ({
                                         ) : (
                                           <div className="flex justify-center gap-3">
                                             <button
-                                              className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                                              className={`text-blue-500 transition p-2 rounded-full flex items-center justify-center
+                                                    ${order.order_status === 2
+                                                  ? "opacity-50 cursor-not-allowed hover:bg-transparent hover:text-blue-500"
+                                                  : "hover:text-blue-700 hover:bg-blue-50"
+                                                }`}
                                               onClick={() => handleEditDetailClick(detail)}
+                                              disabled={order.order_status === 2}
                                             >
                                               <EditIcon />
                                             </button>
 
                                             <ModalElimination
                                               message={`Eliminar detalle`}
-                                              onClick={() => onDeleteDetail && onDeleteDetail(detailId)}
+                                              onClick={() => {
+                                                if (onDeleteDetail) {
+                                                  onDeleteDetail({
+                                                    order_detail_order_code: detail.order_detail_order_code ?? getDetailOrderCode(detail),
+                                                    product_cod_service: detail.product_cod_service ?? detail.product_service_code ?? null,
+                                                    product_cod_category: detail.product_cod_category ?? detail.product_category_code ?? null,
+                                                    product_cod_item: detail.product_cod_item ?? detail.product_item_code ?? null,
+                                                  });
+                                                }
+                                              }}
+                                              disabled={order.order_status === 2}
                                             />
+
                                           </div>
                                         )}
                                       </td>
