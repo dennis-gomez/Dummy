@@ -69,6 +69,12 @@ export const useOrder = () => {
     { name: "order_total_amount", placeholder: "Monto Total", label: "Monto Total", type: "number", editable: false, grid: 4, width: 200 }
   ];
 
+const fetchData = async () => {
+fetchActiveOrders();
+fetchOrderDetails();
+};
+  
+
 
   const fetchOrders = async () => {
     setLoading(true);
@@ -184,7 +190,7 @@ export const useOrder = () => {
       setError(null);
       await updateOrder(order_cod, updatedData);
       ModalAlert("Éxito", "Orden actualizada exitosamente.", "success");
-      fetchActiveOrders();
+      fetchData();
       return true;
     } catch (err) {
       const message = err.response?.data?.message || "Error al actualizar orden.";
@@ -203,8 +209,7 @@ export const useOrder = () => {
       const updatedOrderDetail = await updateOrderDetail(updatedData);
       ModalAlert("Éxito", "Detalles de orden actualizados correctamente", "success");
       console.log("Detalles de orden actualizados:", updatedOrderDetail);
-      fetchOrderDetails();
-      // Aquí puedes actualizar el estado con los datos editados
+      fetchData();
     } catch (error) {
       console.error("Error updating order details:", error);
     }
@@ -226,7 +231,7 @@ export const useOrder = () => {
       setError(null);
       await deleteOrder(order_cod);
       ModalAlert("Éxito", "Orden eliminada exitosamente.", "success");
-      fetchActiveOrders();
+      fetchData();
       return true;
     } catch (err) {
       const message = err.response?.data?.message || "Error al eliminar orden.";
@@ -241,7 +246,7 @@ export const useOrder = () => {
     try {
       await deleteOrderDetail(detail_cod);
       ModalAlert("Éxito", "Detalle de orden eliminado correctamente", "success");
-      fetchOrderDetails();
+      fetchData();
     } catch (error) {
       console.error("Error deleting order detail:", error);
       ModalAlert("Error", "No se pudo eliminar el detalle de la orden.", "error");
@@ -249,14 +254,6 @@ export const useOrder = () => {
       setLoading(false);
     }
   };
-
-
-
-
-
-
-
-
 
 
 
@@ -297,8 +294,6 @@ export const useOrder = () => {
 
   const HandleAddOrderDetail = async (details) => {
     try {
-      // Lógica para agregar detalles a la orden
-
       await addOrderDetail(orderIdForDetails, details);
       ModalAlert("Éxito", "Detalles de la orden agregados correctamente.", "success");
       setIsCreatingInventory(false);
@@ -307,16 +302,12 @@ export const useOrder = () => {
       fetchOrderDetails();
       fetchOrders();
 
-      // Aquí puedes llamar a un servicio para guardar los detalles en el backend
     } catch (error) {
       console.error("Error adding order details:", error);
       ModalAlert("Error", "No se pudo agregar los detalles de la orden.", "error");
 
     }
   }
-
-
-
 
   const fetchOffices = async () => {
     try {
@@ -332,11 +323,9 @@ export const useOrder = () => {
   useEffect(() => {
     fetchOffices();
     fetchCategoryInventory();
-    //   fetchAvaliableProducts();
+    //fetchAvaliableProducts();
     getAllSuppliersList();
-    //fetchOrders();
-    fetchActiveOrders();
-    fetchOrderDetails();
+    fetchData();
   }, []);
 
 
