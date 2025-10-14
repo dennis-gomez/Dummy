@@ -26,7 +26,6 @@ const fetchAvaliableProducts = async (filter="0", value="") => {
     }else{
     setChecksOptions(data);
     }
-    console.log("Productos disponibles obtenidos:", data);
   } catch (error) {
     console.error("Error fetching available products:", error);
   }
@@ -37,7 +36,6 @@ const fetchCategoryInventory = async () => {
   try {
     const data = await getCategoryInventory(9);
 
-    console.log("Datos de categorías recibidos:", data);
 
     // Transformamos los datos al formato { label, value }
     const categoryOptions = data.map((category) => ({
@@ -48,7 +46,6 @@ const fetchCategoryInventory = async () => {
     categoryOptions.unshift({ label: "Todos", value: "0" }); // opción por defecto
 
     setCategoryInventory(categoryOptions); // guardamos en el estado
-    console.log("Categorías de inventario obtenidas:", categoryOptions);
   } catch (error) {
     console.error("Error fetching category inventory:", error);
   }
@@ -104,7 +101,6 @@ setLoading(true);
 
         try {
             await deleteInventory(deleteData);
-            console.log("producto eliminada:", product_cod_item, product_category);
             ModalAlert("Éxito", "Producto eliminado o reactivado correctamente", "success");
             fetchInventory();
         } catch (error) {
@@ -115,12 +111,10 @@ setLoading(true);
     };
 
        const handleAddInventory = async (newInventory) => {
-    console.log("Nuevo inventario a agregar:", newInventory);
 
     // Aquí puedes llamar a la función del servicio para agregar el inventario
     try {
         const addedInventory = await addProductsToInventory(newInventory);
-        console.log("Inventario agregado:", addedInventory);
         ModalAlert("Éxito", "Inventario agregado correctamente", "success");
         fetchInventory();
     } catch (error) {
@@ -137,7 +131,6 @@ setLoading(true);
     try {
         const data = await getItems(9, 1); // Reemplaza '1' con el código de categoría adecuado
         setOffices(data);
-        console.log("Oficinas obtenidas:", data);
     } catch (error) {
         console.error("Error fetching offices:", error);
     }
@@ -147,12 +140,10 @@ setLoading(true);
         
         setLoading(true);
 
-        console.log("Inventario editado:", editedInventory);
 
         try {
             const updatedInventory = await updateInventory(editedInventory);
             ModalAlert("Éxito", "Inventario actualizado correctamente", "success");
-            console.log("Inventario actualizado:", updatedInventory);
             fetchInventory();
             // Aquí puedes actualizar el estado con los datos editados
         } catch (error) {
@@ -165,8 +156,6 @@ setLoading(true);
         setLoading(true);
     try {
         const data = await getInventory();
-        console.log("Inventario obtenido:", data);
-        console.log(data[0].cantidades);
         setInventary(data);
         // Aquí puedes actualizar el estado con los datos obtenidos
     }

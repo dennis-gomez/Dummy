@@ -36,7 +36,6 @@ export const getActiveMaintenanceLogs = async (page = 1, limit = 10, sortField =
  * Buscar registros de mantenimiento por vehiculo, campo y texto
  */
 export const findMaintenanceLogs = async (vehicleId, feature, text, page, limit, sortField, sortOrder) => {
-    console.log("vehiculo", vehicleId, "feature", feature, "text", text, "sortField", sortField, "sortOrder", sortOrder )
     try {
         const response = await axios.get(API_URL + "find", {
             params: { vehicleId, feature, text, page, limit, sortField, sortOrder },

@@ -8,7 +8,7 @@ import {
 import { getAllSuppliers } from "../services/supplierService";
 import { addOrder } from "../services/orderService";
 
-import { getAllOrderDetails, updateOrderDetail } from "../services/orderDetailService";
+import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder } from "../services/orderDetailService";
 import { getAllOrders, updateOrder } from "../services/orderService";
 
 export const useOrder = () => {
@@ -20,6 +20,36 @@ export const useOrder = () => {
   const [loading, setLoading] = useState(false);
   const [categoryInventory, setCategoryInventory] = useState([]);
   const [avaliableProductsChecks, setAvaliableProductsChecks] = useState([]);
+  const [addDetailToOrder, setAddDetailToOrder] = useState(false);
+  const [orderIdForDetails, setOrderIdForDetails] = useState(null);
+
+  const creatingDetail= (value,id) =>{
+
+    if(id){
+      fetchAvaliableProductsInOrder(id);
+      console.log("Creando inventario para la orden ID:", id);
+    setIsCreatingInventory(value);
+    setOrderIdForDetails(id);
+    setAddDetailToOrder(value);
+    }else{
+      setIsCreatingInventory(value);
+    console.log("Creando inventario sin orden asociada");
+    fetchAvaliableProducts();
+    setAddDetailToOrder(false);
+    setOrderIdForDetails(null);
+    }
+  }
+
+  const closeCreatingDetail = () =>{
+    setIsCreatingInventory(false);
+    setAddDetailToOrder(false);
+    setOrderIdForDetails(null);
+  }
+
+  
+
+
+
 
   const [order, setOrder] = useState([]);
   const [suppliers, setSuppliers] = useState([]);
@@ -47,46 +77,58 @@ export const useOrder = () => {
   ];
 
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      const data = await getAllOrders();
-      setOrder(data);
-      console.log("Órdenes obtenidas:", data);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-    setLoading(false);
-  };
+      const fetchOrders = async () => {
+        setLoading(true);
+        try {
+            const data = await getAllOrders();
+            setOrder(data);
+        } catch (error) {
+            console.error("Error fetching orders:", error);
+        }
+        setLoading(false);
+    };
 
-  const fetchOrderDetails = async (page = 1, limit = 10) => {
-    setLoading(true);
-    try {
-      const data = await getAllOrderDetails(page, limit);
-      setOrderDetails(data);
-      console.log("Detalles de órdenes obtenidos:", data);
-    } catch (error) {
-      console.error("Error fetching order details:", error);
-    }
-    setLoading(false);
-  };
+    const fetchOrderDetails = async (page = 1, limit = 10) => {
+        setLoading(true);
+        try {
+            const data = await getAllOrderDetails(page, limit);
+            setOrderDetails(data);
+        } catch (error) {
+            console.error("Error fetching order details:", error);
+        }
+        setLoading(false);
+    };
 
 
   const fetchAvaliableProducts = async (filter = "0", value = "") => {
-    console.log("fetchAvaliableProducts llamado con filter:", filter, "y value:", value);
     try {
       const data = await getProductsThatAreInInventory(filter, value);
-      console.log("buscoo")
       if (data.length === 0) {
         ModalAlert("Información", "No se encontraron productos disponibles para agregar al inventario.", "info");
       } else {
         setChecksOptions(data);
       }
-      console.log("Productos disponibles obtenidos:", data);
     } catch (error) {
       console.error("Error fetching available products:", error);
     }
   };
+
+  const fetchAvaliableProductsInOrder = async (orderId, filter = "0", value = "") => {
+    try {
+      if(orderId === -1 || orderId === null || !orderId){
+        orderId = orderIdForDetails;
+      }
+      const data = await getAvaliableProductsInOrder(orderId, filter, value);
+      if (data.length === 0) {
+        ModalAlert("Información", "No se encontraron productos disponibles para agregar al inventario.", "info");
+      } else {
+        setChecksOptions(data);
+      }
+    } catch (error) {
+      console.error("Error fetching available products in order:", error);
+    }
+    
+  }
 
   const getAllSuppliersList = async () => {
     try {
@@ -108,8 +150,6 @@ export const useOrder = () => {
     try {
       const data = await getCategoryInventory(9);
 
-      console.log("Datos de categorías recibidos:", data);
-
       // Transformamos los datos al formato { label, value }
       const categoryOptions = data.map((category) => ({
         label: category.category_name,  // o el campo correcto según tu API
@@ -119,7 +159,6 @@ export const useOrder = () => {
       categoryOptions.unshift({ label: "Todos", value: "0" }); // opción por defecto
 
       setCategoryInventory(categoryOptions); // guardamos en el estado
-      console.log("Categorías de inventario obtenidas:", categoryOptions);
     } catch (error) {
       console.error("Error fetching category inventory:", error);
     }
@@ -198,12 +237,20 @@ export const useOrder = () => {
 
 
 
-  const handleAddInventory = async (newInventory, orderData) => {
+       const handleAddInventory = async (newInventory,orderData) => {
+        await addOrder(orderData,newInventory);
+  }
 
-    await addOrder(orderData, newInventory);
-
-    console.log("Nuevo inventario a agregar:", newInventory);
-    console.log("Datos de la orden:", orderData);
+  const HandleAddOrderDetail = async (details) => {
+    try {
+      // Lógica para agregar detalles a la orden
+      console.log("Agregar detalles a la orden ID:", orderIdForDetails, details);
+      // Aquí puedes llamar a un servicio para guardar los detalles en el backend
+    } catch (error) {
+      console.error("Error adding order details:", error);
+      ModalAlert("Error", "No se pudo agregar los detalles de la orden.", "error");
+      
+    }
   }
 
 
@@ -213,7 +260,6 @@ export const useOrder = () => {
     try {
       const data = await getItems(9, 1); // Reemplaza '1' con el código de categoría adecuado
       setOffices(data);
-      console.log("Oficinas obtenidas:", data);
     } catch (error) {
       console.error("Error fetching offices:", error);
     }
@@ -224,7 +270,7 @@ export const useOrder = () => {
   useEffect(() => {
     fetchOffices();
     fetchCategoryInventory();
-    fetchAvaliableProducts();
+ //   fetchAvaliableProducts();
     getAllSuppliersList();
     fetchOrders();
     fetchOrderDetails();
@@ -250,7 +296,12 @@ export const useOrder = () => {
     orderDetails,
     suppliers,
     orderStatus,
-
+    setAddDetailToOrder,
+    creatingDetail,
+    closeCreatingDetail,
+    addDetailToOrder,
+    HandleAddOrderDetail,
+fetchAvaliableProductsInOrder,
     // Encabezados
     orderFields,
  

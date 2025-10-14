@@ -24,3 +24,17 @@ export const updateOrderDetail = async (updateData) => {
     throw err;
   }
 };
+
+export const getAvaliableProductsInOrder = async (orderId, filter = "0", value = "") => {
+    try {
+        const res = await axios.get(`${API_URL}/not-in-order`, {
+            params: { orderId, filter, value },
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};

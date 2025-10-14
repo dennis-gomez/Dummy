@@ -5,7 +5,6 @@ const API_URL = import.meta.env.VITE_API_BASE_URL + "/guarantees";
 // 🔹 Listar todas las garantías (no vencidas)
 export const getAllGuarantees = async (page = 1, limit = 2, sortOrder = "") => {
 
-  console.log("Fetching guarantees for page:", page, "with limit:", limit);
 
   const res = await axios.get(`${API_URL}/`, {
     params: { page, limit, sortOrder }  // 👈 axios genera automáticamente ?page=1&limit=10
@@ -38,7 +37,7 @@ export const addGuarantee = async (data) => {
 
 // 🔹 Actualizar garantía
 export const updateGuarantee = async (id, data) => {
-  console.log("data a enviar:", data);
+
   const res = await axios.put(`${API_URL}/update`, data, { params: { cod_guarantee: id } });
   return res.data;
 };

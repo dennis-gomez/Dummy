@@ -137,7 +137,6 @@ export const getAllVehiclesNames = async () => {
                 },
             }
         );
-        console.log("respuesta", response);
         return response;
     } catch (error) {
         throw error;

@@ -96,7 +96,6 @@ export const useMedicKits = () => {
         setSearchTerm(text);
         setError(null);
       } else {
-        console.log("Searching medic kits by feature:", feature, "with text:", text);
         const medicKitsResp = await searchMedicKitsByFeature(text, feature);
         
         if(feature==="medic_kit_is_active" && text===1){

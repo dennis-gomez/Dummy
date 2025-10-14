@@ -113,9 +113,7 @@ export const fetchExtinguisherNotifications = async () => {
 
 export const fetchVehicleMaintenancesNotifications = async () => {
   try {
-    console.log("notificacion? ")
     const maintenances = await getMaintenanceNotifications();
-    console.log(maintenances)
     return maintenances.map(m => {
       return {
         id: `vehicle-${m.cod_vehicle}`,

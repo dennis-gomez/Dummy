@@ -138,7 +138,6 @@ export const useBooks = () => {
 
 const handleAddBook = async (formData) => {
   try {
-    console.log("Datos del formulario antes de enviar:", formData);
 
     // Clonamos los datos obligatorios
     const dataToSend = {
@@ -161,7 +160,6 @@ const handleAddBook = async (formData) => {
       delete dataToSend.book_file;
     }
 
-    console.log("Datos que se enviarán a la API:", dataToSend);
 
     const resp = await addBook(dataToSend);
 
@@ -180,8 +178,7 @@ const handleAddBook = async (formData) => {
 
 const handleEditBook = async (cod_book, formData) => {
   try {
-    console.log("Datos del formulario antes de enviar:", formData);
-
+    
     // Convertimos el archivo a Base64 si es un File
     let fileBase64 = null;
     if (formData.book_file instanceof File) {
@@ -202,7 +199,6 @@ const handleEditBook = async (cod_book, formData) => {
       book_category_code: Number(import.meta.env.VITE_BOOK_CATEGORY_CODE),
     };
 
-    console.log("Datos que se enviarán a la API:", dataToSend);
 
     const resp = await updateBook(cod_book, dataToSend);
 
@@ -223,7 +219,6 @@ const handleEditBook = async (cod_book, formData) => {
  const handleDeleteBook = async (cod_book,status) => {
   try {
     const resp = await deleteBook(cod_book,status);
-    console.log("el tipo de estado es:", status ,"y es de tipo:", typeof status);
     if (resp.status === 200) {
       if(status === 5){
         ModalAlert("Éxito", "Libro desactivado.", "success");

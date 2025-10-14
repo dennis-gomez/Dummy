@@ -142,7 +142,7 @@ const RevisionActionTable = ({
             setSecondaryValue={onChangeFeature}
             dynamicValue={valueText}
             setDynamicValue={onChangeText}
-            onSearch={() => (onSearch(valueArea, valueFeature, valueText), console.log(valueArea, valueFeature, valueText))}
+            onSearch={() => (onSearch(valueArea, valueFeature, valueText))}
 
             dynamicOptions={(options) => {
               const field = fields.find(f => f.name === options);

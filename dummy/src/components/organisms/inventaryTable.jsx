@@ -50,7 +50,6 @@ const InventaryTable = ({
   };
 
   const handleCancelEdit = () => {
-    console.log("Edición cancelada");
     setEditingIdx(null);
     setEditData({});
   };
