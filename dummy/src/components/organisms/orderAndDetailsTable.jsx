@@ -13,26 +13,6 @@ import ModalElimination from "../molecules/modalElimination";
 import { ValidateValues } from "../../utils/validateValues";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
-/**
- * OrderAndDetailsTable
- *
- * Props expected (recomendado):
- * - singularName
- * - searchFields
- * - isCreatingInventory, setIsCreatingInventory
- * - isLoading
- * - data: array de órdenes (cada orden con `order_cod`, `order_date`, `order_status`, `order_supplier_code`, `order_total_amount`, etc.)
- * - subData: array de detalles (cada detalle con: product_name, quantities (array), unit_prices, and a field referencing the order - e.g. order_cod or order_detail_order_code)
- * - headers: oficinas (usadas como columnas en detalle)
- * - order_fields: definicion de columnas de la orden (como en tu hook)
- * - orderStatus: opciones de estado [{value,label}]
- * - suppliers: opciones de proveedores [{value,label}]
- * - onEditOrder(orderId, updatedData)
- * - onEditDetail(detailId, updatedData)
- * - onDeleteOrder(orderId)
- * - onDeleteDetail(detailId)
- * - onFind(feature, text)
- */
 const OrderAndDetailsTable = ({
   singularName = "Orden",
   searchFields = [],
@@ -63,7 +43,7 @@ const OrderAndDetailsTable = ({
 
   // Estados compartidos / UI
   const [editErrors, setEditErrors] = useState({});
-  const [openRows, setOpenRows] = useState({}); // controlar expansión por order_cod
+  const [openRows, setOpenRows] = useState({});
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState("");
 
@@ -94,14 +74,13 @@ const OrderAndDetailsTable = ({
   }, []);
 
   const getDetailOrderCode = (detail) => {
-    // intenta distintas propiedades para enlace detalle -> orden
     return detail.order_cod ?? detail.order_detail_order_code ?? detail.order_id ?? detail.orderId ?? null;
   };
+
 
   // ======= EDICION ORDEN (PADRE) =======
   const handleEditOrderClick = (order) => {
     setEditingOrderId(order.order_cod);
-    // clonamos (asegurarnos de no mutar original)
     setEditOrderData({ ...order });
     setEditErrors({});
   };
@@ -123,7 +102,6 @@ const OrderAndDetailsTable = ({
   const handleEditDetailClick = (detail) => {
     const id = detail.detail_cod ?? detail.id ?? detail.order_ids ?? detail.product_cod_item ?? JSON.stringify(detail); // fallback
     setEditingDetailId(id);
-    // clonamos para editar: quantities (array) y unit_prices
     setEditDetailData({ ...detail, quantities: Array.isArray(detail.quantities) ? [...detail.quantities] : (detail.quantities ?? []) });
     setEditErrors({});
   };
@@ -134,48 +112,39 @@ const OrderAndDetailsTable = ({
     setEditErrors({});
   };
 
-// dentro de OrderAndDetailsTable component
 
-const handleSaveDetail = async () => {
-  // normalizar datos antes de enviar
-  const payload = {
-    // campos que tu backend espera — asegúrate que coincidan con tu DB/API
-    order_detail_order_code: editDetailData.order_detail_order_code,
-    product_cod_item: editDetailData.product_cod_item ?? editDetailData.product_cod_item,
-    product_cod_category: editDetailData.product_cod_category ?? editDetailData.product_cod_category,
-    product_name: editDetailData.product_name ?? editDetailData.product_description ?? "",
-    unit_prices: (editDetailData.unit_prices ?? editDetailData.unit_price ?? 0),
-    // quantities como array de números
-    quantities: Array.isArray(editDetailData.quantities)
-      ? editDetailData.quantities.map(q => (q === "" ? 0 : Number(q)))
-      : [],
-    // order_ids: mapea desde order_ids (tu estructura actual) o desde inventary_ids si ya viene así
-    order_ids: Array.isArray(editDetailData.order_ids)
-      ? editDetailData.order_ids
-      : Array.isArray(editDetailData.inventary_ids)
-      ? editDetailData.inventary_ids
-      : (Array.isArray(editDetailData.order_ids) ? editDetailData.order_ids : []),
-    detail_cod: editDetailData.detail_cod ?? editDetailData.id ?? null,
+  const handleSaveDetail = async () => {
+    const payload = {
+      order_detail_order_code: editDetailData.order_detail_order_code,
+      product_cod_item: editDetailData.product_cod_item ?? editDetailData.product_cod_item,
+      product_cod_category: editDetailData.product_cod_category ?? editDetailData.product_cod_category,
+      product_name: editDetailData.product_name ?? editDetailData.product_description ?? "",
+      unit_prices: (editDetailData.unit_prices ?? editDetailData.unit_price ?? 0),
+      quantities: Array.isArray(editDetailData.quantities)
+        ? editDetailData.quantities.map(q => (q === "" ? 0 : Number(q)))
+        : [],
+      order_ids: Array.isArray(editDetailData.order_ids)
+        ? editDetailData.order_ids
+        : Array.isArray(editDetailData.inventary_ids)
+          ? editDetailData.inventary_ids
+          : (Array.isArray(editDetailData.order_ids) ? editDetailData.order_ids : []),
+      detail_cod: editDetailData.detail_cod ?? editDetailData.id ?? null,
+    };
+    if (payload.detail_cod === null) delete payload.detail_cod;
+
+    try {
+      if (onEditDetail) await onEditDetail(payload);
+      setEditingDetailId(null);
+      setEditDetailData({});
+      setEditErrors({});
+    } catch (err) {
+      console.error("Error saving detail:", err);
+    }
   };
-
-  // opcional: eliminar propiedades null/undefined
-  if (payload.detail_cod === null) delete payload.detail_cod;
-
-  try {
-    if (onEditDetail) await onEditDetail(payload);
-    // limpiar UI luego de guardado
-    setEditingDetailId(null);
-    setEditDetailData({});
-    setEditErrors({});
-  } catch (err) {
-    console.error("Error saving detail:", err);
-  }
-};
 
 
   return (
     <div className={`dinamic-table-container p-6 bg-white rounded-2xl ${seeSecker ? "mt-6" : "mt-0"}`}>
-      {/* Seeker y botón agregar */}
       {seeSecker ? (
         <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
           <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
@@ -224,7 +193,6 @@ const handleSaveDetail = async () => {
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Expandir</th>
-                {/* encabezados de orden (padre) */}
                 {orderFields.map((f) => (
                   <th key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">{f.placeholder}</th>
                 ))}
@@ -239,12 +207,10 @@ const handleSaveDetail = async () => {
 
                 return (
                   <Fragment key={order.order_cod ?? index}>
-                    {/* fila padre (orden) */}
                     <tr className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-blue-50 transition`}>
                       <td className="py-4 px-6 text-center">{index + 1}</td>
-
                       <td className="text-center">
-                        { (subData || []).some(d => getDetailOrderCode(d) === order.order_cod) ? (
+                        {(subData || []).some(d => getDetailOrderCode(d) === order.order_cod) ? (
                           <button onClick={() => toggleRow(order.order_cod)}>
                             {isOpen ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                           </button>
@@ -261,7 +227,6 @@ const handleSaveDetail = async () => {
                           f.name === "order_status" ? orderStatus
                             : f.name === "order_supplier_code" ? suppliers
                               : [];
-
                         let value = order[f.name];
 
                         if (f.type === "select" && !isEditingOrder) {
@@ -387,14 +352,12 @@ const handleSaveDetail = async () => {
                         <td colSpan={orderFields.length + 3} className="px-8 py-6 bg-gray-50 text-center">
                           <div className="overflow-x-auto rounded-xl shadow-md p-4 bg-white">
                             <div className="flex justify-between items-center mb-6">
-                                            <h3 className="text-lg font-semibold text-gray-800">Lista de detalles</h3>
-                                             
-                                            <Button
-                                              text="Agregar detalle"
-                                              onClick={() => setAddDetailToOrder(!isCreatingInventory,order.order_cod)} // pasar el código de la orden para agregar detalle
-                                            />
-                                            
-                                          </div>
+                              <h3 className="text-lg font-semibold text-gray-800">Lista de detalles</h3>
+                              <Button
+                                text="Agregar detalle"
+                                onClick={() => setAddDetailToOrder(!isCreatingInventory, order.order_cod)} 
+                              />
+                            </div>
                             <table className="min-w-full table-auto text-center">
                               <thead>
                                 <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
@@ -409,11 +372,10 @@ const handleSaveDetail = async () => {
                               </thead>
 
                               <tbody className="bg-white divide-y divide-gray-200">
-                                { (subData || []).filter(detail => getDetailOrderCode(detail) === order.order_cod).map((detail, idxDetail) => {
+                                {(subData || []).filter(detail => getDetailOrderCode(detail) === order.order_cod).map((detail, idxDetail) => {
                                   const detailId = detail.detail_cod ?? detail.id ?? detail.order_ids ?? detail.product_cod_item ?? idxDetail;
                                   const isEditingDetail = editingDetailId === detailId;
 
-                                  // quantities: prefer editDetailData when editing, otherwise detail.quantities or zero-array
                                   const quantities = isEditingDetail
                                     ? (editDetailData.quantities ?? (Array.isArray(detail.quantities) ? [...detail.quantities] : new Array(headers.length).fill(0)))
                                     : (Array.isArray(detail.quantities) ? detail.quantities : new Array(headers.length).fill(0));
@@ -440,7 +402,6 @@ const handleSaveDetail = async () => {
                                                 const newData = { ...editDetailData, quantities: newQuantities };
                                                 setEditDetailData(newData);
 
-                                                // validación
                                                 const err = ValidateValues({
                                                   type: "number",
                                                   value,

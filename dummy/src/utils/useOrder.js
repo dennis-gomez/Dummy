@@ -8,8 +8,8 @@ import {
 import { getAllSuppliers } from "../services/supplierService";
 import { addOrder } from "../services/orderService";
 
-import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder, addOrderDetail } from "../services/orderDetailService";
-import { getAllOrders, updateOrder } from "../services/orderService";
+import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder, deleteOrderDetail, addOrderDetail, } from "../services/orderDetailService";
+import { getAllOrders, getActiveOrders, updateOrder, deleteOrder, } from "../services/orderService";
 
 export const useOrder = () => {
 
@@ -77,6 +77,17 @@ export const useOrder = () => {
             setOrder(data);
         } catch (error) {
             console.error("Error fetching orders:", error);
+        }
+        setLoading(false);
+    };
+
+    const fetchActiveOrders = async () => {
+        setLoading(true);
+        try {
+            const data = await getActiveOrders();
+            setOrder(data);
+        } catch (error) {
+            console.error("Error fetching active orders:", error);
         }
         setLoading(false);
     };
@@ -163,7 +174,7 @@ export const useOrder = () => {
             setError(null);
             await updateOrder(order_cod, updatedData);
             ModalAlert("Éxito", "Orden actualizada exitosamente.", "success");
-            fetchOrders();
+            fetchActiveOrders();
             return true;
         } catch (err) {
             const message = err.response?.data?.message || "Error al actualizar orden.";
@@ -189,6 +200,47 @@ export const useOrder = () => {
         }
         setLoading(false);
     }
+
+
+
+    const handleDeleteOrder = async (order_cod) => {
+        try {
+            setError(null);
+            await deleteOrder(order_cod);
+            ModalAlert("Éxito", "Orden eliminada exitosamente.", "success");
+            fetchActiveOrders();
+            return true;
+        } catch (err) {
+            const message = err.response?.data?.message || "Error al eliminar orden.";
+            setError(message);
+            ModalAlert("Error", message, "error");
+            return false;
+        }
+    };
+
+    const handleDeleteOrderDetail = async (detail_cod) => {
+        setLoading(true);
+        try {
+            await deleteOrderDetail(detail_cod);
+            ModalAlert("Éxito", "Detalle de orden eliminado correctamente", "success");
+            fetchOrderDetails();
+        } catch (error) {
+            console.error("Error deleting order detail:", error);
+            ModalAlert("Error", "No se pudo eliminar el detalle de la orden.", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+
+
+
+
+
+
+
+
 
   const fields = [
     { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
@@ -264,7 +316,8 @@ export const useOrder = () => {
     fetchCategoryInventory();
  //   fetchAvaliableProducts();
     getAllSuppliersList();
-    fetchOrders();
+     //fetchOrders();
+    fetchActiveOrders();
     fetchOrderDetails();
   }, []);
 
@@ -292,7 +345,7 @@ export const useOrder = () => {
     creatingDetail,
     addDetailToOrder,
     HandleAddOrderDetail,
-fetchAvaliableProductsInOrder,
+    fetchAvaliableProductsInOrder,
     // Encabezados
     orderFields,
  
@@ -300,6 +353,8 @@ fetchAvaliableProductsInOrder,
     // Funciones
     handleEditOrder,
     handleEditOrderDetail,
+    handleDeleteOrder,
+    handleDeleteOrderDetail,
 
   }
 

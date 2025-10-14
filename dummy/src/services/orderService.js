@@ -17,6 +17,8 @@ export const getAllOrders = async () => {
     }
 };
 
+
+
 export const addOrder = async (orderData,ordenDetailData) => {
     try {
         const response = await axios.post(
@@ -34,12 +36,12 @@ export const addOrder = async (orderData,ordenDetailData) => {
 
 export const getActiveOrders = async () => {
     try {
-        const res = await axios.get(`${API_URL}/active`, {
+        const res = await axios.get(`${API_URL}/active/`, {
             headers: {
                 "Content-Type": "application/json"
             },
         });
-        return res.data.items;
+        return res.data;
     } catch (error) {
         throw error;
     }  
@@ -48,4 +50,18 @@ export const getActiveOrders = async () => {
 export const updateOrder = async (order_cod, updatedData) => {
   const res = await axios.put(`${API_URL}/update`, { order_cod: order_cod, ...updatedData });
   return res.data;
+};
+
+export const deleteOrder = async (order_cod) => {
+    try {
+        const res = await axios.delete(`${API_URL}/delete`, {
+            data: { order_cod },
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
 };
