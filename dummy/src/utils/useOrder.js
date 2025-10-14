@@ -55,10 +55,10 @@ export const useOrder = () => {
 
 
   const orderStatus = [
-    { value: 1, label: "Pendiente" },
-    { value: 2, label: "Recibida" },
-    { value: 3, label: "Cancelada" },
-    { value: 4, label: "Eliminada" }
+    { value: 1, label: "Pendiente", placeholder: "Pendiente", name: 1 },
+    { value: 2, label: "Recibida", placeholder: "Recibida", name: 2 },
+    { value: 3, label: "Cancelada", placeholder: "Cancelada", name: 3 },
+    { value: 4, label: "Eliminada", placeholder: "Eliminada", name: 4 },
   ];
 
   const orderFields = [
@@ -147,7 +147,8 @@ fetchOrderDetails();
       const supplierOptions = data.map((supplier) => ({
         label: supplier.supplier_name,
         value: supplier.cod_supplier,
-        placeHolder: supplier.supplier_name,
+        placeholder: supplier.supplier_name,
+        name: supplier.cod_supplier,
       }));
       setSuppliers(supplierOptions);
 
@@ -155,6 +156,14 @@ fetchOrderDetails();
       console.error("Error fetching suppliers:", error);
     }
   };
+
+
+
+
+  const searchInOrder=(value,feature)=>{
+    console.log("searchInOrder",value,feature);
+
+  }
 
   const fetchCategoryInventory = async () => {
     try {
@@ -164,9 +173,10 @@ fetchOrderDetails();
       const categoryOptions = data.map((category) => ({
         label: category.category_name,  // o el campo correcto según tu API
         value: category.cod_category,
+        placeholder: category.category_name,
       }));
 
-      categoryOptions.unshift({ label: "Todos", value: "0" }); // opción por defecto
+      categoryOptions.unshift({ label: "Todos", value: "0", placeholder: "Todos" }); // opción por defecto
 
       setCategoryInventory(categoryOptions); // guardamos en el estado
     } catch (error) {
@@ -205,6 +215,14 @@ fetchOrderDetails();
     }
     setLoading(false);
   }
+
+  const filterSearch = [
+    {name:"Todos", value:"Todos", placeholder:"Todos", label:"Todos"},
+    { name: "order_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 175, options: orderStatus },
+    { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 4, width: 225, options: suppliers },
+    { name: "cod_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory.filter(cat=>cat.value!=="0") },
+    { name: "order_facture_number", placeholder: "Número de Factura", label: "Factura", editable: true, grid: 4, width: 200 }
+  ]
 
 
 
@@ -344,6 +362,8 @@ fetchOrderDetails();
     handleEditOrderDetail,
     handleDeleteOrder,
     handleDeleteOrderDetail,
+    filterSearch,
+    searchInOrder,
 
   }
 

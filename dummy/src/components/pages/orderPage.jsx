@@ -39,6 +39,8 @@ const orderPage = () => {
     handleEditOrderDetail,
     handleDeleteOrderDetail,
     handleDeleteOrder,
+    filterSearch,
+    searchInOrder,
 
   } = useOrder();
 
@@ -88,7 +90,7 @@ const orderPage = () => {
         )}
         <OrderAndDetailsTable
           singularName="Ordenes de Compras"
-          searchFields={[{ name: "product_name", placeholder: "Nombre" }, { name: "product_category", placeholder: "Categoría" }, { name: "product_code", placeholder: "Código" }]}
+          searchFields={filterSearch}
           isCreatingInventory={isCreatingInventory}
           setIsCreatingInventory={setIsCreatingInventory}
           orderFields={orderFields}
@@ -105,6 +107,7 @@ const orderPage = () => {
           onDeleteDetail={handleDeleteOrderDetail}
           setAddDetailToOrder={creatingDetail}
           deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}
+          onFind={searchInOrder}
         />
       </div>
     </>
