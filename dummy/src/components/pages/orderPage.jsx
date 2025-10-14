@@ -73,6 +73,8 @@ fetchAvaliableProductsInOrder,
               useFullFields={addDetailToOrder? []: useFullFields}
               warinig="No hay productos disponibles para agregar a la orden."
               tittle="Agregar productos a la orden"
+              addDetailToOrder={addDetailToOrder}
+              
               
             />
 

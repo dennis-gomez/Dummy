@@ -18,8 +18,8 @@ function FormInventory({
   headers,
   useFullFields = [],
   tittle = "Agregar productos al inventario",
-  warinig ="No hay productos disponibles para agregar al inventario."
-  
+  warinig ="No hay productos disponibles para agregar al inventario.",
+  addDetailToOrder = false,
 }) {
   const [formData, setFormData] = useState(() => {
     const allFields = [...fields, ...useFullFields]; // combina ambos
@@ -88,7 +88,11 @@ function FormInventory({
 
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    if(addDetailToOrder){
     fetchAvaliableProducts(-1,value, "");
+    }else{
+    fetchAvaliableProducts(value, "");
+    }
   };
 
   const handleError = (name, errorMessage) => {
