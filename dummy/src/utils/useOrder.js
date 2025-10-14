@@ -8,7 +8,7 @@ import {
 import { getAllSuppliers } from "../services/supplierService";
 import { addOrder } from "../services/orderService";
 
-import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder, deleteOrderDetail, } from "../services/orderDetailService";
+import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder, deleteOrderDetail, addOrderDetail, } from "../services/orderDetailService";
 import { getAllOrders, getActiveOrders, updateOrder, deleteOrder, } from "../services/orderService";
 
 export const useOrder = () => {
@@ -27,24 +27,17 @@ export const useOrder = () => {
 
     if(id){
       fetchAvaliableProductsInOrder(id);
-      console.log("Creando inventario para la orden ID:", id);
     setIsCreatingInventory(value);
     setOrderIdForDetails(id);
     setAddDetailToOrder(value);
     }else{
       setIsCreatingInventory(value);
-    console.log("Creando inventario sin orden asociada");
     fetchAvaliableProducts();
     setAddDetailToOrder(false);
     setOrderIdForDetails(null);
     }
   }
 
-  const closeCreatingDetail = () =>{
-    setIsCreatingInventory(false);
-    setAddDetailToOrder(false);
-    setOrderIdForDetails(null);
-  }
 
   
 
@@ -256,7 +249,7 @@ export const useOrder = () => {
 
 
   const useFullFields = [
-    { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true },
+    { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true, restriction: "cantAfterToday" },
     { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true },
   ]
 
@@ -277,12 +270,25 @@ export const useOrder = () => {
 
        const handleAddInventory = async (newInventory,orderData) => {
         await addOrder(orderData,newInventory);
+        setIsCreatingInventory(false);
+        fetchOrders();
+        fetchOrderDetails();
+        ModalAlert("Éxito", "Inventario agregado exitosamente.", "success");
+      
   }
 
   const HandleAddOrderDetail = async (details) => {
     try {
       // Lógica para agregar detalles a la orden
-      console.log("Agregar detalles a la orden ID:", orderIdForDetails, details);
+
+      await addOrderDetail(orderIdForDetails, details);
+      ModalAlert("Éxito", "Detalles de la orden agregados correctamente.", "success");
+      setIsCreatingInventory(false);
+      setAddDetailToOrder(false);
+      setOrderIdForDetails(null);
+      fetchOrderDetails();
+      fetchOrders();
+
       // Aquí puedes llamar a un servicio para guardar los detalles en el backend
     } catch (error) {
       console.error("Error adding order details:", error);
@@ -337,7 +343,6 @@ export const useOrder = () => {
     orderStatus,
     setAddDetailToOrder,
     creatingDetail,
-    closeCreatingDetail,
     addDetailToOrder,
     HandleAddOrderDetail,
     fetchAvaliableProductsInOrder,
