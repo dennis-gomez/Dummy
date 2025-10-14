@@ -47,16 +47,9 @@ if (selectedProducts.length === 0) {
 
 //validar que tanto la fecha como el proveedor esten llenos y no presenten errores.
 if(!formData.order_date || !formData.order_supplier_code){
-  console.log("Botón desactivado: Campos obligatorios incompletos o con errores.");
-  
-console.log("Errores actuales:", errors);
-console.log("Datos del formulario:", formData);
   return true;
 }else{
-  console.log("boton activado")
-console.log("Errores actuales:", errors);
-console.log("Datos del formulario:", formData);
-  return false;
+   return false;
 }
  }
 

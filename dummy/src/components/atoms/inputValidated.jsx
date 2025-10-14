@@ -24,31 +24,27 @@ function InputValidated({
 }) {
   const [error, setError] = useState("");
 
-const runValidation = (val) => {
-  const err = ValidateValues({
-    type,
-    value: val,
-    required,
-    validations,
-    restriction,
-    allValues: formValues,
-    uniqueValues,
-    currentId,
-    setIsUnique,
-  });
+  const runValidation = (val) => {
+    const err = ValidateValues({
+      type,
+      value: val,
+      required,
+      validations,
+      restriction,
+      allValues: formValues,
+      uniqueValues,
+      currentId,
+      setIsUnique,
+    });
 
-  setError((prev) => {
-    if (prev === err) return prev; // 👈 no cambies si es igual
+    setError((prev) => (prev === err ? prev : err));
+
+    if (onError) {
+      onError(name, err);
+    }
+
     return err;
-  });
-
-  if (onError) {
-    onError(name, err);
-  }
-
-  return err;
-};
-
+  };
 
   const handleChange = (e) => {
     const val = e.target.value;
@@ -56,11 +52,18 @@ const runValidation = (val) => {
     if (onChange) onChange(e);
   };
 
-useEffect(() => {
-  runValidation(value);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [value]); //solo se dispara cuando cambia el valor
+  // 🚫 Bloquear entrada de notación científica o signos
+  const handleKeyDown = (e) => {
+    if (type === "number" && ["e", "E", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
 
+  // Validar al cambiar el valor externo
+  useEffect(() => {
+    runValidation(value);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   return (
     <TextField
@@ -75,10 +78,13 @@ useEffect(() => {
       name={name}
       value={value}
       onChange={handleChange}
+      onKeyDown={handleKeyDown}
       placeholder={placeholder}
       error={!!error}
       helperText={error || " "}
-      InputLabelProps={type?.toLowerCase().includes("date") ? { shrink: true } : {}}
+      InputLabelProps={
+        type?.toLowerCase().includes("date") ? { shrink: true } : {}
+      }
       inputProps={type === "number" ? { min: 0 } : {}}
       multiline={type === "textarea"}
       rows={type === "textarea" ? 4 : undefined}
@@ -87,12 +93,12 @@ useEffect(() => {
       currentId={currentId}
       disabled={disabled}
       sx={{
-        width: '100%',
-        maxWidth: '100%',
+        width: "100%",
+        maxWidth: "100%",
         "& .MuiOutlinedInput-root": {
           backgroundColor: "#ffffff",
-          width: '100%',
-          maxWidth: '100%',
+          width: "100%",
+          maxWidth: "100%",
           "& .MuiOutlinedInput-notchedOutline": {
             borderColor: "#cccccc",
           },
@@ -122,7 +128,11 @@ useEffect(() => {
     >
       {type === "select" &&
         options.map((opt) => (
-          <MenuItem key={opt.value} value={opt.value} disabled={opt.disabled || false} >
+          <MenuItem
+            key={opt.value}
+            value={opt.value}
+            disabled={opt.disabled || false}
+          >
             {opt.label}
           </MenuItem>
         ))}
