@@ -25,6 +25,21 @@ export const updateOrderDetail = async (updateData) => {
   }
 };
 
+export const addOrderDetail = async (orderId, orderDetailData) => {
+  try {
+    const res = await axios.post(`${API_URL}/add`, orderDetailData, {
+      params: { orderId }, // 👈 Esto agrega ?orderId=... al final de la URL
+      headers: {
+        "Content-Type": "application/json"
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+
 export const getAvaliableProductsInOrder = async (orderId, filter = "0", value = "") => {
     try {
         const res = await axios.get(`${API_URL}/not-in-order`, {

@@ -32,7 +32,6 @@ fetchAvaliableProductsInOrder,
     orderStatus,
     setAddDetailToOrder,
     creatingDetail,
-    closeCreatingDetail,
     addDetailToOrder,
     HandleAddOrderDetail,
 
@@ -77,6 +76,8 @@ fetchAvaliableProductsInOrder,
               warinig="No hay productos disponibles para agregar a la orden."
               tittle="Agregar productos a la orden"
               addDetailToOrder={addDetailToOrder}
+              validations={addDetailToOrder? true:false}
+              havetoAdd={true}
               
               
             />
