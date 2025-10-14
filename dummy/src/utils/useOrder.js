@@ -161,7 +161,6 @@ fetchOrderDetails();
 
 
   const searchInOrder= async (value,feature)=>{
-    console.log("searchInOrder",value,feature);
 
     if(value==="Todos"){
       setLoading(true);
@@ -233,12 +232,9 @@ fetchOrderDetails();
 
   const handleEditOrderDetail = async (updatedData) => {
     setLoading(true);
-    console.log("Detalles de orden editados:", updatedData);
-
     try {
       const updatedOrderDetail = await updateOrderDetail(updatedData);
       ModalAlert("Éxito", "Detalles de orden actualizados correctamente", "success");
-      console.log("Detalles de orden actualizados:", updatedOrderDetail);
       fetchData();
     } catch (error) {
       console.error("Error updating order details:", error);
