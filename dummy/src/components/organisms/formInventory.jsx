@@ -20,6 +20,8 @@ function FormInventory({
   tittle = "Agregar productos al inventario",
   warinig ="No hay productos disponibles para agregar al inventario.",
   addDetailToOrder = false,
+  validations = true,
+  havetoAdd=false,
 }) {
   const [formData, setFormData] = useState(() => {
     const allFields = [...fields, ...useFullFields]; // combina ambos
@@ -32,6 +34,33 @@ function FormInventory({
   const [isUnique, setIsUnique] = useState(true);
   const [tempSelectedProducts, setTempSelectedProducts] = useState([]);
   const [selectedProducts, setSelectedProducts] = useState([]);
+
+const desactivateFinalButton = () =>{
+
+ 
+
+if (selectedProducts.length === 0) {
+  return true;
+}
+
+ if(!validations){
+
+//validar que tanto la fecha como el proveedor esten llenos y no presenten errores.
+if(!formData.order_date || !formData.order_supplier_code){
+  console.log("Botón desactivado: Campos obligatorios incompletos o con errores.");
+  
+console.log("Errores actuales:", errors);
+console.log("Datos del formulario:", formData);
+  return true;
+}else{
+  console.log("boton activado")
+console.log("Errores actuales:", errors);
+console.log("Datos del formulario:", formData);
+  return false;
+}
+ }
+
+}
 
   const handleEditList = (list) => {
 
@@ -52,6 +81,16 @@ function FormInventory({
 
   const handleAdd = () => {
     for (const prod of selectedProducts) {
+
+      if(havetoAdd){
+//todo producto debe tener minimo 1 cantidad a guardar
+      if (!prod.quantities.some(qty => qty > 0)) {
+        ModalAlert("Error", "Cada producto debe tener al menos una cantidad mayor a cero.", "error");
+        return;
+      }
+       
+      }
+
       if (prod.unit_prices <= 0) {
         ModalAlert("Error", "Todos los precios unitarios deben ser mayores a cero.", "error");
         return;
@@ -262,38 +301,60 @@ const handleSaveSelected = () => {
                 );
               })}
             </Grid>
-
-            {useFullFields.length > 0 && (
-              <Box sx={{ mt: 3, mb: 2 }}>
-                {useFullFields.map((field, index) => (
-                  <InputValidated
-                    key={index}
-                    name={field.name}
-                    type={field.type || "text"}
-                    label={field.label}
-                    placeholder={field.placeholder}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    onError={handleError}
-                    options={field.options}
-                    multiline={field.type === "textarea"}
-                    rows={field.type === "textarea" ? 3 : undefined}
-                    sx={{
-                      "& .MuiInputBase-root": {
-                        backgroundColor: "#fff !important",
-                      },
-                      ...(field.width ? { width: field.width } : {}),
-                      marginRight: 2,
-                      marginBottom: 2,
-                    }}
-                    required={field.required ?? true}
-                    restriction={field.restriction || ""}
-                    validations={field.validations}
-                    formValues={formData}
-                  />
-                ))}
-              </Box>
-            )}
+{useFullFields.length > 0 && (
+  <Box sx={{ mt: 3, mb: 2 }}>
+    {useFullFields.map((field, index) =>
+      field.type === "date" ? (
+        <InputValidatedDate
+          key={index}
+          name={field.name}
+          placeholder={field.placeholder}
+          value={formData[field.name]}
+          onChange={(e) =>
+            setFormData({ ...formData, [field.name]: e.target.value })
+          }
+          restriction={field.restriction || ""}
+          onError={handleError}
+          validations={field.validations}
+          sx={{
+            "& .MuiInputBase-root": {
+              backgroundColor: "#fff !important",
+            },
+            ...(field.width ? { width: field.width } : {}),
+            marginRight: 2,
+            marginBottom: 2,
+          }}
+        />
+      ) : (
+        <InputValidated
+          key={index}
+          name={field.name}
+          type={field.type || "text"}
+          label={field.label}
+          placeholder={field.placeholder}
+          value={formData[field.name]}
+          onChange={handleChange}
+          onError={handleError}
+          options={field.options}
+          multiline={field.type === "textarea"}
+          rows={field.type === "textarea" ? 3 : undefined}
+          sx={{
+            "& .MuiInputBase-root": {
+              backgroundColor: "#fff !important",
+            },
+            ...(field.width ? { width: field.width } : {}),
+            marginRight: 2,
+            marginBottom: 2,
+          }}
+          required={field.required ?? true}
+          restriction={field.restriction || ""}
+          validations={field.validations}
+          formValues={formData}
+        />
+      )
+    )}
+  </Box>
+)}
 
 
 
@@ -386,7 +447,7 @@ const handleSaveSelected = () => {
                 text={tittle}
                 type="button"
                 onClick={handleAdd}
-                disabled={selectedProducts.length === 0}
+                 disabled={desactivateFinalButton()}
                 sx={{ minWidth: 220 }}
               />
             </Box>
