@@ -14,6 +14,17 @@ export const getAllOrderDetails = async () => {
     }
 };
 
+export const updateOrderDetail = async (updateData) => {
+  try {
+    const res = await axios.put(`${API_URL}/update`, updateData, {
+      headers: { "Content-Type": "application/json" },
+    });
+    return res.data;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getAvaliableProductsInOrder = async (orderId, filter = "0", value = "") => {
     try {
         const res = await axios.get(`${API_URL}/not-in-order`, {

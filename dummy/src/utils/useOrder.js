@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
 import { getItems } from "../services/itemService";
-import {getCategoryInventory,
-     getProductsThatAreInInventory, addProductsToInventory } from "../services/inventoryService";
-     import { getAllSuppliers } from "../services/supplierService";
-     import { addOrder } from "../services/orderService";
+import {
+  getCategoryInventory,
+  getProductsThatAreInInventory, addProductsToInventory
+} from "../services/inventoryService";
+import { getAllSuppliers } from "../services/supplierService";
+import { addOrder } from "../services/orderService";
 
-import { getAllOrderDetails, getAvaliableProductsInOrder } from "../services/orderDetailService";
-import { getAllOrders } from "../services/orderService";
+import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder } from "../services/orderDetailService";
+import { getAllOrders, updateOrder } from "../services/orderService";
 
 export const useOrder = () => {
 
@@ -49,26 +51,30 @@ export const useOrder = () => {
 
 
 
-    const [order, setOrder] = useState([]);
-    const [suppliers, setSuppliers] = useState([]);
+  const [order, setOrder] = useState([]);
+  const [suppliers, setSuppliers] = useState([]);
 
-    const [orderDetails, setOrderDetails] = useState([]);
+  const [orderDetails, setOrderDetails] = useState([]);
+  const [error, setError] = useState(null);
 
 
-    const orderStatus = [
-        { value: 1, label: "Pendiente" },
-        { value: 2, label: "Recibida" },
-        { value: 3, label: "Cancelada" },
-        { value: 4, label: "Eliminada" }
-    ];
+  // Opciones para el campo de estado de la orden
 
-    const orderFields = [
-        { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha", type: "date", editable: true, restriction: "cantAfterToday", grid: 4, width: 175 },
-        { name: "order_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 175, options: orderStatus },
-        { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 4, width: 225, options: suppliers },
-        { name: "order_facture_number", placeholder: "Número de Factura", label: "Factura", type: "number", editable: false, grid: 4, width: 200 },
-        { name: "order_total_amount", placeholder: "Monto Total", label: "Monto Total", type: "number", editable: false, grid: 4, width: 200 }
-    ];
+
+  const orderStatus = [
+    { value: 1, label: "Pendiente" },
+    { value: 2, label: "Recibida" },
+    { value: 3, label: "Cancelada" },
+    { value: 4, label: "Eliminada" }
+  ];
+
+  const orderFields = [
+    { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha", type: "date", editable: true, restriction: "cantAfterToday", grid: 4, width: 175 },
+    { name: "order_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 175, options: orderStatus },
+    { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 4, width: 225, options: suppliers },
+    { name: "order_facture_number", placeholder: "Número de Factura", label: "Factura",  editable: true, grid: 4, width: 200 },
+    { name: "order_total_amount", placeholder: "Monto Total", label: "Monto Total", type: "number", editable: false, grid: 4, width: 200 }
+  ];
 
 
       const fetchOrders = async () => {
@@ -92,11 +98,6 @@ export const useOrder = () => {
         }
         setLoading(false);
     };
-
-
-
-
-
 
 
   const fetchAvaliableProducts = async (filter = "0", value = "") => {
@@ -145,8 +146,6 @@ export const useOrder = () => {
     }
   };
 
-
-
   const fetchCategoryInventory = async () => {
     try {
       const data = await getCategoryInventory(9);
@@ -165,29 +164,76 @@ export const useOrder = () => {
     }
   };
 
+
+    const handleEditOrder = async (order_cod, updatedData) => {
+        try {
+            setError(null);
+            await updateOrder(order_cod, updatedData);
+            ModalAlert("Éxito", "Orden actualizada exitosamente.", "success");
+            fetchOrders();
+            return true;
+        } catch (err) {
+            const message = err.response?.data?.message || "Error al actualizar orden.";
+            setError(message);
+            ModalAlert("Error", message, "error");
+            return false;
+        }
+    };
+
+
+    const handleEditOrderDetail = async (updatedData) => {
+        setLoading(true);
+        console.log("Detalles de orden editados:", updatedData);
+
+        try {
+            const updatedOrderDetail = await updateOrderDetail(updatedData);
+            ModalAlert("Éxito", "Detalles de orden actualizados correctamente", "success");
+            console.log("Detalles de orden actualizados:", updatedOrderDetail);
+            fetchOrderDetails();
+            // Aquí puedes actualizar el estado con los datos editados
+        } catch (error) {
+            console.error("Error updating order details:", error);
+        }
+        setLoading(false);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const fields = [
     { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
     { name: "seecker", placeHolder: "Buscar Producto", label: "Buscar Producto", type: "seeker", editable: true, grid: 4, width: 600, required: false },
   ];
 
-      
-const useFullFields = [
-  {name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true},
-  {name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true},
+
+  const useFullFields = [
+    { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha de Orden", type: "date", editable: true, grid: 6, width: 300, required: true },
+    { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 6, width: 300, options: suppliers, required: true },
   ]
-    
-       const setChecksOptions = (data) =>{
-       setAvaliableProductsChecks(data.map(item => ({
-        label: item.item_name,
-        value: [item.cod_item, item.cod_category],
-        placeholder: item.item_name,
-        unit_price: item.unit_price,
-        grid: 12,
-        type: "checkbox",
-        width: 300,
-        heigth: 8,
-       })));
-       }
+
+  const setChecksOptions = (data) => {
+    setAvaliableProductsChecks(data.map(item => ({
+      label: item.item_name,
+      value: [item.cod_item, item.cod_category],
+      placeholder: item.item_name,
+      unit_price: item.unit_price,
+      grid: 12,
+      type: "checkbox",
+      width: 300,
+      heigth: 8,
+    })));
+  }
 
 
 
@@ -232,6 +278,7 @@ const useFullFields = [
 
 
   return {
+    // Inventario
     isCreatingInventory,
     setIsCreatingInventory,
     fields,
@@ -244,18 +291,25 @@ const useFullFields = [
     fetchAvaliableProducts,
     useFullFields,
 
+    //Datos
     order,
     orderDetails,
     suppliers,
-
-    orderFields,
     orderStatus,
     setAddDetailToOrder,
     creatingDetail,
     closeCreatingDetail,
     addDetailToOrder,
     HandleAddOrderDetail,
-fetchAvaliableProductsInOrder
+fetchAvaliableProductsInOrder,
+    // Encabezados
+    orderFields,
+ 
+
+    // Funciones
+    handleEditOrder,
+    handleEditOrderDetail,
+
   }
 
 }

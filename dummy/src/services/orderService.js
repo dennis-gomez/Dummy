@@ -30,4 +30,22 @@ export const addOrder = async (orderData,ordenDetailData) => {
     } catch (error) {
         throw error;
     } 
-    }
+    };
+
+export const getActiveOrders = async () => {
+    try {
+        const res = await axios.get(`${API_URL}/active`, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data.items;
+    } catch (error) {
+        throw error;
+    }  
+};
+
+export const updateOrder = async (order_cod, updatedData) => {
+  const res = await axios.put(`${API_URL}/update`, { order_cod: order_cod, ...updatedData });
+  return res.data;
+};

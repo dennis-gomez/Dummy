@@ -34,7 +34,10 @@ fetchAvaliableProductsInOrder,
     creatingDetail,
     closeCreatingDetail,
     addDetailToOrder,
-    HandleAddOrderDetail
+    HandleAddOrderDetail,
+
+    handleEditOrder,
+    handleEditOrderDetail,
 
   } = useOrder();
 
@@ -93,7 +96,8 @@ fetchAvaliableProductsInOrder,
           orderStatus={orderStatus}
           suppliers={suppliers}
           headers={offices}
-          onEdit={handleEdit}
+          onEditOrder={handleEditOrder}
+          onEditDetail={handleEditOrderDetail}
           setAddDetailToOrder={creatingDetail}
           deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}
         />

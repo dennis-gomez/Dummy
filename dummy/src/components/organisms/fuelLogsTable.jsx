@@ -115,7 +115,6 @@ function FuelLogsTable({
 
         if (result.isConfirmed) {
             await onDelete(id);
-            Swal.fire("Desactivado", "El registro fue desactivado", "success");
         }
     };
 
