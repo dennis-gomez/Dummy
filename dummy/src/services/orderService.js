@@ -65,3 +65,31 @@ export const deleteOrder = async (order_cod) => {
         throw error;
     }
 };
+
+export const searchOrders = async (searchTerm = "0", feature = "") => {
+    try {
+        const res = await axios.get(`${API_URL}/search`, {
+            params: { searchTerm, feature },
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const searchOrdersByProductCategory = async (categoryCode) => {
+    try {
+        const res = await axios.get(`${API_URL}/search-by-category`, {
+            params: { categoryCode },
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};

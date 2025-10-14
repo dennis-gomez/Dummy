@@ -9,7 +9,7 @@ import { getAllSuppliers } from "../services/supplierService";
 import { addOrder } from "../services/orderService";
 
 import { getAllOrderDetails, updateOrderDetail, getAvaliableProductsInOrder, deleteOrderDetail, addOrderDetail, } from "../services/orderDetailService";
-import { getAllOrders, getActiveOrders, updateOrder, deleteOrder, } from "../services/orderService";
+import { getAllOrders, getActiveOrders, updateOrder, deleteOrder, searchOrders, searchOrdersByProductCategory } from "../services/orderService";
 
 export const useOrder = () => {
 
@@ -160,10 +160,39 @@ fetchOrderDetails();
 
 
 
-  const searchInOrder=(value,feature)=>{
+  const searchInOrder= async (value,feature)=>{
     console.log("searchInOrder",value,feature);
 
+    if(value==="Todos"){
+      setLoading(true);
+       fetchData();
+        setLoading(false);
+}else if(value ==="cod_category"){
+  setLoading(true);
+  try {
+    const data = await searchOrdersByProductCategory(feature);
+    setOrder(data.orders);
+  setOrderDetails(data.details);
+  } catch (error) {
+    console.error("Error searching orders by category:", error);
   }
+
+  setLoading(false);
+}else{
+  setLoading(true);
+  try {
+    const data = await searchOrders(value,feature);
+    setOrder(data);
+  } catch (error) {
+    console.error("Error searching orders:", error);
+  }
+  
+  setLoading(false);
+}
+
+}
+
+  
 
   const fetchCategoryInventory = async () => {
     try {
@@ -174,6 +203,7 @@ fetchOrderDetails();
         label: category.category_name,  // o el campo correcto según tu API
         value: category.cod_category,
         placeholder: category.category_name,
+        name: category.cod_category,
       }));
 
       categoryOptions.unshift({ label: "Todos", value: "0", placeholder: "Todos" }); // opción por defecto
