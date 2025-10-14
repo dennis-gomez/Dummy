@@ -33,6 +33,9 @@ function FuelLogPage() {
         handleEdit,
         handleDelete, 
         handleReactivate,
+
+        handleSort,
+        sortConfig
     } = useFuelLogs();
 
     return(
@@ -115,6 +118,9 @@ function FuelLogPage() {
                 searchField={searchField}
                 setSearchField={setSearchField}
                 fuelTypes={fields.find(f => f.name === "fuel_log_type_item_code")?.options || []}
+
+                onSort={handleSort}
+                sortConfig={sortConfig}
             />
             </div>
         </>

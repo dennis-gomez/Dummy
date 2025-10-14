@@ -21,6 +21,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import SortIcon from '@mui/icons-material/Sort';
 import ReactivationModal from "../molecules/reactivationModal";
 
 function FuelLogsTable({
@@ -46,6 +47,9 @@ function FuelLogsTable({
     searchField,
     setSearchField,
     fuelTypes,
+
+    onSort, 
+    sortConfig
 }) {
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
@@ -116,6 +120,10 @@ function FuelLogsTable({
         if (result.isConfirmed) {
             await onDelete(id);
         }
+    };
+
+    const toggleSort = () => {
+        onSort("fuel_log_date");
     };
 
     const searchInputClass = "w-full sm:w-48 h-12 px-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm";
@@ -251,7 +259,27 @@ function FuelLogsTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Vehículo</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Ruta</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Fecha</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                        Fecha
+                        <button 
+                            onClick={() => toggleSort()} 
+                            title={`Ordenar ${sortConfig.order === "ASC" ? "descendente" : "ascendente"}`}
+                        >
+                            <SortIcon
+                                fontSize="small"
+                                sx={{
+                                    color: "white",
+                                    cursor: "pointer",
+                                    transition: "0.2s",
+                                    transform: sortConfig.order === "DESC" ? "rotate(180deg)" : "rotate(0deg)",
+                                    "&:hover": {
+                                        opacity: 0.7,
+                                        transform: `scale(1.1) ${sortConfig.order === "DESC" ? "rotate(180deg)" : "rotate(0deg)"}`
+                                    }
+                                }}
+                            />
+                        </button>
+                    </th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Combustible</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Cantidad</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Precio</th>
