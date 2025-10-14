@@ -23,7 +23,7 @@ const orderPage = () => {
     avaliableProductsChecks,
     fetchAvaliableProducts,
     useFullFields,
-fetchAvaliableProductsInOrder,
+    fetchAvaliableProductsInOrder,
     order,
     orderDetails,
     suppliers,
@@ -38,6 +38,8 @@ fetchAvaliableProductsInOrder,
 
     handleEditOrder,
     handleEditOrderDetail,
+    handleDeleteOrderDetail,
+    handleDeleteOrder,
 
   } = useOrder();
 
@@ -98,6 +100,8 @@ fetchAvaliableProductsInOrder,
           headers={offices}
           onEditOrder={handleEditOrder}
           onEditDetail={handleEditOrderDetail}
+          onDeleteOrder={handleDeleteOrder}
+          onDeleteDetail={handleDeleteOrderDetail}
           setAddDetailToOrder={creatingDetail}
           deleteGuaranteOrReactivated={deleteGuaranteOrReactivated}
         />

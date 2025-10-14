@@ -38,3 +38,30 @@ export const getAvaliableProductsInOrder = async (orderId, filter = "0", value =
         throw error;
     }
 };
+
+export const getOrderDetailsByOrderId = async (orderId) => {
+    try {
+        const res = await axios.get(`${API_URL}/by-order/${orderId}`, {
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+export const deleteOrderDetail = async (cod_order_detail) => {
+    try {
+        const res = await axios.delete(`${API_URL}/delete`, {
+            data: { cod_order_detail },
+            headers: {
+                "Content-Type": "application/json"
+            },
+        });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
+};
