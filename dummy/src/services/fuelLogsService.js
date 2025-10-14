@@ -5,10 +5,10 @@ const API_URL = "http://localhost:3000/fuel-logs/";
 /**
  * Obtener todos los registros de combustible inactivos
  */
-export const getAllFuelLogs = async (page = 1, limit = 10) => {
+export const getAllFuelLogs = async (page = 1, limit = 10, sortField = "fuel_log_date", sortOrder = "DESC") => {
     try {
         const response = await axios.get(API_URL, {
-            params: { page, limit },
+            params: { page, limit, sortField, sortOrder },
             headers: {
                 "Content-Type": "application/json"
             },
@@ -22,10 +22,10 @@ export const getAllFuelLogs = async (page = 1, limit = 10) => {
 /**
  * Obtener solo registros de combustible activos
  */
-export const getActiveFuelLogs = async (page = 1, limit = 10) => {
+export const getActiveFuelLogs = async (page = 1, limit = 10, sortField = "fuel_log_date", sortOrder = "DESC") => {
     try {
         const response = await axios.get(API_URL + "active", {
-            params: { page, limit },
+            params: { page, limit, sortField, sortOrder },
             headers: {
                 "Content-Type": "application/json"
             },
@@ -39,10 +39,10 @@ export const getActiveFuelLogs = async (page = 1, limit = 10) => {
 /**
  * Buscar registros por caracteristica
  */
-export const findFuelLogs = async (vehicleId, feature, text, page = 1, limit = 10) => {
+export const findFuelLogs = async (vehicleId, feature, text, page = 1, limit = 10,  sortField = "fuel_log_date", sortOrder = "DESC") => {
     try {
         const response = await axios.get(API_URL + "find", {
-            params: { vehicleId, feature, text, page, limit },
+            params: { vehicleId, feature, text, page, limit, sortField, sortOrder },
             headers: {
                 "Content-Type": "application/json"
             },

@@ -31,6 +31,11 @@ export const useFuelLogs = () => {
     const [loading, setLoading] = useState(false); //manejo de muestra de cargado
     const [error, setError] = useState(null); // manejo de errores
 
+    const [sortConfig, setSortConfig] = useState({
+        field: "fuel_log_date",
+        order: "DESC"
+    });
+
     const fields = [
         { name: "cod_vehicle", placeholder: "Vehículos", required: true, type: "select", options: activeVehiclesItems, width: 780},
         { name: "fuel_log_route", placeholder: "Ruta", required: true, type: "textarea", width: 780},
@@ -77,22 +82,25 @@ export const useFuelLogs = () => {
     };
 
     // Listado de registros de combustibles
-    const fetchFuelLogs = async (vehicleId = "", field = "", text = "", currentPage = page) => {
+    const fetchFuelLogs = async (vehicleId = "", field = "", text = "", currentPage = page, customSortConfig = null) => {
         try {
             setLoading(true);
             let response;
+            const currentSortConfig = customSortConfig || sortConfig;
+
             if (text === "Activos" || (vehicleId === "Todos" && !String(text).trim()) ){
-                response = await getActiveFuelLogs(currentPage, pageSize);
+                response = await getActiveFuelLogs(currentPage, pageSize, currentSortConfig.field, currentSortConfig.order);
             } else if (text === "Desactivados" ) {
-                response = await getAllFuelLogs(currentPage, pageSize);
+                response = await getAllFuelLogs(currentPage, pageSize, currentSortConfig.field, currentSortConfig.order);
                 setError(null);
             } else {
-                response = await findFuelLogs(vehicleId, field, text, currentPage, pageSize);
+                response = await findFuelLogs(vehicleId, field, text, currentPage, pageSize, currentSortConfig.field, currentSortConfig.order);
                 setError(null);
             }
             setPage(currentPage);
             setFuelLogs(response.data.data);
             setTotalPages(response.data.totalPages || 1);
+            setError(null);
         } catch (error) {
             setFuelLogs(null); // si no existe registros con los criterios esperados, se elimina lista para forzar a volver a listar
             const message = error.response?.data?.message || "Error al obtener los registros.";
@@ -100,6 +108,14 @@ export const useFuelLogs = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSort = async (field = "fuel_log_date", order = null) => {
+        const newOrder = order || (sortConfig.field === field && sortConfig.order === "ASC" ? "DESC" : "ASC");
+        const newSortConfig = { field, order: newOrder };
+
+        setSortConfig(newSortConfig);
+        await fetchFuelLogs(appliedVehicle, appliedField, appliedText, 1, newSortConfig);
     };
 
     //manejo de filtrado
@@ -259,7 +275,10 @@ export const useFuelLogs = () => {
         handleSubmit,
         handleEdit,
         handleDelete, 
-        handleReactivate
+        handleReactivate, 
+
+        handleSort,
+        sortConfig
     };
 
 } 
