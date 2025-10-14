@@ -6,10 +6,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 import InputValidated from "../atoms/inputValidated";
 
-const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered }) => {
+const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered, desactivated=false }) => {
   const [editingIdx, setEditingIdx] = useState(null);
   const [editData, setEditData] = useState({});
   const [editErrors, setEditErrors] = useState({}); // Estado de errores
+
+  console.log(items)
 
   const handleEditClick = (item, idx) => {
     setEditingIdx(idx);
@@ -156,7 +158,7 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
                     ))}
                     <td className="py-4 px-6 align-middle text-center">
                       <div className="flex justify-center space-x-3">
-                        {item.supply_is_active &&(
+                        {item.supply_is_active===true &&(
                         <button
                           type="button"
                           onClick={() => handleEditClick(item, index)}
@@ -165,7 +167,7 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered 
                           <EditIcon />
                         </button>
                          )}
-                    {item.supply_is_active && (
+                    {item.supply_is_active===true && (
   renderDelete ? (
     renderDelete(item, index)
   ) : (

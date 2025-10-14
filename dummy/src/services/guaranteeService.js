@@ -3,7 +3,7 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_BASE_URL + "/guarantees";
 
 // 🔹 Listar todas las garantías (no vencidas)
-export const getAllGuarantees = async (page = 1, limit = 2, sortOrder = "") => {
+export const getAllGuarantees = async (page = 1, limit = 5, sortOrder = "") => {
 
 
   const res = await axios.get(`${API_URL}/`, {
@@ -20,7 +20,7 @@ export const getGuaranteeById = async (id) => {
 };
 
 // 🔹 Buscar garantías por término
-export const findGuarantees = async (feature, searchTerm, page = 1, limit = 10, sortOrder = "") => {
+export const findGuarantees = async (feature, searchTerm, page = 1, limit = 5, sortOrder = "") => {
   const res = await axios.get(`${API_URL}/search`, {
     params: { feature, searchTerm, page, limit, sortOrder },
   });
