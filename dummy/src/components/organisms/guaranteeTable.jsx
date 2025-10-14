@@ -315,8 +315,9 @@ const deleteGuaranteOrReactivated = (id,status) => {
                             <EditIcon />
                           </button>
                           <ModalElimination
-                            message={`Eliminar ${singularName}`}
+                            message={`Desactivar ${singularName}`}
                             onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee,4)}
+                            confirText="Desactivar"
                           />
                         </div>
                         ):(

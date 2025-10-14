@@ -45,7 +45,7 @@ export const useGuarantees = () => {
   const [totalPages, setTotalPages] = useState(1); // Estado para total de páginas
   const [currentPage, setCurrentPage] = useState(1); // Estado para página actual
 
-const handleSortByExpirationDate = (searchFeature,searchText,currentPage,limit=2,options,order) => {
+const handleSortByExpirationDate = (searchFeature,searchText,currentPage,limit=5,options,order) => {
 
 if (options==1) {
   // actualizar el estado para render
@@ -84,7 +84,7 @@ if (options==1) {
 
 
 { name: "guarantee_currency", placeholder: "Moneda", label: "Moneda", type: "select", editable: true, grid: 4, width: 150, options: CURRENCY_OPTIONS },
-{ name: "guarantee_alert_time_item_code", placeholder: "Alerta", label: "Alerta", type: "select", editable: true, grid: 4, width: 150, options: alertItems },
+{ name: "guarantee_alert_time_item_code", placeholder: "Alerta(días)", label: "Alerta(días)", type: "select", editable: true, grid: 4, width: 150, options: alertItems },
 { name: "guarantee_amount", placeholder: "Monto", label: "Monto", type: "number", editable: true, grid: 4, width: 225 },
 { name: "guarantee_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 225, options: STATUS_OPTIONS },
 { name: "guarantee_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 225, options: CATEGORY_OPTIONS },
@@ -114,7 +114,7 @@ if (options==1) {
     }));
 
   // Funciones fetch, add, edit, delete, search (igual que tu código original)
-  const fetchGuarantees = async (page = 1, limit = 2, searchFeature = "", searchText = "", sortOrder = "") => {
+  const fetchGuarantees = async (page = 1, limit = 5, searchFeature = "", searchText = "", sortOrder = "") => {
   try {
     setLoading(true);
 
@@ -126,7 +126,7 @@ if (options==1) {
       resp = await findGuarantees(searchFeature, searchText, page, limit, sortOrder);
     } else {
       // 👇 Llama al listado general con paginación
-      resp = await getAllGuarantees(page, 2, sortOrder);
+      resp = await getAllGuarantees(page, 5, sortOrder);
     }
 
     // 👇 Ajusta según lo que retorne tu backend (count, rows)
@@ -168,7 +168,7 @@ if (options==1) {
       ModalAlert("Error", "Error al obtener items", "error");
     }
   };
-const handleSearchGuarantees = async (feature, text, page = 1, limit = 2) => {
+const handleSearchGuarantees = async (feature, text, page = 1, limit = 5) => {
   try {
     setLoading(true);
 

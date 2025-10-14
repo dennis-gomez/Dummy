@@ -48,7 +48,7 @@ const GuaranteePage = () => {
 
           <Form
   fields={fields.filter(f => f.name !== "cod_guarantee" && f.name !== "guarantee_status")}
-  formTitle="Agregar Nueva Garantía"
+  formTitle="Agregar Garantía"
   onSubmit={handleAddGuarantee}
   titleBtn="Guardar Garantía"
 />
