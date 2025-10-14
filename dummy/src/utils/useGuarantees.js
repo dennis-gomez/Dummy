@@ -84,7 +84,7 @@ if (options==1) {
 
 
 { name: "guarantee_currency", placeholder: "Moneda", label: "Moneda", type: "select", editable: true, grid: 4, width: 150, options: CURRENCY_OPTIONS },
-{ name: "guarantee_alert_time_item_code", placeholder: "Alerta(días)", label: "Alerta(días)", type: "select", editable: true, grid: 4, width: 150, options: alertItems },
+{ name: "guarantee_alert_time_item_code", placeholder: "Alerta(Días)", label: "Alerta(Días)", type: "select", editable: true, grid: 4, width: 150, options: alertItems },
 { name: "guarantee_amount", placeholder: "Monto", label: "Monto", type: "number", editable: true, grid: 4, width: 225 },
 { name: "guarantee_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 225, options: STATUS_OPTIONS },
 { name: "guarantee_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 225, options: CATEGORY_OPTIONS },

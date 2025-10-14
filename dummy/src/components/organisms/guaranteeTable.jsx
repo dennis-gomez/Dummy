@@ -317,7 +317,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
                           <ModalElimination
                             message={`Desactivar ${singularName}`}
                             onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee,4)}
-                            confirText="Desactivar"
+                            confirmText="Desactivar"
                           />
                         </div>
                         ):(

@@ -98,7 +98,7 @@ export const useMedicKits = () => {
       } else {
         const medicKitsResp = await searchMedicKitsByFeature(text, feature);
         
-        if(feature==="medic_kit_is_active" && text===1){
+        if(feature==="medic_kit_is_active" && text===1 || text===""){
         setSearchActive(true);
         }else if(feature==="medic_kit_is_active" && text===0){
           setSearchActive(false);
@@ -121,6 +121,7 @@ export const useMedicKits = () => {
       ModalAlert("Error", "Error al buscar botiquines o suplementos.", "error");
     } finally {
       setIsLoading(false);
+      setSearchTerm("");
     }
   };
 
@@ -208,7 +209,7 @@ export const useMedicKits = () => {
     try {
      
       await updateSupply(formData);
-      const updatedSupplies = await getSuppliesById(medicKitSelectedId);
+      const updatedSupplies = await getSuppliesById(medicKitSelectedId,searchActive);
       setSuppliesList(updatedSupplies);
       ModalAlert("Éxito", "Suplemento actualizado", "success");
     } catch (err) {
@@ -249,7 +250,7 @@ export const useMedicKits = () => {
     try {
      
       await deleteSupply(medicKitSelectedId, cod_supply);
-      const updatedSupplies = await getSuppliesById(medicKitSelectedId);
+      const updatedSupplies = await getSuppliesById(medicKitSelectedId,searchActive);
       setSuppliesList(updatedSupplies);
       ModalAlert("Éxito", "Suplemento eliminado", "success");
     } catch (err) {
