@@ -1,4 +1,4 @@
-import useTableOptionServices from "/src/utils/useTableOptionServices";
+import useTableOptionServices from "../../utils/useTableOptionServices";
 import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";

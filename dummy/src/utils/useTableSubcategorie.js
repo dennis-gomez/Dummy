@@ -59,6 +59,8 @@ export default function useTableSubcategorie(items, onAddItem, onEditItem) {
       return;
     }
 
+console.log("Editing item:", { cod_category, cod_service, cod_item, trimmed });
+
     await onEditItem(cod_category, cod_service, cod_item, trimmed);
     setEditingId(null);
     setEditValue("");
