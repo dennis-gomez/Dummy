@@ -10,13 +10,13 @@ import InventaryTable from "./inventaryTable";
 import ModalAlert from "../molecules/modalAlert";
 
 function FormInventory({
-  fields,
+  fields, //primeros campos de arriba
   onSubmit,
   values,
-  checks,
-  fetchAvaliableProducts,
+  checks, //checkboxes
+  fetchAvaliableProducts, 
   headers,
-  useFullFields = [],
+  useFullFields = [], //segundos campos del medio
   tittle = "Agregar productos al inventario",
   warinig ="No hay productos disponibles para agregar al inventario.",
   addDetailToOrder = false,
@@ -294,6 +294,8 @@ const handleSaveSelected = () => {
                 );
               })}
             </Grid>
+
+
 {useFullFields.length > 0 && (
   <Box sx={{ mt: 3, mb: 2 }}>
     {useFullFields.map((field, index) =>
