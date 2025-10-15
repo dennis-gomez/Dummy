@@ -313,8 +313,7 @@ fetchOrderDetails();
   const handleAddInventory = async (newInventory, orderData) => {
     await addOrder(orderData, newInventory);
     setIsCreatingInventory(false);
-    fetchOrders();
-    fetchOrderDetails();
+   fetchData();
     ModalAlert("Éxito", "Inventario agregado exitosamente.", "success");
 
   }
@@ -326,8 +325,7 @@ fetchOrderDetails();
       setIsCreatingInventory(false);
       setAddDetailToOrder(false);
       setOrderIdForDetails(null);
-      fetchOrderDetails();
-      fetchOrders();
+      fetchData();
 
     } catch (error) {
       console.error("Error adding order details:", error);
