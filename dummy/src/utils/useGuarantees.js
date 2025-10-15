@@ -50,6 +50,7 @@ const handleSortByExpirationDate = (searchFeature,searchText,currentPage,limit=5
 if (options==1) {
   // actualizar el estado para render
   fetchGuarantees(currentPage, limit, searchFeature, searchText, order); // usar el nuevo valor
+  console.log("Ordenado por fecha de expiración:", order);
 } else {
   handleSearchGuarantees(searchFeature, searchText, currentPage, limit, order); // usar el nuevo valor
 }
@@ -187,14 +188,15 @@ const handleSearchGuarantees = async (feature, text, page = 1, limit = 5) => {
     const guarantees = resp.guarantees || resp.rows || [];
     const totalPages = resp.totalPages || 1;
 
+    console.log("longitud de garantías encontradas:", guarantees.length);
+
     if (guarantees.length === 0) {
       ModalAlert("Información", "No se encontraron garantías con ese término", "info");
-      setGuaranteesList([]);
-      setTotalPages(1);
-      setCurrentPage(1);
+    
       return;
     }
 
+    console.log("llego hasta aqui")
     setGuaranteesList(guarantees);
     setTotalPages(totalPages);
     setCurrentPage(resp.page || page);

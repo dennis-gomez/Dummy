@@ -205,7 +205,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
             onClick={() => {
               setTrueSearchText(searchText);
               value=searchText
-              handleSortByExpirationDate(searchFeature,value,1,2,1,!valueOrder ? "ASC" : "")
+              handleSortByExpirationDate(searchFeature,value,1,2,2,!valueOrder ? "ASC" : "")
             
             }
             } // 🟢 al buscar, mantiene orden actual
