@@ -20,7 +20,7 @@ const navConfig = [
     label: 'Mantenimiento Preventivo',
     sub: [
       { label: 'Gestion del Edificio', path: '/mantenimiento_edificio/gestion' },
-      { label: 'Historial de Mantenimiento', path: '/mantenimiento_edificio/historial' },
+      
     ],
   },
   {
@@ -35,9 +35,7 @@ const navConfig = [
     label: 'Caja Chica',
     sub: [
        { label: 'Gestión de Cajas Chicas', path: '/caja/gestion' },
-      { label: 'Fondos', path: '/caja/fondos' },
-      { label: 'Gastos', path: '/caja/gastos' },
-      { label: 'Reportes', path: '/caja/reportes' },
+     
     ],
   },
   {
@@ -62,14 +60,14 @@ const navConfig = [
       { label: 'Cuadro de Resumen', path: '/garantias/resumen' },
     ],
   },
-  {
+  /*{
     label: 'TI',
     sub: [
       { label: 'Usuarios', path: '/ti/usuarios' },
       { label: 'Roles y Permisos', path: '/ti/roles' },
       { label: 'Configuraciones del Sistema', path: '/ti/config' },
     ],
-  },
+  },*/
   {
     label: 'Catálogo',
     sub: [{ label: 'Gestionar Catálogo', path: '/catalogo/gestionar' }],
