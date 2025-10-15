@@ -43,7 +43,7 @@ export const useFuelLogs = () => {
         { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 382},
         { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", width: 250},
         { name: "fuel_log_price", placeholder: "Precio", type: "number", width: 250},
-        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", width: 250}, 
+        { name: "fuel_log_final_km", placeholder: "Kilometraje Final", type: "number", width: 250}, 
     ];
 
     const editFields = [
@@ -53,7 +53,7 @@ export const useFuelLogs = () => {
         { name: "fuel_log_type_item_code", placeholder: "Tipo de Combustible", required: true, type: "select", options: fuelTypes, width: 200},
         { name: "fuel_log_quantity", placeholder: "Cantidad en Litros", type: "number", width: 150},
         { name: "fuel_log_price", placeholder: "Precio", type: "number", width: 150},
-        { name: "fuel_log_final_km", placeholder: "Kilometraje Recorrido", type: "number", width: 200},
+        { name: "fuel_log_final_km", placeholder: "Kilometraje Final", type: "number", width: 200},
     ];
 
     // Estados para filtrado

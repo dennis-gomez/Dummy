@@ -42,7 +42,7 @@ export default function useTableSubcategorie(items, onAddItem, onEditItem) {
     if (!trimmed) return;
 
     // evitar guardar si no hubo cambios
-    if (trimmed.toLowerCase() === (items.find(i => i.cod_item === cod_item)?.item_name || "").toLowerCase()) {
+    if (trimmed === (items.find(i => i.cod_item === cod_item)?.item_name || "").trim()) {
       handleCancel();
       return;
     }
