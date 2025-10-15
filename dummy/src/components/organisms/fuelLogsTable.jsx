@@ -285,7 +285,7 @@ function FuelLogsTable({
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Precio</th>
                     {fuelLogs.some((log) => log.fuel_log_is_active) ? (
                         <>
-                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Km Recorridos</th>
+                        <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Kilometraje Final</th>
                         <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl">Acciones</th>
                         </>
                     ):(
