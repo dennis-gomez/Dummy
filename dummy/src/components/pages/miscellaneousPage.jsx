@@ -85,6 +85,7 @@ function MiscellaneousPage() {
                   onEditItem={handleEditItem}
                   onAddItem={handleAddItem}
                   tableRef={itemsRef}
+                  handleEditClick={handleEditItem}
                 />
               </div>
             </div>

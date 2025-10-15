@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { tableValidator } from "/src/utils/tableValidator"; 
+import { tableValidator } from "../utils/tableValidator"; 
 import Swal from "sweetalert2"; 
 
 export default function useTableOptionServices(
@@ -45,11 +45,13 @@ export default function useTableOptionServices(
 
   // Guardar edicion con validación
   const saveEdit = async (cat) => {
+
+
     const trimmed = editValue.trim();
     if (!trimmed) return;
 
     // Evitar cambios sin modificaciones
-    if (trimmed.toLowerCase() === (cat.category_name || "").trim().toLowerCase()) {
+    if (trimmed === (cat.category_name || "").trim()) {
       cancelEdit();
       return;
     }
@@ -70,6 +72,7 @@ export default function useTableOptionServices(
       });
       return;
     }
+    console.log("Editing category:", { cod_category: cat.cod_category, cod_service: cat.cod_service, trimmed });
 
     await updateCategory(cat.cod_category, cat.cod_service, trimmed);
     cancelEdit();
