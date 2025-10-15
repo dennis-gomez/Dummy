@@ -65,7 +65,11 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
   };
 
   const handleAddItem = () => {
-    setSubformData((prev) => [...prev, newItem]);
+    setSubformData((prev) => [
+  ...prev,
+  { ...newItem, supply_is_active: true }
+]);
+
     setNewItem(emptySubform);
     setSubInputErrors({});
   };
@@ -191,6 +195,7 @@ function FormWithDetails({ fields, subfields, title, onSubmit, titleBtn, subTitt
             items={subformData}
             onDelete={handleDeleteItem}
             onEdit={handleEditItem}
+            desactivated={false}
           />
         )}
       </form>

@@ -198,12 +198,14 @@ export default function Row({
                 onEdit={(idx, data) => onEditSupply(data)}
                 renderDelete={(item) => (
                   <ModalElimination
-                    message={"¿Quieres eliminar este suplemento?"}
+                    message={"¿Quieres desactivar este suplemento?"}
                     onClick={() => onDeleteSupply(item.cod_supply)}
+                    confirmText="Desactivar"
                   />
                 )}
                 centered
                 inputStyle={whiteInputStyle}
+                desactivated={false}
               />
             </div>
           </td>
