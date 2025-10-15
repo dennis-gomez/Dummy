@@ -163,7 +163,7 @@ export default function Row({
                 <ModalElimination
                   message={"¿Quieres desactivar este kit médico?"}
                   onClick={() => onDeleteMedicKit(id, 0)}
-                  confirmText="Desactivar"
+                  confirmText="Desactivar" 
                 />
 ) : (
                 <ReactivationModal
