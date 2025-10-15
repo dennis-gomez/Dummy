@@ -17,7 +17,7 @@ function FormInventory({
   fetchAvaliableProducts, 
   headers,
   useFullFields = [], //segundos campos del medio
-  tittle = "Agregar productos al inventario",
+  tittle = "Agregar al inventario",
   warinig ="No hay productos disponibles para agregar al inventario.",
   addDetailToOrder = false,
   validations = true,
@@ -441,7 +441,7 @@ const handleSaveSelected = () => {
                 type="button"
                 onClick={handleAdd}
                  disabled={desactivateFinalButton()}
-                sx={{ minWidth: 220 }}
+                sx={{ minWidth: 253.99 }}
               />
             </Box>
           </form>
