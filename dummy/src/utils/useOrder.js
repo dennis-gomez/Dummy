@@ -285,7 +285,7 @@ fetchOrderDetails();
 
 
   const fields = [
-    { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
+    { name: "inventory_product_cod_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
     { name: "seecker", placeHolder: "Buscar Producto", label: "Buscar Producto", type: "seeker", editable: true, grid: 4, width: 600, required: false },
   ];
 

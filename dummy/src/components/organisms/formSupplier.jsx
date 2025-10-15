@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidatedSupplier";
+import ModalAlert from "../molecules/modalAlert";
 
 function SupplierForm({ onAddSupplier, onCancel }) {
   const [formData, setFormData] = useState({
@@ -34,7 +35,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
         return "";
       case "supplier_phone":
         if (!value.trim()) return "El teléfono es obligatorio";
-        const phoneRegex = /^[0-9\-+()]{8,15}$/; // solo números, +, -, ()
+        const phoneRegex = /^[0-9\-+()]{8,15}$/; 
         if (!phoneRegex.test(value)) return "Formato de teléfono inválido";
         return "";
       case "supplier_email":
@@ -47,6 +48,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
     }
   };
 
+  // Manejar cambios en inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -56,6 +58,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
     setErrors((prev) => ({ ...prev, [name]: error }));
   };
 
+  // Validar todo el formulario
   const validateForm = () => {
     const tempErrors = {};
     Object.keys(formData).forEach((key) => {
@@ -66,6 +69,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
     return Object.keys(tempErrors).length === 0;
   };
 
+  // Manejar envío
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
@@ -76,9 +80,38 @@ function SupplierForm({ onAddSupplier, onCancel }) {
         supplier_phone: formData.supplier_phone.trim(),
         supplier_is_active: Number(formData.supplier_is_active),
       };
-      onAddSupplier(processedData);
+
+      try {
+        onAddSupplier(processedData);
+        ModalAlert("Éxito", "Proveedor agregado correctamente", "success", 2000);
+
+        // Solo limpiar si la acción fue exitosa
+        setFormData({
+          supplier_name: "",
+          supplier_date: "",
+          supplier_phone: "",
+          supplier_email: "",
+          supplier_is_active: 1,
+        });
+        setErrors({
+          supplier_name: "El nombre es obligatorio",
+          supplier_date: "La fecha es obligatoria",
+          supplier_phone: "El teléfono es obligatorio",
+          supplier_email: "El correo es obligatorio",
+        });
+      } catch (err) {
+        ModalAlert("Error", err.message || "No se pudo agregar el proveedor", "error", 3000);
+        // No limpiar formData ni errors
+      }
     }
   };
+
+  // Determinar si el botón de guardar debe estar deshabilitado
+  const isSaveDisabled = Object.values(errors).some((err) => err) || 
+                         !formData.supplier_name || 
+                         !formData.supplier_date || 
+                         !formData.supplier_phone || 
+                         !formData.supplier_email;
 
   return (
     <Box
@@ -108,7 +141,6 @@ function SupplierForm({ onAddSupplier, onCancel }) {
                   placeholder="Nombre del Proveedor"
                   label="Nombre del Proveedor"
                   error={errors.supplier_name}
-                  validationRules={{ noNumbers: true }}
                 />
               </Grid>
               <Grid item>
@@ -158,7 +190,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
           {onCancel && (
             <Button type="button" text="Cancelar" color="error" onClick={onCancel} />
           )}
-          <Button type="submit" text="Guardar Proveedor" color="primary" />
+          <Button type="submit" text="Guardar Proveedor" color="primary" disabled={isSaveDisabled} />
         </Box>
       </form>
     </Box>
