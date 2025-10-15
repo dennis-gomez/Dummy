@@ -65,13 +65,13 @@ function TableOptionServices({
     }
   };
 
-  const handleValidatedDelete = async (codCat, codServ) => {
+  const handleValidatedDeactivate = async (codCat, codServ) => {
     const result = await Swal.fire({
-      title: "¿Quieres eliminar esta categoría?",
+      title: "¿Quieres desactivar esta categoría?",
       text: "No podrás deshacer esta acción",
-      icon: "error",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Sí, desactivar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -79,54 +79,55 @@ function TableOptionServices({
 
     if (result.isConfirmed) {
       await remove(codCat, codServ);
-      Swal.fire("Eliminado", "La categoría fue borrada", "success");
+      Swal.fire("Desactivada", "La categoría fue desactivada", "success");
     }
   };
 
   return (
     <div className={`${isVisible ? "block" : "hidden"} mb-6`}>
-    {/* HEADER con input, botones y tooltip */}
-<div className="mb-6 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between gap-4">
-  <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
-    <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
-      Nueva categoría:
-    </label>
-    <input
-      type="text"
-      placeholder="Escribe una categoría"
-      value={name}
-      onChange={(e) => setName(e.target.value)}
-      onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
-      className="border bg-white border-gray-300 rounded-lg py-2 px-4 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-    />
-    <button
-      onClick={handleValidatedAdd}
-      disabled={!name.trim()}
-      className={`rounded-lg py-2 px-5 text-white font-semibold transition w-full sm:w-auto ${
-        name.trim()
-          ? "bg-blue-600 hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-blue-300"
-          : "bg-blue-600 opacity-50 cursor-not-allowed"
-      }`}
-    >
-      Agregar
-    </button>
-    <button
-      onClick={onClose}
-      className="rounded-lg py-2 px-5 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer border-0 focus:ring-4 focus:ring-blue-300 w-full sm:w-auto"
-    >
-      Cerrar
-    </button>
-  </div>
+      {/* HEADER con input, botones y tooltip */}
+      <div className="mb-6 flex flex-col sm:flex-row sm:flex-wrap items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto">
+          <label className="text-sm font-medium text-gray-700 whitespace-nowrap">
+            Nueva categoría:
+          </label>
+          <input
+            type="text"
+            placeholder="Escribe una categoría"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleValidatedAdd()}
+            className="border bg-white border-gray-300 rounded-lg py-2 px-4 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
+          <button
+            onClick={handleValidatedAdd}
+            disabled={!name.trim()}
+            className={`rounded-lg py-2 px-5 text-white font-semibold transition w-full sm:w-auto ${
+              name.trim()
+                ? "bg-blue-600 hover:bg-blue-700 cursor-pointer focus:ring-4 focus:ring-blue-300"
+                : "bg-blue-600 opacity-50 cursor-not-allowed"
+            }`}
+          >
+            Agregar
+          </button>
+          <button
+            onClick={onClose}
+            className="rounded-lg py-2 px-5 bg-blue-600 hover:bg-blue-700 text-white cursor-pointer border-0 focus:ring-4 focus:ring-blue-300 w-full sm:w-auto"
+          >
+            Cerrar
+          </button>
+        </div>
 
-  {/* Tooltip informativo */}
-  <div className="flex justify-center sm:justify-start mt-2 sm:mt-0 w-full sm:w-auto">
-    <InfoTooltip
-      message="Aquí puedes gestionar las categorías asociadas a un servicio. Puedes agregar nuevas, editarlas o eliminarlas según sea necesario."
-      position="left"
-      mobilePosition="bottom"
-    />
-  </div>
-</div>
+        {/* Tooltip informativo */}
+        <div className="flex justify-center sm:justify-start mt-2 sm:mt-0 w-full sm:w-auto">
+          <InfoTooltip
+            message="Aquí puedes gestionar las categorías asociadas a un servicio. Puedes agregar nuevas, editarlas o desactivarlas según sea necesario."
+            position="left"
+            mobilePosition="bottom"
+          />
+        </div>
+      </div>
+
       {/* TABLA RESPONSIVE */}
       <div className="overflow-x-auto shadow-lg rounded-xl max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <table
@@ -165,9 +166,15 @@ function TableOptionServices({
                 const isEditing = editingId === sub.cod_category;
                 const isSelected = selectedCatCod === sub.cod_category;
 
+                const handleRowClick = (e) => {
+                  if (e.target.closest("button")) return; // evitar que los botones disparen selección
+                  onSelectSub(sub.cod_category, sub.cod_service);
+                };
+
                 return (
                   <tr
                     key={sub.cod_category}
+                    onClick={handleRowClick}
                     className={`transition-all duration-200 even:bg-gray-50 ${
                       isSelected ? "bg-blue-100" : "hover:bg-blue-50"
                     }`}
@@ -178,12 +185,7 @@ function TableOptionServices({
                     <td className="py-4 px-4 text-center text-xs sm:text-sm md:text-base">
                       {sub.cod_category}
                     </td>
-                    <td
-                      onClick={() =>
-                        !isEditing && onSelectSub(sub.cod_category, sub.cod_service)
-                      }
-                      className="py-4 px-4 text-center cursor-pointer select-none text-gray-700 text-xs sm:text-sm md:text-base"
-                    >
+                    <td className="py-4 px-4 text-center text-xs sm:text-sm md:text-base">
                       {isEditing ? (
                         <input
                           type="text"
@@ -225,10 +227,10 @@ function TableOptionServices({
                             </button>
                             <button
                               onClick={() =>
-                                handleValidatedDelete(sub.cod_category, sub.cod_service)
+                                handleValidatedDeactivate(sub.cod_category, sub.cod_service)
                               }
                               className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-                              aria-label="Eliminar categoría"
+                              aria-label="Desactivar categoría"
                             >
                               <DeleteIcon fontSize="small" />
                             </button>

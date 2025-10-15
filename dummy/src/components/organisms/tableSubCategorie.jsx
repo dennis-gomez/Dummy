@@ -95,13 +95,13 @@ function TableSubcategorie({
     }
   };
 
-  const handleValidatedDelete = async (codCat, codServ, codItem) => {
+  const handleValidatedDeactivate = async (codCat, codServ, codItem) => {
     const result = await Swal.fire({
-      title: "¿Quieres eliminar este item?",
+      title: "¿Quieres desactivar este item?",
       text: "No podrás deshacer esta acción",
-      icon: "error",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
+      confirmButtonText: "Sí, desactivar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#dc2626",
       cancelButtonColor: "#9ca3af",
@@ -109,7 +109,7 @@ function TableSubcategorie({
 
     if (result.isConfirmed) {
       await onDeleteItem(codCat, codServ, codItem);
-      Swal.fire("Eliminado", "El item fue borrado", "success");
+      Swal.fire("Desactivado", "El item fue desactivado", "success");
     }
   };
 
@@ -151,7 +151,7 @@ function TableSubcategorie({
         {/* Tooltip informativo */}
         <div className="flex justify-center sm:justify-start mt-2 sm:mt-0 w-full sm:w-auto">
           <InfoTooltip
-            message="Aquí puedes agregar, editar o eliminar items asociados a una categoría y servicio. Usa los botones de acciones para gestionar cada item."
+            message="Aquí puedes agregar, editar o desactivar items asociados a una categoría y servicio. Usa los botones de acciones para gestionar cada item."
             position="left"
             mobilePosition="bottom"
           />
@@ -250,7 +250,7 @@ function TableSubcategorie({
                             </button>
                             <button
                               onClick={() =>
-                                handleValidatedDelete(det.cod_category, det.cod_service, det.cod_item)
+                                handleValidatedDeactivate(det.cod_category, det.cod_service, det.cod_item)
                               }
                               className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
                             >

@@ -1,40 +1,78 @@
 import { useState } from "react";
-import {
-  IconButton,
-  Tooltip,
-  TextField,
-  CircularProgress,
-} from "@mui/material";
+import { Tooltip, CircularProgress } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import CloseIcon from "@mui/icons-material/Close";
+import CancelIcon from "@mui/icons-material/Cancel";
 import ModalAlert from "../molecules/modalAlert";
 import ModalElimination from "../molecules/modalElimination";
+import InputValidated from "../atoms/inputValidatedSupplier";
 
 function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoading }) {
   const [editRowId, setEditRowId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [errors, setErrors] = useState({});
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "supplier_name":
+        if (!value.trim()) return "El nombre es obligatorio";
+        if (value.trim().length < 3) return "Debe tener al menos 3 caracteres";
+        return "";
+      case "supplier_phone":
+        if (!value.trim()) return "El teléfono es obligatorio";
+        const phoneRegex = /^[0-9\-+()]{8,15}$/;
+        if (!phoneRegex.test(value)) return "Formato de teléfono inválido";
+        return "";
+      case "supplier_email":
+        if (!value.trim()) return "El correo es obligatorio";
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) return "Correo inválido";
+        return "";
+      default:
+        return "";
+    }
+  };
 
   const handleEditClick = (supplier) => {
     setEditRowId(supplier.cod_supplier);
     setEditData({ ...supplier });
+    setErrors({});
   };
 
   const handleCancel = () => {
     setEditRowId(null);
     setEditData({});
+    setErrors({});
   };
 
-  const handleChange = (field, value) => {
-    setEditData((prev) => ({ ...prev, [field]: value }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setEditData((prev) => ({ ...prev, [name]: value }));
+
+    // Validación en tiempo real
+    const error = validateField(name, value);
+    setErrors((prev) => ({ ...prev, [name]: error }));
+  };
+
+  const validateForm = () => {
+    const tempErrors = {};
+    Object.keys(editData).forEach((key) => {
+      const error = validateField(key, editData[key]);
+      if (error) tempErrors[key] = error;
+    });
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
   };
 
   const handleSave = async () => {
+    if (!validateForm()) return;
+
     try {
       await onUpdateSupplier(editRowId, editData);
       ModalAlert("Éxito", "Proveedor actualizado correctamente", "success", 2000);
       setEditRowId(null);
       setEditData({});
+      setErrors({});
     } catch (error) {
       ModalAlert(
         "Error",
@@ -44,6 +82,7 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
       );
     }
   };
+
   if (isLoading) {
     return (
       <div className="flex items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
@@ -52,6 +91,7 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
       </div>
     );
   }
+
   if (suppliers.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
@@ -59,6 +99,7 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
       </div>
     );
   }
+
   return (
     <div className="overflow-x-auto rounded-xl shadow-lg">
       <table className="min-w-full table-auto">
@@ -79,53 +120,73 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
           {suppliers.map((supplier, index) => (
             <tr
               key={supplier.cod_supplier}
-              className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                } hover:bg-gray-100`}
+              className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
             >
               <td className="py-4 px-6 text-center font-medium">
                 {supplier.supplier_code || `PROV-${supplier.cod_supplier}`}
               </td>
-              <td className="py-4 px-6 text-center">
+
+              {/* Nombre */}
+              <td className="py-4 px-6 text-center min-w-[180px] sm:min-w-[200px]">
                 {editRowId === supplier.cod_supplier ? (
-                  <TextField
-                    size="small"
-                    value={editData.supplier_name || ""}
-                    onChange={(e) => handleChange("supplier_name", e.target.value)}
-                    sx={{ backgroundColor: "white", borderRadius: 1 }}
-                  />
+                  <div className="w-full">
+                    <InputValidated
+                      name="supplier_name"
+                      value={editData.supplier_name || ""}
+                      onChange={handleChange}
+                      placeholder="Nombre"
+                      label="Nombre"
+                      error={errors.supplier_name}
+                      sx={{ width: "100%" }}
+                    />
+                  </div>
                 ) : (
-                  supplier.supplier_name
+                  <span className="block truncate">{supplier.supplier_name}</span>
                 )}
               </td>
-              <td className="py-4 px-6 text-center">
+
+              {/* Teléfono */}
+              <td className="py-4 px-6 text-center min-w-[180px] sm:min-w-[200px]">
                 {editRowId === supplier.cod_supplier ? (
-                  <TextField
-                    size="small"
-                    value={editData.supplier_phone || ""}
-                    onChange={(e) => handleChange("supplier_phone", e.target.value)}
-                    sx={{ backgroundColor: "white", borderRadius: 1 }}
-                  />
+                  <div className="w-full">
+                    <InputValidated
+                      name="supplier_phone"
+                      value={editData.supplier_phone || ""}
+                      onChange={handleChange}
+                      placeholder="Teléfono"
+                      label="Teléfono"
+                      error={errors.supplier_phone}
+                      validationRules={{ phone: true, maxLength: 15 }}
+                      sx={{ width: "100%" }}
+                    />
+                  </div>
                 ) : (
-                  supplier.supplier_phone
+                  <span className="block truncate">{supplier.supplier_phone}</span>
                 )}
               </td>
+
+
+              {/* Correo */}
               <td className="py-4 px-6 text-center">
                 {editRowId === supplier.cod_supplier ? (
-                  <TextField
-                    size="small"
+                  <InputValidated
+                    name="supplier_email"
                     value={editData.supplier_email || ""}
-                    onChange={(e) => handleChange("supplier_email", e.target.value)}
-                    sx={{ backgroundColor: "white", borderRadius: 1 }}
+                    onChange={handleChange}
+                    placeholder="Correo"
+                    label="Correo"
+                    type="email"
+                    error={errors.supplier_email}
                   />
                 ) : (
                   supplier.supplier_email
                 )}
               </td>
+
+              {/* Fecha */}
               <td className="py-4 px-6 text-center">
                 {supplier.supplier_date
-                  ? new Date(
-                    supplier.supplier_date + "T00:00:00Z"
-                  )
+                  ? new Date(supplier.supplier_date + "T00:00:00Z")
                     .toLocaleDateString("es-CR", {
                       day: "2-digit",
                       month: "2-digit",
@@ -135,32 +196,37 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
                     .replace(/\//g, "-")
                   : "—"}
               </td>
+
               {/* Acciones */}
-              <td className="py-4 px-6 text-center flex gap-2 justify-center">
+              <td className="py-4 px-6 text-center flex gap-3 justify-center ">
                 {editRowId === supplier.cod_supplier ? (
                   <>
-                    <Tooltip title="Guardar">
-                      <IconButton onClick={handleSave} sx={{ color: "primary.main" }}>
-                        <SaveIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Cancelar">
-                      <IconButton onClick={handleCancel} sx={{ color: "error.main" }}>
-                        <CloseIcon />
-                      </IconButton>
-                    </Tooltip>
+                    <button
+                      onClick={handleSave}
+                      className="bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center hover:bg-blue-700"
+                    >
+                      <SaveIcon className="mr-1" fontSize="small" /> Guardar
+                    </button>
+
+                    <button
+                      onClick={handleCancel}
+                      className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
+                    >
+                      <CancelIcon className="mr-1" fontSize="small" /> Cancelar
+                    </button>
                   </>
                 ) : (
                   <>
-                    <Tooltip title="Editar">
-                      <IconButton
+                    <Tooltip title="Editar proveedor">
+                      <button
                         onClick={() => handleEditClick(supplier)}
-                        sx={{ color: "primary.main" }}
+                        className="text-blue-600 hover:text-blue-800"
                       >
                         <EditIcon />
-                      </IconButton>
+                      </button>
                     </Tooltip>
-                    <Tooltip title="Eliminar">
+
+                    <Tooltip title="Eliminar proveedor">
                       <ModalElimination
                         message={`¿Deseas eliminar al proveedor "${supplier.supplier_name}"?`}
                         onClick={async () => {
