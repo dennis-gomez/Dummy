@@ -72,7 +72,7 @@ const fetchCategoryInventory = async () => {
   };
 
      const fields = [
-   { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
+   { name: "inventory_product_cod_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
    {name: "seecker", placeHolder: "Buscar Producto", label: "Buscar Producto", type: "seeker", editable: true, grid: 4, width: 600, required: false},
        ];
 
@@ -178,7 +178,6 @@ setLoading(true);
     setLoading(true);
     try {
       const data = await findProductsInventory( freature, cod_item_product );
-      ModalAlert("Éxito", "Inventario actualizado correctamente", "success");
       setInventary(data);
     } catch (error) {
       ModalAlert("Error", "Error al buscar productos", "error");
