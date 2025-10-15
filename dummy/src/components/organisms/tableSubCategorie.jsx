@@ -1,4 +1,4 @@
-import useTableSubcategorie from "/src/utils/useTableSubcategorie";
+import useTableSubcategorie from "../../utils/useTableSubcategorie";
 import { tableValidator } from "/src/utils/tableValidator";
 import Swal from "sweetalert2";
 import EditIcon from "@mui/icons-material/Edit";

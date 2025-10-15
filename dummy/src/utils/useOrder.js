@@ -58,15 +58,15 @@ export const useOrder = () => {
     { value: 1, label: "Pendiente", placeholder: "Pendiente", name: 1 },
     { value: 2, label: "Recibida", placeholder: "Recibida", name: 2 },
     { value: 3, label: "Cancelada", placeholder: "Cancelada", name: 3 },
-    { value: 4, label: "Eliminada", placeholder: "Eliminada", name: 4 },
+    { value: 4, label: "Archivada", placeholder: "Archivada", name: 4 },
   ];
 
   const orderFields = [
     { name: "order_date", placeholder: "Fecha de Orden", label: "Fecha", type: "date", editable: true, restriction: "cantAfterToday", grid: 4, width: 175 },
     { name: "order_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 175, options: orderStatus },
     { name: "order_supplier_code", placeholder: "Proveedor", label: "Proveedor", type: "select", editable: true, grid: 4, width: 225, options: suppliers },
-    { name: "order_facture_number", placeholder: "Número de Factura", label: "Factura", editable: true, grid: 4, width: 200 },
-    { name: "order_total_amount", placeholder: "Monto Total", label: "Monto Total", type: "number", editable: false, grid: 4, width: 200 }
+    { name: "order_facture_number", placeholder: "Número de Factura", type: "text", label: "Factura", required: false, restriction: "unique", grid: 4, width: 200 },
+    { name: "order_total_amount", placeholder: "Monto Total", label: "Monto Total", type: "number", required: false, grid: 4, width: 200 }
   ];
 
 const fetchData = async () => {
@@ -267,10 +267,11 @@ fetchOrderDetails();
     }
   };
 
-  const handleDeleteOrderDetail = async (detail_cod) => {
+
+  const handleDeleteOrderDetail = async (deleteData) => {
     setLoading(true);
     try {
-      await deleteOrderDetail(detail_cod);
+      await deleteOrderDetail(deleteData);
       ModalAlert("Éxito", "Detalle de orden eliminado correctamente", "success");
       fetchData();
     } catch (error) {
@@ -284,7 +285,7 @@ fetchOrderDetails();
 
 
   const fields = [
-    { name: "inventory_product_cod_category", placeholder: "Categoria", label: "Categoria", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
+    { name: "inventory_product_cod_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 350, options: categoryInventory, required: false },
     { name: "seecker", placeHolder: "Buscar Producto", label: "Buscar Producto", type: "seeker", editable: true, grid: 4, width: 600, required: false },
   ];
 
@@ -312,8 +313,7 @@ fetchOrderDetails();
   const handleAddInventory = async (newInventory, orderData) => {
     await addOrder(orderData, newInventory);
     setIsCreatingInventory(false);
-    fetchOrders();
-    fetchOrderDetails();
+   fetchData();
     ModalAlert("Éxito", "Inventario agregado exitosamente.", "success");
 
   }
@@ -325,8 +325,7 @@ fetchOrderDetails();
       setIsCreatingInventory(false);
       setAddDetailToOrder(false);
       setOrderIdForDetails(null);
-      fetchOrderDetails();
-      fetchOrders();
+      fetchData();
 
     } catch (error) {
       console.error("Error adding order details:", error);

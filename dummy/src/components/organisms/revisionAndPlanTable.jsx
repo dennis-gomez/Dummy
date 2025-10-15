@@ -126,6 +126,12 @@ const RevisionActionTable = ({
   }, [valueArea]);
 
 
+    const isFieldDisabled = (fieldName) => {
+  if (fieldName === "revision_status") return true;
+  return false;
+};
+
+
   return (
     <div className="p-6 mt-6 bg-white rounded-2xl">
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
@@ -252,6 +258,7 @@ const RevisionActionTable = ({
                                   onError={handleError}
                                   restriction={f.restriction}
                                   options={options}
+                                  disabled={isFieldDisabled(f.name)}
                                   value={String(editRevisionData[f.name] ?? "")}
                                   onChange={(e) => {
                                     const value = e.target.value;

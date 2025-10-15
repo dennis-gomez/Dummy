@@ -10,13 +10,13 @@ import InventaryTable from "./inventaryTable";
 import ModalAlert from "../molecules/modalAlert";
 
 function FormInventory({
-  fields,
+  fields, //primeros campos de arriba
   onSubmit,
   values,
-  checks,
-  fetchAvaliableProducts,
+  checks, //checkboxes
+  fetchAvaliableProducts, 
   headers,
-  useFullFields = [],
+  useFullFields = [], //segundos campos del medio
   tittle = "Agregar productos al inventario",
   warinig ="No hay productos disponibles para agregar al inventario.",
   addDetailToOrder = false,
@@ -188,7 +188,7 @@ const handleSaveSelected = () => {
         <Box sx={{ p: 3, margin: "0 auto", maxWidth: 2000, mt: 3 }}>
           <form onSubmit={(e) => e.preventDefault()}>
             {/* ========== CAMPOS DE FORMULARIO ========== */}
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={{mb:7}}>
               {fields.map((field) => {
                 const xs = field.grid || (field.type === "textarea" ? 12 : 2.4);
                 return (
@@ -261,7 +261,7 @@ const handleSaveSelected = () => {
 
                             }
                             }
-                            sx={{ height: 20000, marginBottom:1000 }}
+                            sx={{ height: 55.99 }}
                           />
                         </Box>
                       </Box>
@@ -294,8 +294,10 @@ const handleSaveSelected = () => {
                 );
               })}
             </Grid>
+
+
 {useFullFields.length > 0 && (
-  <Box sx={{ mt: 3, mb: 2 }}>
+  <Box sx={{ mt: 3, mb: 7 }}>
     {useFullFields.map((field, index) =>
       field.type === "date" ? (
         <InputValidatedDate
@@ -351,39 +353,37 @@ const handleSaveSelected = () => {
 
 
 
-            {/* ========== CHECKBOXES ========== */}
-            <Box
-              sx={{
-                display: "grid",
-                gridTemplateColumns: "repeat(7, 1fr)",
-                gap: 2,
-                mt: 3,
-                p: 2,
-                border: "1px solid #e0e0e0",
-                borderRadius: 2,
-                backgroundColor: "#fafafa",
-              }}
-            >
-              {checks.map((check) => (
-                <FormControlLabel
-                  key={`${check.value[0]}-${check.value[1]}`}
-                  control={
-                    <Checkbox
-                      checked={tempSelectedProducts.some(
-                        (p) =>
-                          p.cod_item === check.value[0] &&
-                          p.cod_category === check.value[1]
-                      )}
-                      onChange={(e) =>
-                        handleCheckChange(check, e.target.checked)
-                      }
-                      name={`${check.value[0]}-${check.value[1]}`}
-                    />
-                  }
-                  label={check.label}
-                />
-              ))}
-            </Box>
+           {/* ========== CHECKBOXES ========== */}
+<Box
+  sx={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", // columnas responsivas
+    gap: 2,
+    mt: 3,
+    p: 2,
+    border: "1px solid #e0e0e0",
+    borderRadius: 2,
+    backgroundColor: "#fafafa",
+  }}
+>
+  {checks.map((check) => (
+    <FormControlLabel
+      key={`${check.value[0]}-${check.value[1]}`}
+      control={
+        <Checkbox
+          checked={tempSelectedProducts.some(
+            (p) =>
+              p.cod_item === check.value[0] &&
+              p.cod_category === check.value[1]
+          )}
+          onChange={(e) => handleCheckChange(check, e.target.checked)}
+          name={`${check.value[0]}-${check.value[1]}`}
+        />
+      }
+      label={check.label}
+    />
+  ))}
+</Box>
 
             {/* BOTÓN GUARDAR SELECCIONADOS */}
             <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
@@ -392,7 +392,7 @@ const handleSaveSelected = () => {
                 type="button"
                 onClick={handleSaveSelected}
                 disabled={tempSelectedProducts.length === 0}
-                sx={{ minWidth: 220 }}
+                sx={{ minWidth: 253.49 }}
               />
             </Box>
 

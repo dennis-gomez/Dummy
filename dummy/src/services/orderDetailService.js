@@ -66,11 +66,10 @@ export const getOrderDetailsByOrderId = async (orderId) => {
         throw error;
     }
 };
-
 export const deleteOrderDetail = async (cod_order_detail) => {
     try {
         const res = await axios.delete(`${API_URL}/delete`, {
-            data: { cod_order_detail },
+            data: cod_order_detail, // enviar directamente el objeto
             headers: {
                 "Content-Type": "application/json"
             },
@@ -80,3 +79,4 @@ export const deleteOrderDetail = async (cod_order_detail) => {
         throw error;
     }
 };
+

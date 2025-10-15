@@ -124,7 +124,7 @@ const InventaryTable = ({
                 {headers.map((d, index) => (
                   <th
                     key={index}
-                    className="py-4 px-6 font-semibold text-md capitalize tracking-wider min-w-[280px]"
+                    className="py-4 px-6 font-semibold text-md capitalize tracking-wider min-w-[100px]"
                   >
                     {d.item_name}
                   </th>

@@ -42,7 +42,7 @@ export default function useTableSubcategorie(items, onAddItem, onEditItem) {
     if (!trimmed) return;
 
     // evitar guardar si no hubo cambios
-    if (trimmed.toLowerCase() === (items.find(i => i.cod_item === cod_item)?.item_name || "").toLowerCase()) {
+    if (trimmed === (items.find(i => i.cod_item === cod_item)?.item_name || "").trim()) {
       handleCancel();
       return;
     }
@@ -58,6 +58,8 @@ export default function useTableSubcategorie(items, onAddItem, onEditItem) {
       Swal.fire({ icon: "error", title: "Validación", text: error });
       return;
     }
+
+console.log("Editing item:", { cod_category, cod_service, cod_item, trimmed });
 
     await onEditItem(cod_category, cod_service, cod_item, trimmed);
     setEditingId(null);

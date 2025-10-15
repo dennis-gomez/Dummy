@@ -1,8 +1,9 @@
-function Button({ text, onClick, disabled = false }) {
+function Button({ text, onClick, disabled = false, sx = {} }) {
   return (
     <button
       onClick={onClick}
       disabled={disabled}
+      style={sx} // Aplicamos el estilo opcional
       className={`
         px-5 py-2 rounded-md font-semibold text-white transition 
         focus:outline-none focus:ring-4 focus:ring-blue-300

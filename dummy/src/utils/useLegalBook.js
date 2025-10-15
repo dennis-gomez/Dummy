@@ -46,7 +46,7 @@ export const useBooks = () => {
   }));
 
   const searchFields = fields
-    .filter(f => f.name !== "cod_book" && f.name !== "book_service_code" && f.name !== "book_category_code")
+    .filter(f => f.name !== "cod_book" && f.name !== "book_file" && f.name !== "book_service_code" && f.name !== "book_category_code")
     .map(f => ({
       name: f.name,
       placeholder: f.label,
