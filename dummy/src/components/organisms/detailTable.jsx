@@ -52,7 +52,7 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered,
     return (
       <div className="p-6 mt-6 bg-white rounded-2xl">
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
-          No hay suplementos registrados
+          No hay articulos registrados
         </div>
       </div>
     );

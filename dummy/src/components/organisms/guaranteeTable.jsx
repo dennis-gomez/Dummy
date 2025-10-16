@@ -282,15 +282,20 @@ const deleteGuaranteOrReactivated = (id,status) => {
                     <td className="py-4 px-6 text-center">{index + 1}</td>
                     {displayFields.map(f => (
                       <td key={f.name} className="py-4 px-6 text-center text-gray-700">
-                        {isEditing ? renderInput(f) : f.type === "select" ? (
-                          (f.options || []).find(opt => opt.value == row[f.name])?.label || "-"
-                        ) : f.type === "checkbox" ? (
-                          row[f.name] ? "Sí" : "No"
-                        ) : f.type === "date" ? (
-                          row[f.name] ? formatDateDDMMYYYY(row[f.name]) : "-"
-                        ) : (
-                          row[f.name] || "-"
-                        )}
+                       {isEditing ? (
+  renderInput(f)
+) : f.type === "select" ? (
+  (f.options || []).find(opt => opt.value == row[f.name])?.label || "-"
+) : f.type === "checkbox" ? (
+  row[f.name] ? "Sí" : "No"
+) : f.type === "date" ? (
+  row[f.name] ? formatDateDDMMYYYY(row[f.name]) : "-"
+) : typeof row[f.name] === "number" ? (
+  new Intl.NumberFormat("de-DE").format(row[f.name])
+) : (
+  row[f.name] || "-"
+)}
+
                       </td>
                     ))}
                     <td className="py-4 px-6 text-center">

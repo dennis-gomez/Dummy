@@ -57,13 +57,14 @@ if (options==1) {
 };
 
 
+
   const resumeFields = [
     { name: "entidad", label: "Entidad" },
     { name: "activas", label: "Activas" },
     { name: "vencidas", label: "Vencidas" },
     { name: "proximas_a_vencer", label: "Próximas a vencer" },
-    { name: "dinero_activo", label: "Dinero Activo" },
-    { name: "dinero_por_vencer", label: "Dinero por vencer" },
+    { name: "dinero_activo", label: "Dinero Activo ₡" },
+    { name: "dinero_por_vencer", label: "Dinero por vencer ₡" },
     { name: "dinero_activo_usd", label: "Dinero Activo USD" },
     { name: "dinero_por_vencer_usd", label: "Dinero por vencer USD" },
   ];
