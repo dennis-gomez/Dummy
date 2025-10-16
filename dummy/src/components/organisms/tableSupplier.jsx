@@ -228,7 +228,8 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
 
                     <Tooltip title="Eliminar proveedor">
                       <ModalElimination
-                        message={`¿Deseas eliminar al proveedor "${supplier.supplier_name}"?`}
+                        message={`¿Deseas desactivar al proveedor "${supplier.supplier_name}"?`}
+                        confirmText="Desactivar"
                         onClick={async () => {
                           try {
                             await onDeleteSupplier(supplier.cod_supplier);
