@@ -42,7 +42,7 @@ const navConfig = [
     label: 'Libros Legales',
     sub: [
       { label: 'Gestión de Libros Legales', path: '/libros/mantenimiento' },
-      { label: 'Registros de Libros Legales', path: '/libros/registros' },
+      { label: 'Movimientos de Libros Legales', path: '/libros/registros' },
     ],
   },
   {

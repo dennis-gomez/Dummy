@@ -118,7 +118,7 @@ export const fetchVehicleMaintenancesNotifications = async () => {
       return {
         id: `vehicle-${m.cod_vehicle}`,
         titulo: `Mantenimiento para vehículo`,
-        descripcion: `El vehículo ${m.vehicle_brand}, modelo ${m.vehicle_model} y placa ${m.vehicle_plate}, superó el kilometraje establacido para su revisión.`,
+        descripcion: `El vehículo ${m.vehicle_brand}, modelo ${m.vehicle_model} y placa ${m.vehicle_plate}, superó el kilometraje establecido para su revisión.`,
         isNotified: m.vehicle_is_notified,
         updateFn: async () => {
           // Marcar como vista
