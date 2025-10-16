@@ -131,7 +131,12 @@ const deleteGuaranteOrReactivated = (id,status) => {
           value={value}
           onChange={(e) => handleFieldChange(field.name, e.target.value, fieldType)}
           options={options}
-          sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
+           sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                 width: "100%", minHeight: "3rem"
+                                },
+                              }}
         />
       );
     }
@@ -205,7 +210,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
             onClick={() => {
               setTrueSearchText(searchText);
               value=searchText
-              handleSortByExpirationDate(searchFeature,value,1,2,2,!valueOrder ? "ASC" : "")
+              handleSortByExpirationDate(searchFeature,value,1,5,2,!valueOrder ? "ASC" : "")
             
             }
             } // 🟢 al buscar, mantiene orden actual

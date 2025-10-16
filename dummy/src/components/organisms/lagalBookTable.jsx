@@ -197,7 +197,12 @@ const DynamicTable = ({
                                 setEditErrors(prev => ({ ...prev, [f.name]: !value ? "Seleccione un tipo" : "" }));
                               }}
                               options={typesOfBooks.map(type => ({ value: type.cod_item, label: type.item_name }))}
-                              sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
+                             sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                 width: "100%", minHeight: "3rem"
+                                },
+                              }}
                             />
                           ) : f.name === "book_status" ? (
                             <InputValidated
@@ -216,7 +221,12 @@ const DynamicTable = ({
     ...opt,
     disabled: opt.value === 2 // deshabilita "En uso"
   }))}
-  sx={{ "& .MuiOutlinedInput-root": { width: "100%", minHeight: "3rem" } }}
+ sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                width: "100%", minHeight: "3rem"
+                                },
+                              }}
 />
 
                           ) : (
@@ -258,13 +268,14 @@ const DynamicTable = ({
                           accept=".pdf"
                           placeholder="Archivo PDF"
                           fullWidth
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              width: "20rem",
+                           sx={{
+                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                               width: "20rem",
                               minHeight: "3rem",
                               boxSizing: "border-box"
-                            }
-                          }}
+                                },
+                              }}
                         />
                       ) : (
                         row.book_file && (
