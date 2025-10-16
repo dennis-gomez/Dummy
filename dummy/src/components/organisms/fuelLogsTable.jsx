@@ -282,7 +282,7 @@ function FuelLogsTable({
                     </th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Combustible</th>
                     <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Cantidad</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Precio</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Monto Factura</th>
                     {fuelLogs.some((log) => log.fuel_log_is_active) ? (
                         <>
                         <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Kilometraje Final</th>

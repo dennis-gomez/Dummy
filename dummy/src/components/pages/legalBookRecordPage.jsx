@@ -37,7 +37,7 @@ function LegalBookRecordPage() {
   return (
     <div style={{ padding: 24 }}>
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Registros de Libros Legales
+        Movimientos de Libros Legales
       </h1>
 
       {/* Formulario dinámico */}
