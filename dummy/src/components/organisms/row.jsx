@@ -185,7 +185,7 @@ export default function Row({
                 <h3 className="text-lg font-semibold text-gray-800">{subTitle}</h3>
                 {item.medic_kit_is_active &&(
                 <Button
-                  text="Agregar Suplemento"
+                  text="Agregar Articulo"
                   onClick={() => changeStateSupply(id)}
                 />
                 )}
@@ -199,7 +199,7 @@ export default function Row({
                 onEdit={(idx, data) => onEditSupply(data)}
                 renderDelete={(item) => (
                   <ModalElimination
-                    message={"¿Quieres desactivar este suplemento?"}
+                    message={"¿Quieres desactivar este articulo?"}
                     onClick={() => onDeleteSupply(item.cod_supply)}
                     confirmText="Desactivar"
                   />
