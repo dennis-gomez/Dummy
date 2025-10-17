@@ -51,7 +51,7 @@ function MedicKitPage() {
           subfields={subfields}
           onSubmit={handleAddKitWithSupplies}
           titleBtn={"Añadir al botiquín"}
-          subTittle={"Añadir suplemento"}
+          subTittle={"Añadir Articulo"}
         />
       )}
       
@@ -62,7 +62,7 @@ function MedicKitPage() {
           title={"Registro de botiquín"}
           onSubmit={handleAddKitWithSupplies}
           titleBtn={"Añadir Botiquín"}
-          subTittle={"Añadir suplemento"}
+          subTittle={"Añadir Articulo"}
         />
       )}
       
