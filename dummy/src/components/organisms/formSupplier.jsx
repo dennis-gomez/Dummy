@@ -21,7 +21,6 @@ function SupplierForm({ onAddSupplier, onCancel }) {
     supplier_email: "El correo es obligatorio",
   });
 
-  // === Validación ===
   const validateField = (name, value) => {
     switch (name) {
       case "supplier_name":
@@ -30,7 +29,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
         return "";
       case "supplier_date":
         if (!value) return "La fecha es obligatoria";
-        return ""; 
+        return "";
       case "supplier_phone":
         if (!value.trim()) return "El teléfono es obligatorio";
         const phoneRegex = /^[0-9\-+()]{8,15}$/;
@@ -120,12 +119,13 @@ function SupplierForm({ onAddSupplier, onCancel }) {
     >
       <Box
         sx={{
-          p: 5,
+          p: { xs: 3, sm: 4, md: 5 },
           borderRadius: "20px",
           backgroundColor: "#d9d9d9",
           boxShadow: 4,
-          width: "100%",  // Asegura que el contenedor gris se adapte al contenido
-          maxWidth: "1200px",  // Opcional: limita el ancho máximo para evitar que se expanda demasiado en desktop
+          width: "auto", // ✅ Mantienes tu preferencia
+          maxWidth: { xs: "100%", sm: "800px", md: "1000px", lg: "1200px" }, // ✅ Limita el tamaño según pantalla
+          mx: "auto", // Centrado horizontal
         }}
       >
         <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
@@ -133,63 +133,86 @@ function SupplierForm({ onAddSupplier, onCancel }) {
         </h3>
 
         <form onSubmit={handleSubmit}>
-          <Grid item xs={12} md={3} sx={{ mb: 3 }}>
-            <InputValidated
-              name="supplier_name"
-              value={formData.supplier_name}
-              onChange={handleChange}
-              placeholder="Nombre del Proveedor"
-              label="Nombre del Proveedor"
-              error={errors.supplier_name}
-              sx={{ width: "100%", minWidth: "350px" }}
-            />
+          <Grid
+            container
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+            sx={{
+              flexWrap: { xs: "wrap", sm: "nowrap" },
+            }}
+          >
+            <Grid item>
+              <InputValidated
+                name="supplier_name"
+                value={formData.supplier_name}
+                onChange={handleChange}
+                placeholder="Nombre del Proveedor"
+                label="Nombre "
+                error={errors.supplier_name}
+                sx={{
+                  width: { xs: "100%", sm: "300px", md: "350px" },
+                  maxWidth: "100%",
+                }}
+              />
+            </Grid>
+
+            <Grid item>
+              <InputValidated
+                name="supplier_email"
+                value={formData.supplier_email}
+                onChange={handleChange}
+                placeholder="Correo Electrónico"
+                label="Correo Electrónico"
+                type="email"
+                error={errors.supplier_email}
+                sx={{
+                  width: { xs: "100%", sm: "300px", md: "350px" },
+                  maxWidth: "100%",
+                }}
+              />
+            </Grid>
+
+            <Grid item>
+              <InputValidated
+                name="supplier_phone"
+                value={formData.supplier_phone}
+                onChange={handleChange}
+                placeholder="Teléfono"
+                label="Teléfono"
+                error={errors.supplier_phone}
+                sx={{
+                  width: { xs: "100%", sm: "300px", md: "350px" },
+                  maxWidth: "100%",
+                }}
+              />
+            </Grid>
+
+            <Grid item>
+              <InputValidated
+                name="supplier_date"
+                value={formData.supplier_date}
+                onChange={handleChange}
+                label="Fecha de Registro"
+                type="date"
+                error={errors.supplier_date}
+                sx={{
+                  width: "350px",
+                  maxWidth: "100%",
+                }}
+              />
+            </Grid>
           </Grid>
 
-          <Grid item xs={12} md={3} sx={{ mb: 3 }}>
-            <InputValidated
-              name="supplier_email"
-              value={formData.supplier_email}
-              onChange={handleChange}
-              placeholder="Correo Electrónico"
-              label="Correo Electrónico"
-              type="email"
-              error={errors.supplier_email}
-              sx={{ width: "100%", minWidth: "350px" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={3} sx={{ mb: 3 }}>
-            <InputValidated
-              name="supplier_phone"
-              value={formData.supplier_phone}
-              onChange={handleChange}
-              placeholder="Teléfono"
-              label="Teléfono"
-              error={errors.supplier_phone}
-              sx={{ width: "100%", minWidth: "350px" }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={3} sx={{ mb: 3 }}>
-            <InputValidated
-              name="supplier_date"
-              value={formData.supplier_date}
-              onChange={handleChange}
-              label="Fecha de Registro"
-              type="date"
-              error={errors.supplier_date}
-              sx={{ width: "100%", minWidth: "350px" }}
-            />
-          </Grid>
-
-
-
+          {/* Botones */}
           <Box
             sx={{
               display: "flex",
               justifyContent: "center",
               mt: 4,
               gap: 2,
+              flexDirection: { xs: "column", sm: "row" },
+              alignItems: "center",
             }}
           >
             {onCancel && (
@@ -198,6 +221,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
                 text="Cancelar"
                 color="error"
                 onClick={onCancel}
+                sx={{ width: { xs: "100%", sm: "auto" } }}
               />
             )}
             <Button
@@ -205,6 +229,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
               text="Guardar Proveedor"
               color="primary"
               disabled={isSaveDisabled}
+              sx={{ width: { xs: "100%", sm: "auto" } }}
             />
           </Box>
         </form>
