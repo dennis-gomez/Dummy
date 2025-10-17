@@ -198,61 +198,66 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
               </td>
 
               {/* Acciones */}
-              <td className="py-4 px-6 text-center flex gap-3 justify-center ">
-                {editRowId === supplier.cod_supplier ? (
-                  <>
-                    <button
-                      onClick={handleSave}
-                      className="bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center hover:bg-blue-700"
-                    >
-                      <SaveIcon className="mr-1" fontSize="small" /> Guardar
-                    </button>
+    {/* Acciones */}
+<td className="py-4 px-6 text-center flex gap-3 justify-center ">
+  {editRowId === supplier.cod_supplier ? (
+    <>
+      <button
+        onClick={handleSave}
+        className="bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center hover:bg-blue-700"
+      >
+        <SaveIcon className="mr-1" fontSize="small" /> Guardar
+      </button>
 
-                    <button
-                      onClick={handleCancel}
-                      className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
-                    >
-                      <CancelIcon className="mr-1" fontSize="small" /> Cancelar
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <Tooltip title="Editar proveedor">
-                      <button
-                        onClick={() => handleEditClick(supplier)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <EditIcon />
-                      </button>
-                    </Tooltip>
+      <button
+        onClick={handleCancel}
+        className="border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-100 transition flex items-center text-sm"
+      >
+        <CancelIcon className="mr-1" fontSize="small" /> Cancelar
+      </button>
+    </>
+  ) : (
+    <>
+      <Tooltip title={supplier.supplier_is_active ? "Editar proveedor" : "Proveedor desactivado"}>
+        <span>
+          <button
+            onClick={() => handleEditClick(supplier)}
+            disabled={!supplier.supplier_is_active}
+            className={`text-blue-600 hover:text-blue-800 ${!supplier.supplier_is_active ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            <EditIcon />
+          </button>
+        </span>
+      </Tooltip>
 
-                    <Tooltip title="Eliminar proveedor">
-                      <ModalElimination
-                        message={`¿Deseas desactivar al proveedor "${supplier.supplier_name}"?`}
-                        confirmText="Desactivar"
-                        onClick={async () => {
-                          try {
-                            await onDeleteSupplier(supplier.cod_supplier);
-                            ModalAlert(
-                              "Eliminado",
-                              "Proveedor eliminado correctamente",
-                              "success",
-                              2000
-                            );
-                          } catch (error) {
-                            ModalAlert(
-                              "Error",
-                              error.message || "Error al eliminar el proveedor",
-                              "error",
-                              3000
-                            );
-                          }
-                        }}
-                      />
-                    </Tooltip>
-                  </>
-                )}
-              </td>
+      <Tooltip title="Eliminar proveedor">
+        <ModalElimination
+          message={`¿Deseas desactivar al proveedor "${supplier.supplier_name}"?`}
+          confirmText="Desactivar"
+          onClick={async () => {
+            try {
+              await onDeleteSupplier(supplier.cod_supplier);
+              ModalAlert(
+                "Eliminado",
+                "Proveedor eliminado correctamente",
+                "success",
+                2000
+              );
+            } catch (error) {
+              ModalAlert(
+                "Error",
+                error.message || "Error al eliminar el proveedor",
+                "error",
+                3000
+              );
+            }
+          }}
+        />
+      </Tooltip>
+    </>
+  )}
+</td>
+
             </tr>
           ))}
         </tbody>

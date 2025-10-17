@@ -10,9 +10,6 @@ import {
   createSupplier,
   updateSupplier,
   deleteSupplier,
-  
-  // Si tuvieras un endpoint para búsquedas, lo puedes agregar aquí
-  // searchSupplier,
 } from "../../services/supplierService";
 
 const SupplierPage = () => {
@@ -21,6 +18,7 @@ const SupplierPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [searchFeature, setSearchFeature] = useState("supplier_name");
+  const [activeFilter, setActiveFilter] = useState("1"); // "1" = activos, "0" = inactivos
 
   // Campos disponibles para filtrar
   const fields = [
@@ -29,29 +27,57 @@ const SupplierPage = () => {
     { name: "supplier_phone", placeholder: "Teléfono" },
   ];
 
-  // Cargar todos los proveedores
+  // Cargar todos los proveedores aplicando filtro de activos/inactivos
   const loadSuppliers = async () => {
     try {
       setIsLoading(true);
-      const data = await getAllSuppliers();
+      let data = await getAllSuppliers();
+
+      // Convertir supplier_is_active a número por si acaso
+      data = data.map(s => ({
+        ...s,
+        supplier_is_active: Number(s.supplier_is_active),
+      }));
+
+      // Filtrar por activo/inactivo
+      if (activeFilter === "1") {
+        data = data.filter(s => s.supplier_is_active === 1);
+      } else if (activeFilter === "0") {
+        data = data.filter(s => s.supplier_is_active === 0);
+      }
+
       setSuppliers(data);
     } catch (error) {
-      ModalAlert("Error", error.message || "No se pudieron cargar los proveedores", "error", 3000);
+      ModalAlert(
+        "Error",
+        error.message || "No se pudieron cargar los proveedores",
+        "error",
+        3000
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleSearch = async () => {
-    if (!searchText.trim()) {
-      loadSuppliers();
-      return;
-    }
-
     try {
       setIsLoading(true);
       const text = searchText.trim().toLowerCase();
-      const allSuppliers = await getAllSuppliers();
+      let allSuppliers = await getAllSuppliers();
+
+      // Convertir supplier_is_active a número
+      allSuppliers = allSuppliers.map(s => ({
+        ...s,
+        supplier_is_active: Number(s.supplier_is_active),
+      }));
+
+      // Filtrar por activo/inactivo
+      if (activeFilter === "1") {
+        allSuppliers = allSuppliers.filter(s => s.supplier_is_active === 1);
+      } else if (activeFilter === "0") {
+        allSuppliers = allSuppliers.filter(s => s.supplier_is_active === 0);
+      }
+
       const filtered = allSuppliers.filter((s) =>
         (s[searchFeature] || "").toString().toLowerCase().includes(text)
       );
@@ -63,14 +89,12 @@ const SupplierPage = () => {
     }
   };
 
-  // Restaurar lista cuando se limpia el campo
+  // Restaurar lista cuando se limpia el campo o cambia el filtro
   useEffect(() => {
-    if (!searchText.trim()) {
-      loadSuppliers();
-    }
-  }, [searchText]);
+    loadSuppliers();
+  }, [searchText, activeFilter]);
 
-  //Crear proveedor
+  // Crear proveedor
   const handleAddSupplier = async (supplierData) => {
     try {
       await createSupplier(supplierData);
@@ -97,55 +121,69 @@ const SupplierPage = () => {
   const handleDeleteSupplier = async (id) => {
     try {
       await deleteSupplier(id);
-      ModalAlert("Eliminado", "Proveedor eliminado correctamente", "success", 2000);
+      ModalAlert("Eliminado", "Proveedor deasctivado correctamente", "success", 2000);
       loadSuppliers();
     } catch (error) {
-      ModalAlert("Error", error.message || "No se pudo eliminar el proveedor", "error", 3000);
+      ModalAlert("Error", error.message || "No se pudo desactivar el proveedor", "error", 3000);
     }
   };
 
-  // Cargar datos al iniciar
-  useEffect(() => {
-    loadSuppliers();
-  }, []);
-
   return (
     <div className="p-6 mt-6 rounded-2xl">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gesti&oacute;n de Proveedores</h1>
-       {/* Formulario */}
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
+        Gestión de Proveedores
+      </h1>
+
+      {/* Formulario */}
       {showForm && (
-        <div className="p-6 rounded-2xl  mb-6 max-w-3xl mx-auto">
+        <div className="p-6 rounded-2xl mb-6 max-w-3xl mx-auto">
           <SupplierForm onAddSupplier={handleAddSupplier} />
         </div>
       )}
-      {/* Buscador + Botón agregar/cancelar */}
-      <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-        {/* Buscador */}
-        <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
-          <Seeker
-            inputName="search"
-            inputPlaceholder="Buscar proveedor..."
-            btnName="Buscar"
-            selectName="Filtrar por"
-            fields={fields}
-            valueText={searchText}
-            valueFeature={searchFeature}
-            onChangeText={setSearchText}
-            onChangeFeature={setSearchFeature}
-            onClick={handleSearch}
-          />
-        </Box>
-        {/* Botón Agregar/Cancelar */}
-        <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
-          <div className="p-4 h-fit">
-            <Button
-              text={showForm ? "Cancelar" : "Agregar Proveedor"}
-              onClick={() => setShowForm(!showForm)}
-              className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
-            />
-          </div>
-        </div>
-      </div>
+
+      {/* Buscador + Filtro + Botón agregar/cancelar */}
+<div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4 items-center">
+  {/* Buscador + Filtro */}
+  <Box className="flex flex-1 flex-wrap gap-3 bg-white rounded-xl p-4 items-center">
+    <Seeker
+      inputName="search"
+      inputPlaceholder="Buscar proveedor..."
+      btnName="Buscar"
+      selectName="Filtrar por"
+      fields={fields}
+      valueText={searchText}
+      valueFeature={searchFeature}
+      onChangeText={setSearchText}
+      onChangeFeature={setSearchFeature}
+      onClick={handleSearch}
+    />
+
+    {/* Filtro Activo/Inactivo */}
+    <Box className="flex items-center gap-2 min-w-[150px]">
+      <label htmlFor="activeFilter" className="font-medium">Estado:</label>
+      <select
+        id="activeFilter"
+        value={activeFilter}
+        onChange={(e) => setActiveFilter(e.target.value)}
+        className="rounded-lg border p-2"
+      >
+        <option value="1">Activos</option>
+        <option value="0">Inactivos</option>
+      </select>
+    </Box>
+  </Box>
+
+  {/* Botón Agregar/Cancelar */}
+  <div className="flex-shrink-0">
+    <Button
+      text={showForm ? "Cancelar" : "Agregar Proveedor"}
+      onClick={() => setShowForm(!showForm)}
+      className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+    />
+  </div>
+</div>
+
+
       {/* Tabla */}
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
@@ -157,14 +195,12 @@ const SupplierPage = () => {
           No hay proveedores registrados
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl shadow-lg">
-          <TableSupplier
-            suppliers={suppliers}
-            onUpdateSupplier={handleUpdateSupplier}
-            onChangeText={setSearchText}
-            onDeleteSupplier={handleDeleteSupplier}
-          />
-        </div>
+        <TableSupplier
+          suppliers={suppliers}
+          onUpdateSupplier={handleUpdateSupplier}
+          onChangeText={setSearchText}
+          onDeleteSupplier={handleDeleteSupplier}
+        />
       )}
     </div>
   );
