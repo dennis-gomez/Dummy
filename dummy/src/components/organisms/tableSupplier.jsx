@@ -197,9 +197,8 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
                   : "—"}
               </td>
 
-              {/* Acciones */}
-    {/* Acciones */}
-<td className="py-4 px-6 text-center flex gap-3 justify-center ">
+{/* Acciones */}
+<td className="py-4 px-6 text-center flex gap-3 justify-center items-center">
   {editRowId === supplier.cod_supplier ? (
     <>
       <button
@@ -219,15 +218,13 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
   ) : (
     <>
       <Tooltip title={supplier.supplier_is_active ? "Editar proveedor" : "Proveedor desactivado"}>
-        <span>
-          <button
-            onClick={() => handleEditClick(supplier)}
-            disabled={!supplier.supplier_is_active}
-            className={`text-blue-600 hover:text-blue-800 ${!supplier.supplier_is_active ? "opacity-50 cursor-not-allowed" : ""}`}
-          >
-            <EditIcon />
-          </button>
-        </span>
+        <button
+          onClick={() => handleEditClick(supplier)}
+          disabled={!supplier.supplier_is_active}
+          className={`text-blue-600 hover:text-blue-800 flex items-center ${!supplier.supplier_is_active ? "opacity-50 cursor-not-allowed" : ""}`}
+        >
+          <EditIcon fontSize="medium" className="align-middle" />
+        </button>
       </Tooltip>
 
       <Tooltip title="Eliminar proveedor">
@@ -257,6 +254,7 @@ function TableSupplier({ suppliers, onUpdateSupplier, onDeleteSupplier, isLoadin
     </>
   )}
 </td>
+
 
             </tr>
           ))}
