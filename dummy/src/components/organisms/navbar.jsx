@@ -60,14 +60,14 @@ const navConfig = [
       { label: 'Cuadro de Resumen', path: '/garantias/resumen' },
     ],
   },
-  /*{
+  {
     label: 'TI',
     sub: [
-      { label: 'Usuarios', path: '/ti/usuarios' },
+      { label: 'Inventario', path: '/inventario/tecnologias-informacion' },
       { label: 'Roles y Permisos', path: '/ti/roles' },
       { label: 'Configuraciones del Sistema', path: '/ti/config' },
     ],
-  },*/
+  },
   {
     label: 'Catálogo',
     sub: [{ label: 'Gestionar Catálogo', path: '/catalogo/gestionar' }],
