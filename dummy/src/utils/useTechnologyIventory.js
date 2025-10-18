@@ -29,29 +29,34 @@ export const useTechnologyInventory = () => {
 
     
     const fields = [
-        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 390},
-        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 390},
-        { name: "it_inventory_status", placeholder: "Estado de Equipo", required: true, type:"select", options:[{ value: 1, label: "Activo" },{ value: 2, label: "Inactivo" }, { value: 3, label: "En Reparación" }, { value: 4, label: "En Almacén" }, { value: 5, label: "Perdido" }, { value: 6, label: "Inactivo" }], width: 390},
-        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 390 },
-        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 390 },
-        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 390 },
-        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento o Gerente de Producto", required: true, width: 390},
+        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 253 },
+        { name: "it_inventory_status", placeholder: "Estado de Equipo", required: true, type:"select", options:[{ value: 1, label: "Activo" },{ value: 2, label: "Inactivo" }, { value: 3, label: "En Reparación" }, { value: 4, label: "En Almacén" }, { value: 5, label: "Perdido" }, { value: 6, label: "Inactivo" }], width: 253 },
+        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 253 },
+        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 253 },
 
-        { name: "it_inventory_asset_category_code", placeholder: "Categoria", required: true, type: "select", options: categoryAssets, width: 390},
-        { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 390},
+        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 253 },
+        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 253 },
+        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento o Gerente de Producto", required: true, width: 390 },
+        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 390 },
 
-        { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 390}, 
-        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 390 },
-        { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 390},
-        { name: "it_inventory_RAM", placeholder: "RAM", required: false, width: 390},
-        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 390},
-        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 390},
-        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 390},
-        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 390},
-        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390},
-        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 390},
-        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 400},
+        { name: "it_inventory_asset_category_code", placeholder: "Categoría", required: true, type: "select", options: categoryAssets, width: 253 },
+        { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 253 },
+        { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 253 },
+        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 253 },
+        { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 253 },
+
+        { name: "it_inventory_RAM", placeholder: "RAM", required: false, width: 253 },
+        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253 },
+        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253 },
+
+        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 390 },
+
+        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390 },
+        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800 },
+
+        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800 },
     ];
+
 
     const [searchText, setSearchText] = useState("");
     const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
