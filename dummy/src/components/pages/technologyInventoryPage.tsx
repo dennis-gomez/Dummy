@@ -1,13 +1,14 @@
 import { useTechnologyInventory } from "../../utils/useTechnologyIventory";
 import { Box, Typography } from "@mui/material";
-import Form from "../organisms/form";
 import TecnologyInventoryTable from "../organisms/tableTechnologyInventory";
+import FormTI from "../organisms/formTIInventory";
 
 function TechnologyInventory() {
     const {
         inventory,
 
         fields, 
+        editFields, 
         showForm, 
         setShowForm,
         error,
@@ -29,6 +30,9 @@ function TechnologyInventory() {
         handleSearch,
         handleSubmit,
         handleDelete,
+        handleEdit,
+
+        fetchAssets
     } = useTechnologyInventory();
 
     return (    
@@ -53,13 +57,12 @@ function TechnologyInventory() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
                     Agregar Activo
                 </h3>
-                <Form
+                <FormTI
                     fields={fields}
                     onSubmit={handleSubmit}
-                    
                     titleBtn="Guardar Registro"
-                    funct={null}
-                    onCancel={null}
+                    funct={fetchAssets}
+                    onCancel={() => setShowForm(false)}
                     values={null}
                 />
                 </Box>
@@ -90,6 +93,7 @@ function TechnologyInventory() {
             <TecnologyInventoryTable 
                 inventory={inventory}
                 fields={fields}
+                editFields={editFields}
                 loading={loading}
                 showForm={showForm}
                 onToggleForm={() => {
@@ -111,6 +115,7 @@ function TechnologyInventory() {
                 onChangeFeature={setSearchFeature}
 
                 onDelete={handleDelete}
+                onEdit={handleEdit}
             />
             </div>
         </>

@@ -30,6 +30,37 @@ export const useTechnologyInventory = () => {
     
     const fields = [
         { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 253 },
+        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 253 },
+        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 253 },
+
+        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 253 },
+        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 253 },
+        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento o Gerente de Producto", required: true, width: 253 },
+        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 253 },
+
+        { name: "it_inventory_asset_category_code", placeholder: "Categoría", required: true, type: "select", options: categoryAssets, width: 253 },
+        { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 253 },
+        { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 253 },
+        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 253 },
+        { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 253 },
+
+        { name: "it_inventory_RAM", placeholder: "Memoria de Acceso Aleatorio (RAM)", required: false, width: 253 },
+        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253 },
+        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253 },
+
+        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 390 },
+
+        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390, type: "select", options: [
+            { value: true, label: "Sí" },
+            { value: false, label: "No" },
+        ],},
+        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800 },
+
+        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800 },
+    ];
+
+    const editFields = [
+        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 253 },
         { name: "it_inventory_status", placeholder: "Estado de Equipo", required: true, type:"select", options:[{ value: 1, label: "Activo" },{ value: 2, label: "Inactivo" }, { value: 3, label: "En Reparación" }, { value: 4, label: "En Almacén" }, { value: 5, label: "Perdido" }, { value: 6, label: "Inactivo" }], width: 253 },
         { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 253 },
         { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 253 },
@@ -45,13 +76,16 @@ export const useTechnologyInventory = () => {
         { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 253 },
         { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 253 },
 
-        { name: "it_inventory_RAM", placeholder: "RAM", required: false, width: 253 },
+        { name: "it_inventory_RAM", placeholder: "Memoria de Acceso Aleatorio", required: false, width: 253 },
         { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253 },
         { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253 },
 
         { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 390 },
 
-        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390 },
+        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390, type: "select", options: [
+            { value: true, label: "Sí" },
+            { value: false, label: "No" },
+        ],},
         { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800 },
 
         { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800 },
@@ -161,6 +195,7 @@ export const useTechnologyInventory = () => {
         try {
             const dataToSend = {
                 ...formData,
+                it_inventory_status: 1,
                 it_inventory_asset_service_code: Number(import.meta.env.VITE_TI_SERVICE_CODE),
                 it_inventory_brand_service_code: Number(import.meta.env.VITE_TI_SERVICE_CODE),
                 it_inventory_brand_category_code: Number(import.meta.env.VITE_TI_BRAND_CATEGORY_CODE),
@@ -176,7 +211,7 @@ export const useTechnologyInventory = () => {
 
             if (response.status === 201) {
                 ModalAlert("Éxito", "Registro agregado exitosamente.", "success");
-                getActiveInventory();
+                await getActiveInventory();
                 setShowForm(false);
                 setError(null);
             }
@@ -219,6 +254,24 @@ export const useTechnologyInventory = () => {
         }
     };
 
+    //editar el activo
+    const handleEdit = async (cod_it_inventory, updatedData) => {
+        try {
+            const response = await updateTechnologyInventory(cod_it_inventory, updatedData);
+            if (response.status === 200) {
+                ModalAlert("Éxito", "Activo editado exitosamente.", "success");
+                await getActiveInventory();
+                setError(null);
+            }
+            return true;
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al editar registro.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+            return false;
+        }
+    };
+
     //helper para traducir el codigo a label
     const getLabelByCode = (list, code) => {
         const found = list.find(item => item.value === code);
@@ -242,6 +295,7 @@ export const useTechnologyInventory = () => {
         inventory,
 
         fields, 
+        editFields,
         showForm, 
         setShowForm,
         error,
@@ -263,5 +317,8 @@ export const useTechnologyInventory = () => {
         handleSearch,
         handleSubmit, 
         handleDelete,
+        handleEdit, 
+
+        fetchAssets
     }
 }
