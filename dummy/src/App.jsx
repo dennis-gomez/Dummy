@@ -21,6 +21,7 @@ import VehicleMaintenance from './components/pages/vehicleMaintenancePage'
 import SupplierPage from './components/pages/supplierPage'
 import InventaryPage from './components/pages/inventaryPage'
 import OrderPage from './components/pages/orderPage'
+import TechnologyInventory from './components/pages/technologyInventoryPage'
 
 
 function App() {
@@ -52,6 +53,8 @@ function App() {
             <Route path="/suministros/inventario" element={<InventaryPage/>} /> {/*inventario de suministros*/}
             <Route path="/suministros/proveedores" element={<SupplierPage />} /> 
             <Route path="/suministros/ordenes" element={<OrderPage/>} /> {/*ordenes de compra de suministros*/}
+
+            <Route path="/inventario/tecnologias-informacion" element={<TechnologyInventory/>} />
           </Routes>
         </main>
         <Footer />
