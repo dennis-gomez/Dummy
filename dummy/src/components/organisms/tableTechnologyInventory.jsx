@@ -287,7 +287,7 @@ function TechnologyInventoryTable({
                         <td className="py-3 px-4 text-center">{item.it_inventory_observations}</td>
                         <td className="py-4 px-6 text-center">
                           <div className="flex justify-center space-x-3">
-                            {[1, 3, 4, 5].includes(item.it_inventory_status) ? (
+                            {[1, 3, 4, 5].includes(Number(item.it_inventory_status)) ? (
                               <>
                                 <button
                                 onClick={() => handleEditClick(item)}
@@ -302,7 +302,7 @@ function TechnologyInventoryTable({
                                   <DeleteIcon fontSize="small" />
                                 </button>
                               </>
-                              ) : (
+                            ) : (
                                 <ReactivationModal
                                   message={"¿Quieres reactivar este activo?"}
                                   onClick={() => onReactivate(item.cod_it_inventory)}

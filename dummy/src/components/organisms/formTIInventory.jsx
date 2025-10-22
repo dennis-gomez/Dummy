@@ -135,15 +135,7 @@ function FormTI({ fields, onSubmit, titleBtn, onCancel, values, funct, systemsOp
             </Grid>
 
             <Box sx={{ display: "flex", justifyContent: "center", mt: 3, gap: 2 }}>
-            {onCancel && (
-                <button
-                type="button"
-                onClick={onCancel}
-                className="px-5 py-2 rounded-md font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300 transition border border-gray-300"
-                >
-                Cancelar
-                </button>
-            )}
+           
             <Button
                 text={titleBtn}
                 onClick={handleSubmit}
