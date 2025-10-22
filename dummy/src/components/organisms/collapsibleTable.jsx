@@ -58,7 +58,7 @@ export default function CollapsibleTable({
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
           <Seeker
             inputName="searchText"
-            inputPlaceholder="Buscar botiquín o suplemento"
+            inputPlaceholder="Buscar botiquín o articulo"
             btnName="Buscar"
             valueText={searchText}
             valueFeature={searchFeature}

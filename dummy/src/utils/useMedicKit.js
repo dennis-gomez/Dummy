@@ -29,7 +29,7 @@ export const useMedicKits = () => {
 
   const subfields = [
     { key: "cod_medic_kit", label: "Código de botiquín", type: "text", placeholder: "Código de botiquín", required: false },
-    { key: "cod_supply", label: "Código de suplemento", type: "text", placeholder: "Código de suplemento", required: false },
+    { key: "cod_supply", label: "Código de articulo", type: "text", placeholder: "Código de articulo", required: false },
     { key: "supply_quantity", label: "Cantidad", type: "number", placeholder: "Cantidad", required: true },
     { key: "supply_expiration_date", label: "Fecha de Vencimiento", type: "date", placeholder: "Fecha de Vencimiento", required: false },
     { key: "supply_description", label: "Descripción", type: "textarea", placeholder: "Descripción", required: true },
@@ -69,7 +69,7 @@ export const useMedicKits = () => {
   };
 
   // -------------------------
-  // Buscar botiquines o suplementos
+  // Buscar botiquines o articulo
   // -------------------------
   const handleSearch = async (feature, text) => {
     try {
@@ -126,7 +126,7 @@ export const useMedicKits = () => {
   };
 
   // -------------------------
-  // Obtener suplementos por botiquín
+  // Obtener articulo por botiquín
   // -------------------------
   const getSuppliesByMedicKitId = async (cod_medic_kit) => {
     try {
@@ -148,7 +148,7 @@ export const useMedicKits = () => {
   };
 
   // -------------------------
-  // Agregar botiquín y/o suplementos
+  // Agregar botiquín y/o articulo
   // -------------------------
   const handleAddKitWithSupplies = async (formData) => {
     try {
@@ -203,7 +203,7 @@ export const useMedicKits = () => {
   };
 
   // -------------------------
-  // Editar suplemento
+  // Editar articulo
   // -------------------------
   const handleEditSupply = async (formData) => {
     try {
@@ -244,7 +244,7 @@ export const useMedicKits = () => {
   };
 
   // -------------------------
-  // Eliminar suplemento
+  // Eliminar articulo
   // -------------------------
   const handleEliminateSupply = async (cod_supply) => {
     try {
