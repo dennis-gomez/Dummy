@@ -9,9 +9,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 import Seeker from "../molecules/seeker";
 import InputValidated from "../atoms/inputValidated";
+import ReactivationModal from "../molecules/reactivationModal";
 
 function TechnologyInventoryTable({
   inventory = [],
@@ -34,7 +34,7 @@ function TechnologyInventoryTable({
   valueFeature,
 
   onChangeText,
-
+  onReactivate,
   onDelete,
   onEdit,
 }) {
@@ -287,18 +287,27 @@ function TechnologyInventoryTable({
                         <td className="py-3 px-4 text-center">{item.it_inventory_observations}</td>
                         <td className="py-4 px-6 text-center">
                           <div className="flex justify-center space-x-3">
-                            <button
-                            onClick={() => handleEditClick(item)}
-                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                            >
-                              <EditIcon fontSize="small" />
-                            </button>
-                            <button
-                              onClick={() => handleValidatedDelete(item.cod_it_inventory)}
-                              className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </button>
+                            {[1, 3, 4, 5].includes(item.it_inventory_status) ? (
+                              <>
+                                <button
+                                onClick={() => handleEditClick(item)}
+                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                >
+                                  <EditIcon fontSize="small" />
+                                </button>
+                                <button
+                                  onClick={() => handleValidatedDelete(item.cod_it_inventory)}
+                                  className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                >
+                                  <DeleteIcon fontSize="small" />
+                                </button>
+                              </>
+                              ) : (
+                                <ReactivationModal
+                                  message={"¿Quieres reactivar este activo?"}
+                                  onClick={() => onReactivate(item.cod_it_inventory)}
+                                />
+                            )} 
                           </div>
                         </td>
                       </>
