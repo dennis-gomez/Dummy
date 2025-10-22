@@ -64,6 +64,7 @@ function TechnologyInventory() {
                     funct={fetchAssets}
                     onCancel={() => setShowForm(false)}
                     values={null}
+                    systemsOperative={systemsOperative}
                 />
                 </Box>
             )}
@@ -111,7 +112,9 @@ function TechnologyInventory() {
                 onSearch={handleSearch}
                 valueText={searchText}
                 valueFeature={searchFeature}
+                
                 onChangeText={setSearchText}
+
                 onChangeFeature={setSearchFeature}
 
                 onDelete={handleDelete}

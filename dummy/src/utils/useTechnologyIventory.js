@@ -22,78 +22,73 @@ export const useTechnologyInventory = () => {
      * Variables de Catalogos  
     */
     const [offices, setOffices] = useState([]) //cargado de oficinas
-    const [systemsOperative, setSystemsOperative] = useState([])// cargado de sistemas operativos
+    const [systemsOperative, setSystemsOperative] = useState([{ value: 0, label: "No tiene", placeholder: "No tiene", name: null }]); //cargado de sistemas operativos
     const [brands, setBrands] = useState([])//cargado de marcas de equipos
     const [categoryAssets, setCategoryAssets] = useState([])// categorias de equipos = {perifericos, equipos, redes, etc}
     const [assets, setAssets] = useState([])
 
     
     const fields = [
-        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 253 },
-        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 253 },
-        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 253 },
-
-        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 253 },
-        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 253 },
-        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento o Gerente de Producto", required: true, width: 253 },
-        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 253 },
-
+        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 387, validations: [(value) => value && value.length > 50 ? "Número de serie debe tener máximo 50 caracteres." : null,], restriction: "unique" },
+        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 387, validations: [(value) => value && value.length > 25 ? "Placa debe tener máximo 25 caracteres." : null,] },
+        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 387, validations: [(value) => value && value.length > 50 ? "Etiqueta debe tener máximo 50 caracteres." : null,] },
+        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 387 },
+        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 387, validations: [(value) => value && value.length > 100 ? "Encargado del equipo debe tener máximo 100 caracteres." : null,] },
+        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 387, validations: [(value) => value && value.length > 50 ? "Correo debe tener máximo 50 caracteres." : null,]},
+        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento o Gerente de Producto", required: true, width: 387, validations: [(value) => value && value.length > 100 ? "Departamento o gerente de producto debe tener máximo 100 caracteres." : null,]},
+        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 387, validations: [(value) => value && value.length > 100 ? "Cliente debe tener máximo 100 caracteres." : null,]},
         { name: "it_inventory_asset_category_code", placeholder: "Categoría", required: true, type: "select", options: categoryAssets, width: 253 },
         { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 253 },
         { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 253 },
-        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 253 },
+        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 253, validations: [(value) => value && value.length > 50 ? "Modelo debe tener máximo 50 caracteres." : null,] },
         { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 253 },
-
-        { name: "it_inventory_RAM", placeholder: "Memoria de Acceso Aleatorio (RAM)", required: false, width: 253 },
-        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253 },
-        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253 },
-
-        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 390 },
-
-        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390, type: "select", options: [
-            { value: true, label: "Sí" },
-            { value: false, label: "No" },
+        { name: "it_inventory_RAM", placeholder: "RAM", required: false, width: 253, validations: [(value) => value && value.length > 10 ? "RAM debe tener máximo 10 caracteres." : null,] },
+        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253, validations: [(value) => value && value.length > 10 ? "Capacidad del disco debe tener máximo 10 caracteres." : null,] },
+        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253, validations: [(value) => value && value.length > 20 ? "Procesador debe tener máximo 20 caracteres." : null,] },
+        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 253, type: "select", options: [
+            { name: "No", placeholder: "No" , value: false, label: "No" },
+            { name: "Sí", placeholder: "Sí" , value: true, label: "Sí" },
         ],},
-        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800 },
-
-        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800 },
+        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800, validations: [(value) => value && value.length > 250 ? "Los detalles del leasing debe tener máximo 250 caracteres." : null,] },
+        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800},
     ];
 
     const editFields = [
-        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 253 },
-        { name: "it_inventory_status", placeholder: "Estado de Equipo", required: true, type:"select", options:[{ value: 1, label: "Activo" },{ value: 2, label: "Inactivo" }, { value: 3, label: "En Reparación" }, { value: 4, label: "En Almacén" }, { value: 5, label: "Perdido" }, { value: 6, label: "Inactivo" }], width: 253 },
-        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 253 },
-        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 253 },
-
-        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 253 },
-        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 253 },
-        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento o Gerente de Producto", required: true, width: 390 },
-        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 390 },
-
-        { name: "it_inventory_asset_category_code", placeholder: "Categoría", required: true, type: "select", options: categoryAssets, width: 253 },
-        { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 253 },
-        { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 253 },
-        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 253 },
-        { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 253 },
-
-        { name: "it_inventory_RAM", placeholder: "Memoria de Acceso Aleatorio", required: false, width: 253 },
-        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253 },
-        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253 },
-
-        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 390 },
-
-        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 390, type: "select", options: [
-            { value: true, label: "Sí" },
-            { value: false, label: "No" },
+        { name: "it_inventory_serial_number", placeholder: "Número de Serie", required: true, width: 200, validations: [(value) => value && value.length > 50 ? "Número de serie debe tener máximo 50 caracteres." : null,] },
+        { name: "it_inventory_plate", placeholder: "Placa", required: false, width: 200, validations: [(value) => value && value.length > 25 ? "Placa debe tener máximo 25 caracteres." : null,] },
+        { name: "it_inventory_status", placeholder: "Estado de Equipo", required: true, type:"select", options:[
+            { value: 1, label: "Activo", name: 1, placeholder: "Activo" },
+            { value: 2, label: "Inactivo", name: 2, placeholder: "Inactivo" }, 
+            { value: 3, label: "En Reparación", name: 3, placeholder: "En Reparación" }, 
+            { value: 4, label: "En Almacén", name: 4, placeholder: "En Almacén" }, 
+            { value: 5, label: "Perdido", name: 5, placeholder: "Perdido" }, 
+            { value: 6, label: "Inactivo", name: 6, placeholder: "Inactivo" }
+        ], width: 170 },
+        { name: "it_inventory_in_charge", placeholder: "Encargado de Equipo", required: true, width: 253,  validations: [(value) => value && value.length > 100 ? "Encargado del equipo debe tener máximo 100 caracteres." : null,]},
+        { name: "it_inventory_email", placeholder: "Correo de Encargado", required: true, type: "email", width: 253, validations: [(value) => value && value.length > 50 ? "Correo debe tener máximo 50 caracteres." : null,] },
+        { name: "it_inventory_label", placeholder: "Etiqueta", required: false, width: 253, validations: [(value) => value && value.length > 50 ? "Etiqueta debe tener máximo 50 caracteres." : null,] },
+        { name: "it_inventory_department_or_product_manager", placeholder: "Departamento / Gerente de Producto", required: true, width: 300, validations: [(value) => value && value.length > 100 ? "Departamento o gerente de producto debe tener máximo 100 caracteres." : null,]},
+        { name: "it_inventory_asset_category_code", placeholder: "Categoría", required: true, type: "select", options: categoryAssets, width: 200 },
+        { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 200 },
+        { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 200 },
+        { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 200, validations: [(value) => value && value.length > 50 ? "Modelo debe tener máximo 50 caracteres." : null,] },
+        { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 200 },
+        { name: "it_inventory_RAM", placeholder: "RAM", required: false, width: 200,  validations: [(value) => value && value.length > 10 ? "RAM debe tener máximo 10 caracteres." : null,]},
+        { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 200, validations: [(value) => value && value.length > 10 ? "Capacidad del disco debe tener máximo 10 caracteres." : null,] },
+        { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 200, validations: [(value) => value && value.length > 20 ? "Procesador debe tener máximo 20 caracteres." : null,] },
+        { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 200 },
+        { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 250, validations: [(value) => value && value.length > 100 ? "Cliente debe tener máximo 100 caracteres." : null,] },
+        { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 100, type: "select", options: [
+            { name: 0, placeholder: "No" , value: 0, label: "No" },
+            { name: 1, placeholder: "Sí" , value: 1, label: "Sí" },
         ],},
-        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800 },
-
-        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800 },
+        { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 400, validations: [(value) => value && value.length > 250 ? "Los detalles del leasing debe tener máximo 250 caracteres." : null,] },
+        { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 400 },
     ];
 
 
     const [searchText, setSearchText] = useState("");
-    const [searchFeature, setSearchFeature] = useState(fields[0]?.name || "");
+    const [searchFeature, setSearchFeature] = useState(editFields[0]?.name || "");
 
     // Cargado de oficinas
     const fetchOffice = async () => {
@@ -103,7 +98,12 @@ export const useTechnologyInventory = () => {
                 Number(import.meta.env.VITE_TI_TYPE_OFFICE_CODE)
             );
 
-            setOffices(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
+            setOffices(typesResp.map(type => ({ 
+                value: type.cod_item, 
+                label: type.item_name, 
+                name: type.cod_item,  
+                placeholder: type.item_name
+            })));
         } catch (err) {
             setError("Error al obtener oficinas");
             ModalAlert("Error", "Error al obtener oficinas", "error");
@@ -118,7 +118,17 @@ export const useTechnologyInventory = () => {
                 Number(import.meta.env.VITE_TI_SO_CATEGORY_CODE)
             );
 
-            setSystemsOperative(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
+            setSystemsOperative([
+                { value: 0, label: "No tiene", placeholder: "No tiene", name: null },
+                ...typesResp.map(type => ({ 
+                    value: type.cod_item, 
+                    label: type.item_name, 
+                    name: type.cod_item, 
+                    placeholder: type.item_name
+                }))
+            ]);
+
+            
         } catch (err) {
             setError("Error al obtener los sistemas operativos");
             ModalAlert("Error", "Error al obtener sistemas operativos", "error");
@@ -132,7 +142,12 @@ export const useTechnologyInventory = () => {
                 Number(import.meta.env.VITE_TI_SERVICE_CODE),
                 Number(import.meta.env.VITE_TI_BRAND_CATEGORY_CODE)
             );
-            setBrands(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
+            setBrands(typesResp.map(type => ({ 
+                value: type.cod_item, 
+                label: type.item_name, 
+                name:type.cod_item, 
+                placeholder: type.item_name
+            })));
         } catch (err) {
             setError("Error al obtener marcas de equipos");
             ModalAlert("Error", "Error al obtener marcas de equipos", "error");
@@ -154,6 +169,8 @@ export const useTechnologyInventory = () => {
                 filtered.map(type => ({
                     value: type.cod_category,
                     label: type.category_name,
+                    name: type.cod_category,
+                    placeholder: type.category_name
                 }))
             );
         } catch (err) {
@@ -169,7 +186,12 @@ export const useTechnologyInventory = () => {
                 Number(import.meta.env.VITE_TI_SERVICE_CODE),
                 Number(it_inventory_asset_category_code)
             );
-            setAssets(typesResp.map(type => ({ value: type.cod_item, label: type.item_name })));
+            setAssets(typesResp.map(type => ({ 
+                value: type.cod_item, 
+                label: type.item_name, 
+                name: type.cod_item,
+                placeholder: type.item_name 
+            })));
         } catch (err) {
             setError("Error al obtener equipos");
             ModalAlert("Error", "Error al obtener equipos", "error");
@@ -181,7 +203,6 @@ export const useTechnologyInventory = () => {
     const getActiveInventory = async () => {
         try {
             const data = await getTechnologyInventory();
-            console.log(data.data)
             setInventory(data.data);
         } catch (err) {
             setError("Error al obtener equipos");
@@ -204,6 +225,7 @@ export const useTechnologyInventory = () => {
                 it_inventory_office_service_code: Number(import.meta.env.VITE_TI_SERVICE_CODE),
                 it_inventory_office_category_code: Number(import.meta.env.VITE_TI_TYPE_OFFICE_CODE),
                 it_inventory_last_update_date: new Date().toISOString().split("T")[0],
+                it_inventory_so_item_code: formData.it_inventory_so_item_code === 0 ? null : formData.it_inventory_so_item_code,
                 it_inventory_leasing: true
             };
 
