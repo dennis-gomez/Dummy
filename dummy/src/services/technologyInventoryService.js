@@ -65,3 +65,15 @@ export const deleteTechnologyInventory = async (cod_it_inventory) => {
         throw error;
     }
 };
+
+export const reactivateTechnologyInventory = async (cod_it_inventory) => {
+    try {
+        const response = await axios.put(API_URL + "reactivate", {}, {
+            params: { cod_it_inventory }, 
+            headers: { "Content-Type": "application/json" },
+        });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+};

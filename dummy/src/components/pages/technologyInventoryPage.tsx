@@ -30,6 +30,7 @@ function TechnologyInventory() {
         handleSearch,
         handleSubmit,
         handleDelete,
+        handleReactivate,
         handleEdit,
 
         fetchAssets
@@ -118,6 +119,7 @@ function TechnologyInventory() {
                 onChangeFeature={setSearchFeature}
 
                 onDelete={handleDelete}
+                onReactivate={handleReactivate}
                 onEdit={handleEdit}
             />
             </div>
