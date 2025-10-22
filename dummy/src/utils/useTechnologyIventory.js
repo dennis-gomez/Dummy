@@ -47,8 +47,8 @@ export const useTechnologyInventory = () => {
         { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 253, validations: [(value) => value && value.length > 10 ? "Capacidad del disco debe tener máximo 10 caracteres." : null,] },
         { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 253, validations: [(value) => value && value.length > 20 ? "Procesador debe tener máximo 20 caracteres." : null,] },
         { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 253, type: "select", options: [
-            { name: "No", placeholder: "No" , value: false, label: "No" },
-            { name: "Sí", placeholder: "Sí" , value: true, label: "Sí" },
+            { name: false, placeholder: "No" , value: false, label: "No" },
+            { name: true, placeholder: "Sí" , value: true, label: "Sí" },
         ],},
         { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 800, validations: [(value) => value && value.length > 250 ? "Los detalles del leasing debe tener máximo 250 caracteres." : null,] },
         { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 800},
@@ -72,15 +72,17 @@ export const useTechnologyInventory = () => {
         { name: "it_inventory_asset_item_code", placeholder: "Tipo de Equipo", required: true, type: "select", options: assets, width: 200 },
         { name: "it_inventory_brand_item_code", placeholder: "Marca", required: true, type: "select", options: brands, width: 200 },
         { name: "it_inventory_model", placeholder: "Modelo", required: false, width: 200, validations: [(value) => value && value.length > 50 ? "Modelo debe tener máximo 50 caracteres." : null,] },
+
         { name: "it_inventory_so_item_code", placeholder: "Sistema Operativo", required: false, type: "select", options: systemsOperative, width: 200 },
+
         { name: "it_inventory_RAM", placeholder: "RAM", required: false, width: 200,  validations: [(value) => value && value.length > 10 ? "RAM debe tener máximo 10 caracteres." : null,]},
         { name: "it_inventory_disk_capacity", placeholder: "Capacidad de Disco", required: false, width: 200, validations: [(value) => value && value.length > 10 ? "Capacidad del disco debe tener máximo 10 caracteres." : null,] },
         { name: "it_inventory_processor", placeholder: "Procesador", required: false, width: 200, validations: [(value) => value && value.length > 20 ? "Procesador debe tener máximo 20 caracteres." : null,] },
         { name: "it_inventory_office_item_code", placeholder: "Oficina", required: true, type: "select", options: offices, width: 200 },
         { name: "it_inventory_client", placeholder: "Cliente", required: false, width: 250, validations: [(value) => value && value.length > 100 ? "Cliente debe tener máximo 100 caracteres." : null,] },
         { name: "it_inventory_leasing", placeholder: "Leasing", required: true, width: 100, type: "select", options: [
-            { name: 0, placeholder: "No" , value: false, label: "No" },
-            { name: 1, placeholder: "Sí" , value: true, label: "Sí" },
+            { name: false, placeholder: "No" , value: false, label: "No" },
+            { name: true, placeholder: "Sí" , value: true, label: "Sí" },
         ],},
         { name: "it_inventory_leasing_details", placeholder: "Detalles del Leasing", required: false, type: "textarea", width: 400, validations: [(value) => value && value.length > 250 ? "Los detalles del leasing debe tener máximo 250 caracteres." : null,] },
         { name: "it_inventory_observations", placeholder: "Observaciones", required: false, type: "textarea", width: 400 },
@@ -127,7 +129,6 @@ export const useTechnologyInventory = () => {
                 }))
             ]);
 
-            
         } catch (err) {
             setError("Error al obtener los sistemas operativos");
             ModalAlert("Error", "Error al obtener sistemas operativos", "error");

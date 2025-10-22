@@ -189,7 +189,7 @@ function TechnologyInventoryTable({
                             <InputValidated
                               name={field.name}
                               type={field.type || "text"}
-                              value={editData[field.name] || ""}
+                              value={editData[field.name]}
                               placeholder={field.placeholder}
                               options={field.options || []}
                               restriction={field.restriction}
