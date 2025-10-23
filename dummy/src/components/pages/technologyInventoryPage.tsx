@@ -30,6 +30,7 @@ function TechnologyInventory() {
         handleSearch,
         handleSubmit,
         handleDelete,
+        handleReactivate,
         handleEdit,
 
         fetchAssets
@@ -64,6 +65,7 @@ function TechnologyInventory() {
                     funct={fetchAssets}
                     onCancel={() => setShowForm(false)}
                     values={null}
+                    systemsOperative={systemsOperative}
                 />
                 </Box>
             )}
@@ -111,10 +113,13 @@ function TechnologyInventory() {
                 onSearch={handleSearch}
                 valueText={searchText}
                 valueFeature={searchFeature}
+                
                 onChangeText={setSearchText}
+
                 onChangeFeature={setSearchFeature}
 
                 onDelete={handleDelete}
+                onReactivate={handleReactivate}
                 onEdit={handleEdit}
             />
             </div>

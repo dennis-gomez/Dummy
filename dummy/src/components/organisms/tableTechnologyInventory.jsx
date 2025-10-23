@@ -9,9 +9,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 import Seeker from "../molecules/seeker";
 import InputValidated from "../atoms/inputValidated";
+import ReactivationModal from "../molecules/reactivationModal";
 
 function TechnologyInventoryTable({
   inventory = [],
@@ -34,7 +34,7 @@ function TechnologyInventoryTable({
   valueFeature,
 
   onChangeText,
-
+  onReactivate,
   onDelete,
   onEdit,
 }) {
@@ -111,7 +111,7 @@ function TechnologyInventoryTable({
               inputPlaceholder="Buscar..."
               btnName="Buscar"
               selectName="Filtrar por"
-              fields={fields}
+              fields={editFields}
               valueText={valueText}
               valueFeature={valueFeature}
               onChangeText={onChangeText}
@@ -157,13 +157,13 @@ function TechnologyInventoryTable({
                 <th className="py-4 px-6 text-center font-semibold">Encargado</th>
                 <th className="py-4 px-6 text-center font-semibold">Correo</th>
                 <th className="py-4 px-6 text-center font-semibold">Etiqueta</th>
-                <th className="py-4 px-6 text-center font-semibold">Departamento / Gerente</th>
+                <th className="py-4 px-6 text-center font-semibold">Departamento / Gerente de Producto</th>
                 <th className="py-4 px-6 text-center font-semibold">Categoría</th>
                 <th className="py-4 px-6 text-center font-semibold">Tipo</th>
                 <th className="py-4 px-6 text-center font-semibold">Marca</th>
                 <th className="py-4 px-6 text-center font-semibold">Modelo</th>
                 <th className="py-4 px-6 text-center font-semibold">Sistema Operativo</th>
-                <th className="py-4 px-6 text-center font-semibold">Memoria de Acceso Aleatorio (RAM)</th>
+                <th className="py-4 px-6 text-center font-semibold">RAM</th>
                 <th className="py-4 px-6 text-center font-semibold">Disco</th>
                 <th className="py-4 px-6 text-center font-semibold">Procesador</th>
                 <th className="py-4 px-6 text-center font-semibold">Oficina</th>
@@ -189,11 +189,12 @@ function TechnologyInventoryTable({
                             <InputValidated
                               name={field.name}
                               type={field.type || "text"}
-                              value={editData[field.name] || ""}
+                              value={editData[field.name]}
                               placeholder={field.placeholder}
                               options={field.options || []}
                               restriction={field.restriction}
                               required={field.required}
+                              validations={field.validations}
                               onChange={(e) =>
                                 setEditData({ ...editData, [field.name]: e.target.value })
                               }
@@ -267,7 +268,7 @@ function TechnologyInventoryTable({
                           {getLabelByCode(brands, item.it_inventory_brand_item_code)}
                         </td>
                         <td className="py-3 px-4 text-center">
-                          {item.model_name || item.it_inventory_model_item_code}
+                          {item.it_inventory_model}
                         </td>
                         <td className="py-3 px-4 text-center">
                           {getLabelByCode(systemsOperative, item.it_inventory_so_item_code)}
@@ -279,22 +280,35 @@ function TechnologyInventoryTable({
                           {getLabelByCode(offices, item.it_inventory_office_item_code)}
                         </td>
                         <td className="py-3 px-4 text-center">{item.it_inventory_client}</td>
-                        <td className="py-3 px-4 text-center">{item.it_inventory_leasing}</td>
+                        <td className="py-3 px-4 text-center">
+                            {item.it_inventory_leasing ? "Sí" : "No"}
+                        </td>
                         <td className="py-3 px-4 text-center">{item.it_inventory_leasing_details}</td>
                         <td className="py-3 px-4 text-center">{item.it_inventory_observations}</td>
                         <td className="py-4 px-6 text-center">
-                          <button
-                            onClick={() => handleEditClick(item)}
-                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
-                          >
-                            <EditIcon fontSize="small" />
-                          </button>
-                          <button
-                            onClick={() => handleValidatedDelete(item.cod_it_inventory)}
-                            className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
-                          >
-                            <DeleteIcon fontSize="small" />
-                          </button>
+                          <div className="flex justify-center space-x-3">
+                            {[1, 3, 4, 5].includes(Number(item.it_inventory_status)) ? (
+                              <>
+                                <button
+                                onClick={() => handleEditClick(item)}
+                                className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50"
+                                >
+                                  <EditIcon fontSize="small" />
+                                </button>
+                                <button
+                                  onClick={() => handleValidatedDelete(item.cod_it_inventory)}
+                                  className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50"
+                                >
+                                  <DeleteIcon fontSize="small" />
+                                </button>
+                              </>
+                            ) : (
+                                <ReactivationModal
+                                  message={"¿Quieres reactivar este activo?"}
+                                  onClick={() => onReactivate(item.cod_it_inventory)}
+                                />
+                            )} 
+                          </div>
                         </td>
                       </>
                     )}
