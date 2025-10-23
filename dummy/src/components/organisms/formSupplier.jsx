@@ -33,12 +33,12 @@ function SupplierForm({ onAddSupplier, onCancel }) {
       case "supplier_phone":
         if (!value.trim()) return "El teléfono es obligatorio";
         const phoneRegex = /^[0-9\-+()]{8,15}$/;
-        if (!phoneRegex.test(value)) return "Formato de teléfono inválido";
+        if (!phoneRegex.test(value)) return "Entre 8 y 15 dígitos ó + - ()";
         return "";
       case "supplier_email":
         if (!value.trim()) return "El correo es obligatorio";
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) return "Correo inválido";
+        if (!emailRegex.test(value)) return "Correo inválido falta @ o dominio";
         return "";
       default:
         return "";
@@ -124,7 +124,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
           backgroundColor: "#d9d9d9",
           boxShadow: 4,
           width: "auto", // ✅ Mantienes tu preferencia
-          maxWidth: { xs: "100%", sm: "800px", md: "1000px", lg: "1200px" }, // ✅ Limita el tamaño según pantalla
+          maxWidth: { xs: "100%", sm: "600px", md: "800px", lg: "1200px" }, // ✅ Limita el tamaño según pantalla
           mx: "auto", // Centrado horizontal
         }}
       >
@@ -163,7 +163,7 @@ function SupplierForm({ onAddSupplier, onCancel }) {
                 value={formData.supplier_email}
                 onChange={handleChange}
                 placeholder="Correo Electrónico"
-                label="Correo Electrónico"
+                label="Correo"
                 type="email"
                 error={errors.supplier_email}
                 sx={{

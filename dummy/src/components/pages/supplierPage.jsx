@@ -140,10 +140,21 @@ const SupplierPage = () => {
           <SupplierForm onAddSupplier={handleAddSupplier} />
         </div>
       )}
-
+      
       {/* Buscador + Filtro + Botón agregar/cancelar */}
 <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4 items-center">
-  {/* Buscador + Filtro */}
+    <Box className="flex items-center gap-2 min-w-[150px]">
+      <label htmlFor="activeFilter" className="font-medium">Estado:</label>
+      <select
+        id="activeFilter"
+        value={activeFilter}
+        onChange={(e) => setActiveFilter(e.target.value)}
+        className="rounded-lg border p-2"
+      >
+        <option value="1">Activos</option>
+        <option value="0">Inactivos</option>
+      </select>
+    </Box>
   <Box className="flex flex-1 flex-wrap gap-3 bg-white rounded-xl p-4 items-center">
     <Seeker
       inputName="search"
@@ -157,23 +168,7 @@ const SupplierPage = () => {
       onChangeFeature={setSearchFeature}
       onClick={handleSearch}
     />
-
-    {/* Filtro Activo/Inactivo */}
-    <Box className="flex items-center gap-2 min-w-[150px]">
-      <label htmlFor="activeFilter" className="font-medium">Estado:</label>
-      <select
-        id="activeFilter"
-        value={activeFilter}
-        onChange={(e) => setActiveFilter(e.target.value)}
-        className="rounded-lg border p-2"
-      >
-        <option value="1">Activos</option>
-        <option value="0">Inactivos</option>
-      </select>
-    </Box>
   </Box>
-
-  {/* Botón Agregar/Cancelar */}
   <div className="flex-shrink-0">
     <Button
       text={showForm ? "Cancelar" : "Agregar Proveedor"}
