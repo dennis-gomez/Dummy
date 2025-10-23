@@ -22,7 +22,7 @@ import SupplierPage from './components/pages/supplierPage'
 import InventaryPage from './components/pages/inventaryPage'
 import OrderPage from './components/pages/orderPage'
 import TechnologyInventory from './components/pages/technologyInventoryPage'
-
+import MovementTI from './components/pages/movementTI'
 
 function App() {
   return (
@@ -55,6 +55,7 @@ function App() {
             <Route path="/suministros/ordenes" element={<OrderPage/>} /> {/*ordenes de compra de suministros*/}
 
             <Route path="/inventario/tecnologias-informacion" element={<TechnologyInventory/>} />
+            <Route path="/inventario/tecnologias-informacion/movimientos" element={<MovementTI/>} />
           </Routes>
         </main>
         <Footer />
