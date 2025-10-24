@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Seeker from "../molecules/seeker";
+import Button from "../atoms/button";
 
 const PersonalTable = ({
     personal, 
@@ -25,11 +26,19 @@ const PersonalTable = ({
     currentPage, 
     onPageChange, 
 
+    showForm,
+
     searchText, 
     searchField,
     setSearchText, 
     setSearchField,
     handleSearch, 
+
+    handleDelete, 
+    handleReactivate, 
+    handleEdit,
+
+    onToggleForm,
 }) => {
 
     const [editingId, setEditingId] = useState(null);
@@ -52,14 +61,13 @@ const PersonalTable = ({
         }
 
         if (!editingId) return;
-        /*
-        const isSaved = await onEdit(editData);
+        
+        const isSaved = await handleEdit(editData);
         if (isSaved) {
             setEditingId(null);
             setEditData({});
             setEditErrors({});
         }
-        */
     };
 
     const handleCancelEdit = () => {
@@ -90,6 +98,17 @@ const PersonalTable = ({
                     onChangeFeature={setSearchField}
                     onClick={handleSearch}
                 />
+
+                {/* Botón Agregar/Cancelar */}
+                <div className="flex items-center justify-center lg:justify-start w-full sm:w-auto">
+                <div className="p-4 h-fit">
+                    <Button
+                        text={showForm ? "Cancelar" : "Agregar Personal"}
+                        onClick={onToggleForm}
+                        className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                    />
+                </div>
+                </div>
             </div>
 
             {isLoading ? (
@@ -129,6 +148,7 @@ const PersonalTable = ({
                                     <td className="py-4 px-6 text-center">{index + 1}</td>
 
                                     {fields
+                                    .filter((f) => f.name !== "personal_is_active")
                                     .map((f) => { 
                                     const fieldEdit = editFields.find((ef) => ef.name === f.name);
                                     return (
@@ -183,21 +203,22 @@ const PersonalTable = ({
                                     ) : (
                                         per.personal_is_active ? (
                                             <>
-                                            <button
-                                            onClick={() => console.log("edita")}
-                                            className="text-blue-600 hover:text-blue-800"
-                                            >
-                                                <EditIcon />
-                                            </button>
-                                            <ModalElimination
-                                                message={"¿Estás seguro de desactivarlo?"}
-                                                onClick={() => console.log("descativa")}
-                                            />
+                                                <button
+                                                    onClick={() => handleEditClick(per)}
+                                                    className="text-blue-600 hover:text-blue-800"
+                                                >
+                                                    <EditIcon />
+                                                </button>
+
+                                                <ModalElimination
+                                                    message={"¿Estás seguro de desactivarlo?"}
+                                                    onClick={() => handleDelete(per.personal_cod)}
+                                                />
                                             </>
                                         ) : (
                                             <ReactivationModal
                                                 message={"¿Quieres reactivarlo?"}
-                                                onClick={() => console.log("reactiva")}
+                                                onClick={() => handleReactivate(per.personal_cod)}
                                             />
                                         )
                                     )}

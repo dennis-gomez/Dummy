@@ -1,6 +1,7 @@
 import { usePersonal } from "../../utils/usePersonal";
 import PersonalTable from "../organisms/personalTable";
 import { Box, Typography } from "@mui/material";
+import Form from "../organisms/form";
 
 function PersonalPage () {
 
@@ -12,6 +13,7 @@ function PersonalPage () {
 
         loading,
         error,
+        setError,
         showForm,
         setShowForm,
 
@@ -23,7 +25,12 @@ function PersonalPage () {
 
         totalPages, 
         page, 
-        onPageChange
+        onPageChange, 
+
+        handleDelete,
+        handleReactivate, 
+        handleEdit,  
+        handleSubmit,
     } = usePersonal()
 
     return (
@@ -47,14 +54,13 @@ function PersonalPage () {
                             Agregar Personal
                         </h3>
                     </div> 
-                    {/*
+                    
                     <Form 
-                        fields={fields.filter(field)} 
+                        fields={fields.filter(field => field.name !== "personal_is_active")} 
                         onSubmit={handleSubmit}
-                        values={vehicles.map(v => ({ value: v.vehicle_plate, id: v.cod_vehicle }))}
+                        values={personal.map(v => ({ value: v.personal_identification, id: v.personal_cod }))} //pasar todos los personales
                         titleBtn={"Guardar Personal"}
                     />
-                    */}
                 </Box>
             )}
 
@@ -88,11 +94,22 @@ function PersonalPage () {
                 currentPage={page}
                 onPageChange={onPageChange}
 
+                showForm={showForm}
+
                 searchText={searchText}
                 searchField={searchField}
                 setSearchText={setSearchText} 
                 setSearchField={setSearchField}
                 handleSearch={handleSearch} 
+
+                handleDelete={handleDelete}
+                handleReactivate={handleReactivate}
+                handleEdit={handleEdit}
+
+                onToggleForm={() => {
+                    setShowForm(!showForm);
+                    setError(null);
+                }}
             />
         </div>
     );

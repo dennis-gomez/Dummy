@@ -1,6 +1,7 @@
-import { findPersonal, getPersonal } from "../services/personalService";
+import { addPersonal, deletePersonal, findPersonal, getPersonal, reactivatePersonal, updatePersonal } from "../services/personalService";
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
+import Swal from "sweetalert2";
 
 export const usePersonal = () => {
     /*
@@ -22,25 +23,44 @@ export const usePersonal = () => {
     * Fields de manejo de formularios dinamicos
     */
     const fields = [
-        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 780},
-        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 780},
+        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 382},
+        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 382},
         { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 382},
         { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 382},
-        { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 382},
-        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 250},
-        { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 250},
-        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 250}, 
+        { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 382, restriction:"cantAfterToday"},
+        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 382},
+        { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 382, type: "select",
+            options: [
+                { name: 1, placeholder: "Si" , value: 1, label: "Si"},
+                { name: 0, placeholder: "No", value: 0, label: "No" }
+            ]
+        },
+        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 382},
+        { name: "personal_is_active", placeholder: "Estados",  type: "select",
+            options: [
+                { name: 1, placeholder: "Activos" , value: 1, label: "Activos"},
+                { name: 0, placeholder: "Desactivados", value: 0, label: "Desactivados" }
+            ]
+        }, 
     ];
 
+    /*
+    * Fields de manejo de formularios edicion
+    */
     const editFields = [
-        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 780},
-        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 780},
-        { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 382},
-        { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 382},
-        { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 382},
-        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 250},
-        { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 250},
-        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 250}, 
+        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 170},
+        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 170},
+        { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 170},
+        { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 170},
+        { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 170, restriction:"cantAfterToday"},
+        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 170},
+        { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 170, type: "select",
+            options: [
+                { name: 1, placeholder: "Si" , value: 1, label: "Si"},
+                { name: 0, placeholder: "No", value: 0, label: "No" }
+            ]
+        },
+        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 170},  
     ];
 
     /*
@@ -114,8 +134,97 @@ export const usePersonal = () => {
         }
     };
 
+    const handleDelete = async (id) => {
+        try {
+            setLoading(true);
+            const response = await deletePersonal(id);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Persona desactivado exitosamente.", "success");
+                await fetchPersonal(1, pageSize);
+                setError(null);
+            }
+        } catch (err) {
+            const msg = err.response?.data?.message || "Error al desactivar personal.";
+            ModalAlert("Error", msg, "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleReactivate = async (id) => {
+        try {
+            setLoading(true);
+            const response = await reactivatePersonal(id);
+            if (response.status === 200) {
+                ModalAlert("Éxito", response.data.message || "Persona reactivada exitosamente.", "success");
+                await fetchPersonal(1, pageSize);
+                setIsFiltering(false);
+                setAppliedText(true); // cambiar esto, hay que poner en blanco
+                setError(null);
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || "Error al reactivar persona.";
+            ModalAlert("Error", message, "error");
+            setError(message);
+        }
+    };
+
+    /*
+    *
+    */
+    const handleEdit = async (updatedData) => {
+        const confirm = await Swal.fire({
+            title: "¿Guardar cambios?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, guardar",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#2563eb",
+            cancelButtonColor: "#9ca3af",
+        });
+    
+        if (!confirm.isConfirmed) return false;
+    
+        try {
+            setLoading(true);
+            const response = await updatePersonal(updatedData);
+            if (response.status === 200) {
+                Swal.fire("Actualizado", "Personal editado exitosamente.", "success");
+                await fetchPersonal(1, pageSize);
+                setError(null);
+            }
+            return true;
+        } catch (err) {
+            const msg = err.response?.data?.message || "Error al editar.";
+            Swal.fire("Error", msg, "error");
+            setError(msg);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = async (formData) => {
+        try {
+            setLoading(true);
+            const response = await addPersonal(formData);
+            if (response.status === 201) {
+                Swal.fire("Éxito", "Personal agregado exitosamente.", "success");
+                await fetchPersonal();
+                setShowForm(false);
+                setError(null);
+            }
+        } catch (err) {
+            const msg = err.response?.data?.message || "Error al agregar personal.";
+            Swal.fire("Error", msg, "error");
+            setError(msg);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        fetchPersonal(1, 2);
+        fetchPersonal(1, pageSize);
     }, []);
 
     return {
@@ -126,6 +235,7 @@ export const usePersonal = () => {
 
         loading,
         error,
+        setError,
         showForm,
         setShowForm,
 
@@ -138,5 +248,10 @@ export const usePersonal = () => {
         setSearchText, 
         setSearchField,
         handleSearch, 
+
+        handleDelete, 
+        handleReactivate, 
+        handleEdit, 
+        handleSubmit, 
     }
 }
