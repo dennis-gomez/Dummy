@@ -1,0 +1,290 @@
+import { useState, useEffect } from "react";
+import {
+  getProfilesByPersonId,
+  getAvailableRoles,
+  createProfile,
+  deleteProfile,
+} from "../services/profileService";
+import ModalAlert from "../components/molecules/modalAlert";
+import { getItems } from "../services/itemService";
+import {
+  getSpecializedTrainingByProfileId,
+  addSpecializedTraining,
+} from "../services/specializedTrainingService";
+
+export const useProfile = () => {
+  const [optionsRoles, setOptionsRoles] = useState([]);
+  const [profiles, setProfiles] = useState([]);
+  const [seeOptions, setSeeOptions] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [isAddingProfile, setIsAddingProfile] = useState(false);
+  const [avaliableRoles, setAvailableRoles] = useState([]);
+  const [seeSpecializedTraining, setSeeSpecializedTraining] = useState(false);
+  const [seeProjectExperience, setSeeProjectExperience] = useState(false);
+
+  const handleProfileSelect = (profile, value) => {
+    setSeeOptions(value);
+
+    if (value) {
+      setSelectedProfile(profile);
+      fetchedProfileSpecializedTraining(profile.profile_cod);
+      console.log("Perfil seleccionado:", profile);
+    } else {
+      setSelectedProfile(null);
+    }
+  };
+
+  const refreshAll = () => {
+    getProfiles();
+    getAllRoles();
+    fetchAvailableRoles();
+  };
+
+  const fetchAvailableRoles = async () => {
+    try {
+      const person_id = 1;
+      const roles = await getAvailableRoles(person_id);
+      const formattedRoles = roles.map((role) => ({
+        ...role,
+        name: role.cod_item,
+        placeholder: role.item_name,
+        value: role.cod_item,
+        label: role.item_name,
+      }));
+
+      setAvailableRoles(formattedRoles);
+      console.log("Roles disponibles obtenidos:", formattedRoles);
+    } catch (error) {
+      ModalAlert(
+        "Error",
+        "No se pudieron cargar los roles disponibles.",
+        "error"
+      );
+    }
+  };
+
+  const handleDeleteProfile = async (profileId) => {
+    try {
+      await deleteProfile(profileId);
+      ModalAlert("Éxito", "Perfil eliminado correctamente.", "success");
+      refreshAll(); // Refrescar la lista de perfiles y roles disponibles
+    } catch (error) {
+      ModalAlert("Error", "No se pudo eliminar el perfil.", "error");
+    }
+  };
+
+  const handleSaveProfile = async (profileData) => {
+    try {
+      const person_id = 1;
+      const data = {
+        profile_role_cod_service: Number(
+          import.meta.env.VITE_ROLE_SERVICE_CODE
+        ),
+        profile_role_cod_category: Number(
+          import.meta.env.VITE_ROLE_CATEGORY_CODE
+        ),
+        profile_role_cod_item: profileData.role,
+      };
+      await createProfile(person_id, data);
+      ModalAlert("Éxito", "Perfil creado correctamente.", "success");
+      refreshAll(); // Refrescar la lista de perfiles y roles disponibles
+    } catch (error) {
+      ModalAlert("Error", "No se pudo crear el perfil.", "error");
+    }
+  };
+
+  const getProfiles = async () => {
+    try {
+      const person_id = 1;
+      const data = await getProfilesByPersonId(person_id);
+      setProfiles(data);
+      console.log("los datos son", data);
+    } catch (error) {
+      ModalAlert("Error", "No se pudieron cargar los perfiles.", "error");
+    }
+  };
+
+  const getAllRoles = async () => {
+    try {
+      const items = await getItems(14, 1);
+      console.log("Roles obtenidos:", items);
+      setOptionsRoles(items);
+    } catch (error) {
+      ModalAlert("Error", "No se pudieron cargar los roles.", "error");
+      return [];
+    }
+  };
+
+  const fields = [
+    {
+      name: "role",
+      label: "Rol",
+      type: "select",
+      options: avaliableRoles,
+      grid: 6,
+      placeholder: "Seleccione un rol",
+      required: true,
+      width: 200,
+    },
+  ];
+
+  //seccion de specialized training
+
+  const [specializedTrainingData, setSpecializedTrainingData] = useState([]);
+  const [isCreatingSpecializedTraining, setIsCreatingSpecializedTraining] =
+    useState(true);
+
+  const handleAddSpecializedTraining = async (trainingData) => {
+    try {
+      //codigo de perfil
+      const profileId = selectedProfile.profile_cod;
+
+      const data = await addSpecializedTraining(profileId, trainingData);
+      ModalAlert(
+        "Éxito",
+        "Formación especializada agregada correctamente.",
+        "success"
+      );
+      //refrescar la lista
+      fetchedProfileSpecializedTraining(profileId);
+      return data;
+    } catch (error) {
+      console.error("Error adding specialized training:", error);
+      ModalAlert(
+        "Error",
+        "No se pudo agregar la formación especializada.",
+        "error"
+      );
+      return null;
+    }
+  };
+
+  const fetchedProfileSpecializedTraining = async (profileId) => {
+    try {
+      const data = await getSpecializedTrainingByProfileId(profileId);
+      setSpecializedTrainingData(data);
+      console.log("Formación especializada obtenida:", data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching specialized training:", error);
+      return [];
+    }
+  };
+
+  const specializedTrainingFields = [
+    {
+      name: "training_name",
+      label: "Nombre de la Formación",
+      type: "text",
+      grid: 6,
+      placeholder: "Nombre",
+      required: true,
+      width: 250,
+    },
+    {
+      name: "training_number",
+      label: "Número de Certificación",
+      type: "text",
+      grid: 6,
+      placeholder: "Número",
+      required: false,
+      width: 250,
+    },
+    {
+      name: "training_institution",
+      label: "Institución",
+      type: "text",
+      grid: 6,
+      placeholder: "Institución",
+      required: false,
+      width: 250,
+    },
+    {
+      name: "training_pdf",
+      label: "Certificado (PDF)",
+      type: "file",
+      grid: 6,
+      placeholder: "Subir PDF",
+      required: false,
+      width: 250,
+    },
+    {
+      name: "training_start_date",
+      label: "Fecha de Inicio",
+      type: "date",
+      grid: 6,
+      placeholder: "Fecha de Inicio",
+      required: true,
+      width: 250,
+    },
+    {
+      name: "training_end_date",
+      label: "Fecha de Finalización",
+      type: "date",
+      grid: 6,
+      placeholder: "Fecha de Finalización",
+      required: true,
+      width: 250,
+    },
+    {
+      name: "training_hours",
+      label: "Horas",
+      type: "number",
+      grid: 6,
+      placeholder: "Horas",
+      required: true,
+      width: 250,
+    },
+    {
+      name: "training_validity",
+      label: "Validez (meses)",
+      type: "date",
+      grid: 6,
+      placeholder: "Validez",
+      required: false,
+      width: 250,
+    },
+    {
+      name: "training_description",
+      label: "Descripción",
+      type: "textarea",
+      grid: 12,
+      placeholder: "Descripción",
+      required: false,
+      width: 1050,
+    },
+  ];
+
+  useEffect(() => {
+    getProfiles();
+    getAllRoles();
+    fetchAvailableRoles();
+  }, []);
+
+  return {
+    //esto es de perfiles
+
+    profiles,
+    getProfiles,
+    fields,
+    seeOptions,
+    handleProfileSelect,
+    isAddingProfile,
+    setIsAddingProfile,
+    optionsRoles,
+    handleSaveProfile,
+    handleDeleteProfile,
+    seeSpecializedTraining,
+    seeProjectExperience,
+    setSeeSpecializedTraining,
+    setSeeProjectExperience,
+    selectedProfile,
+
+    //de aqui para abajo es de specialized training
+    specializedTrainingData,
+    isCreatingSpecializedTraining,
+    setIsCreatingSpecializedTraining,
+    specializedTrainingFields,
+    handleAddSpecializedTraining,
+  };
+};

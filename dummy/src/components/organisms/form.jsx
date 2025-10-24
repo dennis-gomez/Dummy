@@ -6,7 +6,7 @@ import InputValidatedDate from "../atoms/inputValidatedDate";
 import InputValidatedFile from "../atoms/inputValidatedFile";
 import { useState } from "react";
 
-function Form({ fields, onSubmit, titleBtn, onCancel, values, funct }) {
+function Form({ fields, onSubmit, titleBtn, onCancel, values, funct, maxWidth = 850 }) {
   // 🔹 Inicializar revision_status en "true" (Pasó)
   const [formData, setFormData] = useState(
     fields.reduce((acc, field) => ({
@@ -51,7 +51,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, funct }) {
   const showActionPlan = formData.revision_status !== "true";
 
   return (
-    <Box sx={{ p: 3, margin: "0 auto", maxWidth: 850, mt: 3 }}>
+    <Box sx={{ p: 3, margin: "0 auto", maxWidth: maxWidth, mt: 3 }}>
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           {fields.map((field) => {

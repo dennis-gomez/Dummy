@@ -1,83 +1,104 @@
-import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
-import MenuIcon from '@mui/icons-material/Menu';
-import Tooltip from '@mui/material/Tooltip';
-import Badge from '@mui/material/Badge';
-import MailIcon from '@mui/icons-material/Mail';
-import NotificationDrawer from './drawer';
-import { fetchAllNotifications, getAllNotifications } from '../../services/useNotifications';
+import * as React from "react";
+import { useNavigate } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
+import Tooltip from "@mui/material/Tooltip";
+import Badge from "@mui/material/Badge";
+import MailIcon from "@mui/icons-material/Mail";
+import NotificationDrawer from "./drawer";
+import {
+  fetchAllNotifications,
+  getAllNotifications,
+} from "../../services/useNotifications";
 
 const navConfig = [
   {
-    label: 'Vehículos',
+    label: "Vehículos",
     sub: [
-      { label: 'Gestión de Vehículos', path: '/vehiculos' },
-      { label: 'Registro de Combustible', path: '/vehiculos/registro-combustible' },
-      { label: 'Mantenimiento de Vehículos', path: '/vehiculos/registro-mantenimientos' },
+      { label: "Gestión de Vehículos", path: "/vehiculos" },
+      {
+        label: "Registro de Combustible",
+        path: "/vehiculos/registro-combustible",
+      },
+      {
+        label: "Mantenimiento de Vehículos",
+        path: "/vehiculos/registro-mantenimientos",
+      },
     ],
   },
   {
-    label: 'Mantenimiento Preventivo',
+    label: "Mantenimiento Preventivo",
     sub: [
-      { label: 'Gestion del Edificio', path: '/mantenimiento_edificio/gestion' },
-      
+      {
+        label: "Gestion del Edificio",
+        path: "/mantenimiento_edificio/gestion",
+      },
     ],
   },
   {
-    label: 'Suministros',
+    label: "Suministros",
     sub: [
-      { label: 'Proveedores', path: '/suministros/proveedores' },
-      { label: 'Inventario', path: '/suministros/inventario' },
-      { label: 'Órdenes de Compra', path: '/suministros/ordenes' },
+      { label: "Proveedores", path: "/suministros/proveedores" },
+      { label: "Inventario", path: "/suministros/inventario" },
+      { label: "Órdenes de Compra", path: "/suministros/ordenes" },
     ],
   },
   {
-    label: 'Caja Chica',
+    label: "Caja Chica",
+    sub: [{ label: "Gestión de Cajas Chicas", path: "/caja/gestion" }],
+  },
+  {
+    label: "Libros Legales",
     sub: [
-       { label: 'Gestión de Cajas Chicas', path: '/caja/gestion' },
-     
+      { label: "Gestión de Libros Legales", path: "/libros/mantenimiento" },
+      { label: "Movimientos de Libros Legales", path: "/libros/registros" },
     ],
   },
   {
-    label: 'Libros Legales',
+    label: "Salud Ocupacional",
     sub: [
-      { label: 'Gestión de Libros Legales', path: '/libros/mantenimiento' },
-      { label: 'Movimientos de Libros Legales', path: '/libros/registros' },
+      { label: "Botiquines", path: "/salud/botiquin" },
+      { label: "Extintores", path: "/salud/extinguidores" },
+      { label: "Brigadas", path: "/salud/brigadas" },
     ],
   },
   {
-    label: 'Salud Ocupacional',
+    label: "Garantías",
     sub: [
-      { label: 'Botiquines', path: '/salud/botiquin' },
-      { label: 'Extintores', path: '/salud/extinguidores' },
-      { label: 'Brigadas', path: '/salud/brigadas' },
+      { label: "Gestión de Garantías", path: "/garantias/gestion" },
+      { label: "Cuadro de Resumen", path: "/garantias/resumen" },
     ],
   },
   {
-    label: 'Garantías',
+    label: "TI",
     sub: [
-      { label: 'Gestión de Garantías', path: '/garantias/gestion' },
-      { label: 'Cuadro de Resumen', path: '/garantias/resumen' },
+      { label: "Inventario", path: "/inventario/tecnologias-informacion" },
+      {
+        label: "Gestion Movimientos TI",
+        path: "/inventario/tecnologias-informacion/movimientos",
+      },
+      { label: "Configuraciones del Sistema", path: "/ti/config" },
     ],
   },
   {
-    label: 'TI',
-    sub: [
-      { label: 'Inventario', path: '/inventario/tecnologias-informacion' },
-      { label: 'Gestion Movimientos TI', path: '/inventario/tecnologias-informacion/movimientos' },
-      { label: 'Configuraciones del Sistema', path: '/ti/config' },
-    ],
+    label: "Catálogo",
+    sub: [{ label: "Gestionar Catálogo", path: "/catalogo/gestionar" }],
   },
   {
-    label: 'Catálogo',
-    sub: [{ label: 'Gestionar Catálogo', path: '/catalogo/gestionar' }],
+    label: "Licitaciones",
+    sub: [
+      { label: "Gestión de Licitaciones", path: "/licitaciones/gestion" },
+      { label: "Perfiles demo", path: "/licitaciones/perfiles" },
+    ],
   },
 ];
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [mobileSubMenu, setMobileSubMenu] = React.useState(null);
-  const [desktopSubMenu, setDesktopSubMenu] = React.useState({ anchor: null, index: null });
+  const [desktopSubMenu, setDesktopSubMenu] = React.useState({
+    anchor: null,
+    index: null,
+  });
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   const [notifications, setNotifications] = React.useState([]);
   const navigate = useNavigate();
@@ -119,7 +140,9 @@ export default function Navbar() {
               {navConfig.map((page, idx) => (
                 <div key={page.label} className="relative group">
                   <button
-                    onClick={(e) => setDesktopSubMenu({ anchor: e.currentTarget, index: idx })}
+                    onClick={(e) =>
+                      setDesktopSubMenu({ anchor: e.currentTarget, index: idx })
+                    }
                     className="px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
                   >
                     {page.label}
@@ -128,7 +151,9 @@ export default function Navbar() {
                   {desktopSubMenu.index === idx && (
                     <div
                       className="absolute left-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg py-1 z-50"
-                      onMouseLeave={() => setDesktopSubMenu({ anchor: null, index: null })}
+                      onMouseLeave={() =>
+                        setDesktopSubMenu({ anchor: null, index: null })
+                      }
                     >
                       {page.sub.map((sub) => (
                         <button
