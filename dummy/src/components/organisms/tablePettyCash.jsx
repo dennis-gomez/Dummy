@@ -4,8 +4,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CloseIcon from "@mui/icons-material/Close";
 import Button from "../atoms/button";
-import ModalAlert from "../molecules/ModalAlert"; // Asegúrate de tener la ruta correcta
-import ModalElimination from "../molecules/ModalElimination"; // Asegúrate de tener la ruta correcta
+import ModalAlert from "../molecules/modalAlert";
+import ModalElimination from "../molecules/modalElimination";
 
 function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading }) {
   const [editRowId, setEditRowId] = useState(null);
@@ -115,7 +115,7 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
     }, 2100);
   };
 
-  // 🟦 Manejo de estados: cargando, vacío o tabla
+  //  Manejo de estados: cargando, vacío o tabla
   if (isLoading) {
     return (
       <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
@@ -167,14 +167,14 @@ function PettyCashTable({ cashBoxes, onDelete, onEdit, onViewRecords, isLoading 
                     sx={{ backgroundColor: "white", borderRadius: 1 }}
                   />
                 ) : (
-            new Date(box.petty_cash_creation_date + "T00:00:00Z")
-  .toLocaleDateString('es-CR', {
-    day: '2-digit',
-    month: '2-digit',
-     year: "numeric",
-    timeZone: 'UTC' // fuerza que no se aplique la zona local
-  })
-  .replace(/\//g, '-')
+                  new Date(box.petty_cash_creation_date + "T00:00:00Z")
+                    .toLocaleDateString('es-CR', {
+                      day: '2-digit',
+                      month: '2-digit',
+                      year: "numeric",
+                      timeZone: 'UTC' 
+                    })
+                    .replace(/\//g, '-')
                 )}
               </td>
 

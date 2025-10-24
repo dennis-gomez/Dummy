@@ -6,7 +6,7 @@ const API_URL = "http://localhost:3000/it-inventory-movements";
 
 export const addItemToMovement = async (movementId, itemData) => {
   try {
-    console.log("🚀 Enviando al backend:", {
+    console.log(" Enviando al backend:", {
       cod_inventory_movement: movementId,
       itemData: {
         cod_it_inventory: itemData.cod_it_inventory,
@@ -15,7 +15,7 @@ export const addItemToMovement = async (movementId, itemData) => {
       }
     });
 
-    // 🔹 CORRECCIÓN: Usar API_URL + la ruta correcta
+    //  CORRECCIÓN: Usar API_URL + la ruta correcta
     const response = await axios.post(`${API_URL}/add-item`, {
       cod_inventory_movement: movementId,
       itemData: {
@@ -27,12 +27,12 @@ export const addItemToMovement = async (movementId, itemData) => {
 
     return response.data;
   } catch (error) {
-    console.error("❌ Error en addItemToMovement:", error.response?.data || error.message);
+    console.error("Error en addItemToMovement:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// 🔹 Obtener todos los movimientos-activos activos
+// Obtener todos los movimientos-activos activos
 export const getActiveInventoryMovements = async (page = 1, limit = 10) => {
   const res = await axios.get(`${API_URL}/active?page=${page}&limit=${limit}`);
   return res.data;
@@ -56,19 +56,19 @@ export const getAvailableAssets = async () => {
   }
 };
 
-// 🔹 Buscar movimientos-activos inactivos
+//  Buscar movimientos-activos inactivos
 export const getInactiveInventoryMovements = async (page = 1, limit = 10) => {
   const res = await axios.get(`${API_URL}/inactive?page=${page}&limit=${limit}`);
   return res.data;
 };
 
-// 🔹 Obtener un movimiento-activo específico
+//  Obtener un movimiento-activo específico
 export const getInventoryMovementById = async (cod_inventory_movement) => {
   const res = await axios.get(`${API_URL}/getId/${cod_inventory_movement}`);
   return res.data;
 };
 
-// 🔹 Buscar movimiento-activo
+// Buscar movimiento-activo
 export const searchInventoryMovements = async (feature, text, page = 1, limit = 10) => {
   const res = await axios.get(
     `${API_URL}/search?feature=${feature}&text=${text}&page=${page}&limit=${limit}`
@@ -76,13 +76,13 @@ export const searchInventoryMovements = async (feature, text, page = 1, limit = 
   return res.data;
 };
 
-// 🔹 Crear nueva relación entre movimiento y activo
+// Crear nueva relación entre movimiento y activo
 export const createInventoryMovement = async (data) => {
   const res = await axios.post(`${API_URL}/add`, data);
   return res.data;
 };
 
-// 🔹 Actualizar relación
+//  Actualizar relación
 export const updateInventoryMovement = async (data) => {
   const res = await axios.put(`${API_URL}/update`, data);
   return res.data;
@@ -93,7 +93,7 @@ export const deleteInventoryMovement = async (cod_inventory_movement, cod_it_inv
     const response = await axios.patch(
       `${API_URL}/remove-item/${cod_inventory_movement}/${cod_it_inventory}`
     );
-    return response.data; // <-- devuelve { message: "...", result: {...} }
+    return response.data; 
   } catch (error) {
     console.error("Error al desactivar activo:", error.response?.data || error.message);
     throw error;
