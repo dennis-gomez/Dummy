@@ -39,6 +39,8 @@ const PersonalTable = ({
     handleEdit,
 
     onToggleForm,
+
+    handleOpenFormation
 }) => {
 
     const [editingId, setEditingId] = useState(null);
@@ -127,6 +129,7 @@ const PersonalTable = ({
                         <thead>
                             <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">#</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">Ver Más</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Identificacion/ID</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Primer Nombre</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Primer Apellido</th>
@@ -146,6 +149,14 @@ const PersonalTable = ({
                                 <tr
                                     key={per.personal_cod} className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}>
                                     <td className="py-4 px-6 text-center">{index + 1}</td>
+
+                                    <td className="py-4 px-6 text-center">
+                                        <Button
+                                            text={"Ver Más"}
+                                            onClick={() => handleOpenFormation(per)}
+                                            className="h-12 w-full sm:w-48 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                                        />
+                                    </td>
 
                                     {fields
                                     .filter((f) => f.name !== "personal_is_active")
