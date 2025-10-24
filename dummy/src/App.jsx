@@ -24,6 +24,7 @@ import OrderPage from "./components/pages/orderPage";
 import TechnologyInventory from "./components/pages/technologyInventoryPage";
 import MovementTI from "./components/pages/movementTI";
 import ProfilePage from "./components/pages/profilePage.jsx";
+import PersonalPage from './components/pages/personalPage'
 
 function App() {
   return (
@@ -50,29 +51,15 @@ function App() {
             <Route path="/garantias/resumen" element={<ResumePage />} />
             <Route path="/garantias/gestion" element={<GuaranteePage />} />
             <Route path="/caja/gestion" element={<PettyCashPage />} />
-            <Route
-              path="/caja/registros-desembolsos/:cashBoxId"
-              element={<PettyCashDetailPage />}
-            />
-            <Route
-              path="/mantenimiento_edificio/gestion"
-              element={<ActionPlanAndRevisionPage />}
-            />
-            <Route
-              path="/vehiculos/registro-mantenimientos"
-              element={<VehicleMaintenance />}
-            />{" "}
-            <Route path="/suministros/inventario" element={<InventaryPage />} />{" "}
+            <Route path="/caja/registros-desembolsos/:cashBoxId" element={<PettyCashDetailPage />} />
+            <Route path="/mantenimiento_edificio/gestion" element={<ActionPlanAndRevisionPage />} />
+            <Route path="/vehiculos/registro-mantenimientos" element={<VehicleMaintenance />} /> {/*mantenimientos de vehiculos*/}
+            <Route path="/suministros/inventario" element={<InventaryPage />} /> {/*inventario de suministros*/}
             <Route path="/suministros/proveedores" element={<SupplierPage />} />
-            <Route path="/suministros/ordenes" element={<OrderPage />} />{" "}
-            <Route
-              path="/inventario/tecnologias-informacion"
-              element={<TechnologyInventory />}
-            />
-            <Route
-              path="/inventario/tecnologias-informacion/movimientos"
-              element={<MovementTI />}
-            />
+            <Route path="/suministros/ordenes" element={<OrderPage />} /> {/*ordenes de compra de suministros*/}
+            <Route path="/personal" element={<PersonalPage />} />
+            <Route path="/inventario/tecnologias-informacion" element={<TechnologyInventory />} />
+            <Route path="/inventario/tecnologias-informacion/movimientos" element={<MovementTI />} />
             <Route path="/licitaciones/perfiles" element={<ProfilePage />} />
           </Routes>
         </main>
