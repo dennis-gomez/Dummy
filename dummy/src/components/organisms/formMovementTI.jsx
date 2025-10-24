@@ -3,6 +3,9 @@ import { getTechnologyInventory } from "../../services/technologyInventoryServic
 import { createMovement } from "../../services/movementTIService";
 import Box from "@mui/material/Box";
 import AssetSelectorTI from "./AssetSelectorTI";
+import ModalAlert from "../molecules/modalAlert";
+import ModalConfirmation from "../molecules/modalConfirmation";
+import InputMovement from "../atoms/inputMovement";
 
 const FormMovementTI = ({
   onSubmit,
@@ -19,7 +22,7 @@ const FormMovementTI = ({
     movement_delivered_by: initialData.movement_delivered_by || "",
     movement_delivered_to: initialData.movement_delivered_to || "",
     movement_observations: initialData.movement_observations || "",
-    selectedAssets: initialData.selectedAssets || [], // Ahora objetos completos, no solo IDs
+    selectedAssets: initialData.selectedAssets || [],
   });
 
   const [availableAssets, setAvailableAssets] = useState([]);
@@ -33,7 +36,6 @@ const FormMovementTI = ({
     so: "all",
   });
 
-  // Definir los motivos posibles
   const movementMotives = [
     { id: 1, description: "Traslado" },
     { id: 2, description: "Ajuste de Inventario" },
@@ -42,7 +44,6 @@ const FormMovementTI = ({
     { id: 5, description: "Donación" },
   ];
 
-  // 🔹 Cargar activos disponibles
   useEffect(() => {
     const loadAssets = async () => {
       try {
@@ -52,101 +53,133 @@ const FormMovementTI = ({
           (asset) => Number(asset.it_inventory_status) === 1
         );
         setAvailableAssets(activos);
-        console.log("Activos cargados:", activos);
       } catch (err) {
-        console.error("Error al cargar activos disponibles:", err);
+        console.error("Error al cargar activos:", err);
+        ModalAlert(
+          "Error",
+          "No se pudieron cargar los activos disponibles",
+          "error",
+          3000
+        );
       }
     };
     loadAssets();
   }, []);
 
-  // 🔹 Función para manejar selección de activos (similar a AssetModalButton)
   const handleSelectAsset = (assetId) => {
-    console.log("🔄 Intentando seleccionar activo ID:", assetId);
-    
-    const assetToAdd = availableAssets.find(asset => asset.cod_it_inventory === assetId);
-    
+    const assetToAdd = availableAssets.find(
+      (asset) => asset.cod_it_inventory === assetId
+    );
+
     if (!assetToAdd) {
-      console.error("❌ No se encontró el activo con ID:", assetId);
+      ModalAlert("Error", "No se encontró el activo seleccionado", "error", 2000);
       return;
     }
 
     const isAlreadySelected = form.selectedAssets.some(
-      selected => selected.cod_it_inventory === assetId
+      (selected) => selected.cod_it_inventory === assetId
     );
 
     if (isAlreadySelected) {
-      setForm(prev => ({
+      setForm((prev) => ({
         ...prev,
         selectedAssets: prev.selectedAssets.filter(
-          selected => selected.cod_it_inventory !== assetId
-        )
+          (selected) => selected.cod_it_inventory !== assetId
+        ),
       }));
+      ModalAlert("Eliminado", "Activo removido de la selección", "info", 1500);
     } else {
       const assetWithMovementFields = {
         ...assetToAdd,
         it_inventory_movement_motive: "",
-        it_inventory_movement_description: ""
+        it_inventory_movement_description: "",
       };
-      
-      setForm(prev => ({
+
+      setForm((prev) => ({
         ...prev,
-        selectedAssets: [...prev.selectedAssets, assetWithMovementFields]
+        selectedAssets: [...prev.selectedAssets, assetWithMovementFields],
       }));
+      ModalAlert("Agregado", "Activo agregado a la selección", "success", 1500);
     }
   };
 
-  // 🔹 Función para actualizar campos específicos de activos
   const handleAssetChange = (assetId, field, value) => {
-    setForm(prevState => {
-      const updatedAssets = prevState.selectedAssets.map(asset => {
+    setForm((prev) => {
+      const updatedAssets = prev.selectedAssets.map((asset) => {
         if (asset.cod_it_inventory === assetId) {
-          return { 
-            ...asset,
-            [field]: value 
-          };
+          return { ...asset, [field]: value };
         }
         return asset;
       });
-
-      return { ...prevState, selectedAssets: updatedAssets };
+      return { ...prev, selectedAssets: updatedAssets };
     });
   };
 
-  // 🔹 Función para verificar si un activo tiene todos los campos requeridos
-  const isAssetValid = (asset) => {
-    return asset.cod_it_inventory && 
-           asset.it_inventory_movement_motive && 
-           asset.it_inventory_movement_description;
+  const isAssetValid = (asset) =>
+    asset.cod_it_inventory &&
+    asset.it_inventory_movement_motive &&
+    asset.it_inventory_movement_description;
+
+  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+ const validateForm = () => {
+  // Mapeo de nombres de campos a etiquetas legibles
+  const fieldLabels = {
+    movement_date: "Fecha",
+    movement_owner: "Responsable",
+    movement_delivered_by: "Entregado por",
+    movement_delivered_to: "Entregado a",
   };
 
-  // 🔸 Manejo de cambios en inputs del movimiento
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  // Validar los campos obligatorios del movimiento
+  for (let field in fieldLabels) {
+    const value = form[field];
+    const strValue = value != null ? String(value) : "";
 
-  // 🔸 Enviar formulario
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (form.selectedAssets.length === 0) {
-      alert("Debes seleccionar al menos un activo para el movimiento.");
-      return;
+    if (strValue.trim() === "") {
+      ModalAlert(
+        "Error",
+        `El campo "${fieldLabels[field]}" es obligatorio`,
+        "error",
+        3000
+      );
+      return false;
     }
+  }
 
-    // 🔹 Verificar que todos los activos tengan los campos requeridos
-    const invalidAssets = form.selectedAssets.filter(asset => !isAssetValid(asset));
-    if (invalidAssets.length > 0) {
-      alert("❌ Todos los activos deben tener los campos 'motivo' y 'descripción' completos.");
-      return;
-    }
+  // Validar selección de activos
+  if (form.selectedAssets.length === 0) {
+    ModalAlert(
+      "Error",
+      "Debes seleccionar al menos un activo para el movimiento",
+      "warning",
+      3000
+    );
+    return false;
+  }
 
+  // Validar que cada activo tenga motivo y descripción
+  if (form.selectedAssets.some((asset) => !isAssetValid(asset))) {
+    ModalAlert(
+      "Error",
+      "Todos los activos deben tener los campos 'Motivo' y 'Descripción' completos",
+      "error",
+      3000
+    );
+    return false;
+  }
+
+  return true;
+};
+
+
+  const submitMovement = async () => {
     setLoading(true);
     try {
       const items = form.selectedAssets.map((asset) => ({
         cod_it_inventory: asset.cod_it_inventory,
-        it_inventory_movement_motive: asset.it_inventory_movement_motive, // Motivo individual por activo
-        it_inventory_movement_description: asset.it_inventory_movement_description, // Descripción individual
+        it_inventory_movement_motive: asset.it_inventory_movement_motive,
+        it_inventory_movement_description: asset.it_inventory_movement_description,
         it_inventory_movement_is_active: true,
       }));
 
@@ -159,14 +192,11 @@ const FormMovementTI = ({
         items,
       };
 
-      console.log("Datos a enviar:", movementData);
-
       await createMovement(movementData);
-      alert("✅ Movimiento creado exitosamente.");
+      ModalAlert("Éxito", "Movimiento creado exitosamente", "success", 3000);
 
       if (typeof onSubmit === "function") onSubmit(form);
 
-      // Reset
       setForm({
         movement_date: "",
         movement_owner: "",
@@ -184,90 +214,103 @@ const FormMovementTI = ({
       });
     } catch (err) {
       console.error("Error al crear movimiento:", err.response?.data || err.message);
-      alert("❌ Ocurrió un error al crear el movimiento.");
+      ModalAlert(
+        "Error",
+        "Ocurrió un error al crear el movimiento",
+        "error",
+        3000
+      );
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+  };
+
   return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        backgroundColor: "#d9d9d9",
-        padding: "32px",
-        borderRadius: "12px",
-        boxShadow: 3,
-        maxWidth: "900px",
-        margin: "0 auto",
-      }}
-    >
+ <Box
+  component="form"
+  onSubmit={handleSubmit}
+  sx={{
+    backgroundColor: "#d9d9d9",
+    padding: "32px",
+    borderRadius: "12px",
+    boxShadow: 3,
+    maxWidth: "900px",
+    margin: "0 auto",
+
+    maxHeight: "80vh",
+    overflowY: "auto",
+    overflowX: "hidden",
+    scrollBehavior: "smooth",
+
+
+    "&::-webkit-scrollbar": {
+      width: 0, // barra de scroll invisible en Chrome, Edge, Safari
+      background: "transparent",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "transparent",
+    },
+    scrollbarWidth: "none", // Firefox
+    msOverflowStyle: "none", // IE y Edge Legacy
+  }}
+>
+
+
       <h2 className="text-xl text-center font-bold mb-4 text-gray-700">
         Registrar Movimiento
       </h2>
 
-      {/* 🧾 Datos del movimiento */}
+      {/* Datos del movimiento */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Fecha *</label>
-          <input
-            type="date"
-            name="movement_date"
-            value={form.movement_date}
-            onChange={handleChange}
-            required
-            className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Responsable *</label>
-          <input
-            type="text"
-            name="movement_owner"
-            value={form.movement_owner}
-            onChange={handleChange}
-            required
-            className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Entregado por *</label>
-          <input
-            type="text"
-            name="movement_delivered_by"
-            value={form.movement_delivered_by}
-            onChange={handleChange}
-            required
-            className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Entregado a *</label>
-          <input
-            type="text"
-            name="movement_delivered_to"
-            value={form.movement_delivered_to}
-            onChange={handleChange}
-            required
-            className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
-        </div>
-      </div>
-
-      <div className="mt-4">
-        <label className="block text-sm font-medium text-gray-700 mb-1">Observaciones</label>
-        <textarea
-          name="movement_observations"
-          value={form.movement_observations}
+        <InputMovement
+          name="movement_date"
+          label="Fecha *"
+          type="date"
+          value={form.movement_date}
           onChange={handleChange}
-          placeholder="Observaciones generales del movimiento..."
-          className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          rows="2"
+          required
+        />
+        <InputMovement
+          name="movement_owner"
+          label="Responsable *"
+          value={form.movement_owner}
+          onChange={handleChange}
+          required
+        />
+        <InputMovement
+          name="movement_delivered_by"
+          label="Entregado por *"
+          value={form.movement_delivered_by}
+          onChange={handleChange}
+          required
+        />
+        <InputMovement
+          name="movement_delivered_to"
+          label="Entregado a *"
+          value={form.movement_delivered_to}
+          onChange={handleChange}
+          required
         />
       </div>
 
-      {/* 🧩 Componente AssetSelectorTI con la nueva funcionalidad */}
+      {/* Observaciones con InputMovement tipo textarea */}
+      <div className="mt-4">
+        <InputMovement
+          name="movement_observations"
+          label="Observaciones"
+          type="textarea"
+          rows={3}
+          value={form.movement_observations}
+          onChange={handleChange}
+        />
+      </div>
+
+      {/* Componente AssetSelectorTI */}
       <AssetSelectorTI
         availableAssets={availableAssets}
         categoryAssets={categoryAssets}
@@ -282,70 +325,63 @@ const FormMovementTI = ({
         onSelectAsset={handleSelectAsset}
       />
 
-      {/* 🔹 Sección de detalles del activo (similar a AssetModalButton) */}
+      {/* Detalles del activo */}
       {form.selectedAssets.length > 0 && (
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-4">Detalles del Activo</h3>
-          
           {form.selectedAssets.map((asset) => (
-            <div 
-              key={asset.cod_it_inventory} 
+            <div
+              key={asset.cod_it_inventory}
               className="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50"
             >
-              {/* Información del activo */}
               <div className="mb-3 pb-2 border-b border-gray-200">
                 <h4 className="font-semibold text-gray-700">
-                  {asset.it_inventory_name || asset.it_inventory_serial_number || "Sin nombre"} - {asset.it_inventory_serial || "Sin serial"}
+                  {asset.it_inventory_name || asset.it_inventory_serial_number || "Sin nombre"}
                 </h4>
-                <p className="text-sm text-gray-500">
-                  Código: {asset.cod_it_inventory}
-                </p>
+                <p className="text-sm text-gray-500">Código: {asset.cod_it_inventory}</p>
                 <p className="text-xs text-blue-600 mt-1">
-                  Modelo: {asset.it_inventory_model || "N/A"} | 
-                  Placa: {asset.it_inventory_plate || asset.it_inventory_plaque || "N/A"}
+                  Modelo: {asset.it_inventory_model || "N/A"} | Placa: {asset.it_inventory_plate || asset.it_inventory_plaque || "N/A"}
                 </p>
               </div>
 
               <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Motivo *
-                  </label>
-                  <select
-                    value={asset.it_inventory_movement_motive || ""}
-                    onChange={(e) => handleAssetChange(asset.cod_it_inventory, "it_inventory_movement_motive", e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    required
-                  >
-                    <option value="">Seleccionar motivo</option>
-                    {movementMotives.map((motive) => (
-                      <option key={motive.id} value={motive.id}>
-                        {motive.description}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Descripción *
-                  </label>
-                  <textarea
-                    value={asset.it_inventory_movement_description || ""}
-                    onChange={(e) => handleAssetChange(asset.cod_it_inventory, "it_inventory_movement_description", e.target.value)}
-                    placeholder="Ingrese la descripción del movimiento para este activo..."
-                    className="w-full bg-white border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    rows="3"
-                    required
-                  />
-                </div>
+                <InputMovement
+                  name={`motive-${asset.cod_it_inventory}`}
+                  label="Motivo *"
+                  type="select"
+                  value={asset.it_inventory_movement_motive}
+                  onChange={(e) =>
+                    handleAssetChange(asset.cod_it_inventory, "it_inventory_movement_motive", e.target.value)
+                  }
+                  options={movementMotives.map((m) => ({ value: m.id, label: m.description }))}
+                  required
+                />
+
+                <InputMovement
+                  name={`desc-${asset.cod_it_inventory}`}
+                  label="Descripción *"
+                  type="textarea"
+                  rows={3}
+                  value={asset.it_inventory_movement_description}
+                  onChange={(e) =>
+                    handleAssetChange(asset.cod_it_inventory, "it_inventory_movement_description", e.target.value)
+                  }
+                  required
+                />
               </div>
 
               {!isAssetValid(asset) && (
                 <p className="text-red-500 text-xs mt-2">
-                  ⚠ Complete todos los campos requeridos para este activo
+                  Complete todos los campos requeridos para este activo
                 </p>
               )}
+
+              <details className="mt-2 text-xs">
+                <summary className="cursor-pointer text-blue-600">Ver datos completos del activo</summary>
+                <pre className="mt-1 p-2 bg-gray-100 rounded overflow-auto">
+                  {JSON.stringify(asset, null, 2)}
+                </pre>
+              </details>
             </div>
           ))}
         </div>
@@ -353,13 +389,19 @@ const FormMovementTI = ({
 
       {/* Botón guardar */}
       <div className="flex justify-center mt-6">
-        <button
-          type="submit"
-          disabled={loading || form.selectedAssets.length === 0 || form.selectedAssets.some(asset => !isAssetValid(asset))}
-          className="px-6 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl font-medium transition-colors"
-        >
-          {loading ? "Guardando..." : `Guardar Movimiento (${form.selectedAssets.length})`}
-        </button>
+        <ModalConfirmation
+          message={`¿Está seguro que desea crear el movimiento con ${form.selectedAssets.length} activo(s)?`}
+          onClick={submitMovement}
+          confirmText={loading ? "Guardando..." : `Guardar Movimiento (${form.selectedAssets.length})`}
+          disabled={
+            loading ||
+            form.selectedAssets.length === 0 ||
+            form.selectedAssets.some((asset) => !isAssetValid(asset))
+          }
+          title="Confirmar Creación de Movimiento"
+          icon="question"
+          buttonVariant="primary"
+        />
       </div>
     </Box>
   );
