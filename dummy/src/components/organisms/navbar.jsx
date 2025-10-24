@@ -64,7 +64,7 @@ const navConfig = [
     label: 'TI',
     sub: [
       { label: 'Inventario', path: '/inventario/tecnologias-informacion' },
-      { label: 'Roles y Permisos', path: '/ti/roles' },
+      { label: 'Gestion Movimientos TI', path: '/inventario/tecnologias-informacion/movimientos' },
       { label: 'Configuraciones del Sistema', path: '/ti/config' },
     ],
   },
