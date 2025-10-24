@@ -1,5 +1,6 @@
 import { usePersonal } from "../../utils/usePersonal";
 import PersonalTable from "../organisms/personalTable";
+import { Box, Typography } from "@mui/material";
 
 function PersonalPage () {
 
@@ -13,6 +14,16 @@ function PersonalPage () {
         error,
         showForm,
         setShowForm,
+
+        searchText, 
+        searchField,
+        setSearchText, 
+        setSearchField,
+        handleSearch, 
+
+        totalPages, 
+        page, 
+        onPageChange
     } = usePersonal()
 
     return (
@@ -73,6 +84,15 @@ function PersonalPage () {
                 fields={fields}
                 editFields={editFields}
                 isLoading={loading}
+                totalPages={totalPages}
+                currentPage={page}
+                onPageChange={onPageChange}
+
+                searchText={searchText}
+                searchField={searchField}
+                setSearchText={setSearchText} 
+                setSearchField={setSearchField}
+                handleSearch={handleSearch} 
             />
         </div>
     );

@@ -6,6 +6,12 @@ import { CircularProgress } from "@mui/material";
 import InputValidated from "../atoms/inputValidated"
 import ReactivationModal from "../molecules/reactivationModal";
 import { useState, useCallback } from "react";
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Seeker from "../molecules/seeker";
 
 const PersonalTable = ({
     personal, 
@@ -14,6 +20,16 @@ const PersonalTable = ({
     editFields,
 
     isLoading,
+
+    totalPages, 
+    currentPage, 
+    onPageChange, 
+
+    searchText, 
+    searchField,
+    setSearchText, 
+    setSearchField,
+    handleSearch, 
 }) => {
 
     const [editingId, setEditingId] = useState(null);
@@ -62,7 +78,18 @@ const PersonalTable = ({
     return (
         <div className="p-6 mt-6 bg-white rounded-2xl">
             <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
-                {/*meter seeker*/}
+                <Seeker
+                    inputName="search"
+                    inputPlaceholder="Buscar..."
+                    btnName="Buscar"
+                    selectName="Filtrar por"
+                    fields={fields}
+                    valueText={searchText}
+                    valueFeature={searchField}
+                    onChangeText={setSearchText}
+                    onChangeFeature={setSearchField}
+                    onClick={handleSearch}
+                />
             </div>
 
             {isLoading ? (
@@ -178,8 +205,22 @@ const PersonalTable = ({
                                 </tr>
                                 );
                             })}
-                            </tbody>
+                        </tbody>
                     </table>
+                    <Stack spacing={30 } alignItems="center" marginY={2}>
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            color="primary"
+                            onChange={(e, value) => onPageChange(value)}
+                            renderItem={(item) => (
+                            <PaginationItem
+                                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                                {...item}
+                            />
+                            )}
+                        />
+                    </Stack>
                 </div>
             )}
         </div>

@@ -3,25 +3,26 @@ import axios from "axios";
 const API_URL = "http://localhost:3000/personal/";
 
 //Obtener personal activo
-export const getPersonal = async () => {
+export const getPersonal = async (page = 1, limit = 10) => {
     try {
         const response = await axios.get(API_URL, {
+            params: { page, limit },
             headers: { "Content-Type": "application/json" },
         });
-        return response;
+        return response.data;
     } catch (error) {
         throw error;
     }
 };
 
 //Buscar personal por campo
-export const findPersonal = async (field, value) => {
+export const findPersonal = async (page = 1, limit = 10, field, value) => {
     try {
         const response = await axios.get(API_URL + "find", {
-            params: { field, value },
+            params: { page, limit, field, value },
             headers: { "Content-Type": "application/json" },
         });
-        return response;
+        return response.data;
     } catch (error) {
         throw error;
     }
