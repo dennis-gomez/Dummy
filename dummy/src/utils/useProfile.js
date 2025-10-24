@@ -34,16 +34,20 @@ export const useProfile = () => {
     }
   };
 
-  const refreshAll = () => {
-    getProfiles();
-    getAllRoles();
-    fetchAvailableRoles();
+  const refreshProfile = (codPerson) => {
+    getProfiles(codPerson);
+    fetchAvailableRoles(codPerson);
   };
 
-  const fetchAvailableRoles = async () => {
+  const refreshAll = (codPerson) => {
+    getProfiles(codPerson);
+    getAllRoles();
+    fetchAvailableRoles(codPerson);
+  };
+
+  const fetchAvailableRoles = async (codPerson) => {
     try {
-      const person_id = 1;
-      const roles = await getAvailableRoles(person_id);
+      const roles = await getAvailableRoles(codPerson);
       const formattedRoles = roles.map((role) => ({
         ...role,
         name: role.cod_item,
@@ -63,19 +67,18 @@ export const useProfile = () => {
     }
   };
 
-  const handleDeleteProfile = async (profileId) => {
+  const handleDeleteProfile = async (profileId, codPerson) => {
     try {
       await deleteProfile(profileId);
       ModalAlert("Éxito", "Perfil eliminado correctamente.", "success");
-      refreshAll(); // Refrescar la lista de perfiles y roles disponibles
+      refreshAll(codPerson); // Refrescar la lista de perfiles y roles disponibles
     } catch (error) {
       ModalAlert("Error", "No se pudo eliminar el perfil.", "error");
     }
   };
 
-  const handleSaveProfile = async (profileData) => {
+  const handleSaveProfile = async (profileData, codePerson) => {
     try {
-      const person_id = 1;
       const data = {
         profile_role_cod_service: Number(
           import.meta.env.VITE_ROLE_SERVICE_CODE
@@ -85,18 +88,17 @@ export const useProfile = () => {
         ),
         profile_role_cod_item: profileData.role,
       };
-      await createProfile(person_id, data);
+      await createProfile(codePerson, data);
       ModalAlert("Éxito", "Perfil creado correctamente.", "success");
-      refreshAll(); // Refrescar la lista de perfiles y roles disponibles
+      refreshAll(codePerson); // Refrescar la lista de perfiles y roles disponibles
     } catch (error) {
       ModalAlert("Error", "No se pudo crear el perfil.", "error");
     }
   };
 
-  const getProfiles = async () => {
+  const getProfiles = async (codPerson) => {
     try {
-      const person_id = 1;
-      const data = await getProfilesByPersonId(person_id);
+      const data = await getProfilesByPersonId(codPerson);
       setProfiles(data);
       console.log("los datos son", data);
     } catch (error) {
@@ -256,9 +258,7 @@ export const useProfile = () => {
   ];
 
   useEffect(() => {
-    getProfiles();
     getAllRoles();
-    fetchAvailableRoles();
   }, []);
 
   return {
@@ -279,6 +279,7 @@ export const useProfile = () => {
     setSeeSpecializedTraining,
     setSeeProjectExperience,
     selectedProfile,
+    refreshProfile,
 
     //de aqui para abajo es de specialized training
     specializedTrainingData,

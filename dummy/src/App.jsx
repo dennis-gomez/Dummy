@@ -57,10 +57,9 @@ function App() {
             <Route path="/suministros/inventario" element={<InventaryPage />} /> {/*inventario de suministros*/}
             <Route path="/suministros/proveedores" element={<SupplierPage />} />
             <Route path="/suministros/ordenes" element={<OrderPage />} /> {/*ordenes de compra de suministros*/}
-            <Route path="/personal" element={<PersonalPage />} />
             <Route path="/inventario/tecnologias-informacion" element={<TechnologyInventory />} />
             <Route path="/inventario/tecnologias-informacion/movimientos" element={<MovementTI />} />
-            <Route path="/licitaciones/perfiles" element={<ProfilePage />} />
+            <Route path="/licitaciones/perfiles" element={<PersonalPage />} />
           </Routes>
         </main>
         <Footer />

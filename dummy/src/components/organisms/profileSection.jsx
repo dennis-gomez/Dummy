@@ -22,6 +22,7 @@ const profileSection = ({
   setSeeSpecializedTraining,
   setSeeProjectExperience,
   selectedProfile,
+  personCod,
 
   //props de specialized training
   specializedTrainingData,
@@ -30,6 +31,11 @@ const profileSection = ({
   specializedTrainingFields,
   handleAddSpecializedTraining,
 }) => {
+
+  const add = (data) => {
+    handleSaveProfile(data, personCod);
+  }
+
   const [role, setRole] = useState("");
 
   const getRoleLabel = (prof) => {
@@ -74,7 +80,7 @@ const profileSection = ({
               fields={fields}
               validateValues={ValidateValues.profile}
               onClose={() => setIsAddingProfile(false)}
-              onSubmit={handleSaveProfile}
+              onSubmit={add}
             />
           )}
         </Box>
@@ -94,6 +100,7 @@ const profileSection = ({
           text={isAddingProfile ? "Cancelar" : "Agregar"}
           onClick={() => setIsAddingProfile(!isAddingProfile)}
           sx={{ marginLeft: "50px" }}
+          type={"button"}
         />
       </div>
 
@@ -121,7 +128,7 @@ const profileSection = ({
               message={`¿Estás seguro de que deseas eliminar el perfil: ${getRoleLabel(
                 prof
               )}?`}
-              onClick={() => handleDeleteProfile(prof.profile_cod)}
+              onClick={() => handleDeleteProfile(prof.profile_cod, personCod)}
             />
           </div>
         ))
@@ -165,6 +172,7 @@ const profileSection = ({
           />
 
           {seeProjectExperience && (
+            //aqui dennis va a poner el componente de experiencia en proyectos
             <div>hola we xd aqui va el componente de la experiencia</div>
           )}
         </div>

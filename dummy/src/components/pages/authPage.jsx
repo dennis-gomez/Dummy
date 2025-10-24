@@ -5,9 +5,9 @@ import { useNavigate } from "react-router-dom";
 function AuthPage() {
     const navigate = useNavigate();
 
-    const [user, setUser] = useState({ 
-        user_email: "", 
-        user_password: "" 
+    const [user, setUser] = useState({
+        user_email: "",
+        user_password: ""
     });
 
     const [error, setError] = useState(null);

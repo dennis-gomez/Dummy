@@ -1,10 +1,10 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { useProfile } from "../../utils/useProfile";
 import ProfileSection from "../organisms/profileSection";
 
-const ProfilePage = () => {
+const ProfilePage = ({ personCod }) => {
   const {
-    profiles,
+
     fields,
     seeOptions,
     handleProfileSelect,
@@ -18,6 +18,7 @@ const ProfilePage = () => {
     setSeeSpecializedTraining,
     setSeeProjectExperience,
     selectedProfile,
+    profiles,
 
     //para specialized training
     specializedTrainingData,
@@ -25,11 +26,20 @@ const ProfilePage = () => {
     setIsCreatingSpecializedTraining,
     specializedTrainingFields,
     handleAddSpecializedTraining,
+    refreshProfile,
   } = useProfile(); // <-- desestructurar aquí
+
+  useEffect(() => {
+    // Llamar a refreshProfile cuando personCod cambie
+    if (personCod) {
+      refreshProfile(personCod);
+    }
+  }, [personCod]);
 
   return (
     <div>
       <ProfileSection
+        personCod={personCod}
         profiles={profiles}
         fields={fields}
         seeOptions={seeOptions}

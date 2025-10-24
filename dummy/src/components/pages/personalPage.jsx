@@ -5,11 +5,11 @@ import { Box, Typography } from "@mui/material";
 import Form from "../organisms/form";
 import PersonalFormation from "../organisms/tablePersonalFormation";
 
-function PersonalPage () {
+function PersonalPage() {
 
     const {
-        personal, 
-    
+        personal,
+
         fields,
         editFields,
 
@@ -19,36 +19,38 @@ function PersonalPage () {
         showForm,
         setShowForm,
 
-        searchText, 
+        searchText,
         searchField,
-        setSearchText, 
+        setSearchText,
         setSearchField,
-        handleSearch, 
+        handleSearch,
 
-        totalPages, 
-        page, 
-        onPageChange, 
+        totalPages,
+        page,
+        onPageChange,
 
         handleDelete,
-        handleReactivate, 
-        handleEdit,  
+        handleReactivate,
+        handleEdit,
         handleSubmit,
     } = usePersonal(); // hook para gestion de personal
 
-    const { 
+    const {
         person,
-        showFormation, 
-        handleOpenFormation, 
+        showFormation,
+        handleOpenFormation,
         handleCloseFormation,
+
     } = usePersonalFormation(); //hook para el manejo de formacion
 
     return (
         <div style={{ padding: 24 }}>
             {showFormation ? (
                 <>
-                    <PersonalFormation 
+                    <PersonalFormation
                         person={person}
                         handleCloseFormation={handleCloseFormation}
+
                     />
                 </>
             ) : (
@@ -56,24 +58,24 @@ function PersonalPage () {
                     <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Gesti&oacute;n de Personal</h1>
                     {showForm && (
                         <Box
-                        sx={{
-                            maxWidth: 900,
-                            margin: "20px auto",
-                            p: 3,
-                            boxShadow: 3,
-                            borderRadius: 2,
-                            backgroundColor: "#d9d9d9",
-                            textAlign: "center",
-                        }}
+                            sx={{
+                                maxWidth: 900,
+                                margin: "20px auto",
+                                p: 3,
+                                boxShadow: 3,
+                                borderRadius: 2,
+                                backgroundColor: "#d9d9d9",
+                                textAlign: "center",
+                            }}
                         >
                             <div>
                                 <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
                                     Agregar Personal
                                 </h3>
-                            </div> 
-                            
-                            <Form 
-                                fields={fields.filter(field => field.name !== "personal_is_active")} 
+                            </div>
+
+                            <Form
+                                fields={fields.filter(field => field.name !== "personal_is_active")}
                                 onSubmit={handleSubmit}
                                 values={personal.map(v => ({ value: v.personal_identification, id: v.personal_cod }))} //pasar todos los personales
                                 titleBtn={"Guardar Personal"}
@@ -84,21 +86,21 @@ function PersonalPage () {
                     {/* Errores manejados por el backend */}
                     {error && (
                         <Box
-                        sx={{
-                            p: 2,
-                            mt: 3,
-                            maxWidth: 800,
-                            margin: "0 auto",
-                            borderRadius: 2,
-                            backgroundColor: "#fdecea",
-                            border: "1px solid #f5c2c7",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 1,
-                        }}
+                            sx={{
+                                p: 2,
+                                mt: 3,
+                                maxWidth: 800,
+                                margin: "0 auto",
+                                borderRadius: 2,
+                                backgroundColor: "#fdecea",
+                                border: "1px solid #f5c2c7",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                            }}
                         >
-                        <span style={{ color: "#b71c1c", fontWeight: "bold" }}>Error: </span>
-                        <Typography sx={{ color: "#b71c1c" }}>{error}</Typography>
+                            <span style={{ color: "#b71c1c", fontWeight: "bold" }}>Error: </span>
+                            <Typography sx={{ color: "#b71c1c" }}>{error}</Typography>
                         </Box>
                     )}
 
@@ -115,9 +117,9 @@ function PersonalPage () {
 
                         searchText={searchText}
                         searchField={searchField}
-                        setSearchText={setSearchText} 
+                        setSearchText={setSearchText}
                         setSearchField={setSearchField}
-                        handleSearch={handleSearch} 
+                        handleSearch={handleSearch}
 
                         handleDelete={handleDelete}
                         handleReactivate={handleReactivate}
