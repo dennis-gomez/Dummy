@@ -3,7 +3,7 @@ import { Divider, Typography, Grid } from "@mui/material";
 import ProfilePage from "../pages/profilePage";
 import AcademicFormationPage from "../pages/academicFormationPage";
 
-function PersonalFormation({ person, handleCloseFormation, profiles, avaliableRoles }) {
+function PersonalFormation({ person, handleCloseFormation }) {
     return (
         <div style={{ padding: 24 }}>
             <div style={{ position: "relative", marginBottom: 16 }}>
