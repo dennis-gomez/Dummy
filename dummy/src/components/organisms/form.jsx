@@ -78,6 +78,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, funct, maxWidth = 
                       "& .MuiInputBase-root": { backgroundColor: "#fff !important" },
                       ...(field.width ? { width: field.width } : {}),
                     }}
+                    required={field.required ?? true}
                   />
                 ) : field.type === "select" ? (
                   <InputValidated
