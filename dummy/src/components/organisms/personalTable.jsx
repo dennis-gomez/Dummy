@@ -129,7 +129,7 @@ const PersonalTable = ({
                         <thead>
                             <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">#</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">Ver Más</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Ver Más</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Identificacion/ID</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Primer Nombre</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Primer Apellido</th>

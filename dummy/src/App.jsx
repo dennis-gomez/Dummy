@@ -21,7 +21,7 @@ import VehicleMaintenance from "./components/pages/vehicleMaintenancePage";
 import SupplierPage from "./components/pages/supplierPage";
 import InventaryPage from "./components/pages/inventaryPage";
 import OrderPage from "./components/pages/orderPage";
-import TechnologyInventory from "./components/pages/technologyInventoryPage";
+import TechnologyInventory from "./components/pages/technologyInventoryPage.jsx";
 import MovementTI from "./components/pages/movementTI";
 import ProfilePage from "./components/pages/profilePage.jsx";
 import PersonalPage from './components/pages/personalPage'
