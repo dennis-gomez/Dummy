@@ -10,6 +10,7 @@ function PersonalPage() {
 
     const {
         personal,
+        allPersonal, 
 
         fields,
         editFields,
@@ -76,7 +77,7 @@ function PersonalPage() {
                             <Form
                                 fields={fields.filter(field => field.name !== "personal_is_active")}
                                 onSubmit={handleSubmit}
-                                values={personal.map(v => ({ value: v.personal_identification, id: v.personal_cod }))} //pasar todos los personales
+                                values={allPersonal.map(v => ({ value: v.personal_identification, id: v.personal_cod }))} //pasar todos los personales
                                 titleBtn={"Guardar Personal"}
                             />
                         </Box>
