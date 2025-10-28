@@ -2,6 +2,7 @@ import Button from "../atoms/button";
 import { Divider, Typography, Grid } from "@mui/material";
 import ProfilePage from "../pages/profilePage";
 import AcademicFormationPage from "../pages/academicFormationPage";
+import LenguageSection from "./lenguajeSection";
 
 function PersonalFormation({ person, handleCloseFormation }) {
     return (
@@ -59,9 +60,14 @@ function PersonalFormation({ person, handleCloseFormation }) {
             </Grid>
 
             {/*  Formaciones Academicas  */}
-            <AcademicFormationPage 
+            <AcademicFormationPage
                 personCod={person.personal_cod}
-            /> 
+            />
+
+            {/* Idiomas*/}
+            <LenguageSection
+                personCod={person.personal_cod}
+            />
 
             {/*  Perfiles profesionales  */}
             <ProfilePage
