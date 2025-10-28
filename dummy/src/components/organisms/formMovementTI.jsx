@@ -36,13 +36,13 @@ const FormMovementTI = ({
     so: "all",
   });
 
-  const movementMotives = [
-    { id: 1, description: "Traslado" },
-    { id: 2, description: "Ajuste de Inventario" },
-    { id: 3, description: "Devolución" },
-    { id: 4, description: "Venta" },
-    { id: 5, description: "Donación" },
-  ];
+const movementMotives = [
+  { id: 1, description: "Asignación" },
+  { id: 2, description: "Devolución" },
+  { id: 3, description: "Traslado" },
+  { id: 4, description: "Mantenimiento" },
+  { id: 5, description: "Baja de activos" },
+];
 
   useEffect(() => {
     const loadAssets = async () => {

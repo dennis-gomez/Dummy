@@ -80,6 +80,8 @@ const ProfilePage = ({ personCod }) => {
         currentPage={currentPage}
         totalPages={totalPages}
         specializedTrainingSearchFields={specializedTrainingSearchFields}
+
+      //props de experiencia de proyectos se agregan aquí
       />
     </div>
   );
