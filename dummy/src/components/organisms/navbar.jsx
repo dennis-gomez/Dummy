@@ -169,22 +169,25 @@ export default function Navbar() {
                   )}
                 </div>
               ))}
+
+              {/* Notificaciones */}
+              <div className="flex items-center">
+                <Tooltip title="Notificaciones">
+                  <Badge
+                    badgeContent={notifications.length}
+                    color="primary"
+                    onClick={() => setDrawerOpen(true)}
+                    className="cursor-pointer"
+                  >
+                    <MailIcon color="action" />
+                  </Badge>
+                </Tooltip>
+              </div>
+
             </div>
           </div>
 
-          {/* Notificaciones */}
-          <div className="flex items-center">
-            <Tooltip title="Notificaciones">
-              <Badge
-                badgeContent={notifications.length}
-                color="primary"
-                onClick={() => setDrawerOpen(true)}
-                className="cursor-pointer"
-              >
-                <MailIcon color="action" />
-              </Badge>
-            </Tooltip>
-          </div>
+
 
           {/* Botón menú móvil */}
           <div className="md:hidden">
