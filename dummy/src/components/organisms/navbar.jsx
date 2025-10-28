@@ -88,6 +88,7 @@ const navConfig = [
     sub: [
       { label: "Gestión de Licitaciones", path: "/licitaciones/gestion" },
       { label: "Perfiles demo", path: "/licitaciones/perfiles" },
+      { label: "Resumen Perfiles", path: "/licitaciones/perfiles/resumen" },
     ],
   },
 ];
