@@ -8,6 +8,7 @@ import {
   updateLanguageOfPerson,
   getAvailableLanguages,
 } from "../services/lenguageService";
+import ModalAlert from "../components/molecules/modalAlert";
 
 import { getItems } from "../services/itemService";
 
@@ -17,6 +18,7 @@ export const useLanguage = () => {
   const [isAddingLanguage, setIsAddingLanguage] = useState(false);
   const [availableLanguages, setAvailableLanguages] = useState([]);
   const [isEditingLanguage, setIsEditingLanguage] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fetchAvailableLanguages = async (personCod) => {
     try {
@@ -36,17 +38,21 @@ export const useLanguage = () => {
 
   const fetchLanguages = async (personCod) => {
     try {
+      setLoading(true);
       console.log("Fetching languages for personCod:", personCod);
 
       const data = await getLanguagesOfPerson(personCod);
       setLanguages(data);
     } catch (error) {
       console.error("Error fetching languages:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchLanguageOptions = async () => {
     try {
+      setLoading(true);
       const categoryCode = Number(import.meta.env.VITE_LANGUAGE_CATEGORY_CODE);
       const serviceCode = Number(import.meta.env.VITE_ROLE_SERVICE_CODE);
       const items = await getItems(serviceCode, categoryCode);
@@ -62,10 +68,13 @@ export const useLanguage = () => {
       setOptionsLanguages(formattedItems);
     } catch (error) {
       console.error("Error fetching language options:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const addLanguage = async (languageData, personCod) => {
+    setLoading(true);
     try {
       const formatedData = {
         ...languageData,
@@ -76,27 +85,39 @@ export const useLanguage = () => {
       };
 
       await addLanguageToPerson(formatedData, personCod);
+      await fetchAvailableLanguages(personCod);
       await fetchLanguages(personCod);
     } catch (error) {
       console.error("Error adding language:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const editLanguage = async (languageCod, updatedData, personCod) => {
     try {
+      setLoading(true);
       await updateLanguageOfPerson(languageCod, updatedData);
       await fetchLanguages(personCod);
     } catch (error) {
       console.error("Error updating language:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const deleteLanguage = async (languageCod, personCod) => {
     try {
+      setLoading(true);
       await deleteLanguageFromPerson(languageCod, personCod);
       await fetchLanguages(personCod);
+
+      ModalAlert("Éxito", "Lenguaje eliminado correctamente", "success", 2000);
     } catch (error) {
       console.error("Error deleting language:", error);
+    } finally {
+      setLoading(false);
+      await fetchAvailableLanguages(personCod);
     }
   };
 
@@ -146,8 +167,6 @@ export const useLanguage = () => {
     fetchLanguageOptions,
     fields,
     fetchAvailableLanguages,
-    availableLanguages,
-    isEditingLanguage,
-    setIsEditingLanguage,
+    loading,
   };
 };

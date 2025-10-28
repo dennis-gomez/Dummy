@@ -157,6 +157,7 @@ export const useProfile = () => {
       );
       //refrescar la lista
       fetchedProfileSpecializedTraining(profileId);
+      setIsCreatingSpecializedTraining(false);
       return data;
     } catch (error) {
       console.error("Error adding specialized training:", error);
@@ -171,6 +172,7 @@ export const useProfile = () => {
 
   const fetchedProfileSpecializedTraining = async (profileId, page = 1) => {
     try {
+      setLoading(true);
       console.log(
         "Fetching specialized training for profile ID:",
         profileId,
@@ -185,6 +187,8 @@ export const useProfile = () => {
     } catch (error) {
       console.error("Error fetching specialized training:", error);
       return [];
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -223,6 +227,7 @@ export const useProfile = () => {
 
   const handleSearch = async (feature, searchText = "", currentPage = 1) => {
     try {
+      setLoading(true);
       const data = await searchSpecializedTraining(
         selectedProfile.profile_cod,
         currentPage,
@@ -243,11 +248,14 @@ export const useProfile = () => {
         setCurrentPage(currentPage);
         setTotalPages(data.totalPages);
         setSpecializedTrainingData(data.specializedTrainings);
+
         return data;
       }
     } catch (error) {
       console.error("Error searching specialized training:", error);
       return [];
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -337,6 +345,7 @@ export const useProfile = () => {
       required: false,
       width: 250,
       restriction: "filePath",
+      accept: ".pdf",
     },
     {
       name: "training_start_date",
@@ -346,6 +355,7 @@ export const useProfile = () => {
       placeholder: "Fecha de Inicio",
       required: true,
       width: 250,
+      restriction: "cantAfterToday",
     },
     {
       name: "training_end_date",
@@ -355,6 +365,7 @@ export const useProfile = () => {
       placeholder: "Fecha de Finalización",
       required: true,
       width: 250,
+      restriction: "cantBeforeToday",
     },
     {
       name: "training_hours",
@@ -373,6 +384,7 @@ export const useProfile = () => {
       placeholder: "Validez",
       required: false,
       width: 250,
+      restriction: "cantBeforeToday",
     },
     {
       name: "training_description",

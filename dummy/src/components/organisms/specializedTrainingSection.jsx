@@ -20,7 +20,7 @@ const SpecializedTrainingSection = ({
   pageChange,
   currentPage,
   totalPages,
-  searchFields
+  searchFields,
 }) => {
 
 

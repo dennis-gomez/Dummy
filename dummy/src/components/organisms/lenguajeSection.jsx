@@ -13,19 +13,18 @@ import InputValidated from "../atoms/inputValidated";
 const lenguajeSection = ({ personCod }) => {
 
   const {
+    optionsLanguages,
     languages,
     fields,
     isAddingLanguage,
     setIsAddingLanguage,
-    optionsLanguages,
     addLanguage,
     editLanguage,
     deleteLanguage,
     fetchLanguageOptions,
     fetchLanguages,
     fetchAvailableLanguages,
-    isEditingLanguage,
-    setIsEditingLanguage,
+    loading,
   } = useLanguage();
 
   useEffect(() => {
@@ -39,6 +38,7 @@ const lenguajeSection = ({ personCod }) => {
 
   const add = (data) => {
     addLanguage(data, personCod);
+    setIsAddingLanguage(false);
   }
 
   const [editingId, setEditingId] = useState(null);
@@ -77,12 +77,6 @@ const lenguajeSection = ({ personCod }) => {
     return role ? `${role.item_name}` : "Lenguaje desconocido";
   };
 
-  const saveRollName = (leng) => {
-    const role = getRoleLabel(leng);
-    setRole(role);
-    return;
-  };
-
   return (
     <div style={{ padding: 24 }}>
       <div
@@ -105,88 +99,100 @@ const lenguajeSection = ({ personCod }) => {
           </h1>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-7xl mx-auto mt-6">
-          {languages.map((leng) => {
-            const isEditing = editingId === leng[fields[0].name];
+        loading ? (
 
-            return (
-              <div
-                key={leng.language_cod}
-                className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm"
-              >
-                {/* ----------- MODO VISUAL ----------- */}
-                {!isEditing ? (
-                  <>
-                    <div className="text-lg font-medium text-gray-800">
-                      {getRoleLabel(leng)}:{" "}
-                      <span className="font-normal">{leng.language_level}</span>
-                    </div>
+          <div className="flex justify-center items-center h-32">
+            <h1 className="text-2xl font-bold text-gray-800 mb-0">
+              Cargando...
+            </h1>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-7xl mx-auto mt-6">
+            {languages.map((leng) => {
+              const isEditing = editingId === leng[fields[0].name];
 
-                    <div className="flex space-x-2 ml-4">
-                      <button
-                        onClick={() => {
-                          setEditingId(leng.language_cod);
-                          setEditData({ ...leng }); // copiar los datos actuales
-                          setEditErrors({});
-                        }}
-                        className="text-blue-600 hover:underline"
-                      >
-                        <EditIcon />
-                      </button>
+              return (
+                <div
+                  key={leng.language_cod}
+                  className="flex items-center justify-between bg-gray-100 p-3 rounded-lg shadow-sm"
+                >
+                  {/* ----------- MODO VISUAL ----------- */}
+                  {!isEditing ? (
 
-                      <ModalElimination
-                        message={`¿Estás seguro de que deseas eliminar el lenguaje: ${getRoleLabel(
-                          leng
-                        )}?`}
-                        onClick={() => deleteLanguage(leng.language_cod, personCod)}
-                      />
-                    </div>
-                  </>
-                ) : (
-                  /* ----------- MODO EDICIÓN ----------- */
-                  <div className="flex flex-col w-full">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-2">
-                      <div className="text-lg font-medium text-gray-800 flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
-                        <span>{getRoleLabel(leng)}:</span>
+                    <>
+                      <div className="text-lg font-medium text-gray-800">
+                        {getRoleLabel(leng)}:{" "}
+                        <span className="font-normal">{leng.language_level}</span>
+                      </div>
 
-                        <InputValidated
-                          name="language_level"
-                          type="select"
-                          value={editData.language_level || leng.language_level || ""}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setEditData({ ...editData, language_level: value });
-                            setEditErrors((prev) => ({
-                              ...prev,
-                              language_level: !value ? "Seleccione un nivel" : "",
-                            }));
+                      <div className="flex space-x-2 ml-4">
+                        <button
+                          onClick={() => {
+                            setEditingId(leng.language_cod);
+                            setEditData({ ...leng }); // copiar los datos actuales
+                            setEditErrors({});
                           }}
-                          options={fields[2].options} // niveles de dominio
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              backgroundColor: "#fff",
-                              width: "100%", // ✅ se adapta al ancho disponible
-                              minHeight: "2.5rem",
-                            },
-                          }}
+                          className="text-blue-600 hover:underline"
+                        >
+                          <EditIcon />
+                        </button>
+
+                        <ModalElimination
+                          message={`¿Estás seguro de que deseas eliminar el lenguaje: ${getRoleLabel(
+                            leng
+                          )}?`}
+                          onClick={() => deleteLanguage(leng.language_cod, personCod)}
                         />
                       </div>
+                    </>
+
+
+                  ) : (
+                    /* ----------- MODO EDICIÓN ----------- */
+                    <div className="flex flex-col w-full">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between w-full gap-2">
+                        <div className="text-lg font-medium text-gray-800 flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
+                          <span>{getRoleLabel(leng)}:</span>
+
+                          <InputValidated
+                            name="language_level"
+                            type="select"
+                            value={editData.language_level || leng.language_level || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setEditData({ ...editData, language_level: value });
+                              setEditErrors((prev) => ({
+                                ...prev,
+                                language_level: !value ? "Seleccione un nivel" : "",
+                              }));
+                            }}
+                            options={fields[2].options} // niveles de dominio
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                backgroundColor: "#fff",
+                                width: "100%", // ✅ se adapta al ancho disponible
+                                minHeight: "2.5rem",
+                              },
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {editErrors.language_level && (
+                        <span className="text-sm text-red-600 mt-1">
+                          {editErrors.language_level}
+                        </span>
+                      )}
                     </div>
 
-                    {editErrors.language_level && (
-                      <span className="text-sm text-red-600 mt-1">
-                        {editErrors.language_level}
-                      </span>
-                    )}
-                  </div>
+                  )}
 
-                )}
+                </div>
+              );
+            })}
 
-              </div>
-            );
-          })}
-
-        </div >
+          </div >
+        )
       )}
 
       {editingId ? (
