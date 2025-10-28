@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import projectService from '../../services/projectService';
+import InputValidated from '../atoms/inputValidatedSupplier';
+import InputMovement from '../atoms/inputMovement';
 
 const FormProject = ({ projectToEdit, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -19,23 +21,23 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showAllErrors, setShowAllErrors] = useState(false);
 
   const sectors = [
-    'Tecnología',
-    'Salud',
-    'Educación',
-    'Finanzas',
-    'Manufactura',
-    'Retail',
-    'Energía',
-    'Transporte',
-    'Gobierno',
-    'Otro'
+    { value: 'Tecnología', label: 'Tecnología' },
+    { value: 'Salud', label: 'Salud' },
+    { value: 'Educación', label: 'Educación' },
+    { value: 'Finanzas', label: 'Finanzas' },
+    { value: 'Manufactura', label: 'Manufactura' },
+    { value: 'Retail', label: 'Retail' },
+    { value: 'Energía', label: 'Energía' },
+    { value: 'Transporte', label: 'Transporte' },
+    { value: 'Gobierno', label: 'Gobierno' },
+    { value: 'Otro', label: 'Otro' }
   ];
 
   useEffect(() => {
     if (projectToEdit) {
-      // Manejar fechas correctamente
       const formatDateForInput = (dateString) => {
         if (!dateString) return '';
         try {
@@ -61,22 +63,139 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
         project_contact_email: projectToEdit.project_contact_email || '',
         project_contact_position: projectToEdit.project_contact_position || ''
       });
+    } else {
+      validateFormOnLoad();
     }
   }, [projectToEdit]);
 
+  const validateFormOnLoad = () => {
+    const newErrors = {};
+
+    if (!formData.project_company.trim()) {
+      newErrors.project_company = 'La empresa es obligatoria';
+    }
+    if (!formData.project_client_name.trim()) {
+      newErrors.project_client_name = 'El nombre del cliente es obligatorio';
+    }
+    if (!formData.project_name.trim()) {
+      newErrors.project_name = 'El nombre del proyecto es obligatorio';
+    }
+    if (!formData.project_sector) {
+      newErrors.project_sector = 'El sector es obligatorio';
+    }
+    if (!formData.project_start_date) {
+      newErrors.project_start_date = 'La fecha de inicio es obligatoria';
+    }
+    if (!formData.project_contact_full_name.trim()) {
+      newErrors.project_contact_full_name = 'El nombre del contacto es obligatorio';
+    }
+    if (!formData.project_contact_email.trim()) {
+      newErrors.project_contact_email = 'El email del contacto es obligatorio';
+    } else if (!/\S+@\S+\.\S+/.test(formData.project_contact_email)) {
+      newErrors.project_contact_email = 'El email no es válido';
+    }
+
+    setErrors(newErrors);
+    setShowAllErrors(true);
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+
+    validateField(name, value);
+  };
+
+  const validateField = (name, value) => {
+    const newErrors = { ...errors };
+
+    switch (name) {
+      case 'project_company':
+        if (!value.trim()) {
+          newErrors.project_company = 'La empresa es obligatoria';
+        } else {
+          delete newErrors.project_company;
+        }
+        break;
+
+      case 'project_client_name':
+        if (!value.trim()) {
+          newErrors.project_client_name = 'El nombre del cliente es obligatorio';
+        } else {
+          delete newErrors.project_client_name;
+        }
+        break;
+
+      case 'project_name':
+        if (!value.trim()) {
+          newErrors.project_name = 'El nombre del proyecto es obligatorio';
+        } else {
+          delete newErrors.project_name;
+        }
+        break;
+
+      case 'project_sector':
+        if (!value) {
+          newErrors.project_sector = 'El sector es obligatorio';
+        } else {
+          delete newErrors.project_sector;
+        }
+        break;
+
+      case 'project_start_date':
+        if (!value) {
+          newErrors.project_start_date = 'La fecha de inicio es obligatoria';
+        } else if (isNaN(new Date(value).getTime())) {
+          newErrors.project_start_date = 'La fecha de inicio no es válida';
+        } else {
+          delete newErrors.project_start_date;
+        }
+        break;
+
+      case 'project_contact_full_name':
+        if (!value.trim()) {
+          newErrors.project_contact_full_name = 'El nombre del contacto es obligatorio';
+        } else {
+          delete newErrors.project_contact_full_name;
+        }
+        break;
+
+      case 'project_contact_email':
+        if (!value.trim()) {
+          newErrors.project_contact_email = 'El email del contacto es obligatorio';
+        } else if (!/\S+@\S+\.\S+/.test(value)) {
+          newErrors.project_contact_email = 'El email no es válido';
+        } else {
+          delete newErrors.project_contact_email;
+        }
+        break;
+
+      case 'project_end_date':
+        if (value && formData.project_start_date) {
+          const startDate = new Date(formData.project_start_date);
+          const endDate = new Date(value);
+          
+          if (isNaN(endDate.getTime())) {
+            newErrors.project_end_date = 'La fecha de fin no es válida';
+          } else if (endDate < startDate) {
+            newErrors.project_end_date = 'La fecha de fin no puede ser anterior a la fecha de inicio';
+          } else {
+            delete newErrors.project_end_date;
+          }
+        } else {
+          delete newErrors.project_end_date;
+        }
+        break;
+
+      default:
+        break;
     }
+
+    setErrors(newErrors);
   };
 
   const validateForm = () => {
@@ -106,12 +225,10 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
       newErrors.project_contact_email = 'El email no es válido';
     }
 
-    // Validación de fechas
     if (formData.project_end_date && formData.project_start_date) {
       const startDate = new Date(formData.project_start_date);
       const endDate = new Date(formData.project_end_date);
       
-      // Validar que la fecha no sea "Invalid Date"
       if (isNaN(startDate.getTime())) {
         newErrors.project_start_date = 'La fecha de inicio no es válida';
       }
@@ -119,13 +236,13 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
         newErrors.project_end_date = 'La fecha de fin no es válida';
       }
       
-      // Solo validar si ambas fechas son válidas
       if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime()) && endDate < startDate) {
         newErrors.project_end_date = 'La fecha de fin no puede ser anterior a la fecha de inicio';
       }
     }
 
     setErrors(newErrors);
+    setShowAllErrors(true);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -138,10 +255,9 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
 
     setIsSubmitting(true);
     try {
-      // Preparar datos para enviar - manejar fechas vacías
       const dataToSend = {
         ...formData,
-        project_end_date: formData.project_end_date || null // Enviar null si está vacío
+        project_end_date: formData.project_end_date || null
       };
 
       if (projectToEdit) {
@@ -176,6 +292,7 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
       project_contact_position: ''
     });
     setErrors({});
+    setShowAllErrors(false);
   };
 
   const handleCancel = () => {
@@ -183,8 +300,12 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
     onCancel();
   };
 
+  const shouldShowError = (fieldName) => {
+    return showAllErrors || errors[fieldName];
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
+    <div className="p-6 rounded-lg">
       <h2 className="text-2xl font-bold text-gray-800 mb-6">
         {projectToEdit ? 'Editar Proyecto' : 'Nuevo Proyecto'}
       </h2>
@@ -193,150 +314,107 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
         {/* Información Básica */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Empresa *
-            </label>
-            <input
-              type="text"
+            <InputValidated
               name="project_company"
               value={formData.project_company}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.project_company ? 'border-red-500' : 'border-gray-300'
-              }`}
               placeholder="Nombre de la empresa"
+              label="Empresa *"
+              error={shouldShowError('project_company') ? errors.project_company : ''}
             />
-            {errors.project_company && (
-              <p className="mt-1 text-sm text-red-600">{errors.project_company}</p>
-            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Cliente *
-            </label>
-            <input
-              type="text"
+            <InputValidated
               name="project_client_name"
               value={formData.project_client_name}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.project_client_name ? 'border-red-500' : 'border-gray-300'
-              }`}
               placeholder="Nombre del cliente"
+              label="Cliente *"
+              error={shouldShowError('project_client_name') ? errors.project_client_name : ''}
             />
-            {errors.project_client_name && (
-              <p className="mt-1 text-sm text-red-600">{errors.project_client_name}</p>
-            )}
           </div>
         </div>
 
+        {/* Nombre del Proyecto - Ocupa todo el ancho */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Nombre del Proyecto *
-          </label>
-          <input
-            type="text"
+          <InputValidated
             name="project_name"
             value={formData.project_name}
             onChange={handleChange}
-            className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.project_name ? 'border-red-500' : 'border-gray-300'
-            }`}
             placeholder="Nombre del proyecto"
+            label="Nombre del Proyecto *"
+            error={shouldShowError('project_name') ? errors.project_name : ''}
           />
-          {errors.project_name && (
-            <p className="mt-1 text-sm text-red-600">{errors.project_name}</p>
-          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Sector *
-            </label>
-            <select
+        {/* Sector y Tecnologías - Sector pequeño, Tecnologías grande */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Selector de Sector - ocupa 1 columna */}
+          <div className="md:col-span-1">
+            <InputMovement
               name="project_sector"
               value={formData.project_sector}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.project_sector ? 'border-red-500' : 'border-gray-300'
-              }`}
-            >
-              <option value="">Seleccionar sector</option>
-              {sectors.map(sector => (
-                <option key={sector} value={sector}>{sector}</option>
-              ))}
-            </select>
-            {errors.project_sector && (
-              <p className="mt-1 text-sm text-red-600">{errors.project_sector}</p>
-            )}
+              label="Sector *"
+              type="select"
+              options={sectors}
+              placeholder="Seleccionar sector"
+              error={shouldShowError('project_sector') ? errors.project_sector : ''}
+            />
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tecnologías
-            </label>
-            <input
-              type="text"
+          {/* Campo de Tecnologías - ocupa 3 columnas */}
+          <div className="md:col-span-3">
+            <InputValidated
               name="project_technologies"
               value={formData.project_technologies}
               onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Tecnologías separadas por comas"
+              placeholder="Tecnologías separadas por comas (Ej: React, Node.js, MongoDB, Python, AWS, Docker...)"
+              label="Tecnologías"
+              multiline
+              rows={4}
+              className="min-h-[100px] resize-y w-full"
             />
           </div>
         </div>
 
+        {/* Fechas */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fecha de Inicio *
-            </label>
-            <input
-              type="date"
+            <InputValidated
               name="project_start_date"
+              type="date"
               value={formData.project_start_date}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.project_start_date ? 'border-red-500' : 'border-gray-300'
-              }`}
+              label="Fecha de Inicio *"
+              error={shouldShowError('project_start_date') ? errors.project_start_date : ''}
             />
-            {errors.project_start_date && (
-              <p className="mt-1 text-sm text-red-600">{errors.project_start_date}</p>
-            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Fecha de Fin
-            </label>
-            <input
-              type="date"
+            <InputValidated
               name="project_end_date"
+              type="date"
               value={formData.project_end_date}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.project_end_date ? 'border-red-500' : 'border-gray-300'
-              }`}
+              label="Fecha de Fin"
+              error={shouldShowError('project_end_date') ? errors.project_end_date : ''}
             />
-            {errors.project_end_date && (
-              <p className="mt-1 text-sm text-red-600">{errors.project_end_date}</p>
-            )}
           </div>
         </div>
 
+        {/* Descripción - Ocupa todo el ancho */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Descripción del Proyecto
-          </label>
-          <textarea
+          <InputValidated
             name="project_description"
             value={formData.project_description}
             onChange={handleChange}
-            rows="4"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Describe el proyecto..."
+            label="Descripción del Proyecto"
+            multiline
+            rows={4}
+            className="min-h-[100px] resize-y"
           />
         </div>
 
@@ -348,88 +426,59 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Nombre Completo *
-              </label>
-              <input
-                type="text"
+              <InputValidated
                 name="project_contact_full_name"
                 value={formData.project_contact_full_name}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.project_contact_full_name ? 'border-red-500' : 'border-gray-300'
-                }`}
                 placeholder="Nombre del contacto"
+                label="Nombre Completo *"
+                error={shouldShowError('project_contact_full_name') ? errors.project_contact_full_name : ''}
               />
-              {errors.project_contact_full_name && (
-                <p className="mt-1 text-sm text-red-600">{errors.project_contact_full_name}</p>
-              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Teléfono
-              </label>
-              <input
-                type="tel"
+              <InputValidated
                 name="project_contact_phone"
                 value={formData.project_contact_phone}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Teléfono de contacto"
+                label="Teléfono"
+                type="tel"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email *
-              </label>
-              <input
-                type="email"
+              <InputValidated
                 name="project_contact_email"
                 value={formData.project_contact_email}
                 onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  errors.project_contact_email ? 'border-red-500' : 'border-gray-300'
-                }`}
                 placeholder="email@ejemplo.com"
+                label="Email *"
+                type="email"
+                error={shouldShowError('project_contact_email') ? errors.project_contact_email : ''}
               />
-              {errors.project_contact_email && (
-                <p className="mt-1 text-sm text-red-600">{errors.project_contact_email}</p>
-              )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Cargo
-              </label>
-              <input
-                type="text"
+              <InputValidated
                 name="project_contact_position"
                 value={formData.project_contact_position}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Cargo del contacto"
+                label="Cargo"
               />
             </div>
           </div>
         </div>
 
         {/* Botones de acción */}
-        <div className="flex justify-end space-x-3 pt-6 border-t">
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            Cancelar
-          </button>
+        <div className="flex justify-center space-x-3 pt-6 border-t">  
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2  font-medium text-white bg-blue-600   rounded-md  hover:bg-blue-700  "
           >
             {isSubmitting ? 'Guardando...' : (projectToEdit ? 'Actualizar' : 'Crear Proyecto')}
           </button>
