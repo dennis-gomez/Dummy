@@ -6,21 +6,28 @@ import SpecializedTrainingTable from "./specializedTrainingTable";
 
 const SpecializedTrainingSection = ({
   profileCod,
-  specializedTrainingData,
   isCreatingSpecializedTraining,
   setIsCreatingSpecializedTraining,
   specializedTrainingFields,
   handleAddSpecializedTraining,
+  specializedTrainingData,
+  loading,
+  editingId,
+  setEditingId,
+  openPDF,
+  handleEdit,
+  handleSearch,
+  pageChange,
+  currentPage,
+  totalPages,
+  searchFields
 }) => {
-  console.log(
-    "Rendering SpecializedTrainingSection for profileCod:",
-    profileCod
-  );
+
 
   return (
     <div style={{ padding: 24 }}>
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Gestión de Libros Legales
+        Gestión de Formacion Especializada
       </h1>
 
       {isCreatingSpecializedTraining && (
@@ -39,7 +46,7 @@ const SpecializedTrainingSection = ({
           </h3>
 
           <Form
-            fields={specializedTrainingFields}
+            fields={specializedTrainingFields.slice(1)}
             formTitle="Agregar Formación"
             onSubmit={handleAddSpecializedTraining}
             titleBtn="Guardar Formación"
@@ -47,29 +54,29 @@ const SpecializedTrainingSection = ({
           />
         </Box>
       )}
-      {/*
-        <DynamicTable
-          fields={fields}
-          tableName="Libros Legales"
-          singularName="Libro Legal"
-          data={booksList}
-          onEdit={handleEditBook}
-          onDelete={handleDeleteBook}
-          searchFields={searchFields}
-          handleSearch={handleSearchBooks}
-          isLoading={loading}
-          typesOfBooks={typesOfBooks}
-          STATUS_OPTIONS={STATUS_OPTIONS}
-          isCreatingBook={isCreatingBook}
-          setIsCreatingBook={setIsCreatingBook}
-          openPDF={openPDF}
-          onStartEdit={() => {
-            if (isCreatingBook) setIsCreatingBook(false); // cierra creación al editar
-          }}
-          editingIdProp={editingId}
-          setEditingIdProp={setEditingId} // levantar edición al padre
-        />
-      */}
+
+      <SpecializedTrainingTable
+        fields={specializedTrainingFields}
+        tableName="Formaciones Especializadas"
+        singularName="Formación Especializada"
+        data={specializedTrainingData}
+        onEdit={handleEdit}
+        searchFields={searchFields}
+        handleSearch={handleSearch}
+        isLoading={loading}
+        isCreatingSpecializedTraining={isCreatingSpecializedTraining}
+        setisCreatingSpecializedTraining={setIsCreatingSpecializedTraining}
+        openPDF={openPDF}
+        onStartEdit={() => {
+          if (isCreatingSpecializedTraining) setIsCreatingSpecializedTraining(false);
+        }}
+        editingIdProp={editingId}
+        setEditingIdProp={setEditingId} // levantar edición al padre
+        pageChange={pageChange}
+        currentPage={currentPage}
+        totalPages={totalPages}
+      />
+
     </div>
   );
 };

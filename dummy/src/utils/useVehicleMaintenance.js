@@ -123,23 +123,7 @@ export const useVehicleMaintenance = () => {
         setAppliedText(searchText);
         await fetchRecords(1, { veh: selectedVehicle, field: searchField, text: searchText });
     };
-    /*
-    const handleSortByDate = async (sortOrder) => {
-         try {
-            setError(null);
-            setLoading(true);
-            const response = await findMaintenanceLogs(selectedVehicle, searchField, searchText, 1, pageSize, "maintenance_date", sortOrder);
-            setLogs(response.data);
-            setTotalPages(response.totalPages || 1);
-        } catch (error) {
-            const message = error.response?.data?.message || "Error al ordenar registros.";
-            ModalAlert("Error", message, "error");
-            setError(message);
-        } finally {
-            setLoading(false);
-        }
-    };
-    */
+
     // Agregar registro
     const handleSubmit = async (formData) => {
         try {

@@ -30,6 +30,16 @@ const profileSection = ({
   setIsCreatingSpecializedTraining,
   specializedTrainingFields,
   handleAddSpecializedTraining,
+  loading,
+  setEditingId,
+  editingId,
+  openPDF,
+  handleEdit,
+  handleSearch,
+  pageChange,
+  currentPage,
+  totalPages,
+  specializedTrainingSearchFields,
 }) => {
 
   const add = (data) => {
@@ -161,6 +171,16 @@ const profileSection = ({
                 setIsCreatingSpecializedTraining={setIsCreatingSpecializedTraining}
                 specializedTrainingFields={specializedTrainingFields}
                 handleAddSpecializedTraining={handleAddSpecializedTraining}
+                loading={loading}
+                editingId={editingId}
+                setEditingId={setEditingId}
+                openPDF={openPDF}
+                handleEdit={handleEdit}
+                handleSearch={handleSearch}
+                pageChange={pageChange}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                searchFields={specializedTrainingSearchFields}
               />
             </Box>
           )}

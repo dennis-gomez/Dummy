@@ -21,11 +21,11 @@ import VehicleMaintenance from "./components/pages/vehicleMaintenancePage";
 import SupplierPage from "./components/pages/supplierPage";
 import InventaryPage from "./components/pages/inventaryPage";
 import OrderPage from "./components/pages/orderPage";
-import TechnologyInventory from "./components/pages/technologyInventoryPage";
+import TechnologyInventory from "./components/pages/technologyInventoryPage.jsx";
 import MovementTI from "./components/pages/movementTI";
 import ProfilePage from "./components/pages/profilePage.jsx";
 import PersonalPage from './components/pages/personalPage'
-
+import ProjectPage from './components/pages/projectPage'
 function App() {
   return (
     <BrowserRouter>
@@ -60,6 +60,7 @@ function App() {
             <Route path="/inventario/tecnologias-informacion" element={<TechnologyInventory />} />
             <Route path="/inventario/tecnologias-informacion/movimientos" element={<MovementTI />} />
             <Route path="/licitaciones/perfiles" element={<PersonalPage />} />
+                    <Route path="/proyectos/gestion" element={<ProjectPage />} />
           </Routes>
         </main>
         <Footer />

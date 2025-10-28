@@ -4,6 +4,7 @@ import PersonalTable from "../organisms/personalTable";
 import { Box, Typography } from "@mui/material";
 import Form from "../organisms/form";
 import PersonalFormation from "../organisms/tablePersonalFormation";
+import { useAcademicTraining } from "../../utils/useAcademicTraining";
 
 function PersonalPage() {
 
@@ -40,7 +41,6 @@ function PersonalPage() {
         showFormation,
         handleOpenFormation,
         handleCloseFormation,
-
     } = usePersonalFormation(); //hook para el manejo de formacion
 
     return (
@@ -50,7 +50,6 @@ function PersonalPage() {
                     <PersonalFormation
                         person={person}
                         handleCloseFormation={handleCloseFormation}
-
                     />
                 </>
             ) : (
