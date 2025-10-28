@@ -43,6 +43,14 @@ const TableMovementTI = ({
     setEditForm({ ...movement });
   };
 
+  const movementMotives = [
+    { id: 1, description: "Asignación" },
+    { id: 2, description: "Devolución" },
+    { id: 3, description: "Traslado" },
+    { id: 4, description: "Mantenimiento" },
+    { id: 5, description: "Baja de activos" },
+  ];
+
   const handleCancel = () => setEditingId(null);
 
   const handleSave = async () => {
@@ -300,28 +308,43 @@ const TableMovementTI = ({
                           <tbody>
                             {movementAssets[m.cod_movement].map((item, idx) => {
                               const status = Number(item.it_inventory_movement_is_active);
+
+                              const motive = movementMotives.find(
+                                (mot) => mot.id === Number(item.it_inventory_movement_motive)
+                              )?.description || "-";
+
                               return (
                                 <tr key={`${m.cod_movement}-${idx}`} className={status === 0 ? "bg-red-100" : ""}>
-                                  <td className="py-3 px-4 text-center">{item.cod_it_inventory || "-"}</td>
-                                  <td className="py-3 px-4 text-center">{item.it_inventory_movement_motive || "-"}</td>
-                                  <td className="py-3 px-4 text-center">{item.it_inventory_movement_description || "-"}</td>
-                                  <td className="py-3 px-4 text-center">{status === 1 ? "Activo" : "Inactivo"}</td>
+                                  <td className="py-3 px-4 text-center"> {item.cod_it_inventory || "-"} </td>
+                                  <td className="py-3 px-4 text-center"> {motive} </td>
+                                  <td className="py-3 px-4 text-center"> {item.it_inventory_movement_description || "-"} </td>
+                                  <td className="py-3 px-4 text-center"> {status === 1 ? "Activo" : "Inactivo"} </td>
                                   <td className="py-3 px-4 text-center flex gap-2 justify-center">
                                     {status === 1 && (
                                       <Tooltip title="Desactivar activo">
-                                        <button
-                                          onClick={() => handleRemoveItem(m.cod_movement, item.cod_it_inventory)}
-                                          className="text-yellow-500 hover:text-yellow-600 transition-colors p-1"
-                                        >
+                                        <button onClick={() => handleRemoveItem(m.cod_movement, item.cod_it_inventory)}
+                                          className="text-yellow-500 hover:text-yellow-600 transition-colors p-1" >
                                           <CloseIcon fontSize="medium" />
                                         </button>
                                       </Tooltip>
                                     )}
-                                    <Tooltip title={status === 1 ? "Debe desactivar el activo primero" : "Eliminar activo"}>
+
+                                    <Tooltip
+                                      title={ status === 1
+                                          ? "Debe desactivar el activo primero"
+                                          : "Eliminar activo"
+                                      }
+                                    >
                                       <span>
                                         <ModalElimination
                                           message="¿Está seguro que desea eliminar permanentemente este activo del movimiento?"
-                                          onClick={() => handleDeleteMovementItem(m.cod_movement, item.cod_it_inventory, status)}
+                                          onClick={() =>
+                                            handleDeleteMovementItem(
+                                              m.cod_movement,
+                                              item.cod_it_inventory,
+                                              status
+                                            )
+                                          }
                                           disabled={status === 1}
                                           confirmText="Sí, Eliminar"
                                         />
@@ -332,6 +355,7 @@ const TableMovementTI = ({
                               );
                             })}
                           </tbody>
+
                         </table>
                       ) : (
                         <p className="text-gray-500 text-sm">No hay activos registrados en este movimiento.</p>
