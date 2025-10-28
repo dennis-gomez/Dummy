@@ -347,24 +347,19 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
             error={shouldShowError('project_name') ? errors.project_name : ''}
           />
         </div>
-
-        {/* Sector y Tecnologías - Sector pequeño, Tecnologías grande */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {/* Selector de Sector - ocupa 1 columna */}
           <div className="md:col-span-1">
             <InputMovement
               name="project_sector"
               value={formData.project_sector}
               onChange={handleChange}
-              label="Sector *"
+              label="Sector"
               type="select"
               options={sectors}
               placeholder="Seleccionar sector"
               error={shouldShowError('project_sector') ? errors.project_sector : ''}
             />
           </div>
-
-          {/* Campo de Tecnologías - ocupa 3 columnas */}
           <div className="md:col-span-3">
             <InputValidated
               name="project_technologies"
@@ -419,7 +414,7 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
         </div>
 
         {/* Información de Contacto */}
-        <div className="border-t pt-6">
+        <div className="pt-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Información de Contacto
           </h3>
@@ -474,7 +469,7 @@ const FormProject = ({ projectToEdit, onSave, onCancel }) => {
         </div>
 
         {/* Botones de acción */}
-        <div className="flex justify-center space-x-3 pt-6 border-t">  
+        <div className="flex justify-center space-x-3 pt-6">  
           <button
             type="submit"
             disabled={isSubmitting}

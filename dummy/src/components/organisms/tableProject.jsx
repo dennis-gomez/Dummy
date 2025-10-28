@@ -202,10 +202,10 @@ function TableProject({ projects, onRefresh }) {
               className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
             >
               {/* ID */}
-              <td className="py-2 px-3 text-center font-medium">{project.cod_project}</td>
+              <td className="py-2 px-3 text-center min-w-[200px]">{project.cod_project}</td>
 
               {/* Nombre */}
-              <td className="py-2 px-3 text-center">
+              <td className="py-2 px-3 text-center min-w-[200px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
                     name="project_name"
@@ -220,7 +220,7 @@ function TableProject({ projects, onRefresh }) {
               </td>
 
               {/* Empresa */}
-              <td className="py-2 px-3 text-center">
+              <td className="py-2 px-3 text-center min-w-[200px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
                     name="project_company"
@@ -235,7 +235,7 @@ function TableProject({ projects, onRefresh }) {
               </td>
 
               {/* Cliente */}
-              <td className="py-2 px-3 text-center">
+              <td className="py-2 px-3 text-center min-w-[200px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
                     name="project_client_name"
@@ -250,7 +250,7 @@ function TableProject({ projects, onRefresh }) {
               </td>
 
               {/* Sector */}
-              <td className="py-2 px-3 text-center">
+              <td className="py-2 px-3 text-center min-w-[200px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
                     name="project_sector"
@@ -273,13 +273,12 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Descripción"
                     label="Descripción"
+                     multiline
                   />
                 ) : (
                   <span className="block break-words">{project.project_description || "—"}</span>
                 )}
               </td>
-
-              {/* Tecnologías - SIN TRUNCAMIENTO EN TOOLTIP */}
               <td className="py-2 px-3 text-center min-w-[400px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
