@@ -152,7 +152,6 @@ const SpecializedTrainingTable = ({
             <tbody>
               {data.map((row, index) => {
                 const isEditing = editingId === row[fields[0].name];
-                console.log("isEditing:", row[fields[0].name]);
                 return (
                   <tr key={row[fields[0].name] || index} className={`hover:bg-blue-50 transition-all duration-200 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                     <td className="py-4 px-6 text-center">{index + 1}</td>

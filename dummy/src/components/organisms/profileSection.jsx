@@ -42,8 +42,9 @@ const profileSection = ({
   specializedTrainingSearchFields,
 }) => {
 
-  const add = (data) => {
-    handleSaveProfile(data, personCod);
+  const add = async (data) => {
+    await handleSaveProfile(data, personCod);
+    setIsAddingProfile(false);
   }
 
   const [role, setRole] = useState("");
