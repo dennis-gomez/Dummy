@@ -6,16 +6,20 @@ import ResumeTableLicitationTable from "../organisms/tableResumeProfileLicitatio
 const ResumeTableLicitationPage = () => {
   const {
     personal,
-    profiles,
+    profileSummaries,
+
+    fetchProfileSummary,
+
     loading,
     page,
     totalPages,
+    setPage,
     personFields,
 
-        selectedPerson,
-        selectedProfile,
-        setSelectedPerson,
-        setSelectedProfile,
+    selectedPerson,
+    selectedProfile,
+    setSelectedPerson,
+    setSelectedProfile,
 
   } = useResumeTableLicitation();
 
@@ -32,35 +36,18 @@ const ResumeTableLicitationPage = () => {
   };
 
   // 🧠 Selección de perfil en combobox dentro de fila expandida
-  const handleProfileSelect = (personCod, profileCod) => {
-    setProfilesByPerson((prev) => ({
-      ...prev,
-      [personCod]: profileCod,
-    }));
-  };
-
-console.log(`info de personas: ${JSON.stringify(personal, null, 2)}`);
+  const handleProfileSelect = async (personCod, profileCod) => {
+  setSelectedProfile((prev) => ({ ...prev, [personCod]: profileCod }));
+  await fetchProfileSummary(personCod, profileCod); // 🔹 aquí llamamos al SP
+};
 
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography
-        variant="h5"
-        sx={{ fontWeight: "bold", textAlign: "center", mb: 3 }}
-      >
-        Resumen de Perfiles por Persona
-      </Typography>
-
-      {loading ? (
-        <Box sx={{ display: "flex", justifyContent: "center", my: 3 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
         <ResumeTableLicitationTable
           fields={personFields}
           data={personal}
           isLoading={loading}
-          profiles={profiles}
+          profileSummaries={profileSummaries}
           expandedRows={expandedRows}
           onExpand={handleExpand}
           onProfileSelect={handleProfileSelect}
@@ -70,15 +57,13 @@ console.log(`info de personas: ${JSON.stringify(personal, null, 2)}`);
           setSelectedPerson={setSelectedPerson}
           setSelectedProfile={setSelectedProfile}
 
-        />
-      )}
+          fetchProfileSummary={fetchProfileSummary}
 
-      <Box sx={{ mt: 3, textAlign: "center" }}>
-        <Typography variant="body2">
-          Página {page} de {totalPages}
-        </Typography>
-      </Box>
-    </Box>
+          page={page}
+          totalPages={totalPages}
+          onPageChange={(newPage) => setPage(newPage)}
+
+        />
   );
 };
 

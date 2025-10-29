@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
 
-import { getProfilesByPersonId } from "../services/profileService";
+import { getProfilesByPersonId, getProfileSummary } from "../services/profileService";
 import { getPersonal } from "../services/personalService";
 
 export const useResumeTableLicitation = () => {
     // 📋 Estado general
     const [personal, setPersonal] = useState([]);
-    const [profiles, setProfiles] = useState([]);
+
+    // 🧾 Resumen de perfil (resultado del SP)
+    const [profileSummaries, setProfileSummaries] = useState({});
+
 
     // 🔄 Paginación
     const [page, setPage] = useState(1);
@@ -49,91 +52,76 @@ export const useResumeTableLicitation = () => {
 
 
 
-// 📦 Cargar personal y sus perfiles
-const fetchPersonalWithProfiles = async (pageNum = page, limit = pageSize) => {
-    try {
-        setLoading(true);
-
-        // 1️⃣ Traer personal
-        const resp = await getPersonal(pageNum, limit);
-        const personalData = resp.data || [];
-
-        // 2️⃣ Traer perfiles de cada persona en paralelo
-        const personalWithProfiles = await Promise.all(
-            personalData.map(async (person) => {
-                try {
-                    const profiles = await getProfilesByPersonId(person.personal_cod);
-                    return { ...person, profiles: profiles || [] };
-                } catch (err) {
-                    console.error(`Error cargando perfiles de ${person.personal_cod}`, err);
-                    return { ...person, profiles: [] };
-                }
-            })
-        );
-
-        // 3️⃣ Guardar resultados
-        setPersonal(personalWithProfiles);
-        setTotalPages(resp.totalPages || 1);
-        setPage(resp.currentPage || 1);
-    } catch (err) {
-        console.error(err);
-        setError("Error al obtener personal con perfiles");
-        ModalAlert("Error", "Error al obtener personal con perfiles", "error");
-    } finally {
-        setLoading(false);
-    }
-};
-
-
-
-
-
-
-
-
-
-    // 📦 Cargar personal (con paginación)
-    const fetchPersonal = async (pageNum = page, limit = pageSize) => {
+    // 📦 Cargar personal y sus perfiles
+    const fetchPersonalWithProfiles = async (pageNum = page, limit = pageSize) => {
         try {
             setLoading(true);
+
+            // 1️⃣ Traer personal
             const resp = await getPersonal(pageNum, limit);
-            setPersonal(resp.data || []);
+            const personalData = resp.data || [];
+
+            // 2️⃣ Traer perfiles de cada persona en paralelo
+            const personalWithProfiles = await Promise.all(
+                personalData.map(async (person) => {
+                    try {
+                        const profiles = await getProfilesByPersonId(person.personal_cod);
+                        return { ...person, profiles: profiles || [] };
+                    } catch (err) {
+                        console.error(`Error cargando perfiles de ${person.personal_cod}`, err);
+                        return { ...person, profiles: [] };
+                    }
+                })
+            );
+
+            // 3️⃣ Guardar resultados
+            setPersonal(personalWithProfiles);
             setTotalPages(resp.totalPages || 1);
             setPage(resp.currentPage || 1);
         } catch (err) {
             console.error(err);
-            setError("Error al obtener personal");
-            ModalAlert("Error", "Error al obtener personal", "error");
+            setError("Error al obtener personal con perfiles");
+            ModalAlert("Error", "Error al obtener personal con perfiles", "error");
         } finally {
             setLoading(false);
         }
     };
 
-    // 🎯 Cargar perfiles de una persona seleccionada
-    const fetchProfilesByPerson = async (codPerson) => {
-        if (!codPerson) return;
-        try {
-            setLoading(true);
-            const data = await getProfilesByPersonId(codPerson);
-            setProfiles(data || []);
-            setSelectedPerson(codPerson);
-        } catch (err) {
-            console.error(err);
-            ModalAlert("Error", "No se pudieron cargar los perfiles.", "error");
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    // 🧩 Efecto inicial
-    useEffect(() => {
-        fetchPersonalWithProfiles();
-    }, []);
+    // 🎯  Cargar resumen del perfil (llamando al SP)
+const fetchProfileSummary = async (personal_cod, profile_cod) => {
+  if (!personal_cod || !profile_cod) return;
+  try {
+    setLoading(true);
+    const data = await getProfileSummary(personal_cod, profile_cod);
+
+    // Guardar por persona
+    setProfileSummaries((prev) => ({
+      ...prev,
+      [personal_cod]: data || {},
+    }));
+
+    console.log("✅ Resumen del perfil cargado:", data);
+  } catch (err) {
+    console.error("Error obteniendo resumen del perfil:", err);
+    ModalAlert("Error", "No se pudo obtener el resumen del perfil.", "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+// 🧩 Efecto inicial + recarga cuando cambia la página
+useEffect(() => {
+  fetchPersonalWithProfiles(page, pageSize);
+}, [page]);
+
 
     return {
         // datos
         personal,
-        profiles,
+        profileSummaries,
 
         // selección
         selectedPerson,
@@ -154,7 +142,7 @@ const fetchPersonalWithProfiles = async (pageNum = page, limit = pageSize) => {
         personFields,
 
         // funciones
-        fetchPersonal,
-        fetchProfilesByPerson,
+        fetchPersonalWithProfiles,
+        fetchProfileSummary,
     };
 };
