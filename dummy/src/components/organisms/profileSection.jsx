@@ -6,6 +6,7 @@ import { ValidateValues } from "../../utils/validateValues";
 import SpecializedTrainingSection from "./specializedTrainingSection";
 import ModalElimination from "../molecules/modalElimination";
 import Form from "../organisms/form";
+import AssociationProjectPage from "../pages/associationProjectPage"
 
 const profileSection = ({
   profiles,
@@ -172,8 +173,9 @@ const profileSection = ({
           />
 
           {seeProjectExperience && (
-            //aqui dennis va a poner el componente de experiencia en proyectos
-            <div>hola we xd aqui va el componente de la experiencia</div>
+            <div className="w-full">
+              <AssociationProjectPage profileCod={selectedProfile.profile_cod} />
+            </div>
           )}
         </div>
       )}

@@ -1,4 +1,3 @@
-
 import { useCallback, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -9,20 +8,17 @@ import { CircularProgress } from "@mui/material";
 import InputValidated from "../atoms/inputValidated";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
-const TableAcademicTrainning = ({
-    academicTrainings, 
-    titlesTypes,
-
-    fields: fieldsAcademicTraining, 
-    editFields: editFieldsAcademicTraining, 
-
-    showForm: showFormAcademicTraining, 
+const TableAssociationProject = ({
+    associations, 
+    rolesTypes, 
+    fieldsAssociation, 
+    editFieldsAssociation, 
+    showFormAssociations, 
+    isLoadingAssociation, 
+    handleEditAssociation, 
     onToggleForm, 
-
-    isLoading: isLoadingAcademicTraining, 
-
-    handleEdit: handleEditAcademicTraining, 
 }) => {
+
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
     const [editErrors, setEditErrors] = useState({});
@@ -30,9 +26,9 @@ const TableAcademicTrainning = ({
     /*
     * cambiar inputs a modo edicion
     */
-    const handleEditClick = (training) => {
-        setEditingId(training.cod_academic_training);
-        setEditData({ ...training });
+    const handleEditClick = (asso) => {
+        setEditingId(asso.cod_project_association);
+        setEditData({ ...asso });
         setEditErrors({});
     };
 
@@ -48,7 +44,7 @@ const TableAcademicTrainning = ({
 
         if (!editingId) return;
         
-        const isSaved = await handleEditAcademicTraining(editData);
+        const isSaved = await handleEditAssociation(editData);
         if (isSaved) {
             setEditingId(null);
             setEditData({});
@@ -76,24 +72,24 @@ const TableAcademicTrainning = ({
         <div className="p-6 mt-6 bg-white rounded-2xl">
             <div className="relative flex items-center w-full max-w-5xl mx-auto mb-4">
                 <h1 className="text-2xl font-bold text-gray-800 text-center flex-1">
-                    Formaciones Académicas
+                    Proyectos Asociados 
                 </h1>
                 <div className="absolute right-0">
                     <Button
-                    text={showFormAcademicTraining ? "Cancelar" : "Agregar Formación"}
-                    onClick={onToggleForm}
+                        text={showFormAssociations ? "Cancelar" : "Agregar Proyecto"}
+                        onClick={onToggleForm}
                     />
                 </div>
             </div>
 
-            {isLoadingAcademicTraining ? (
+            {isLoadingAssociation ? (
                 <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
                     <CircularProgress size={24} />
-                    <span>Cargando formaciones académicas...</span>
+                    <span>Cargando proyectos asociados...</span>
                 </div>
-            ) : !academicTrainings || academicTrainings.length === 0 ? (   
+            ) : !associations || associations.length === 0 ? (   
                 <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg w-full max-w-3xl mx-auto mb-4">
-                    No hay formaciones académicas registrados
+                    No hay proyectos asociados al perfil
                 </div>
             ) : (
                 <div className="overflow-x-auto rounded-xl shadow-lg">
@@ -101,64 +97,61 @@ const TableAcademicTrainning = ({
                         <thead>
                             <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">#</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Título Obtenido</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Institución</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Carrera</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Proyecto</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Rol</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Fecha Inicio</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Fecha Fin</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Fecha de Obtención de Título</th>
-                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">PDF</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Fecha Final</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Tecnologías</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tr-xl w-32"> Acciones </th>
                             </tr>
                         </thead>
                         <tbody>
-                            {academicTrainings.map((per, index) => {
-                                const isEditing = editingId === per.cod_academic_training;
+                            {associations.map((asso, index) => {
+                                const isEditing = editingId === asso.cod_project_association;
                                 return (
                                 <tr
-                                    key={per.cod_academic_training} 
+                                    key={asso.cod_project_association} 
                                     className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
                                 >
                                     <td className="py-4 px-6 text-center">{index + 1}</td>
-                                    {fieldsAcademicTraining
-                                    .map((f) => { 
-                                    const fieldEdit = editFieldsAcademicTraining.find((ef) => ef.name === f.name);
-                                    return (
-                                        <td key={f.name} className="py-4 px-6 text-center">
-                                        {isEditing && fieldEdit ? (
-                                            <InputValidated
-                                            name={fieldEdit.name}
-                                            type={fieldEdit.type || "text"}
-                                            value={editData[fieldEdit.name] || ""}
-                                            placeholder={fieldEdit.placeholder}
-                                            options={fieldEdit.options || []}
-                                            restriction={fieldEdit.restriction}
-                                            validations={fieldEdit.validations}
-                                            required={fieldEdit.required}
-                                            onError={handleError}
-                                            currentId={editingId}
-                                            onChange={(e) =>
-                                                setEditData({ ...editData, [fieldEdit.name]: e.target.value })
-                                            }
-                                            sx={{
-                                                "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
-                                                ...(fieldEdit.width ? { width: fieldEdit.width } : {}),
-                                            }}
-                                            formValues={editData}
-                                            />
-                                        ) : (
-                                            f.name === "academic_training_title_item_code" ? 
-                                                titlesTypes.find(t => t.value === per.academic_training_title_item_code)?.label || per.academic_training_title_item_code: 
-                                            f.name === "academic_training_start_date" ?
-                                                formatDateDDMMYYYY(per[f.name]) :
-                                            f.name === "academic_training_end_date" ?
-                                                formatDateDDMMYYYY(per[f.name]) :
-                                            f.name === "academic_training_date_obtaining" ?
-                                                formatDateDDMMYYYY(per[f.name]) :
-                                            per[f.name]
-                                        )}
-                                        </td>
-                                    );
+
+                                    {fieldsAssociation
+                                        .map((f) => { 
+                                        const fieldEdit = editFieldsAssociation.find((ef) => ef.name === f.name);
+                                        return (
+                                            <td key={f.name} className="py-4 px-6 text-center">
+                                            {isEditing && fieldEdit ? (
+                                                <InputValidated
+                                                name={fieldEdit.name}
+                                                type={fieldEdit.type || "text"}
+                                                value={editData[fieldEdit.name] || ""}
+                                                placeholder={fieldEdit.placeholder}
+                                                options={fieldEdit.options || []}
+                                                restriction={fieldEdit.restriction}
+                                                validations={fieldEdit.validations}
+                                                required={fieldEdit.required}
+                                                onError={handleError}
+                                                currentId={editingId}
+                                                onChange={(e) =>
+                                                    setEditData({ ...editData, [fieldEdit.name]: e.target.value })
+                                                }
+                                                sx={{
+                                                    "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                                    ...(fieldEdit.width ? { width: fieldEdit.width } : {}),
+                                                }}
+                                                formValues={editData}
+                                                />
+                                            ) : (
+                                                f.name === "project_association_role_item_code" ? 
+                                                    rolesTypes.find(t => t.value === asso.project_association_role_item_code)?.label || asso.project_association_role_item_code:
+                                                f.name === "project_association_start_date_participation" ?
+                                                    formatDateDDMMYYYY(asso[f.name]):
+                                                f.name === "project_association_end_date_participation" ?
+                                                    formatDateDDMMYYYY(asso[f.name]):
+                                                asso[f.name]
+                                            )}
+                                            </td>
+                                        )
                                     })}
                                     <td className="py-4 px-6 text-center flex gap-2 justify-center">
                                     {isEditing ? (
@@ -178,7 +171,7 @@ const TableAcademicTrainning = ({
                                     ):(
                                         <>
                                             <button
-                                                onClick={() => handleEditClick(per)}
+                                                onClick={() => handleEditClick(asso)}
                                                 className="text-blue-600 hover:text-blue-800"
                                             >
                                                 <EditIcon />
@@ -194,6 +187,6 @@ const TableAcademicTrainning = ({
                 </div>
             )}
         </div>
-    )
+    );
 }
-export default TableAcademicTrainning;
+export default TableAssociationProject;
