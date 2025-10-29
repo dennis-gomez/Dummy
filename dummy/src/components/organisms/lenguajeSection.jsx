@@ -33,8 +33,6 @@ const lenguajeSection = ({ personCod }) => {
     fetchAvailableLanguages(personCod);
   }, [personCod]);
 
-  console.log("languages in LenguajeSection:", languages);
-  console.log("optionsLanguages in LenguajeSection:", optionsLanguages);
 
   const add = (data) => {
     addLanguage(data, personCod);
@@ -89,13 +87,13 @@ const lenguajeSection = ({ personCod }) => {
 
         }}
       >
-        <h1 className="text-2xl font-bold text-gray-800 mb-0">lenguajes</h1>
+        <h1 className="text-2xl font-bold text-gray-800 mb-0">Idiomas</h1>
 
       </div>
       {!languages || languages.length === 0 ? (
         <div className="flex justify-center items-center h-32">
           <h1 className="text-2xl font-bold text-gray-800 mb-0">
-            No hay perfiles disponibles.
+            No hay Idiomas disponibles.
           </h1>
         </div>
       ) : (
@@ -242,18 +240,18 @@ const lenguajeSection = ({ personCod }) => {
                 }}
               >
                 <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-                  Agregar Nuevo Lenguage
+                  Agregar Nuevo Idioma
                 </h3>
 
                 {fields[1].options.length === 0 ? (
                   <>
                     <div className="flex flex-col items-center justify-center text-center">
                       <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                        No hay lenguajes disponibles para asignar.
+                        No hay Idiomas disponibles para asignar.
                       </h3>
 
                       <Button
-                        text={isAddingLanguage ? "Cancelar" : "Agregar Lenguage"}
+                        text={isAddingLanguage ? "Cancelar" : "Agregar Idioma"}
                         onClick={() => setIsAddingLanguage(!isAddingLanguage)}
                         type="button"
 
@@ -277,7 +275,7 @@ const lenguajeSection = ({ personCod }) => {
             <div className="flex justify-center space-x-4 mt-4">
 
               <Button
-                text={"Agregar lenguaje"}
+                text={"Agregar Idioma"}
                 onClick={() => setIsAddingLanguage(!isAddingLanguage)}
 
                 type={"button"}
