@@ -98,6 +98,8 @@ const TableAssociationProject = ({
                             <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">#</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Proyecto</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Compañía</th>
+                                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Cliente</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Rol</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Fecha Inicio</th>
                                 <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Fecha Final</th>
@@ -114,8 +116,11 @@ const TableAssociationProject = ({
                                     className={`${index % 2 === 0 ? "bg-white" : "bg-gray-50"} hover:bg-gray-100`}
                                 >
                                     <td className="py-4 px-6 text-center">{index + 1}</td>
-
+                                    <td className="py-4 px-6 text-center">{asso.project_name}</td>
+                                    <td className="py-4 px-6 text-center">{asso.project_company}</td>
+                                    <td className="py-4 px-6 text-center">{asso.project_client_name}</td>
                                     {fieldsAssociation
+                                        .filter((f) => f.name !== "cod_project")
                                         .map((f) => { 
                                         const fieldEdit = editFieldsAssociation.find((ef) => ef.name === f.name);
                                         return (

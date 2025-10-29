@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { addAssociationProject, getAssociationProject, updateAssociationProject } from "../services/associationProjectService"
+import projectService from "../services/projectService";
 import ModalAlert from "../components/molecules/modalAlert";
 import Swal from "sweetalert2";
 import { getItems } from "../services/itemService";
@@ -20,7 +21,7 @@ export const useAssociationProject = ( profileCod ) => {
     * Fields de manejo de formularios dinamicos
     */
     const fieldsAssociation = [
-        { name: "cod_project", placeholder: "Proyecto", required: true, type: "select", options: rolesTypes, width: 800},
+        { name: "cod_project", placeholder: "Proyecto", required: true, type: "select", options: projects, width: 800},
         { name: "project_association_role_item_code", placeholder: "Roles", required: true, type: "select", options: rolesTypes, width: 255},
         { name: "project_association_start_date_participation", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 255, 
             validations: [
@@ -49,12 +50,12 @@ export const useAssociationProject = ( profileCod ) => {
     * Fields de manejo de formularios edicion
     */
     const editFieldsAssociation = [
-        { name: "cod_project", placeholder: "Proyecto", required: true, type: "select", options: rolesTypes, width: 150},
+        { name: "cod_project", placeholder: "Proyecto", required: true, type: "select", options: projects, width: 150},
         { name: "project_association_role_item_code", placeholder: "Roles", required: true, type: "select", options: rolesTypes, width: 150},
         { name: "project_association_start_date_participation", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 150, 
             validations: [
                 (value, allValues) => {
-                    if (value && allValues.project_association_end_date_participation && new Date(value) < new Date(allValues.project_association_end_date_participation)) {
+                    if (value && allValues.project_association_end_date_participation && (new Date(value) > new Date(allValues.project_association_end_date_participation))) {
                         return "La fecha de inicio debe ser menor a la fecha final.";
                     }
                     return null;
@@ -64,7 +65,7 @@ export const useAssociationProject = ( profileCod ) => {
         { name: "project_association_end_date_participation", placeholder: "Fecha Final", required: true, type: "date", width: 150, restriction: "cantAfterToday", 
             validations: [
                 (value, allValues) => {
-                    if (value && allValues.project_association_start_date_participation && new Date(value) > new Date(allValues.project_association_start_date_participation)) {
+                    if (value && allValues.project_association_start_date_participation && (new Date(value) < new Date(allValues.project_association_start_date_participation))) {
                         return "La fecha final debe ser mayor a la fecha de inicio.";
                     }
                     return null;
@@ -74,6 +75,23 @@ export const useAssociationProject = ( profileCod ) => {
         { name: "project_association_technology_details", placeholder: "Tecnologias", required: false, type: "textarea", width: 400},
     ];
     
+    /*
+    * Obtener listado de proyectos
+    */
+    const fetchProyects = async () => {
+        try {
+            setLoadingAssociation(true);
+            const resp = await projectService.getAllProjects();
+            console.log("jslajdklajsjdkasjkd", resp)
+            setProjects(resp);
+        } catch (err) {
+            setErrorAssociations("Error al obtener proyectos");
+            ModalAlert("Error", "Error al obtener proyectos", "error");
+        } finally {
+            setLoadingAssociation(false);
+        }
+    };
+
     /*
      *  Obtener listado de roles 
     */
@@ -94,11 +112,20 @@ export const useAssociationProject = ( profileCod ) => {
     /*
      *  Obtener listado de associaciones a proyectos
     */
-    const fetchAssociation = async (profileCod) => {
+    const fetchAssociation = async (profileCod, loadedProjects = projects) => {
         try {
             setLoadingAssociation(true);
             const resp = await getAssociationProject(profileCod);
-            setAssociations(resp.data);
+            const enrichedAssociations = resp.data.map((assoc) => {
+            const project = loadedProjects.find(p => p.cod_project === assoc.cod_project);
+            return {
+                ...assoc,
+                project_name: project?.project_name || "Proyecto no encontrado",
+                project_company: project?.project_company || "Empresa no disponible",
+                project_client_name: project?.project_client_name || "Cliente no disponible",
+            };
+            });
+            setAssociations(enrichedAssociations);
         } catch (err) {
             setErrorAssociations("Error al obtener asociaciones");
             ModalAlert("Error", "Error al obtener asociaciones", "error");
@@ -106,6 +133,7 @@ export const useAssociationProject = ( profileCod ) => {
             setLoadingAssociation(false);
         }
     };
+
 
     /*
      *  Agregar associaciones a proyectos
@@ -174,13 +202,20 @@ export const useAssociationProject = ( profileCod ) => {
     };
 
     useEffect(() => {
-        fetchRoles();
-        fetchAssociation(profileCod.profileCod);
+        const fetchData = async () => {
+            await fetchRoles();
+            const projectsData = await projectService.getAllProjects();
+            setProjects(projectsData);
+            await fetchAssociation(profileCod.profileCod, projectsData);
+        };
+
+        fetchData();
     }, []);
 
     return {
         associations, 
         rolesTypes,
+        projects, 
 
         fieldsAssociation, 
         editFieldsAssociation, 

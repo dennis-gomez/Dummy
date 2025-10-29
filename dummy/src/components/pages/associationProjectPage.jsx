@@ -1,4 +1,4 @@
-import Form from "../organisms/form"
+import FormAssociationProject from "../organisms/formAssociationProject"
 import { Box } from "@mui/material";
 import TableAssociationProject from "../organisms/tableAssociationProject";
 import { useAssociationProject } from "../../utils/useAssociationProject";
@@ -8,7 +8,8 @@ const AssociationProjectPage = (
 ) => {
     const {
         associations,
-        rolesTypes, 
+        rolesTypes,
+        projects,  
 
         fieldsAssociation, 
         editFieldsAssociation, 
@@ -38,10 +39,10 @@ const AssociationProjectPage = (
                     textAlign: "center",
                 }}
                 >
-                    <Form
-                        fields={fieldsAssociation}
+                    <FormAssociationProject 
                         onSubmit={handleSubmitAssociation}
-                        titleBtn={"Guardar Proyecto"}
+                        projects={projects}
+                        rolesTypes={rolesTypes}
                     />
                 </Box>
             )}
