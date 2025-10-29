@@ -1,4 +1,4 @@
-import { addPersonal, deletePersonal, findPersonal, getPersonal, reactivatePersonal, updatePersonal } from "../services/personalService";
+import { addPersonal, deletePersonal, findPersonal, getPersonal, reactivatePersonal, updatePersonal, getPersonalToValidate } from "../services/personalService";
 import { useState, useEffect } from "react";
 import ModalAlert from "../components/molecules/modalAlert";
 import Swal from "sweetalert2";
@@ -13,6 +13,11 @@ export const usePersonal = () => {
     const [pageSize, setPageSize] = useState(2);
 
     /*
+    * Manejo de listado de personal completo, para manejo de validacion de indentificacion
+    */
+    const [allPersonal, setAllPersonal] = useState([]); 
+
+    /*
     * Estados para manejo de formularios (muestra, errores y carga)
     */
     const [showForm, setShowForm] = useState(false);
@@ -23,19 +28,19 @@ export const usePersonal = () => {
     * Fields de manejo de formularios dinamicos
     */
     const fields = [
-        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 382},
-        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 382},
-        { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 382},
-        { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 382},
+        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 382, restriction: "unique"},
+        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 382, validations: [(value) => value && value.length > 50 ? "El nombre no debe superar 50 caracteres." : null,]},
+        { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 382, validations: [(value) => value && value.length > 50 ? "El primer apellido no debe superar 50 caracteres." : null,]},
+        { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 382, validations: [(value) => value && value.length > 50 ? "El segundo apellido no debe superar 50 caracteres." : null,]},
         { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 382, restriction:"cantAfterToday"},
-        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 382},
+        { name: "personal_country_of_residence", placeholder: "País de Origen", width: 382, validations: [(value) => value && value.length > 15 ? "El país de origen no debe superar 15 caracteres." : null,]},
         { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 382, type: "select",
             options: [
                 { name: 1, placeholder: "Si" , value: 1, label: "Si"},
                 { name: 0, placeholder: "No", value: 0, label: "No" }
             ]
         },
-        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 382},
+        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 382, validations: [(value) => value && value.length > 20 ? "El número de teléfono de te no debe superar 20 caracteres." : null,] },
         { name: "personal_is_active", placeholder: "Estados",  type: "select",
             options: [
                 { name: 1, placeholder: "Activos" , value: 1, label: "Activos"},
@@ -48,19 +53,19 @@ export const usePersonal = () => {
     * Fields de manejo de formularios edicion
     */
     const editFields = [
-        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 170},
-        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 170},
-        { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 170},
-        { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 170},
+        { name: "personal_identification", placeholder: "Identificacion/ID", required: true, width: 170, restriction: "unique"},
+        { name: "personal_first_name", placeholder: "Primer Nombre", required: true, width: 170, validations: [(value) => value && value.length > 50 ? "El nombre no debe superar 50 caracteres." : null,]},
+        { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 170, validations: [(value) => value && value.length > 50 ? "El primer apellido no debe superar 50 caracteres." : null,]},
+        { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 170, validations: [(value) => value && value.length > 50 ? "El segundo apellido no debe superar 50 caracteres." : null,]},
         { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 170, restriction:"cantAfterToday"},
-        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 170},
+        { name: "personal_country_of_residence", placeholder: "País de Origen", width: 170, validations: [(value) => value && value.length > 15 ? "El país de origen no debe superar 15 caracteres." : null,]},
         { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 170, type: "select",
             options: [
                 { name: 1, placeholder: "Si" , value: 1, label: "Si"},
                 { name: 0, placeholder: "No", value: 0, label: "No" }
             ]
         },
-        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 170},  
+        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 170, validations: [(value) => value && value.length > 20 ? "El número de teléfono de te no debe superar 20 caracteres." : null,]},  
     ];
 
     /*
@@ -83,6 +88,20 @@ export const usePersonal = () => {
             setPersonal(resp.data);
             setTotalPages(resp.totalPages || 1);
             setPage(resp.currentPage || 1);
+            await fetchAllPersonal();
+        } catch (err) {
+            setError("Error al obtener personal");
+            ModalAlert("Error", "Error al obtener personal", "error");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchAllPersonal = async () => {
+        try {
+            setLoading(true);
+            const resp = await getPersonalToValidate();
+            setAllPersonal(resp);
         } catch (err) {
             setError("Error al obtener personal");
             ModalAlert("Error", "Error al obtener personal", "error");
@@ -229,6 +248,7 @@ export const usePersonal = () => {
 
     return {
         personal, 
+        allPersonal, 
     
         fields,
         editFields,

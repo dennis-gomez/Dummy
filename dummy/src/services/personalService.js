@@ -15,6 +15,17 @@ export const getPersonal = async (page = 1, limit = 10) => {
     }
 };
 
+export const getPersonalToValidate = async () => {
+    try {
+        const response = await axios.get(API_URL +"all", {
+            headers: { "Content-Type": "application/json" },
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
 //Buscar personal por campo
 export const findPersonal = async (page = 1, limit = 10, field, value) => {
     try {

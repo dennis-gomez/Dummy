@@ -1,22 +1,22 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/academic-training/";
+const API_URL = "http://localhost:3000/project-association/";
 
 //Obtener formaciones academicas
-export const getAcademicTrainings = async (personCod) => {
+export const getAssociationProject = async (profile_cod) => {
     try {
         const response = await axios.get(API_URL, { 
-            params: { personal_cod: Number(personCod) },
+            params: { profile_cod: Number(profile_cod) },
             headers: { "Content-Type": "application/json" } 
         });
-        return response.data;
+        return response;
     } catch (error) {
         throw error;
     }
 };
 
 //Agregar nueva formacion academica 
-export const addAcademicTrainings = async (formData) => {
+export const addAssociationProject = async (formData) => {
     try {
         const response = await axios.post(API_URL + "add", formData, {
             headers: { "Content-Type": "application/json" } 
@@ -28,7 +28,7 @@ export const addAcademicTrainings = async (formData) => {
 };
 
 //Editar fromacion academica exsistente
-export const updateAcademicTrainings = async (formData) => {
+export const updateAssociationProject = async (formData) => {
     try {
         const response = await axios.put(API_URL + "update", formData, {
             headers: { "Content-Type": "application/json" },

@@ -74,6 +74,7 @@ function Form({ fields, onSubmit, titleBtn, onCancel, values, funct, maxWidth = 
                     restriction={field.restriction || ""}
                     onError={handleError}
                     validations={field.validations}
+                    formValues={formData}
                     sx={{
                       "& .MuiInputBase-root": { backgroundColor: "#fff !important" },
                       ...(field.width ? { width: field.width } : {}),
