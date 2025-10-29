@@ -22,13 +22,48 @@ export const useAcademicTraining = ( personCod ) => {
         { name: "academic_training_title_item_code", placeholder: "Título Obtenido", required: true, type: "select", options: titlesTypes, width: 390},
         { name: "academic_training_carrer", placeholder: "Carrera", required: true, width: 390, validations: [(value) => value && value.length > 50 ? "La carrera no debe superar 50 caracteres." : null,]},
         { name: "academic_training_institution", placeholder: "Institución", required: true, width: 390, validations: [(value) => value && value.length > 50 ? "La institución no debe superar 50 caracteres." : null,]},
-        
-        { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 390}, 
 
-        { name: "academic_training_end_date", placeholder: "Fecha Final", required: true, type: "date", width: 390, restriction: "cantAfterToday" },
-
-        { name: "academic_training_date_obtaining", placeholder: "Fecha Obtención de Título", required: false, type: "date", width: 390, restriction: "cantAfterToday" },
-
+        { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 390, 
+            validations: [
+                (value, allValues) => {
+                    console.log("intento", allValues.academic_training_end_date)
+                    if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) {
+                        
+                        return "La fecha de inicio debe ser menor a la fecha final.";
+                    }
+                    if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
+                        return "La fecha de inicio debe ser menor a la fecha de obtención.";
+                    }
+                    return null;
+                }
+            ]
+        }, 
+        { name: "academic_training_end_date", placeholder: "Fecha Final", required: true, type: "date", width: 390, restriction: "cantAfterToday", 
+            validations: [
+                (value, allValues) => {
+                    if (value && allValues.academic_training_start_date && new Date(value) < new Date(allValues.academic_training_start_date)) {
+                    return "La fecha final debe ser mayor a la fecha de inicio.";
+                    }
+                    if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
+                    return "La fecha final debe ser menor a la fecha de obtención.";
+                    }
+                    return null;
+                }
+            ]
+        },
+        { name: "academic_training_date_obtaining", placeholder: "Fecha Obtención de Título", required: false, type: "date", width: 390, restriction: "cantAfterToday", 
+            validations: [
+                (value, allValues) => {
+                    if (value && allValues.academic_training_start_date && new Date(value) < new Date(allValues.academic_training_start_date)) {
+                    return "La fecha de obtención debe ser mayor a la fecha de inicio.";
+                    }
+                    if (value && allValues.academic_training_end_date && new Date(value) < new Date(allValues.academic_training_end_date)) {
+                    return "La fecha de obtención debe ser mayor a la fecha final.";
+                    }
+                    return null;
+                }
+            ]
+        },
         {
             name: "academic_training_pdf_path",
             label: "Título (PDF)",
@@ -47,9 +82,47 @@ export const useAcademicTraining = ( personCod ) => {
         { name: "academic_training_title_item_code", placeholder: "Título Obtenido", required: true, type: "select", options: titlesTypes, width: 190},
         { name: "academic_training_carrer", placeholder: "Carrera", required: true, width: 290, validations: [(value) => value && value.length > 50 ? "La carrera no debe superar 50 caracteres." : null,]},
         { name: "academic_training_institution", placeholder: "Institución", required: true, width: 290, validations: [(value) => value && value.length > 50 ? "La institución no debe superar 50 caracteres." : null,]},
-        { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 190}, 
-        { name: "academic_training_end_date", placeholder: "Fecha Final", required: true, type: "date", width: 190, restriction: "cantAfterToday" },
-        { name: "academic_training_date_obtaining", placeholder: "Fecha Obtención de Título", required: false, type: "date", width: 190, restriction: "cantAfterToday" },
+        { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 190, 
+            validations: [
+                (value, allValues) => {
+                    console.log("intento", allValues.academic_training_end_date)
+                    if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) {
+                        
+                        return "La fecha de inicio debe ser menor a la fecha final.";
+                    }
+                    if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
+                        return "La fecha de inicio debe ser menor a la fecha de obtención.";
+                    }
+                    return null;
+                }
+            ]
+        }, 
+        { name: "academic_training_end_date", placeholder: "Fecha Final", required: true, type: "date", width: 190, restriction: "cantAfterToday", 
+            validations: [
+                (value, allValues) => {
+                    if (value && allValues.academic_training_start_date && new Date(value) < new Date(allValues.academic_training_start_date)) {
+                    return "La fecha final debe ser mayor a la fecha de inicio.";
+                    }
+                    if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
+                    return "La fecha final debe ser menor a la fecha de obtención.";
+                    }
+                    return null;
+                }
+            ]
+        },
+        { name: "academic_training_date_obtaining", placeholder: "Fecha Obtención de Título", required: false, type: "date", width: 190, restriction: "cantAfterToday", 
+            validations: [
+                (value, allValues) => {
+                    if (value && allValues.academic_training_start_date && new Date(value) < new Date(allValues.academic_training_start_date)) {
+                    return "La fecha de obtención debe ser mayor a la fecha de inicio.";
+                    }
+                    if (value && allValues.academic_training_end_date && new Date(value) < new Date(allValues.academic_training_end_date)) {
+                    return "La fecha de obtención debe ser mayor a la fecha final.";
+                    }
+                    return null;
+                }
+            ]
+        },
         {
             name: "academic_training_pdf_path",
             label: "Título (PDF)",
