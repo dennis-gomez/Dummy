@@ -10,6 +10,9 @@ import { getItems } from "../services/itemService";
 import {
   getSpecializedTrainingByProfileId,
   addSpecializedTraining,
+  getSpecializedTrainingPDF,
+  updateSpecializedTraining,
+  searchSpecializedTraining,
 } from "../services/specializedTrainingService";
 
 export const useProfile = () => {
@@ -27,7 +30,7 @@ export const useProfile = () => {
 
     if (value) {
       setSelectedProfile(profile);
-      fetchedProfileSpecializedTraining(profile.profile_cod);
+      fetchedProfileSpecializedTraining(profile.profile_cod, 1);
       console.log("Perfil seleccionado:", profile);
     } else {
       setSelectedProfile(null);
@@ -133,8 +136,13 @@ export const useProfile = () => {
   //seccion de specialized training
 
   const [specializedTrainingData, setSpecializedTrainingData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
   const [isCreatingSpecializedTraining, setIsCreatingSpecializedTraining] =
-    useState(true);
+    useState(false);
 
   const handleAddSpecializedTraining = async (trainingData) => {
     try {
@@ -149,6 +157,7 @@ export const useProfile = () => {
       );
       //refrescar la lista
       fetchedProfileSpecializedTraining(profileId);
+      setIsCreatingSpecializedTraining(false);
       return data;
     } catch (error) {
       console.error("Error adding specialized training:", error);
@@ -161,19 +170,145 @@ export const useProfile = () => {
     }
   };
 
-  const fetchedProfileSpecializedTraining = async (profileId) => {
+  const fetchedProfileSpecializedTraining = async (profileId, page = 1) => {
     try {
-      const data = await getSpecializedTrainingByProfileId(profileId);
-      setSpecializedTrainingData(data);
-      console.log("Formación especializada obtenida:", data);
+      setLoading(true);
+      console.log(
+        "Fetching specialized training for profile ID:",
+        profileId,
+        "page:",
+        page
+      );
+      const data = await getSpecializedTrainingByProfileId(profileId, page);
+      setCurrentPage(page);
+      setTotalPages(data.totalPages);
+      setSpecializedTrainingData(data.specializedTrainings);
       return data;
     } catch (error) {
       console.error("Error fetching specialized training:", error);
       return [];
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleEdit = async (data, page) => {
+    try {
+      const updatedData = await updateSpecializedTraining(data);
+      ModalAlert(
+        "Éxito",
+        "Formación especializada actualizada correctamente.",
+        "success"
+      );
+      //refrescar la lista
+      fetchedProfileSpecializedTraining(selectedProfile.profile_cod, page);
+      pageChange(page);
+      return updatedData;
+    } catch (error) {
+      console.error("Error updating specialized training:", error);
+      ModalAlert(
+        "Error",
+        "No se pudo actualizar la formación especializada.",
+        "error"
+      );
+      return null;
+    }
+  };
+
+  const openPDF = async (relativePath) => {
+    try {
+      const pdfBlob = await getSpecializedTrainingPDF(relativePath);
+      const pdfUrl = URL.createObjectURL(pdfBlob); // ya es un blob válido
+      window.open(pdfUrl, "_blank"); // abre en nueva pestaña
+    } catch (error) {
+      console.error("Error al abrir el PDF:", error);
+    }
+  };
+
+  const handleSearch = async (feature, searchText = "", currentPage = 1) => {
+    try {
+      setLoading(true);
+      const data = await searchSpecializedTraining(
+        selectedProfile.profile_cod,
+        currentPage,
+        feature,
+        searchText
+      );
+
+      if (
+        !data.specializedTrainings ||
+        data.specializedTrainings.length === 0
+      ) {
+        ModalAlert(
+          "Información",
+          "No se encontraron resultados para la búsqueda realizada.",
+          "info"
+        );
+      } else {
+        setCurrentPage(currentPage);
+        setTotalPages(data.totalPages);
+        setSpecializedTrainingData(data.specializedTrainings);
+
+        return data;
+      }
+    } catch (error) {
+      console.error("Error searching specialized training:", error);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const pageChange = async (page, feature, searchText = "") => {
+    if (selectedProfile) {
+      setCurrentPage(page);
+      return handleSearch(feature, searchText, page);
+    }
+  };
+
+  const specializedTrainingSearchFields = [
+    {
+      name: "training_name",
+      placeholder: "Nombre de la Formación",
+      type: "text",
+    },
+    {
+      name: "training_number",
+      placeholder: "Número de Certificación",
+      type: "text",
+    },
+    {
+      name: "training_institution",
+      placeholder: "Institución",
+      type: "text",
+    },
+    {
+      name: "training_start_date",
+      placeholder: "Fecha de Inicio",
+      type: "date",
+    },
+    {
+      name: "training_end_date",
+      placeholder: "Fecha de Finalización",
+      type: "date",
+    },
+    {
+      name: "training_validity",
+      placeholder: "Validez",
+      type: "date",
+    },
+  ];
+
   const specializedTrainingFields = [
+    {
+      name: "cod_training",
+      label: "Código de Formación",
+      type: "hidden",
+      grid: 0,
+      placeholder: "",
+      required: false,
+      width: 0,
+    },
     {
       name: "training_name",
       label: "Nombre de la Formación",
@@ -209,6 +344,8 @@ export const useProfile = () => {
       placeholder: "Subir PDF",
       required: false,
       width: 250,
+      restriction: "filePath",
+      accept: ".pdf",
     },
     {
       name: "training_start_date",
@@ -218,6 +355,7 @@ export const useProfile = () => {
       placeholder: "Fecha de Inicio",
       required: true,
       width: 250,
+      restriction: "cantAfterToday",
     },
     {
       name: "training_end_date",
@@ -227,6 +365,7 @@ export const useProfile = () => {
       placeholder: "Fecha de Finalización",
       required: true,
       width: 250,
+      restriction: "cantBeforeToday",
     },
     {
       name: "training_hours",
@@ -245,6 +384,7 @@ export const useProfile = () => {
       placeholder: "Validez",
       required: false,
       width: 250,
+      restriction: "cantBeforeToday",
     },
     {
       name: "training_description",
@@ -287,5 +427,15 @@ export const useProfile = () => {
     setIsCreatingSpecializedTraining,
     specializedTrainingFields,
     handleAddSpecializedTraining,
+    loading,
+    editingId,
+    setEditingId,
+    openPDF,
+    handleEdit,
+    handleSearch,
+    pageChange,
+    currentPage,
+    totalPages,
+    specializedTrainingSearchFields,
   };
 };

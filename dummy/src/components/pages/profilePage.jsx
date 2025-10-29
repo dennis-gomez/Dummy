@@ -4,7 +4,6 @@ import ProfileSection from "../organisms/profileSection";
 
 const ProfilePage = ({ personCod }) => {
   const {
-
     fields,
     seeOptions,
     handleProfileSelect,
@@ -27,6 +26,16 @@ const ProfilePage = ({ personCod }) => {
     specializedTrainingFields,
     handleAddSpecializedTraining,
     refreshProfile,
+    loading,
+    setEditingId,
+    editingId,
+    openPDF,
+    handleEdit,
+    handleSearch,
+    pageChange,
+    currentPage,
+    totalPages,
+    specializedTrainingSearchFields,
   } = useProfile(); // <-- desestructurar aquí
 
   useEffect(() => {
@@ -61,6 +70,18 @@ const ProfilePage = ({ personCod }) => {
         setIsCreatingSpecializedTraining={setIsCreatingSpecializedTraining}
         specializedTrainingFields={specializedTrainingFields}
         handleAddSpecializedTraining={handleAddSpecializedTraining}
+        loading={loading}
+        editingId={editingId}
+        setEditingId={setEditingId}
+        openPDF={openPDF}
+        handleEdit={handleEdit}
+        handleSearch={handleSearch}
+        pageChange={pageChange}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        specializedTrainingSearchFields={specializedTrainingSearchFields}
+
+      //props de experiencia de proyectos se agregan aquí
       />
     </div>
   );

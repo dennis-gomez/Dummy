@@ -19,13 +19,13 @@ const InputMovement = React.forwardRef(
       validationRules = {},
       sx = {},
       disabled = false,
+      error: externalError = "", // ✅ Prop para error externo
       ...props
     },
     ref
   ) => {
-    const [error, setError] = useState("");
+    const [internalError, setInternalError] = useState("");
 
-  
     const validate = (val) => {
       const strVal = val != null ? String(val) : "";
       if (required && strVal.trim() === "") return "Este campo es obligatorio";
@@ -42,13 +42,15 @@ const InputMovement = React.forwardRef(
 
       e.target.value = val;
       if (onChange) onChange(e);
-      setError(validate(val));
+      setInternalError(validate(val));
     };
 
     useEffect(() => {
-      setError(validate(value));
+      setInternalError(validate(value));
     }, [value]);
 
+    // ✅ Usa el error externo si está disponible, sino el interno
+    const finalError = externalError || internalError;
     
     const defaultStyle = {
       width: "100%",
@@ -56,7 +58,7 @@ const InputMovement = React.forwardRef(
         backgroundColor: "#ffffff",
         borderRadius: "7px",
         "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: error ? "blue" : "#cccccc",
+          borderColor: finalError ? "blue" : "#cccccc", // ✅ Azul para errores
         },
         "&:hover .MuiOutlinedInput-notchedOutline": { borderColor: "#1976d2" },
         "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
@@ -66,9 +68,8 @@ const InputMovement = React.forwardRef(
         ...(multiline ? { padding: "8px" } : {}),
       },
       "& .MuiInputLabel-root": { color: "#2563eb" },
-      "& .MuiFormHelperText-root.Mui-error": { color: "blue" },
+      "& .MuiFormHelperText-root.Mui-error": { color: "blue" }, // ✅ Azul para texto de error
 
-      
       "& .MuiSelect-select": {
         padding: "5px 10px",
         minHeight: "48px",
@@ -91,8 +92,8 @@ const InputMovement = React.forwardRef(
           value={value != null ? value : ""}
           onChange={handleChange}
           type={type === "DateCanBefore" ? "date" : type}
-          error={!!error}
-          helperText={error || " "}
+          error={!!finalError} // ✅ Usa el error final
+          helperText={finalError || " "} // ✅ Usa el error final
           InputLabelProps={
             type?.toLowerCase().includes("date") ? { shrink: true } : {}
           }

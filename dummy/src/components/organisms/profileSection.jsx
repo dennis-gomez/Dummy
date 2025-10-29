@@ -31,10 +31,21 @@ const profileSection = ({
   setIsCreatingSpecializedTraining,
   specializedTrainingFields,
   handleAddSpecializedTraining,
+  loading,
+  setEditingId,
+  editingId,
+  openPDF,
+  handleEdit,
+  handleSearch,
+  pageChange,
+  currentPage,
+  totalPages,
+  specializedTrainingSearchFields,
 }) => {
 
-  const add = (data) => {
-    handleSaveProfile(data, personCod);
+  const add = async (data) => {
+    await handleSaveProfile(data, personCod);
+    setIsAddingProfile(false);
   }
 
   const [role, setRole] = useState("");
@@ -162,6 +173,16 @@ const profileSection = ({
                 setIsCreatingSpecializedTraining={setIsCreatingSpecializedTraining}
                 specializedTrainingFields={specializedTrainingFields}
                 handleAddSpecializedTraining={handleAddSpecializedTraining}
+                loading={loading}
+                editingId={editingId}
+                setEditingId={setEditingId}
+                openPDF={openPDF}
+                handleEdit={handleEdit}
+                handleSearch={handleSearch}
+                pageChange={pageChange}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                searchFields={specializedTrainingSearchFields}
               />
             </Box>
           )}
