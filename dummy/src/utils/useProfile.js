@@ -378,7 +378,7 @@ export const useProfile = () => {
     },
     {
       name: "training_validity",
-      label: "Validez (meses)",
+      label: "Validez",
       type: "date",
       grid: 6,
       placeholder: "Validez",
