@@ -5,6 +5,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { CircularProgress, Stack, Pagination, PaginationItem } from "@mui/material";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 
 const ResumeTableLicitationTable = ({
   fields,
@@ -22,6 +23,7 @@ const ResumeTableLicitationTable = ({
   page,
   totalPages,
   onPageChange,
+  openPDF,
 }) => {
 
 
@@ -59,7 +61,19 @@ const ResumeTableLicitationTable = ({
                     <td key={col.key} className="py-2 px-4">
                       {col.type === "date"
                         ? formatDateDDMMYYYY(row[col.key])
-                        : row[col.key] || "-"}
+                        : col.type === "file" ? (
+                          row.RutaPDF && (
+                            <button
+                              onClick={() => openPDF(row.RutaPDF)}
+                              className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
+                              title="Ver PDF"
+                            >
+                              <LibraryBooksIcon />
+                            </button>
+                          )
+                        ) :
+
+                          row[col.key] || "-"}
                     </td>
                   ))}
                 </tr>
@@ -147,11 +161,11 @@ const ResumeTableLicitationTable = ({
                         {f.type === "date"
                           ? formatDateDDMMYYYY(person[f.name])
                           : f.type === "select"
-                          ? f.options?.find(
+                            ? f.options?.find(
                               (opt) =>
                                 String(opt.value) === String(person[f.name])
                             )?.label || ""
-                          : person[f.name] || ""}
+                            : person[f.name] || ""}
                       </td>
                     ))}
 
@@ -209,6 +223,7 @@ const ResumeTableLicitationTable = ({
                                 columns={[
                                   { key: "Nombre", label: "Curso" },
                                   { key: "Institucion", label: "Institución" },
+                                  { key: "RutaPDF", label: "Certificado(PDF)", type: "file" },
                                   { key: "HorasCurso", label: "Horas" },
                                   { key: "FechaInicio", label: "Inicio", type: "date" },
                                   { key: "FechaFin", label: "Fin", type: "date" },

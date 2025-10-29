@@ -129,7 +129,7 @@ const profileSection = ({
               key={prof.profile_cod}
               text={
                 getRoleLabel(prof) +
-                " (años de experiencia: " +
+                " (Años de Experiencia: " +
                 prof.profile_years_of_experience +
                 ")"
               }
@@ -188,7 +188,7 @@ const profileSection = ({
           )}
 
           <Button
-            text={"Experiencia en proyectos"}
+            text={"Experiencia en Proyectos"}
             onClick={() => setSeeProjectExperience(!seeProjectExperience)}
             sx={{ minWidth: 450 }}
           />

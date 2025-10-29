@@ -20,6 +20,7 @@ const ResumeTableLicitationPage = () => {
     selectedProfile,
     setSelectedPerson,
     setSelectedProfile,
+    openPDF,
 
   } = useResumeTableLicitation();
 
@@ -37,33 +38,34 @@ const ResumeTableLicitationPage = () => {
 
   // 🧠 Selección de perfil en combobox dentro de fila expandida
   const handleProfileSelect = async (personCod, profileCod) => {
-  setSelectedProfile((prev) => ({ ...prev, [personCod]: profileCod }));
-  await fetchProfileSummary(personCod, profileCod); // 🔹 aquí llamamos al SP
-};
+    setSelectedProfile((prev) => ({ ...prev, [personCod]: profileCod }));
+    await fetchProfileSummary(personCod, profileCod); // 🔹 aquí llamamos al SP
+  };
 
 
   return (
-        <ResumeTableLicitationTable
-          fields={personFields}
-          data={personal}
-          isLoading={loading}
-          profileSummaries={profileSummaries}
-          expandedRows={expandedRows}
-          onExpand={handleExpand}
-          onProfileSelect={handleProfileSelect}
+    <ResumeTableLicitationTable
+      fields={personFields}
+      data={personal}
+      isLoading={loading}
+      profileSummaries={profileSummaries}
+      expandedRows={expandedRows}
+      onExpand={handleExpand}
+      onProfileSelect={handleProfileSelect}
 
-          selectedProfile={selectedProfile}
-          selectedPerson={selectedPerson}
-          setSelectedPerson={setSelectedPerson}
-          setSelectedProfile={setSelectedProfile}
+      selectedProfile={selectedProfile}
+      selectedPerson={selectedPerson}
+      setSelectedPerson={setSelectedPerson}
+      setSelectedProfile={setSelectedProfile}
 
-          fetchProfileSummary={fetchProfileSummary}
+      fetchProfileSummary={fetchProfileSummary}
 
-          page={page}
-          totalPages={totalPages}
-          onPageChange={(newPage) => setPage(newPage)}
+      page={page}
+      totalPages={totalPages}
+      onPageChange={(newPage) => setPage(newPage)}
+      openPDF={openPDF}
 
-        />
+    />
   );
 };
 
