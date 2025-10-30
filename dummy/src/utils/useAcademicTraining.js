@@ -67,6 +67,7 @@ export const useAcademicTraining = ( personCod ) => {
         {
             name: "academic_training_pdf_path",
             label: "Título (PDF)",
+            restriction: "filePath",
             type: "file",
             grid: 6,
             placeholder: "Subir PDF",
@@ -126,6 +127,7 @@ export const useAcademicTraining = ( personCod ) => {
         {
             name: "academic_training_pdf_path",
             label: "Título (PDF)",
+            restriction: "filePath",
             type: "file",
             grid: 6,
             required: false,
