@@ -26,9 +26,7 @@ export const useAcademicTraining = ( personCod ) => {
         { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 390, 
             validations: [
                 (value, allValues) => {
-                    console.log("intento", allValues.academic_training_end_date)
-                    if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) {
-                        
+                    if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) { 
                         return "La fecha de inicio debe ser menor a la fecha final.";
                     }
                     if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
@@ -86,9 +84,7 @@ export const useAcademicTraining = ( personCod ) => {
         { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 190, 
             validations: [
                 (value, allValues) => {
-                    console.log("intento", allValues.academic_training_end_date)
                     if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) {
-                        
                         return "La fecha de inicio debe ser menor a la fecha final.";
                     }
                     if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
@@ -102,10 +98,10 @@ export const useAcademicTraining = ( personCod ) => {
             validations: [
                 (value, allValues) => {
                     if (value && allValues.academic_training_start_date && new Date(value) < new Date(allValues.academic_training_start_date)) {
-                    return "La fecha final debe ser mayor a la fecha de inicio.";
+                        return "La fecha final debe ser mayor a la fecha de inicio.";
                     }
                     if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
-                    return "La fecha final debe ser menor a la fecha de obtención.";
+                        return "La fecha final debe ser menor a la fecha de obtención.";
                     }
                     return null;
                 }
