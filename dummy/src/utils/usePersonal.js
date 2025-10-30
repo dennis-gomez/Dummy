@@ -33,7 +33,7 @@ export const usePersonal = () => {
         { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 382, validations: [(value) => value && value.length > 50 ? "El primer apellido no debe superar 50 caracteres." : null,]},
         { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 382, validations: [(value) => value && value.length > 50 ? "El segundo apellido no debe superar 50 caracteres." : null,]},
         { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 382, restriction:"cantAfterToday"},
-        { name: "personal_country_of_residence", placeholder: "País de Origen", width: 382, validations: [(value) => value && value.length > 15 ? "El país de origen no debe superar 15 caracteres." : null,]},
+        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 382, validations: [(value) => value && value.length > 15 ? "El país de residencia no debe superar 15 caracteres." : null,]},
         { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 382, type: "select",
             options: [
                 { name: 1, placeholder: "Si" , value: 1, label: "Si"},
@@ -58,7 +58,7 @@ export const usePersonal = () => {
         { name: "personal_last_name_1", placeholder: "Primer Apellido", required: true, width: 170, validations: [(value) => value && value.length > 50 ? "El primer apellido no debe superar 50 caracteres." : null,]},
         { name: "personal_last_name_2", placeholder: "Segundo Apellido", required: true, width: 170, validations: [(value) => value && value.length > 50 ? "El segundo apellido no debe superar 50 caracteres." : null,]},
         { name: "personal_birth_date", placeholder: "Fecha de Nacimiento", required: true, type: "date", width: 170, restriction:"cantAfterToday"},
-        { name: "personal_country_of_residence", placeholder: "País de Origen", width: 170, validations: [(value) => value && value.length > 15 ? "El país de origen no debe superar 15 caracteres." : null,]},
+        { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 170, validations: [(value) => value && value.length > 15 ? "El país de residencia no debe superar 15 caracteres." : null,]},
         { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 170, type: "select",
             options: [
                 { name: 1, placeholder: "Si" , value: 1, label: "Si"},
