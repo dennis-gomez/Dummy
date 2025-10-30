@@ -185,7 +185,6 @@ export function ValidateValues({
       }
     }
     if (value && restriction === "filePath") {
-      console.log("Validando ruta de archivo:", value);
       if (Array.isArray(value)) {
         // Si es un arreglo, revisamos que todos los archivos sean PDF
         const invalidFile = value.find(
@@ -196,11 +195,18 @@ export function ValidateValues({
         }
       } else if (value) {
         // Si es un solo archivo
-        if (!value.toLowerCase().endsWith(".pdf")) {
-          err = "La ruta del archivo debe ser un PDF.";
+        if (value instanceof File) {
+          if (value.type !== "application/pdf") {
+            err = "Solo se permiten archivos PDF.";
+          }
+        } else if (typeof value === "string") {
+          if (!value.toLowerCase().endsWith(".pdf")) {
+            err = "La ruta del archivo debe terminar en .pdf";
+          }
+        } else {
+          err = "No se ha proporcionado un archivo válido.";
         }
       } else {
-        // Si value no tiene formato esperado
         err = "No se ha proporcionado un archivo válido.";
       }
     }

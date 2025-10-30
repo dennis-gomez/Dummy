@@ -4,6 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
+import AutorenewIcon from "@mui/icons-material/Autorenew"; 
 import ModalAlert from "../molecules/modalAlert";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidatedSupplier";
@@ -40,10 +41,11 @@ function TableProject({ projects, onRefresh }) {
     }
   };
 
+  // ✅ Texto corregido: "Desactivado" en lugar de "Eliminado"
   const handleDelete = async (cod_project, projectName) => {
     try {
       await projectService.deleteProject(cod_project);
-      ModalAlert("Eliminado", `Proyecto "${projectName}" desactivado correctamente`, "success", 2000);
+      ModalAlert("Desactivado", `Proyecto "${projectName}" desactivado correctamente`, "success", 2000);
       onRefresh();
     } catch (error) {
       ModalAlert("Error", error.message || "Error al desactivar el proyecto", "error", 3000);
@@ -60,111 +62,97 @@ function TableProject({ projects, onRefresh }) {
     }
   };
 
-  // Función para parsear tecnologías
   const parseTechnologies = (techString) => {
     if (!techString) return [];
-    return techString.split(',').map(tech => tech.trim()).filter(tech => tech.length > 0);
+    return techString.split(",").map((tech) => tech.trim()).filter((tech) => tech.length > 0);
   };
 
-  // Función para determinar el color del chip según la tecnología - CORREGIDA
   const getTechChipProps = (tech) => {
     const techLower = tech.toLowerCase();
 
-    if (techLower.includes('react') || techLower.includes('angular') || techLower.includes('vue') || techLower.includes('html') || techLower.includes('css')) {
+    if (techLower.includes("react") || techLower.includes("angular") || techLower.includes("vue") || techLower.includes("html") || techLower.includes("css")) {
       return {
         sx: {
-          backgroundColor: '#faf5ff',
-          color: '#6b21a8',
-          borderColor: '#d8b4fe',
-          '&:hover': {
-            backgroundColor: '#f3e8ff'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap', // Evita múltiples líneas
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
+          backgroundColor: "#faf5ff",
+          color: "#6b21a8",
+          borderColor: "#d8b4fe",
+          "&:hover": { backgroundColor: "#f3e8ff" },
+          maxWidth: "none",
+          whiteSpace: "nowrap",
+          height: "auto",
+          minHeight: "32px",
+          padding: "4px 8px",
+        },
       };
-    } else if (techLower.includes('node') || techLower.includes('.net') || techLower.includes('c#') || techLower.includes('python') || techLower.includes('java')) {
+    } else if (techLower.includes("node") || techLower.includes(".net") || techLower.includes("c#") || techLower.includes("python") || techLower.includes("java")) {
       return {
         sx: {
-          backgroundColor: '#f0fdf4',
-          color: '#166534',
-          borderColor: '#bbf7d0',
-          '&:hover': {
-            backgroundColor: '#dcfce7'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
+          backgroundColor: "#f0fdf4",
+          color: "#166534",
+          borderColor: "#bbf7d0",
+          "&:hover": { backgroundColor: "#dcfce7" },
+          maxWidth: "none",
+          whiteSpace: "nowrap",
+          height: "auto",
+          minHeight: "32px",
+          padding: "4px 8px",
+        },
       };
-    } else if (techLower.includes('sql') || techLower.includes('mongo') || techLower.includes('database') || techLower.includes('oracle')) {
+    } else if (techLower.includes("sql") || techLower.includes("mongo") || techLower.includes("database") || techLower.includes("oracle")) {
       return {
         sx: {
-          backgroundColor: '#fff7ed',
-          color: '#9a3412',
-          borderColor: '#fdba74',
-          '&:hover': {
-            backgroundColor: '#ffedd5'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
+          backgroundColor: "#fff7ed",
+          color: "#9a3412",
+          borderColor: "#fdba74",
+          "&:hover": { backgroundColor: "#ffedd5" },
+          maxWidth: "none",
+          whiteSpace: "nowrap",
+          height: "auto",
+          minHeight: "32px",
+          padding: "4px 8px",
+        },
       };
-    } else if (techLower.includes('aws') || techLower.includes('azure') || techLower.includes('cloud') || techLower.includes('docker')) {
+    } else if (techLower.includes("aws") || techLower.includes("azure") || techLower.includes("cloud") || techLower.includes("docker")) {
       return {
         sx: {
-          backgroundColor: '#eff6ff',
-          color: '#1e40af',
-          borderColor: '#93c5fd',
-          '&:hover': {
-            backgroundColor: '#dbeafe'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
+          backgroundColor: "#eff6ff",
+          color: "#1e40af",
+          borderColor: "#93c5fd",
+          "&:hover": { backgroundColor: "#dbeafe" },
+          maxWidth: "none",
+          whiteSpace: "nowrap",
+          height: "auto",
+          minHeight: "32px",
+          padding: "4px 8px",
+        },
       };
-    } else if (techLower.includes('windows') || techLower.includes('iis') || techLower.includes('microsoft')) {
+    } else if (techLower.includes("windows") || techLower.includes("iis") || techLower.includes("microsoft")) {
       return {
         sx: {
-          backgroundColor: '#ecfeff',
-          color: '#0e7490',
-          borderColor: '#67e8f9',
-          '&:hover': {
-            backgroundColor: '#cffafe'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
+          backgroundColor: "#ecfeff",
+          color: "#0e7490",
+          borderColor: "#67e8f9",
+          "&:hover": { backgroundColor: "#cffafe" },
+          maxWidth: "none",
+          whiteSpace: "nowrap",
+          height: "auto",
+          minHeight: "32px",
+          padding: "4px 8px",
+        },
       };
     } else {
       return {
         sx: {
-          backgroundColor: '#f9fafb',
-          color: '#374151',
-          borderColor: '#d1d5db',
-          '&:hover': {
-            backgroundColor: '#f3f4f6'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
+          backgroundColor: "#f9fafb",
+          color: "#374151",
+          borderColor: "#d1d5db",
+          "&:hover": { backgroundColor: "#f3f4f6" },
+          maxWidth: "none",
+          whiteSpace: "nowrap",
+          height: "auto",
+          minHeight: "32px",
+          padding: "4px 8px",
+        },
       };
     }
   };
@@ -273,12 +261,16 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Descripción"
                     label="Descripción"
-                     multiline
+                    multiline
                   />
                 ) : (
-                  <span className="block break-words">{project.project_description || "—"}</span>
+                  <span className="block break-words">
+                    {project.project_description || "—"}
+                  </span>
                 )}
               </td>
+
+              {/* Tecnologías */}
               <td className="py-2 px-3 text-center min-w-[400px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
@@ -294,16 +286,18 @@ function TableProject({ projects, onRefresh }) {
                 ) : (
                   <div className="flex flex-col items-center">
                     <div className="flex flex-wrap gap-1 justify-center mb-1 w-full">
-                      {parseTechnologies(project.project_technologies).slice(0, 2).map((tech, index) => (
-                        <Tooltip key={index} title={tech} arrow>
-                          <Chip
-                            label={tech}
-                            size="small"
-                            variant="outlined"
-                            {...getTechChipProps(tech)}
-                          />
-                        </Tooltip>
-                      ))}
+                      {parseTechnologies(project.project_technologies)
+                        .slice(0, 2)
+                        .map((tech, index) => (
+                          <Tooltip key={index} title={tech} arrow>
+                            <Chip
+                              label={tech}
+                              size="small"
+                              variant="outlined"
+                              {...getTechChipProps(tech)}
+                            />
+                          </Tooltip>
+                        ))}
                     </div>
                     {parseTechnologies(project.project_technologies).length === 0 && (
                       <span className="text-gray-400 text-sm">—</span>
@@ -319,28 +313,12 @@ function TableProject({ projects, onRefresh }) {
                                 size="small"
                                 {...getTechChipProps(tech)}
                                 className="m-1"
-                                sx={{
-                                  ...getTechChipProps(tech).sx,
-                                  maxWidth: 'none',
-                                  overflow: 'visible',
-                                  whiteSpace: 'nowrap'
-                                }}
                               />
                             ))}
                           </div>
                         }
                         arrow
                         placement="top"
-                        componentsProps={{
-                          tooltip: {
-                            sx: {
-                              maxWidth: 'none',
-                              backgroundColor: 'white',
-                              border: '1px solid #e5e7eb',
-                              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                            }
-                          }
-                        }}
                       >
                         <span className="text-xs text-blue-600 cursor-pointer hover:underline">
                           +{parseTechnologies(project.project_technologies).length - 2} más
@@ -468,11 +446,14 @@ function TableProject({ projects, onRefresh }) {
                         onClick={() => handleDelete(project.cod_project, project.project_name)}
                       />
                     ) : (
-                      <ModalElimination
-                        message={`¿Deseas reactivar el proyecto "${project.project_name}"?`}
-                        confirmText="Reactivar"
-                        onClick={() => handleReactivate(project.cod_project, project.project_name)}
-                      />
+                      <Tooltip title="Reactivar proyecto">
+                        <button
+                          onClick={() => handleReactivate(project.cod_project, project.project_name)}
+                          className="text-green-600 hover:text-green-800 flex items-center"
+                        >
+                          <AutorenewIcon fontSize="medium" />
+                        </button>
+                      </Tooltip>
                     )}
                   </div>
                 )}
