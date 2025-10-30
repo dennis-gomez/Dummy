@@ -4,6 +4,7 @@ import projectService from "../services/projectService";
 import ModalAlert from "../components/molecules/modalAlert";
 import Swal from "sweetalert2";
 import { getItems } from "../services/itemService";
+import { parseDateWithoutTimezone } from "../utils/generalUtilities";
 
 export const useAssociationProject = ( profileCod ) => {
     const [associations, setAssociations] = useState([]); //lista de fromaciones academicas
@@ -55,8 +56,17 @@ export const useAssociationProject = ( profileCod ) => {
         { name: "project_association_start_date_participation", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 150, 
             validations: [
                 (value, allValues) => {
-                    if (value && allValues.project_association_end_date_participation && (new Date(value) > new Date(allValues.project_association_end_date_participation))) {
+                    const project = projects.find( p => p.cod_project === allValues.cod_project);
+                    const selectedDate = parseDateWithoutTimezone(value);
+                    const startProject = parseDateWithoutTimezone(project.project_start_date);
+                    const endProject = parseDateWithoutTimezone(project.project_end_date);
+                    const endParticipation= parseDateWithoutTimezone(allValues.project_association_end_date_participation);
+
+                    if (selectedDate && endParticipation && (selectedDate > endParticipation)) {
                         return "La fecha de inicio debe ser menor a la fecha final.";
+                    }
+                    if (selectedDate < startProject || selectedDate > endProject) {
+                        return "La fecha de participación debe estar dentro del rango del proyecto.";
                     }
                     return null;
                 }
@@ -65,8 +75,17 @@ export const useAssociationProject = ( profileCod ) => {
         { name: "project_association_end_date_participation", placeholder: "Fecha Final", required: true, type: "date", width: 150, restriction: "cantAfterToday", 
             validations: [
                 (value, allValues) => {
-                    if (value && allValues.project_association_start_date_participation && (new Date(value) < new Date(allValues.project_association_start_date_participation))) {
+                    const project = projects.find( p => p.cod_project === allValues.cod_project);
+                    const selectedDate = parseDateWithoutTimezone(value);
+                    const startProject = parseDateWithoutTimezone(project.project_start_date);
+                    const endProject = parseDateWithoutTimezone(project.project_end_date);
+                    const startProjectParticipation= parseDateWithoutTimezone(allValues.project_association_start_date_participation);
+
+                    if (selectedDate && startProjectParticipation && (selectedDate < startProjectParticipation)) {
                         return "La fecha final debe ser mayor a la fecha de inicio.";
+                    }
+                    if (selectedDate < startProject || selectedDate > endProject) {
+                        return "La fecha de participación debe estar dentro del rango del proyecto.";
                     }
                     return null;
                 }
@@ -74,23 +93,6 @@ export const useAssociationProject = ( profileCod ) => {
         },
         { name: "project_association_technology_details", placeholder: "Tecnologias", required: false, type: "textarea", width: 400},
     ];
-    
-    /*
-    * Obtener listado de proyectos
-    */
-    const fetchProyects = async () => {
-        try {
-            setLoadingAssociation(true);
-            const resp = await projectService.getAllProjects();
-            console.log("jslajdklajsjdkasjkd", resp)
-            setProjects(resp);
-        } catch (err) {
-            setErrorAssociations("Error al obtener proyectos");
-            ModalAlert("Error", "Error al obtener proyectos", "error");
-        } finally {
-            setLoadingAssociation(false);
-        }
-    };
 
     /*
      *  Obtener listado de roles 
@@ -141,16 +143,14 @@ export const useAssociationProject = ( profileCod ) => {
     const handleSubmitAssociation = async (formData) => {
         try {
             setLoadingAssociation(true);
-
             const dataToSend = {
                 ...formData,
                 profile_cod: Number(profileCod.profileCod),
                 project_association_role_service_code: Number(import.meta.env.VITE_ROLE_SERVICE_CODE), 
-                project_association_role_category_code: Number(import.meta.env.VITE_ACADEMIC_GRADE_CATEGORY_CODE),
+                project_association_role_category_code: Number(import.meta.env.VITE_ROLE_CATEGORY_CODE),
             };
 
             const response = await addAssociationProject(dataToSend);
-
             if (response.status === 201) {
                 Swal.fire("Éxito", "Asociación agregado exitosamente.", "success");
                 await fetchAssociation(profileCod.profileCod);
@@ -208,7 +208,6 @@ export const useAssociationProject = ( profileCod ) => {
             setProjects(projectsData);
             await fetchAssociation(profileCod.profileCod, projectsData);
         };
-
         fetchData();
     }, []);
 

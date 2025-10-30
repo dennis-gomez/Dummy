@@ -37,6 +37,8 @@ const FormAssociationProject = ({
       ...prev,
       cod_project: newValue?.cod_project || "",
       project_association_technology_details: newValue?.project_technologies || "",
+      project_association_start_date_participation: newValue?.project_start_date, 
+      project_association_end_date_participation: newValue?.project_end_date, 
     }));
 
     //validar el proyecto repetido
@@ -108,14 +110,14 @@ const FormAssociationProject = ({
                   sx={{
                     "& .MuiInputBase-root": { backgroundColor: "#fff !important" },
                     "& .MuiFormHelperText-root": {
-                      color: "#2563eb", // 💙 color azul personalizado
+                      color: "#2563eb", 
                       fontWeight: 500,
                     },
                     "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#2563eb", // 💙 borde azul cuando hay error
+                      borderColor: "#2563eb", 
                     },
                     "& .MuiFormLabel-root.Mui-error": {
-                      color: "#2563eb", // 💙 label azul en error
+                      color: "#2563eb", 
                     },
                     width: 850,
                   }}
@@ -193,7 +195,7 @@ const FormAssociationProject = ({
                   if (selectedDate && formData.project_association_end_date_participation && selectedDate > endParticipation) {
                     return "La fecha de inicio debe ser menor a la fecha final.";
                   }
-                  console.log("fecha", selectedDate, "fecha inicio", startProject, "fecha fin", endProject)
+                  
                   if (selectedDate < startProject || selectedDate > endProject) {
                     return "La fecha de participación debe estar dentro del rango del proyecto.";
                   }
