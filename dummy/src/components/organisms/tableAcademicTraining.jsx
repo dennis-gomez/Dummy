@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import Button from "../atoms/button";
 import { CircularProgress } from "@mui/material";
 import InputValidated from "../atoms/inputValidated";
+import InputValidatedFile from "../atoms/inputValidatedFile"; 
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 
@@ -29,6 +30,7 @@ const TableAcademicTrainning = ({
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
     const [editErrors, setEditErrors] = useState({});
+    const [isUnique, setIsUnique] = useState(true);
 
     /*
     * cambiar inputs a modo edicion
@@ -131,16 +133,13 @@ const TableAcademicTrainning = ({
                                         {isEditing && fieldEdit ? (
 
                                             fieldEdit.type === "file" ? (
-                                                <InputValidated
+                                                <InputValidatedFile
                                                     name={fieldEdit.name}
-                                                    value={editData["training_pdf_path"] || null}
-                                                    type={"file"}
-                                                    placeholder={fieldEdit.placeholder}
+                                                    value={editData["academic_training_pdf_path"] || null}
+                                                    setIsUnique={setIsUnique}
                                                     restriction={fieldEdit.restriction}
-                                                    validations={fieldEdit.validations}
-                                                    required={fieldEdit.required}
-                                                    onError={handleError}
                                                     currentId={editingId}
+                                                    onError={handleError}
                                                     onChange={file => {
                                                         setEditData({ ...editData, [f.name]: file.target.files[0] });
                                                         setEditErrors(prev => ({ ...prev, [f.name]: !file ? "Campo obligatorio" : "" }));
@@ -157,6 +156,7 @@ const TableAcademicTrainning = ({
                                                     value={editData[fieldEdit.name] || null}
                                                     placeholder={fieldEdit.placeholder}
                                                     options={fieldEdit.options || []}
+                                                    setIsUnique={setIsUnique}
                                                     restriction={fieldEdit.restriction}
                                                     validations={fieldEdit.validations}
                                                     required={fieldEdit.required}
@@ -203,7 +203,7 @@ const TableAcademicTrainning = ({
                                         <>
                                             <button
                                                 onClick={handleSaveEdit}
-                                                disabled={Object.values(editErrors).some(err => err)}
+                                                disabled={Object.values(editErrors).some(err => err) || !isUnique}
                                                 className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
                                                 <SaveIcon className="mr-1" fontSize="small" /> Guardar
                                             </button>
