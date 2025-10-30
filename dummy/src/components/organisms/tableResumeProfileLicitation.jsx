@@ -208,11 +208,12 @@ const ResumeTableLicitationTable = ({
                                 items={profileSummaries[person.personal_cod]?.academic || []}
                                 columns={[
                                   { key: "NombreItem", label: "Grado" },
-                                  { key: "Institucion", label: "Institución" },
                                   { key: "Carrera", label: "Carrera" },
+                                  { key: "Institucion", label: "Institución" },
                                   { key: "FechaInicio", label: "Inicio", type: "date" },
                                   { key: "FechaFin", label: "Fin", type: "date" },
-                                  { key: "FechaObtencion", label: "Obtención", type: "date" },
+                                  { key: "FechaObtencion", label: "Fecha Titulo", type: "date" },
+                                  { key: "RutaPDF", label: "Título(PDF)", type: "file" },
                                 ]}
                               />
 
@@ -221,13 +222,15 @@ const ResumeTableLicitationTable = ({
                                 title="Formación Especializada"
                                 items={profileSummaries[person.personal_cod]?.training || []}
                                 columns={[
+                                  { key: "Numero" , label: "N°" },
                                   { key: "Nombre", label: "Curso" },
+                                  { key: "Descripcion", label: "Descripción" },
                                   { key: "Institucion", label: "Institución" },
-                                  { key: "RutaPDF", label: "Certificado(PDF)", type: "file" },
                                   { key: "HorasCurso", label: "Horas" },
                                   { key: "FechaInicio", label: "Inicio", type: "date" },
                                   { key: "FechaFin", label: "Fin", type: "date" },
                                   { key: "Vigencia", label: "Vigencia", type: "date" },
+                                  { key: "RutaPDF", label: "Certificado(PDF)", type: "file" },
                                 ]}
                               />
 
@@ -236,13 +239,19 @@ const ResumeTableLicitationTable = ({
                                 title="Proyectos Asociados"
                                 items={profileSummaries[person.personal_cod]?.projects || []}
                                 columns={[
-                                  { key: "NombreProyecto", label: "Proyecto" },
                                   { key: "Empresa", label: "Empresa" },
+                                  { key: "NombreItem", label: "Rol" },
+                                  { key: "NombreProyecto", label: "Proyecto" },
                                   { key: "Cliente", label: "Cliente" },
                                   { key: "Sector", label: "Sector" },
+                                  { key: "Descripcion", label: "Descripción" },
+                                  { key: "Tecnologias", label: "Tecnologías" },
                                   { key: "FechaInicio", label: "Inicio", type: "date" },
                                   { key: "FechaFin", label: "Fin", type: "date" },
-                                  { key: "Tecnologias", label: "Tecnologías" },
+                                  { key: "Contacto", label: "Nombre del contacto" },
+                                  { key: "ContactoCargo", label: "Cargo del contacto" },
+                                  { key: "ContactoCorreo", label: "Correo del contacto" },
+                                  { key: "ContactoTelefono", label: "Teléfono del contacto" }
                                 ]}
                               />
                             </>
