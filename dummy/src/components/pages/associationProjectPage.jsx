@@ -42,6 +42,7 @@ const AssociationProjectPage = (
                     <FormAssociationProject 
                         onSubmit={handleSubmitAssociation}
                         projects={projects}
+                        associations={associations}
                         rolesTypes={rolesTypes}
                     />
                 </Box>

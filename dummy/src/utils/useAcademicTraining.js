@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { addAcademicTrainings, getAcademicTrainings, updateAcademicTrainings } from "../services/academicTrainingService"
+import { addAcademicTrainings, getAcademicTrainings, updateAcademicTrainings, getAcademicTrainingPDF } from "../services/academicTrainingService"
 import ModalAlert from "../components/molecules/modalAlert";
 import Swal from "sweetalert2";
 import { getItems } from "../services/itemService";
@@ -178,9 +178,10 @@ export const useAcademicTraining = ( personCod ) => {
                 personal_cod: Number(personCod.personCod),
                 academic_training_title_service_code: Number(import.meta.env.VITE_ROLE_SERVICE_CODE), 
                 academic_training_title_category_code: Number(import.meta.env.VITE_ACADEMIC_GRADE_CATEGORY_CODE),
-                academic_training_date_obtaining: formData.academic_training_date_obtaining === "" ? null : formData.academic_training_date_obtaining
+                academic_training_date_obtaining: formData.academic_training_date_obtaining === "" ? null : formData.academic_training_date_obtaining, 
+                academic_training_pdf_path: formData.academic_training_pdf_path,
             };
-
+            
             const response = await addAcademicTrainings(dataToSend);
 
             if (response.status === 201) {
@@ -189,6 +190,7 @@ export const useAcademicTraining = ( personCod ) => {
                 setShowFormAcademicTraining(false);
                 setErrorAcademicTraining(null);
             }
+            
         } catch (err) {
             const msg = err.response?.data?.message || "Error al agregar formacion académica.";
             Swal.fire("Error", msg, "error");
@@ -233,6 +235,16 @@ export const useAcademicTraining = ( personCod ) => {
         }
     };
 
+    const openPDF = async (relativePath) => {
+        try {
+            const pdfBlob = await getAcademicTrainingPDF(relativePath);
+            const pdfUrl = URL.createObjectURL(pdfBlob); // ya es un blob válido
+            window.open(pdfUrl, "_blank"); // abre en nueva pestaña
+        } catch (error) {
+        console.error("Error al abrir el PDF:", error);
+        }
+    };
+
     useEffect(() => {
         fetchTitles();
         fetchAcademicTrainings(personCod.personCod);
@@ -254,5 +266,6 @@ export const useAcademicTraining = ( personCod ) => {
 
         handleSubmitAcademicTraining, 
         handleEditAcademicTraining, 
+        openPDF, 
     }
 }
