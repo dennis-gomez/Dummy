@@ -4,6 +4,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 import InputValidated from "../atoms/inputValidated";
+import InputValidatedDate from "../atoms/inputValidatedDate";
 import ModalElimination from "../molecules/modalElimination";
 import Seeker from "../molecules/seeker";
 import { Box } from "@mui/material";
@@ -35,7 +36,7 @@ const GuaranteesTable = ({
   currentPage = 1,       // 🟢 página actual
   onPageChange,
   handleSortByExpirationDate
-  
+
 
 }) => {
   const [editingId, setEditingId] = useState(null);
@@ -47,16 +48,16 @@ const GuaranteesTable = ({
   const [trueSearchText, setTrueSearchText] = useState("");
   let value = ""
 
-const deleteGuaranteOrReactivated = (id,status) => {
-  setSearchFeature("");
-  setSearchText("");
-  onDelete(id,status)
-}
+  const deleteGuaranteOrReactivated = (id, status) => {
+    setSearchFeature("");
+    setSearchText("");
+    onDelete(id, status)
+  }
 
-  const change=()=>{
+  const change = () => {
     setSortOrder(!valueOrder)
-    
-    handleSortByExpirationDate(searchFeature,searchText,currentPage,2,1,valueOrder ? "ASC" : "")
+
+    handleSortByExpirationDate(searchFeature, searchText, currentPage, 2, 1, valueOrder ? "ASC" : "")
   }
 
   const whiteInputStyle = {
@@ -111,10 +112,47 @@ const deleteGuaranteOrReactivated = (id,status) => {
     setEditErrors({});
   };
 
-  const renderInput = (field) => {
+  const renderInput = (field, data) => {
     const value = editData[field.name] ?? "";
     const fieldType = field.type || "text";
-    
+
+    if (fieldType === "date") {
+      const rawValue = editData[field.name];
+      const formattedValue =
+        rawValue && !isNaN(new Date(rawValue))
+          ? new Date(rawValue).toISOString().split("T")[0]
+          : "";
+
+      console.log("la data es:", data)
+
+      return (
+        <InputValidatedDate
+          name={field.name}
+          value={formattedValue}
+          onChange={(e) => {
+            const value = e.target.value;
+            setEditData((prev) => ({ ...prev, [field.name]: value }));
+            setEditErrors((prev) => ({
+              ...prev,
+              [field.name]: !value.trim() ? "Campo obligatorio" : "",
+            }));
+          }}
+          sx={{
+            ...whiteInputStyle,
+            "& .MuiOutlinedInput-root": {
+              ...whiteInputStyle["& .MuiOutlinedInput-root"],
+              width: field.width ? field.width : "auto",
+            },
+          }}
+          restriction={field.restriction}
+          formValues={{
+            ...editData,
+            originalData: data,
+            isEditing: Boolean(editData),
+          }}
+        />
+      );
+    }
 
     // Select
     if (fieldType === "select") {
@@ -131,12 +169,12 @@ const deleteGuaranteOrReactivated = (id,status) => {
           value={value}
           onChange={(e) => handleFieldChange(field.name, e.target.value, fieldType)}
           options={options}
-           sx={{
-                                ...whiteInputStyle, "& .MuiOutlinedInput-root": {
-                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
-                                 width: "100%", minHeight: "3rem"
-                                },
-                              }}
+          sx={{
+            ...whiteInputStyle, "& .MuiOutlinedInput-root": {
+              ...whiteInputStyle["& .MuiOutlinedInput-root"],
+              width: "100%", minHeight: "3rem"
+            },
+          }}
         />
       );
     }
@@ -151,15 +189,15 @@ const deleteGuaranteOrReactivated = (id,status) => {
           multiline
           rows={2}
           onChange={(e) => handleFieldChange(field.name, e.target.value, fieldType)}
-            sx={{
-                                ...whiteInputStyle,
-                                "& .MuiOutlinedInput-root": {
-                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
-                                  minHeight: "4rem",
-                                  width: "12rem",
-                                  resize: "vertical",
-                                },
-                              }}
+          sx={{
+            ...whiteInputStyle,
+            "& .MuiOutlinedInput-root": {
+              ...whiteInputStyle["& .MuiOutlinedInput-root"],
+              minHeight: "4rem",
+              width: "12rem",
+              resize: "vertical",
+            },
+          }}
         />
       );
     }
@@ -180,7 +218,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
   };
 
   // Filtrar campos a mostrar
-  const displayFields = fields.filter(f => 
+  const displayFields = fields.filter(f =>
     ![
       "cod_guarantee",
       "guarantee_entity_service_code",
@@ -193,7 +231,7 @@ const deleteGuaranteOrReactivated = (id,status) => {
   );
 
   return (
-   <div className="dinamic-table-container p-6 mt-6 bg-white rounded-2xl">
+    <div className="dinamic-table-container p-6 mt-6 bg-white rounded-2xl">
       {/* Buscador + botón agregar */}
       <div className="flex flex-col lg:flex-row gap-4 w-full max-w-5xl mx-auto mb-4">
         <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
@@ -209,9 +247,9 @@ const deleteGuaranteOrReactivated = (id,status) => {
             onChangeFeature={setSearchFeature}
             onClick={() => {
               setTrueSearchText(searchText);
-              value=searchText
-              handleSortByExpirationDate(searchFeature,value,1,5,2,!valueOrder ? "ASC" : "")
-            
+              value = searchText
+              handleSortByExpirationDate(searchFeature, value, 1, 5, 2, !valueOrder ? "ASC" : "")
+
             }
             } // 🟢 al buscar, mantiene orden actual
           />
@@ -245,30 +283,30 @@ const deleteGuaranteOrReactivated = (id,status) => {
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
                 {displayFields.map(f => (
-                <th 
-  key={f.name} 
-  className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
->
-  <span className="inline-flex items-center justify-center gap-1">
-    {f.label}
-    {f.name === "guarantee_expiration_date" && (
-      <button onClick={() => change()} title="Ordenar por fecha de vencimiento">
-        <SortIcon
-          fontSize="small"
-          sx={{
-            color: valueOrder ? "white" : "#18d046ff",
-            cursor: "pointer",
-            transition: "0.2s",
-            "&:hover": {
-              opacity: 0.7,
-              transform: "scale(1.1)"
-            }
-          }}
-        />
-      </button>
-    )}
-  </span>
-</th>
+                  <th
+                    key={f.name}
+                    className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider"
+                  >
+                    <span className="inline-flex items-center justify-center gap-1">
+                      {f.label}
+                      {f.name === "guarantee_expiration_date" && (
+                        <button onClick={() => change()} title="Ordenar por fecha de vencimiento">
+                          <SortIcon
+                            fontSize="small"
+                            sx={{
+                              color: valueOrder ? "white" : "#18d046ff",
+                              cursor: "pointer",
+                              transition: "0.2s",
+                              "&:hover": {
+                                opacity: 0.7,
+                                transform: "scale(1.1)"
+                              }
+                            }}
+                          />
+                        </button>
+                      )}
+                    </span>
+                  </th>
 
                 ))}
                 <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">Acciones</th>
@@ -282,19 +320,19 @@ const deleteGuaranteOrReactivated = (id,status) => {
                     <td className="py-4 px-6 text-center">{index + 1}</td>
                     {displayFields.map(f => (
                       <td key={f.name} className="py-4 px-6 text-center text-gray-700">
-                       {isEditing ? (
-  renderInput(f)
-) : f.type === "select" ? (
-  (f.options || []).find(opt => opt.value == row[f.name])?.label || "-"
-) : f.type === "checkbox" ? (
-  row[f.name] ? "Sí" : "No"
-) : f.type === "date" ? (
-  row[f.name] ? formatDateDDMMYYYY(row[f.name]) : "-"
-) : typeof row[f.name] === "number" ? (
-  new Intl.NumberFormat("de-DE").format(row[f.name])
-) : (
-  row[f.name] || "-"
-)}
+                        {isEditing ? (
+                          renderInput(f, row,)
+                        ) : f.type === "select" ? (
+                          (f.options || []).find(opt => opt.value == row[f.name])?.label || "-"
+                        ) : f.type === "checkbox" ? (
+                          row[f.name] ? "Sí" : "No"
+                        ) : f.type === "date" ? (
+                          row[f.name] ? formatDateDDMMYYYY(row[f.name]) : "-"
+                        ) : typeof row[f.name] === "number" ? (
+                          new Intl.NumberFormat("de-DE").format(row[f.name])
+                        ) : (
+                          row[f.name] || "-"
+                        )}
 
                       </td>
                     ))}
@@ -316,24 +354,24 @@ const deleteGuaranteOrReactivated = (id,status) => {
                           </button>
                         </div>
                       ) : (
-                          row.guarantee_status!=4 ? (
-                        <div className="flex justify-center gap-3">
-                          <button
-                            onClick={() => handleEditClick(row)}
-                            className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
-                          >
-                            <EditIcon />
-                          </button>
-                          <ModalElimination
-                            message={`Desactivar ${singularName}`}
-                            onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee,4)}
-                            confirmText="Desactivar"
-                          />
-                        </div>
-                        ):(
+                        row.guarantee_status != 4 ? (
+                          <div className="flex justify-center gap-3">
+                            <button
+                              onClick={() => handleEditClick(row)}
+                              className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
+                            >
+                              <EditIcon />
+                            </button>
+                            <ModalElimination
+                              message={`Desactivar ${singularName}`}
+                              onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee, 4)}
+                              confirmText="Desactivar"
+                            />
+                          </div>
+                        ) : (
                           <ReactivationModal
                             message={"¿Quieres reactivar esta garantía?"}
-                            onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee,1)}
+                            onClick={() => deleteGuaranteOrReactivated(row.cod_guarantee, 1)}
                           />
                         )
                       )}
@@ -342,23 +380,23 @@ const deleteGuaranteOrReactivated = (id,status) => {
                 );
               })}
             </tbody>
-            
+
           </table>
           {/* paginado */}
-          <Stack spacing={30 } alignItems="center" marginY={2}>
-      <Pagination
-        count={totalPages}
-        page={currentPage}
-        color="primary"
-        onChange={(e, value) =>  handleSortByExpirationDate(searchFeature,trueSearchText,value,2,1,!valueOrder ? "ASC" : "")} // ← callback al cambiar
-        renderItem={(item) => (
-          <PaginationItem
-            slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
-            {...item}
-          />
-        )}
-      />
-    </Stack>
+          <Stack spacing={30} alignItems="center" marginY={2}>
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              color="primary"
+              onChange={(e, value) => handleSortByExpirationDate(searchFeature, trueSearchText, value, 2, 1, !valueOrder ? "ASC" : "")} // ← callback al cambiar
+              renderItem={(item) => (
+                <PaginationItem
+                  slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                  {...item}
+                />
+              )}
+            />
+          </Stack>
 
         </div>
       )}
