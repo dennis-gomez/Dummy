@@ -63,3 +63,24 @@ export const deleteProfile = async (profile_cod) => {
     throw error;
   }
 };
+
+export const getProfileSummary = async (personal_cod, profile_cod) => {
+  try {
+    console.log("📡 Obteniendo resumen del perfil...");
+
+    const response = await axios.post(`${API_URL}summary`, {
+      personal_cod,
+      profile_cod,
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error al obtener el resumen del perfil:", error);
+    throw error;
+  }
+};
+

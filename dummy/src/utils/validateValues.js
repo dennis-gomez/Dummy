@@ -140,7 +140,16 @@ export function ValidateValues({
             }
           }
         }
-
+        // ✅ Nueva validación: training_validity > training_end_date
+        else if (
+          allValues["training_end_date"] &&
+          allValues["training_validity"] === value
+        ) {
+          const endDate = new Date(allValues["training_end_date"]);
+          if (inputDate <= endDate) {
+            err = "La validez debe ser posterior a la fecha de finalización";
+          }
+        }
         // Restricción por defecto: solo permitir fechas futuras
         else if (!restriction && inputDate < today) {
           err = "Solo se permiten fechas futuras";

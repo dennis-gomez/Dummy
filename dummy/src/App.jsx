@@ -26,6 +26,8 @@ import MovementTI from "./components/pages/movementTI";
 import ProfilePage from "./components/pages/profilePage.jsx";
 import PersonalPage from './components/pages/personalPage'
 import ProjectPage from './components/pages/projectPage'
+import ResumeTableLicitationPage from './components/pages/resumeProfileLicitationPage.jsx'
+
 function App() {
   return (
     <BrowserRouter>
@@ -60,7 +62,8 @@ function App() {
             <Route path="/inventario/tecnologias-informacion" element={<TechnologyInventory />} />
             <Route path="/inventario/tecnologias-informacion/movimientos" element={<MovementTI />} />
             <Route path="/licitaciones/perfiles" element={<PersonalPage />} />
-                    <Route path="/proyectos/gestion" element={<ProjectPage />} />
+            <Route path="/proyectos/gestion" element={<ProjectPage />} />
+            <Route path="/licitaciones/perfiles/resumen" element={<ResumeTableLicitationPage/>} />
           </Routes>
         </main>
         <Footer />

@@ -8,6 +8,7 @@ import { CircularProgress, Box } from "@mui/material";
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedFile from "../atoms/inputValidatedFile";
+import InputValidatedDate from "../atoms/inputValidatedDate";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Stack from '@mui/material/Stack';
@@ -201,6 +202,27 @@ const SpecializedTrainingTable = ({
                                 }
                               }}
                             />
+                          ) : (f.type === "date" ? (
+
+                            <InputValidatedDate
+                              name={f.name}
+                              value={editData[f.name] || ""}
+                              onChange={e => {
+                                const value = e.target.value;
+                                setEditData({ ...editData, [f.name]: value });
+                                setEditErrors(prev => ({ ...prev, [f.name]: !value.trim() ? "Campo obligatorio" : "" }));
+                              }}
+                              sx={{
+                                ...whiteInputStyle,
+                                "& .MuiOutlinedInput-root": {
+                                  ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                  width: f.width ? f.width : "auto",
+                                }
+                              }}
+                              restriction={f.restriction}
+                              formValues={editData}
+                            />
+
                           ) : (
 
                             <InputValidated
@@ -224,7 +246,7 @@ const SpecializedTrainingTable = ({
                                 }
                               }}
                             />
-                          ))
+                          )))
                         ) : (
                           f.name === "training_pdf" ? (
                             row.training_pdf_path && (
