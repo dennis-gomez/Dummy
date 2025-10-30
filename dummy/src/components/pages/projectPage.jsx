@@ -40,6 +40,13 @@ const ProjectPage = () => {
     loadProjects();
   }, []);
 
+  // 🔹 Nuevo useEffect agregado: actualiza la tabla cuando se borra el texto del buscador
+  useEffect(() => {
+    if (searchText.trim() === "") {
+      loadProjects();
+    }
+  }, [searchText]);
+
   const loadProjects = async () => {
     try {
       setLoading(true);
@@ -58,19 +65,22 @@ const ProjectPage = () => {
   };
 
   const handleSearch = async () => {
-    if (!searchText.trim()) {
-      showSnackbar("Por favor, ingrese un texto para buscar", "warning");
-      return;
-    }
-    try {
-      const results = await projectService.findProjects(searchFeature, searchText);
-      setProjects(results);
-      showSnackbar("Búsqueda completada", "success");
-    } catch (error) {
-      console.error(error);
-      showSnackbar("Error al realizar la búsqueda", "error");
-    }
-  };
+  if (!searchText.trim()) {
+    await loadProjects();
+    showSnackbar("Mostrando todos los proyectos", "info");
+    return;
+  }
+
+  try {
+    const results = await projectService.findProjects(searchFeature, searchText);
+    setProjects(results);
+    showSnackbar("Búsqueda completada", "success");
+  } catch (error) {
+    console.error("Error al buscar proyectos:", error);
+    showSnackbar("Error al realizar la búsqueda", "error");
+  }
+};
+
 
   const handleClearSearch = () => {
     setSearchText("");
