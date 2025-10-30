@@ -96,3 +96,17 @@ export const updatePersonal = async (formData) => {
         throw error;
     }
 };
+
+
+export const fetchPersonalSummary = async ({ context, feature, text, page = 1, limit = 10 }) => {
+  try {
+    const response = await axios.get(API_URL + "find/summary", {
+      params: { context, feature, text, page, limit },
+      headers: { "Content-Type": "application/json" },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error al obtener resumen de personal:", error);
+    throw error;
+  }
+};
