@@ -4,7 +4,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AutorenewIcon from "@mui/icons-material/Autorenew"; // ✅ icono para reactivar
+import AutorenewIcon from "@mui/icons-material/Autorenew"; 
 import ModalAlert from "../molecules/modalAlert";
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidatedSupplier";
