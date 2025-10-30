@@ -5,8 +5,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 import InputValidated from "../atoms/inputValidated";
+import InputValidatedDate from "../atoms/inputValidatedDate";
 
-const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered, desactivated=false }) => {
+const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered, desactivated = false }) => {
   const [editingIdx, setEditingIdx] = useState(null);
   const [editData, setEditData] = useState({});
   const [editErrors, setEditErrors] = useState({}); // Estado de errores
@@ -88,31 +89,57 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered,
                   <>
                     {fields.map((f) => (
                       <td key={f.key} className="py-4 px-6 align-middle text-center">
-                        <InputValidated
-                          name={f.key}
-                          type={f.type || "text"}
-                          placeholder={f.placeholder}
-                          value={editData[f.key]}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setEditData({ ...editData, [f.key]: value });
+                        {f.type === "date" ? (
+                          <InputValidatedDate
+                            name={f.name}
+                            value={editData[f.key] || ""}
+                            onChange={e => {
+                              const value = e.target.value;
+                              setEditData({ ...editData, [f.key]: value });
+                              setEditErrors(prev => ({ ...prev, [f.key]: !value.trim() ? "Campo obligatorio" : "" }));
+                            }}
+                            sx={{
+                              ...whiteInputStyle,
+                              "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                width: f.width ? f.width : "auto",
+                              }
+                            }}
+                            restriction={f.restriction}
+                            formValues={{
+                              ...editData,
+                              originalData: item, // 👈 asegúrate de pasar el objeto (no el array)
+                              isEditing: Boolean(editData),
+                            }}
 
-                            // Validación: campo obligatorio y no solo espacios
-                            setEditErrors((prev) => ({
-                              ...prev,
-                              [f.key]: !value || !value.trim() ? "Campo obligatorio" : "",
-                            }));
-                          }}
-                          required={f.required ?? true}
-                          sx={{
-                            ...whiteInputStyle,
-                            "& .MuiOutlinedInput-root": {
-                              ...whiteInputStyle["& .MuiOutlinedInput-root"],
-                              minHeight: f.type === "textarea" ? "4rem" : "auto",
-                              resize: f.type === "textarea" ? "vertical" : "none",
-                            },
-                          }}
-                        />
+                          />
+                        ) : (
+                          <InputValidated
+                            name={f.key}
+                            type={f.type || "text"}
+                            placeholder={f.placeholder}
+                            value={editData[f.key]}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              setEditData({ ...editData, [f.key]: value });
+
+                              // Validación: campo obligatorio y no solo espacios
+                              setEditErrors((prev) => ({
+                                ...prev,
+                                [f.key]: !value || !value.trim() ? "Campo obligatorio" : "",
+                              }));
+                            }}
+                            required={f.required ?? true}
+                            sx={{
+                              ...whiteInputStyle,
+                              "& .MuiOutlinedInput-root": {
+                                ...whiteInputStyle["& .MuiOutlinedInput-root"],
+                                minHeight: f.type === "textarea" ? "4rem" : "auto",
+                                resize: f.type === "textarea" ? "vertical" : "none",
+                              },
+                            }}
+                          />
+                        )}
                       </td>
                     ))}
 
@@ -122,11 +149,10 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered,
                           type="button"
                           onClick={handleSaveEdit}
                           disabled={Object.values(editErrors).some((err) => err)} // Deshabilitar si hay errores
-                          className={`bg-blue-600 text-white rounded-lg px-3 py-2 flex items-center text-sm ${
-                            Object.values(editErrors).some((err) => err)
-                              ? "opacity-50 cursor-not-allowed"
-                              : "hover:bg-blue-700"
-                          }`}
+                          className={`bg-blue-600 text-white rounded-lg px-3 py-2 flex items-center text-sm ${Object.values(editErrors).some((err) => err)
+                            ? "opacity-50 cursor-not-allowed"
+                            : "hover:bg-blue-700"
+                            }`}
                         >
                           <SaveIcon className="mr-1" fontSize="small" />
                           Guardar
@@ -158,28 +184,28 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered,
                     ))}
                     <td className="py-4 px-6 align-middle text-center">
                       <div className="flex justify-center space-x-3">
-                        {item.supply_is_active===true &&(
-                        <button
-                          type="button"
-                          onClick={() => handleEditClick(item, index)}
-                          className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
-                        >
-                          <EditIcon />
-                        </button>
-                         )}
-                    {item.supply_is_active===true && (
-  renderDelete ? (
-    renderDelete(item, index)
-  ) : (
-    <button
-      type="button"
-      onClick={() => onDelete(index)}
-      className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
-    >
-      <DeleteIcon />
-    </button>
-  )
-)}
+                        {item.supply_is_active === true && (
+                          <button
+                            type="button"
+                            onClick={() => handleEditClick(item, index)}
+                            className="text-blue-500 hover:text-blue-700 transition p-2 rounded-full hover:bg-blue-50"
+                          >
+                            <EditIcon />
+                          </button>
+                        )}
+                        {item.supply_is_active === true && (
+                          renderDelete ? (
+                            renderDelete(item, index)
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => onDelete(index)}
+                              className="text-red-500 hover:text-red-700 transition p-2 rounded-full hover:bg-red-50"
+                            >
+                              <DeleteIcon />
+                            </button>
+                          )
+                        )}
 
                       </div>
                     </td>

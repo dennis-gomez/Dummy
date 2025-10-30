@@ -1,9 +1,18 @@
 import { useEffect, useState } from "react";
-import { 
-  getMedicKits, deleteMedicKit, updateMedicKit, addMedicKit, searchMedicKitsByFeature
+import {
+  getMedicKits,
+  deleteMedicKit,
+  updateMedicKit,
+  addMedicKit,
+  searchMedicKitsByFeature,
 } from "../services/medicKitService";
-import { 
-  getSuppliesById, deleteSupply, updateSupply, addManySupplies, searchSuppliesByTerm, orderSuppliesByRelevance
+import {
+  getSuppliesById,
+  deleteSupply,
+  updateSupply,
+  addManySupplies,
+  searchSuppliesByTerm,
+  orderSuppliesByRelevance,
 } from "../services/medicKitSuppliesService";
 import ModalAlert from "../components/molecules/modalAlert";
 
@@ -22,29 +31,83 @@ export const useMedicKits = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const fields = [
-    { key: "cod_medic_kit", label: "Código de botiquín", type: "text", placeholder: "Código de botiquín", required: false },
-    { key: "medic_kit_location", label: "Localización", type: "text", placeholder: "Localización", required: true },
-    { key: "medic_kit_details", label: "Detalles", type: "textarea", placeholder: "Detalle", required: true }
+    {
+      key: "cod_medic_kit",
+      label: "Código de botiquín",
+      type: "text",
+      placeholder: "Código de botiquín",
+      required: false,
+    },
+    {
+      key: "medic_kit_location",
+      label: "Localización",
+      type: "text",
+      placeholder: "Localización",
+      required: true,
+    },
+    {
+      key: "medic_kit_details",
+      label: "Detalles",
+      type: "textarea",
+      placeholder: "Detalle",
+      required: true,
+    },
   ];
 
   const subfields = [
-    { key: "cod_medic_kit", label: "Código de botiquín", type: "text", placeholder: "Código de botiquín", required: false },
-    { key: "cod_supply", label: "Código de articulo", type: "text", placeholder: "Código de articulo", required: false },
-    { key: "supply_quantity", label: "Cantidad", type: "number", placeholder: "Cantidad", required: true },
-    { key: "supply_expiration_date", label: "Fecha de Vencimiento", type: "date", placeholder: "Fecha de Vencimiento", required: false },
-    { key: "supply_description", label: "Descripción", type: "textarea", placeholder: "Descripción", required: true },
+    {
+      key: "cod_medic_kit",
+      label: "Código de botiquín",
+      type: "text",
+      placeholder: "Código de botiquín",
+      required: false,
+    },
+    {
+      key: "cod_supply",
+      label: "Código de articulo",
+      type: "text",
+      placeholder: "Código de articulo",
+      required: false,
+    },
+    {
+      key: "supply_quantity",
+      label: "Cantidad",
+      type: "number",
+      placeholder: "Cantidad",
+      required: true,
+    },
+    {
+      key: "supply_expiration_date",
+      label: "Fecha de Vencimiento",
+      type: "date",
+      placeholder: "Fecha de Vencimiento",
+      required: false,
+      restriction: "cantBeforeToday",
+      name: "supply_expiration_date",
+    },
+    {
+      key: "supply_description",
+      label: "Descripción",
+      type: "textarea",
+      placeholder: "Descripción",
+      required: true,
+    },
   ];
 
-
   const options = [
-  { name: 1, placeholder: 'Activos' },
-  { name: 0, placeholder: 'Desactivados' },
-];
+    { name: 1, placeholder: "Activos" },
+    { name: 0, placeholder: "Desactivados" },
+  ];
   const searchFields = [
     { name: "medic_kit_location", placeholder: "Localización de botiquín" },
     { name: "medic_kit_details", placeholder: "Detalles de botiquín" },
     { name: "supply_description", placeholder: "Articulos" },
-    {name: "medic_kit_is_active", placeholder: "Estados" , options:options, type: "select" }
+    {
+      name: "medic_kit_is_active",
+      placeholder: "Estados",
+      options: options,
+      type: "select",
+    },
   ];
 
   const SubTittle = "Lista de articulos médicos";
@@ -85,7 +148,11 @@ export const useMedicKits = () => {
 
         const kitsWithSupplies = await searchSuppliesByTerm(text);
         if (!kitsWithSupplies?.length) {
-          ModalAlert("Error", "No se encontró ningún botiquín con ese articulos.", "error");
+          ModalAlert(
+            "Error",
+            "No se encontró ningún botiquín con ese articulos.",
+            "error"
+          );
           return;
         }
 
@@ -97,15 +164,19 @@ export const useMedicKits = () => {
         setError(null);
       } else {
         const medicKitsResp = await searchMedicKitsByFeature(text, feature);
-        
-        if(feature==="medic_kit_is_active" && text===1 || text===""){
-        setSearchActive(true);
-        }else if(feature==="medic_kit_is_active" && text===0){
+
+        if ((feature === "medic_kit_is_active" && text === 1) || text === "") {
+          setSearchActive(true);
+        } else if (feature === "medic_kit_is_active" && text === 0) {
           setSearchActive(false);
         }
 
         if (!medicKitsResp?.length) {
-          ModalAlert("Error", "No se encontró ningún botiquín con esos criterios.", "error");
+          ModalAlert(
+            "Error",
+            "No se encontró ningún botiquín con esos criterios.",
+            "error"
+          );
           return;
         }
 
@@ -130,12 +201,12 @@ export const useMedicKits = () => {
   // -------------------------
   const getSuppliesByMedicKitId = async (cod_medic_kit) => {
     try {
-  
       setMedicKitSelectedId(cod_medic_kit);
 
-      const supplies = searchAnSupply && searchTerm
-        ? await orderSuppliesByRelevance(cod_medic_kit, searchTerm)
-        : await getSuppliesById(cod_medic_kit,searchActive);
+      const supplies =
+        searchAnSupply && searchTerm
+          ? await orderSuppliesByRelevance(cod_medic_kit, searchTerm)
+          : await getSuppliesById(cod_medic_kit, searchActive);
 
       setSuppliesList(supplies);
       setError(null);
@@ -143,7 +214,6 @@ export const useMedicKits = () => {
       setError("Error al obtener articulos médicos");
       ModalAlert("Error", "Error al obtener articulos médicos.", "error");
     } finally {
-     
     }
   };
 
@@ -153,22 +223,41 @@ export const useMedicKits = () => {
   const handleAddKitWithSupplies = async (formData) => {
     try {
       setIsLoading(true);
-      const { medic_kit_location, medic_kit_details, supplements } = formData || {};
+      const { medic_kit_location, medic_kit_details, supplements } =
+        formData || {};
       const suppliesToAdd = Array.isArray(supplements)
-        ? supplements.map(({ supply_quantity, supply_description, supply_expiration_date }) => ({
-            supply_quantity, supply_description, supply_expiration_date
-          }))
+        ? supplements.map(
+            ({
+              supply_quantity,
+              supply_description,
+              supply_expiration_date,
+            }) => ({
+              supply_quantity,
+              supply_description,
+              supply_expiration_date,
+            })
+          )
         : [];
 
       let targetMedicKitId = null;
 
       if (medic_kit_location && medic_kit_details) {
-        const newMedicKit = await addMedicKit({ medic_kit_location, medic_kit_details });
-        targetMedicKitId = newMedicKit?.cod_medic_kit ?? newMedicKit?.id ?? newMedicKit;
-        if (suppliesToAdd.length > 0) await addManySupplies(targetMedicKitId, suppliesToAdd);
+        const newMedicKit = await addMedicKit({
+          medic_kit_location,
+          medic_kit_details,
+        });
+        targetMedicKitId =
+          newMedicKit?.cod_medic_kit ?? newMedicKit?.id ?? newMedicKit;
+        if (suppliesToAdd.length > 0)
+          await addManySupplies(targetMedicKitId, suppliesToAdd);
       } else if (suppliesToAdd.length > 0) {
-        targetMedicKitId = medicKitSelectedId || medicKitsList?.[medicKitsList.length - 1]?.cod_medic_kit;
-        if (!targetMedicKitId) throw new Error("No existe un botiquín al que agregar los articulos.");
+        targetMedicKitId =
+          medicKitSelectedId ||
+          medicKitsList?.[medicKitsList.length - 1]?.cod_medic_kit;
+        if (!targetMedicKitId)
+          throw new Error(
+            "No existe un botiquín al que agregar los articulos."
+          );
         await addManySupplies(targetMedicKitId, suppliesToAdd);
       }
 
@@ -190,7 +279,6 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEditMedicKit = async (formData) => {
     try {
-    
       await updateMedicKit(formData);
       await fetchMedicKits();
       ModalAlert("Éxito", "Kit médico actualizado", "success");
@@ -198,7 +286,6 @@ export const useMedicKits = () => {
       setError("Error al actualizar el kit médico");
       ModalAlert("Error", err.message, "error");
     } finally {
-    
     }
   };
 
@@ -207,39 +294,38 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEditSupply = async (formData) => {
     try {
-     
       await updateSupply(formData);
-      const updatedSupplies = await getSuppliesById(medicKitSelectedId,searchActive);
+      const updatedSupplies = await getSuppliesById(
+        medicKitSelectedId,
+        searchActive
+      );
       setSuppliesList(updatedSupplies);
       ModalAlert("Éxito", "articulo actualizado", "success");
     } catch (err) {
       setError("Error al actualizar articulo");
       ModalAlert("Error", err.message, "error");
     } finally {
-      
     }
   };
 
   // -------------------------
   // Eliminar botiquín
   // -------------------------
-  const handleEliminateMedicKit = async (cod_MedicKit,is_Active) => {
+  const handleEliminateMedicKit = async (cod_MedicKit, is_Active) => {
     try {
-
       setSearchActive(true);
-      
-      await deleteMedicKit(cod_MedicKit,is_Active);
+
+      await deleteMedicKit(cod_MedicKit, is_Active);
       await fetchMedicKits();
-      if(is_Active === 0){
-      ModalAlert("Éxito", "Kit médico Desactivado", "success");
-      }else{
+      if (is_Active === 0) {
+        ModalAlert("Éxito", "Kit médico Desactivado", "success");
+      } else {
         ModalAlert("Éxito", "Kit médico reactivado", "success");
-      } 
+      }
     } catch (err) {
       setError("Error al eliminar kit médico");
       ModalAlert("Error", err.message, "error");
     } finally {
-  
     }
   };
 
@@ -248,23 +334,26 @@ export const useMedicKits = () => {
   // -------------------------
   const handleEliminateSupply = async (cod_supply) => {
     try {
-     
       await deleteSupply(medicKitSelectedId, cod_supply);
-      const updatedSupplies = await getSuppliesById(medicKitSelectedId,searchActive);
+      const updatedSupplies = await getSuppliesById(
+        medicKitSelectedId,
+        searchActive
+      );
       setSuppliesList(updatedSupplies);
       ModalAlert("Éxito", "articulo eliminado", "success");
     } catch (err) {
       setError("Error al eliminar el articulo");
       ModalAlert("Error", err.message, "error");
     } finally {
-      
     }
   };
 
   // -------------------------
   // Carga inicial
   // -------------------------
-  useEffect(() => { fetchMedicKits(); }, []);
+  useEffect(() => {
+    fetchMedicKits();
+  }, []);
 
   return {
     medicKitsList,
@@ -288,6 +377,5 @@ export const useMedicKits = () => {
     handleEditSupply,
     handleEliminateMedicKit,
     handleEliminateSupply,
-    
   };
 };
