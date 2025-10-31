@@ -27,13 +27,13 @@ const SpecializedTrainingSection = ({
   return (
     <div style={{ padding: 24 }}>
       <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-        Gestión de Formacion Especializada
+        Gestión de Formación Especializada
       </h1>
 
       {isCreatingSpecializedTraining && (
         <Box
           sx={{
-            maxWidth: 1150,
+            maxWidth: 1550,
             margin: "20px auto",
             p: 3,
             boxShadow: 3,
@@ -50,7 +50,7 @@ const SpecializedTrainingSection = ({
             formTitle="Agregar Formación"
             onSubmit={handleAddSpecializedTraining}
             titleBtn="Guardar Formación"
-            maxWidth={1200}
+            maxWidth={1500}
           />
         </Box>
       )}

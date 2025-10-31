@@ -5,8 +5,6 @@ const API_URL = "http://localhost:3000/specialized-training/";
 //obtener formacion especializada por el codigo de perfil
 export const getSpecializedTrainingByProfileId = async (profile_cod, page) => {
   try {
-    console.log("Llamando a la API para obtener formación especializada...");
-
     const response = await axios.get(API_URL, {
       params: { profile_cod, page },
       headers: {
