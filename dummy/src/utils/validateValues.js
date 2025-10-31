@@ -126,8 +126,21 @@ export function ValidateValues({
         err = "Fecha inválida";
       } else {
         // Restricción: no permitir fechas futuras
-        if (restriction === "cantAfterToday" && inputDate > today) {
-          err = "No se permiten fechas futuras";
+        if (restriction === "cantBeforeToday" && inputDate < today) {
+          const fieldName = allValues?.fieldName;
+          const originalValue = fieldName
+            ? allValues?.originalData?.[fieldName]
+            : null;
+          const isEditing = allValues?.isEditing || false;
+
+          console.log("nombre de campo", fieldName);
+          console.log("allValuesdeOriginalData:", allValues);
+
+          if (isEditing && originalValue === value) {
+            err = ""; // No marcar error si está editando y la fecha no cambió
+          } else {
+            err = "No se permiten fechas pasadas";
+          }
         } else if (restriction === "cantBeforeToday" && inputDate < today) {
           err = "No se permiten fechas pasadas";
         } else if (restriction === "betweenManufactureAndToday") {
@@ -142,6 +155,7 @@ export function ValidateValues({
         }
         // ✅ Nueva validación: training_validity > training_end_date
         else if (
+          allValues &&
           allValues["training_end_date"] &&
           allValues["training_validity"] === value
         ) {

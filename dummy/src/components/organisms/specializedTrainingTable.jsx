@@ -220,7 +220,12 @@ const SpecializedTrainingTable = ({
                                 }
                               }}
                               restriction={f.restriction}
-                              formValues={editData}
+                              formValues={{
+                                ...editData,
+                                originalData: data[0], // 👈 asegúrate de pasar el objeto (no el array)
+                                isEditing: Boolean(editData),
+                              }}
+
                             />
 
                           ) : (
