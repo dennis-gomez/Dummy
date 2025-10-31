@@ -161,7 +161,7 @@ const profileSection = ({
             <Box
               sx={{
                 width: "100%", // ocupa todo el ancho disponible
-                maxWidth: 1400, // opcional: límite superior
+                maxWidth: 1500, // opcional: límite superior
                 margin: "3px auto", // centrado horizontal
                 borderRadius: 2,
               }}

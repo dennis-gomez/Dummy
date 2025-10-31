@@ -8,11 +8,10 @@ import {
   getAllGuarantees,
   getGuaranteeById,
   getGuaranteesResume,
-  updateGuarantee
+  updateGuarantee,
 } from "../services/guaranteeService";
 
 export const useGuarantees = () => {
-
   const STATUS_OPTIONS = [
     { label: "Todas", value: "Todas" },
     { label: "Activa", value: 1 },
@@ -41,22 +40,31 @@ export const useGuarantees = () => {
   const [resumeData, setResumeData] = useState([]);
   const [isCreatingGuarantee, setIsCreatingGuarantee] = useState(false);
   const [sortOrder, setSortOrder] = useState(""); // "asc" o "desc"
-  
+
   const [totalPages, setTotalPages] = useState(1); // Estado para total de páginas
   const [currentPage, setCurrentPage] = useState(1); // Estado para página actual
 
-const handleSortByExpirationDate = (searchFeature,searchText,currentPage,limit=5,options,order) => {
-
-if (options==1) {
-  // actualizar el estado para render
-  fetchGuarantees(currentPage, limit, searchFeature, searchText, order); // usar el nuevo valor
-  console.log("Ordenado por fecha de expiración:", order);
-} else {
-  handleSearchGuarantees(searchFeature, searchText, currentPage, limit, order); // usar el nuevo valor
-}
-};
-
-
+  const handleSortByExpirationDate = (
+    searchFeature,
+    searchText,
+    currentPage,
+    limit = 5,
+    options,
+    order
+  ) => {
+    if (options == 1) {
+      // actualizar el estado para render
+      fetchGuarantees(currentPage, limit, searchFeature, searchText, order); // usar el nuevo valor
+    } else {
+      handleSearchGuarantees(
+        searchFeature,
+        searchText,
+        currentPage,
+        limit,
+        order
+      ); // usar el nuevo valor
+    }
+  };
 
   const resumeFields = [
     { name: "entidad", label: "Entidad" },
@@ -70,204 +78,376 @@ if (options==1) {
   ];
 
   const fields = [
-    { name: "cod_guarantee", label: "Código", type: "text", editable: false, grid: 4, width: 200 },
+    {
+      name: "cod_guarantee",
+      label: "Código",
+      type: "text",
+      editable: false,
+      grid: 4,
+      width: 200,
+    },
 
-{ name: "guarantee_entity_item_code", placeholder: "Entidad", label: "Entidad", type: "select", editable: true, grid: 4, width: 150, options: entityItems },
-{ name: "guarantee_applicant_item_code", placeholder: "Solicitante", label: "Solicitante", type: "select", editable: true, grid: 4, width: 150, options: applicantItems },
-{ name: "guarantee_number", placeholder: "Número", label: "Número", type: "text", editable: true, grid: 4, width: 225 },
-{ name: "guarantee_type", placeholder: "Tipo", label: "Tipo", type: "text", editable: true, grid: 4, width: 225 },
+    {
+      name: "guarantee_entity_item_code",
+      placeholder: "Entidad",
+      label: "Entidad",
+      type: "select",
+      editable: true,
+      grid: 4,
+      width: 150,
+      options: entityItems,
+    },
+    {
+      name: "guarantee_applicant_item_code",
+      placeholder: "Solicitante",
+      label: "Solicitante",
+      type: "select",
+      editable: true,
+      grid: 4,
+      width: 150,
+      options: applicantItems,
+    },
+    {
+      name: "guarantee_number",
+      placeholder: "Número",
+      label: "Número",
+      type: "text",
+      editable: true,
+      grid: 4,
+      width: 225,
+    },
+    {
+      name: "guarantee_type",
+      placeholder: "Tipo",
+      label: "Tipo",
+      type: "text",
+      editable: true,
+      grid: 4,
+      width: 225,
+    },
 
+    {
+      name: "guarantee_issue_date",
+      placeholder: "Fecha de Emisión",
+      label: "Fecha de Emisión",
+      type: "date",
+      editable: true,
+      restriction: "cantAfterToday",
+      grid: 4,
+      width: 150,
+    },
+    {
+      name: "guarantee_expiration_date",
+      placeholder: "Fecha de Expiración",
+      label: "Fecha de Expiración",
+      type: "date",
+      editable: true,
+      grid: 4,
+      width: 150,
+      restriction: "cantBeforeToday",
+    },
+    {
+      name: "guarantee_procedure",
+      placeholder: "Procedimiento",
+      label: "Procedimiento",
+      type: "text",
+      editable: true,
+      grid: 4,
+      width: 225,
+    },
+    {
+      name: "guarantee_email_contact_alert",
+      placeholder: "Email de alerta",
+      label: "Email de alerta",
+      type: "email",
+      editable: true,
+      grid: 4,
+      width: 225,
+    },
 
+    {
+      name: "guarantee_currency",
+      placeholder: "Moneda",
+      label: "Moneda",
+      type: "select",
+      editable: true,
+      grid: 4,
+      width: 150,
+      options: CURRENCY_OPTIONS,
+    },
+    {
+      name: "guarantee_alert_time_item_code",
+      placeholder: "Alerta(Días)",
+      label: "Alerta(Días)",
+      type: "select",
+      editable: true,
+      grid: 4,
+      width: 150,
+      options: alertItems,
+    },
+    {
+      name: "guarantee_amount",
+      placeholder: "Monto",
+      label: "Monto",
+      type: "number",
+      editable: true,
+      grid: 4,
+      width: 225,
+    },
+    {
+      name: "guarantee_status",
+      placeholder: "Estado",
+      label: "Estado",
+      type: "select",
+      editable: true,
+      grid: 4,
+      width: 225,
+      options: STATUS_OPTIONS,
+    },
+    {
+      name: "guarantee_category",
+      placeholder: "Categoría",
+      label: "Categoría",
+      type: "select",
+      editable: true,
+      grid: 4,
+      width: 225,
+      options: CATEGORY_OPTIONS,
+    },
 
-{ name: "guarantee_issue_date", placeholder: "Fecha de Emisión", label: "Fecha de Emisión", type: "date", editable: true, restriction:"cantAfterToday", grid: 4, width: 150 },
-{ name: "guarantee_expiration_date", placeholder: "Fecha de Expiración", label: "Fecha de Expiración", type: "date", editable: true, grid: 4, width: 150 },
-{ name: "guarantee_procedure", placeholder: "Procedimiento", label: "Procedimiento", type: "text", editable: true, grid: 4, width: 225 },
-{ name: "guarantee_email_contact_alert", placeholder: "Email de alerta", label: "Email de alerta", type: "email", editable: true, grid: 4, width: 225 },
-
-
-{ name: "guarantee_currency", placeholder: "Moneda", label: "Moneda", type: "select", editable: true, grid: 4, width: 150, options: CURRENCY_OPTIONS },
-{ name: "guarantee_alert_time_item_code", placeholder: "Alerta(Días)", label: "Alerta(Días)", type: "select", editable: true, grid: 4, width: 150, options: alertItems },
-{ name: "guarantee_amount", placeholder: "Monto", label: "Monto", type: "number", editable: true, grid: 4, width: 225 },
-{ name: "guarantee_status", placeholder: "Estado", label: "Estado", type: "select", editable: true, grid: 4, width: 225, options: STATUS_OPTIONS },
-{ name: "guarantee_category", placeholder: "Categoría", label: "Categoría", type: "select", editable: true, grid: 4, width: 225, options: CATEGORY_OPTIONS },
-
-
-{ name: "guarantee_beneficiary", placeholder: "Beneficiario", label: "Beneficiario", type: "textarea", editable: true, grid: 4, width: 800 }, // 49rem ≈ 784px
- 
+    {
+      name: "guarantee_beneficiary",
+      placeholder: "Beneficiario",
+      label: "Beneficiario",
+      type: "textarea",
+      editable: true,
+      grid: 4,
+      width: 800,
+    }, // 49rem ≈ 784px
   ];
 
   // Campos buscables dinámicos
-  const entityOptionsForSelect = entityItems.map(opt => ({ name: opt.value, placeholder: opt.label }));
-  const applicantOptionsForSelect = applicantItems.map(opt => ({ name: opt.value, placeholder: opt.label }));
-  const alertOptionsForSelect = alertItems.map(opt => ({ name: opt.value, placeholder: opt.label }));
+  const entityOptionsForSelect = entityItems.map((opt) => ({
+    name: opt.value,
+    placeholder: opt.label,
+  }));
+  const applicantOptionsForSelect = applicantItems.map((opt) => ({
+    name: opt.value,
+    placeholder: opt.label,
+  }));
+  const alertOptionsForSelect = alertItems.map((opt) => ({
+    name: opt.value,
+    placeholder: opt.label,
+  }));
 
   const searchFields = fields
-    .filter(f => f.name !== "cod_guarantee" && f.name !== "guarantee_entity_service_code" && f.name !== "guarantee_entity_category_code"
-      && f.name !== "guarantee_applicant_service_code" && f.name !== "guarantee_applicant_category_code"
-      && f.name !== "guarantee_alert_time_service_code" && f.name !== "guarantee_alert_time_category_code")
-    .map(f => ({
+    .filter(
+      (f) =>
+        f.name !== "cod_guarantee" &&
+        f.name !== "guarantee_entity_service_code" &&
+        f.name !== "guarantee_entity_category_code" &&
+        f.name !== "guarantee_applicant_service_code" &&
+        f.name !== "guarantee_applicant_category_code" &&
+        f.name !== "guarantee_alert_time_service_code" &&
+        f.name !== "guarantee_alert_time_category_code"
+    )
+    .map((f) => ({
       name: f.name,
       placeholder: f.label,
       type: f.type,
-      options: f.name === "guarantee_entity_item_code" ? entityOptionsForSelect :
-               f.name === "guarantee_applicant_item_code" ? applicantOptionsForSelect :
-               f.name === "guarantee_alert_time_item_code" ? alertOptionsForSelect :
-               f.options?.map(o => ({ name: o.value, placeholder: o.label })) || []
+      options:
+        f.name === "guarantee_entity_item_code"
+          ? entityOptionsForSelect
+          : f.name === "guarantee_applicant_item_code"
+          ? applicantOptionsForSelect
+          : f.name === "guarantee_alert_time_item_code"
+          ? alertOptionsForSelect
+          : f.options?.map((o) => ({ name: o.value, placeholder: o.label })) ||
+            [],
     }));
 
   // Funciones fetch, add, edit, delete, search (igual que tu código original)
-  const fetchGuarantees = async (page = 1, limit = 5, searchFeature = "", searchText = "", sortOrder = "") => {
-  try {
-    setLoading(true);
+  const fetchGuarantees = async (
+    page = 1,
+    limit = 5,
+    searchFeature = "",
+    searchText = "",
+    sortOrder = ""
+  ) => {
+    try {
+      setLoading(true);
 
-    let resp;
+      let resp;
 
+      if (searchText && searchFeature && searchText !== "Todas") {
+        // 👇 Llama a la API de búsqueda con paginación
+        resp = await findGuarantees(
+          searchFeature,
+          searchText,
+          page,
+          limit,
+          sortOrder
+        );
+      } else {
+        // 👇 Llama al listado general con paginación
+        resp = await getAllGuarantees(page, 5, sortOrder);
+      }
 
-    if (searchText && searchFeature && searchText !== "Todas") {
-      // 👇 Llama a la API de búsqueda con paginación
-      resp = await findGuarantees(searchFeature, searchText, page, limit, sortOrder);
-    } else {
-      // 👇 Llama al listado general con paginación
-      resp = await getAllGuarantees(page, 5, sortOrder);
+      // 👇 Ajusta según lo que retorne tu backend (count, rows)
+      setGuaranteesList(resp.guarantees || []);
+      setTotalPages(resp.totalPages || 1);
+      setCurrentPage(resp.page || 1);
+    } catch (err) {
+      console.error(err);
+      setError("Error al obtener garantías");
+      ModalAlert("Error", "Error al obtener garantías", "error");
+    } finally {
+      setLoading(false);
     }
-
-    // 👇 Ajusta según lo que retorne tu backend (count, rows)
-    setGuaranteesList(resp.guarantees || []);
-    setTotalPages(resp.totalPages || 1);
-    setCurrentPage(resp.page || 1);
-
-  } catch (err) {
-    console.error(err);
-    setError("Error al obtener garantías");
-    ModalAlert("Error", "Error al obtener garantías", "error");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+  };
 
   const fetchItems = async () => {
     try {
-
-     const entity = await getItems(
-  Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
-  Number(import.meta.env.VITE_GUARANTEE_ENTITY_CATEGORY_CODE)
-);
+      const entity = await getItems(
+        Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+        Number(import.meta.env.VITE_GUARANTEE_ENTITY_CATEGORY_CODE)
+      );
       const applicant = await getItems(
-  Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
-  Number(import.meta.env.VITE_GUARANTEE_APPLICANT_CATEGORY_CODE)
-);
+        Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+        Number(import.meta.env.VITE_GUARANTEE_APPLICANT_CATEGORY_CODE)
+      );
 
       const alert = await getItems(
-  Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
-  Number(import.meta.env.VITE_GUARANTEE_ALERT_TIME_CATEGORY_CODE)
-);
-      setEntityItems(entity.map(e => ({ label: e.item_name, value: e.cod_item })));
-      setApplicantItems(applicant.map(a => ({ label: a.item_name, value: a.cod_item })));
-      setAlertItems(alert.map(a => ({ label: a.item_name, value: a.cod_item })));
+        Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
+        Number(import.meta.env.VITE_GUARANTEE_ALERT_TIME_CATEGORY_CODE)
+      );
+      setEntityItems(
+        entity.map((e) => ({ label: e.item_name, value: e.cod_item }))
+      );
+      setApplicantItems(
+        applicant.map((a) => ({ label: a.item_name, value: a.cod_item }))
+      );
+      setAlertItems(
+        alert.map((a) => ({ label: a.item_name, value: a.cod_item }))
+      );
     } catch (err) {
       ModalAlert("Error", "Error al obtener items", "error");
     }
   };
-const handleSearchGuarantees = async (feature, text, page = 1, limit = 5) => {
-  try {
-    setLoading(true);
+  const handleSearchGuarantees = async (feature, text, page = 1, limit = 5) => {
+    try {
+      setLoading(true);
 
-    const searchText = String(text || "").trim();
+      const searchText = String(text || "").trim();
 
-    // 👇 Si no hay texto, vuelve al fetch general
-    if (!searchText) {
-      await fetchGuarantees(page, limit,sortOrder);
-      return;
+      // 👇 Si no hay texto, vuelve al fetch general
+      if (!searchText) {
+        await fetchGuarantees(page, limit, sortOrder);
+        return;
+      }
+
+      // 👇 Llama a la API de búsqueda con paginación
+      const resp = await findGuarantees(
+        feature,
+        searchText,
+        page,
+        limit,
+        sortOrder
+      );
+
+      //Manejo del formato según tu backend
+      const guarantees = resp.guarantees || resp.rows || [];
+      const totalPages = resp.totalPages || 1;
+
+      if (guarantees.length === 0) {
+        ModalAlert(
+          "Información",
+          "No se encontraron garantías con ese término",
+          "info"
+        );
+
+        return;
+      }
+
+      setGuaranteesList(guarantees);
+      setTotalPages(totalPages);
+      setCurrentPage(resp.page || page);
+    } catch (err) {
+      console.error(err);
+      ModalAlert("Error", "Error al buscar garantías", "error");
+    } finally {
+      setLoading(false);
     }
-
-    // 👇 Llama a la API de búsqueda con paginación
-    const resp = await findGuarantees(feature, searchText, page, limit, sortOrder);
-
-    //Manejo del formato según tu backend
-    const guarantees = resp.guarantees || resp.rows || [];
-    const totalPages = resp.totalPages || 1;
-
-    console.log("longitud de garantías encontradas:", guarantees.length);
-
-    if (guarantees.length === 0) {
-      ModalAlert("Información", "No se encontraron garantías con ese término", "info");
-    
-      return;
-    }
-
-    console.log("llego hasta aqui")
-    setGuaranteesList(guarantees);
-    setTotalPages(totalPages);
-    setCurrentPage(resp.page || page);
-
-  } catch (err) {
-    console.error(err);
-    ModalAlert("Error", "Error al buscar garantías", "error");
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-const handleAddGuarantee = async (formData) => {
-  const { cod_guarantee, guarantee_status, ...rest } = formData; // quitamos si acaso vienen del formulario
-  const dataToSend = {
-    ...rest,
-
-    // Garantías → todos los service_code = 7
-    guarantee_entity_service_code: Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
-    guarantee_applicant_service_code: Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
-    guarantee_alert_time_service_code: Number(import.meta.env.VITE_GUARANTEE_SERVICE_CODE),
-
-    // Categorías
-    guarantee_entity_category_code: Number(import.meta.env.VITE_GUARANTEE_ENTITY_CATEGORY_CODE),
-    guarantee_applicant_category_code: Number(import.meta.env.VITE_GUARANTEE_APPLICANT_CATEGORY_CODE),
-    guarantee_alert_time_category_code: Number(import.meta.env.VITE_GUARANTEE_ALERT_TIME_CATEGORY_CODE),
-
-    // Flags
-    guarantee_is_notified: 0,
   };
 
-  try {
-    await addGuarantee(dataToSend);
-    ModalAlert("Éxito", "Garantía agregada exitosamente", "success");
-    setIsCreatingGuarantee(false);
-    fetchGuarantees();
-  } catch (err) {
-    ModalAlert("Error", "Error al agregar garantía", "error");
-  }
-};
+  const handleAddGuarantee = async (formData) => {
+    const { cod_guarantee, guarantee_status, ...rest } = formData; // quitamos si acaso vienen del formulario
+    const dataToSend = {
+      ...rest,
 
+      // Garantías → todos los service_code = 7
+      guarantee_entity_service_code: Number(
+        import.meta.env.VITE_GUARANTEE_SERVICE_CODE
+      ),
+      guarantee_applicant_service_code: Number(
+        import.meta.env.VITE_GUARANTEE_SERVICE_CODE
+      ),
+      guarantee_alert_time_service_code: Number(
+        import.meta.env.VITE_GUARANTEE_SERVICE_CODE
+      ),
+
+      // Categorías
+      guarantee_entity_category_code: Number(
+        import.meta.env.VITE_GUARANTEE_ENTITY_CATEGORY_CODE
+      ),
+      guarantee_applicant_category_code: Number(
+        import.meta.env.VITE_GUARANTEE_APPLICANT_CATEGORY_CODE
+      ),
+      guarantee_alert_time_category_code: Number(
+        import.meta.env.VITE_GUARANTEE_ALERT_TIME_CATEGORY_CODE
+      ),
+
+      // Flags
+      guarantee_is_notified: 0,
+    };
+
+    try {
+      await addGuarantee(dataToSend);
+      ModalAlert("Éxito", "Garantía agregada exitosamente", "success");
+      setIsCreatingGuarantee(false);
+      fetchGuarantees();
+    } catch (err) {
+      ModalAlert("Error", "Error al agregar garantía", "error");
+    }
+  };
 
   const handleEditGuarantee = async (id, formData) => {
     try {
-
-    formData = { ...formData, guarantee_is_notified: 0 }; // reset notificación al editar
-
+      formData = { ...formData, guarantee_is_notified: 0 }; // reset notificación al editar
 
       const resp = await updateGuarantee(id, formData);
       ModalAlert("Éxito", "Garantía actualizada exitosamente", "success");
       fetchGuarantees();
     } catch (err) {
-      const message = err.response?.data?.message || "Error al actualizar garantía";
+      const message =
+        err.response?.data?.message || "Error al actualizar garantía";
       ModalAlert("Error", message, "error");
     }
   };
 
-  const handleDeleteGuarantee = async (id,status) => {
+  const handleDeleteGuarantee = async (id, status) => {
     try {
-      const resp = await deleteGuarantee(id,status);
-      if(status==4){
-      ModalAlert("Éxito", "Garantía Desactivada exitosamente", "success");
+      const resp = await deleteGuarantee(id, status);
+      if (status == 4) {
+        ModalAlert("Éxito", "Garantía Desactivada exitosamente", "success");
       } else {
-      ModalAlert("Éxito", "Garantía reactivada exitosamente", "success");
+        ModalAlert("Éxito", "Garantía reactivada exitosamente", "success");
       }
-      
+
       fetchGuarantees();
     } catch (err) {
-      const message = err.response?.data?.message || "Error al eliminar garantía";
+      const message =
+        err.response?.data?.message || "Error al eliminar garantía";
       ModalAlert("Error", message, "error");
     }
   };
@@ -297,7 +477,7 @@ const handleAddGuarantee = async (formData) => {
     loading,
     error,
     fields,
-    searchFields,          // <- exportamos campos buscables
+    searchFields, // <- exportamos campos buscables
     fetchGuarantees,
     handleAddGuarantee,
     handleEditGuarantee,
@@ -319,6 +499,6 @@ const handleAddGuarantee = async (formData) => {
     setIsCreatingGuarantee,
     totalPages,
     currentPage,
-    handleSortByExpirationDate
+    handleSortByExpirationDate,
   };
 };

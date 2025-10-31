@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { addAcademicTrainings, getAcademicTrainings, updateAcademicTrainings } from "../services/academicTrainingService"
+import { addAcademicTrainings, getAcademicTrainings, updateAcademicTrainings, getAcademicTrainingPDF } from "../services/academicTrainingService"
 import ModalAlert from "../components/molecules/modalAlert";
 import Swal from "sweetalert2";
 import { getItems } from "../services/itemService";
@@ -26,9 +26,7 @@ export const useAcademicTraining = ( personCod ) => {
         { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 390, 
             validations: [
                 (value, allValues) => {
-                    console.log("intento", allValues.academic_training_end_date)
-                    if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) {
-                        
+                    if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) { 
                         return "La fecha de inicio debe ser menor a la fecha final.";
                     }
                     if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
@@ -67,6 +65,7 @@ export const useAcademicTraining = ( personCod ) => {
         {
             name: "academic_training_pdf_path",
             label: "Título (PDF)",
+            restriction: "filePath",
             type: "file",
             grid: 6,
             placeholder: "Subir PDF",
@@ -85,9 +84,7 @@ export const useAcademicTraining = ( personCod ) => {
         { name: "academic_training_start_date", placeholder: "Fecha Inico", type: "date", restriction: "cantAfterToday", width: 190, 
             validations: [
                 (value, allValues) => {
-                    console.log("intento", allValues.academic_training_end_date)
                     if (value && allValues.academic_training_end_date && new Date(value) > new Date(allValues.academic_training_end_date)) {
-                        
                         return "La fecha de inicio debe ser menor a la fecha final.";
                     }
                     if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
@@ -101,10 +98,10 @@ export const useAcademicTraining = ( personCod ) => {
             validations: [
                 (value, allValues) => {
                     if (value && allValues.academic_training_start_date && new Date(value) < new Date(allValues.academic_training_start_date)) {
-                    return "La fecha final debe ser mayor a la fecha de inicio.";
+                        return "La fecha final debe ser mayor a la fecha de inicio.";
                     }
                     if (value && allValues.academic_training_date_obtaining && new Date(value) > new Date(allValues.academic_training_date_obtaining)) {
-                    return "La fecha final debe ser menor a la fecha de obtención.";
+                        return "La fecha final debe ser menor a la fecha de obtención.";
                     }
                     return null;
                 }
@@ -126,6 +123,7 @@ export const useAcademicTraining = ( personCod ) => {
         {
             name: "academic_training_pdf_path",
             label: "Título (PDF)",
+            restriction: "filePath",
             type: "file",
             grid: 6,
             required: false,
@@ -178,9 +176,10 @@ export const useAcademicTraining = ( personCod ) => {
                 personal_cod: Number(personCod.personCod),
                 academic_training_title_service_code: Number(import.meta.env.VITE_ROLE_SERVICE_CODE), 
                 academic_training_title_category_code: Number(import.meta.env.VITE_ACADEMIC_GRADE_CATEGORY_CODE),
-                academic_training_date_obtaining: formData.academic_training_date_obtaining === "" ? null : formData.academic_training_date_obtaining
+                academic_training_date_obtaining: formData.academic_training_date_obtaining === "" ? null : formData.academic_training_date_obtaining, 
+                academic_training_pdf_path: formData.academic_training_pdf_path,
             };
-
+            
             const response = await addAcademicTrainings(dataToSend);
 
             if (response.status === 201) {
@@ -189,6 +188,7 @@ export const useAcademicTraining = ( personCod ) => {
                 setShowFormAcademicTraining(false);
                 setErrorAcademicTraining(null);
             }
+            
         } catch (err) {
             const msg = err.response?.data?.message || "Error al agregar formacion académica.";
             Swal.fire("Error", msg, "error");
@@ -233,6 +233,16 @@ export const useAcademicTraining = ( personCod ) => {
         }
     };
 
+    const openPDF = async (relativePath) => {
+        try {
+            const pdfBlob = await getAcademicTrainingPDF(relativePath);
+            const pdfUrl = URL.createObjectURL(pdfBlob); // ya es un blob válido
+            window.open(pdfUrl, "_blank"); // abre en nueva pestaña
+        } catch (error) {
+        console.error("Error al abrir el PDF:", error);
+        }
+    };
+
     useEffect(() => {
         fetchTitles();
         fetchAcademicTrainings(personCod.personCod);
@@ -254,5 +264,6 @@ export const useAcademicTraining = ( personCod ) => {
 
         handleSubmitAcademicTraining, 
         handleEditAcademicTraining, 
+        openPDF, 
     }
 }

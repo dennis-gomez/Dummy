@@ -31,7 +31,6 @@ export const useProfile = () => {
     if (value) {
       setSelectedProfile(profile);
       fetchedProfileSpecializedTraining(profile.profile_cod, 1);
-      console.log("Perfil seleccionado:", profile);
     } else {
       setSelectedProfile(null);
     }
@@ -60,7 +59,6 @@ export const useProfile = () => {
       }));
 
       setAvailableRoles(formattedRoles);
-      console.log("Roles disponibles obtenidos:", formattedRoles);
     } catch (error) {
       ModalAlert(
         "Error",
@@ -103,7 +101,6 @@ export const useProfile = () => {
     try {
       const data = await getProfilesByPersonId(codPerson);
       setProfiles(data);
-      console.log("los datos son", data);
     } catch (error) {
       ModalAlert("Error", "No se pudieron cargar los perfiles.", "error");
     }
@@ -112,7 +109,6 @@ export const useProfile = () => {
   const getAllRoles = async () => {
     try {
       const items = await getItems(14, 1);
-      console.log("Roles obtenidos:", items);
       setOptionsRoles(items);
     } catch (error) {
       ModalAlert("Error", "No se pudieron cargar los roles.", "error");
@@ -173,12 +169,7 @@ export const useProfile = () => {
   const fetchedProfileSpecializedTraining = async (profileId, page = 1) => {
     try {
       setLoading(true);
-      console.log(
-        "Fetching specialized training for profile ID:",
-        profileId,
-        "page:",
-        page
-      );
+
       const data = await getSpecializedTrainingByProfileId(profileId, page);
       setCurrentPage(page);
       setTotalPages(data.totalPages);
@@ -316,7 +307,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Nombre",
       required: true,
-      width: 250,
+      width: 220,
     },
     {
       name: "training_number",
@@ -325,7 +316,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Número",
       required: false,
-      width: 250,
+      width: 220,
     },
     {
       name: "training_institution",
@@ -334,7 +325,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Institución",
       required: false,
-      width: 250,
+      width: 220,
     },
     {
       name: "training_pdf",
@@ -343,7 +334,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Subir PDF",
       required: false,
-      width: 250,
+      width: 220,
       restriction: "filePath",
       accept: ".pdf",
     },
@@ -354,7 +345,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Fecha de Inicio",
       required: true,
-      width: 250,
+      width: 220,
       restriction: "cantAfterToday",
     },
     {
@@ -364,8 +355,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Fecha de Finalización",
       required: true,
-      width: 250,
-      restriction: "cantBeforeToday",
+      width: 220,
     },
     {
       name: "training_hours",
@@ -374,7 +364,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Horas",
       required: true,
-      width: 250,
+      width: 220,
     },
     {
       name: "training_validity",
@@ -383,8 +373,7 @@ export const useProfile = () => {
       grid: 6,
       placeholder: "Validez",
       required: false,
-      width: 250,
-      restriction: "cantBeforeToday",
+      width: 220,
     },
     {
       name: "training_description",

@@ -3,8 +3,14 @@ import { Box, Grid, CircularProgress, TextField, Autocomplete } from "@mui/mater
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedDate from "../atoms/inputValidatedDate";
+import { parseDateWithoutTimezone } from "../../utils/generalUtilities";
 
-const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
+const FormAssociationProject = ({ 
+  associations, 
+  projects, 
+  rolesTypes, 
+  onSubmit 
+}) => {
   const [formData, setFormData] = useState({
     cod_project: "",
     project_association_role_item_code: "",
@@ -17,12 +23,13 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
   const [inputValue, setInputValue] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [projectError, setProjectError] = useState("");
+  const hasErrors = !!projectError || Object.values(errors).some((err) => !!err);
 
-  // Simula carga de proyectos (puedes omitir si los recibes directo del prop)
   useEffect(() => {
     setLoading(true);
     setTimeout(() => setLoading(false), 300);
-  }, []);
+  }, []); 
 
   const handleProjectSelect = (event, newValue) => {
     setSelectedProject(newValue);
@@ -30,7 +37,23 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
       ...prev,
       cod_project: newValue?.cod_project || "",
       project_association_technology_details: newValue?.project_technologies || "",
+      project_association_start_date_participation: newValue?.project_start_date, 
+      project_association_end_date_participation: newValue?.project_end_date, 
     }));
+
+    //validar el proyecto repetido
+    if (newValue) {
+      const alreadyAssociated = associations.some(
+        (assoc) => assoc.cod_project === newValue.cod_project
+      );
+      if (alreadyAssociated) {
+        setProjectError("Este proyecto ya está asociado al perfil.");
+      } else {
+        setProjectError("");
+      }
+    } else {
+      setProjectError("");
+    }
   };
 
   const handleChange = (e) => {
@@ -44,6 +67,8 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (projectError) return;
+
     const hasErrors = Object.values(errors).some((err) => !!err);
     if (!hasErrors) onSubmit(formData);
   };
@@ -71,6 +96,8 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
                   label="Buscar Proyecto"
                   placeholder="Seleccione un Proyecto"
                   variant="outlined"
+                  error={!!projectError}
+                  helperText={projectError || " "}
                   InputProps={{
                     ...params.InputProps,
                     endAdornment: (
@@ -80,8 +107,20 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
                       </>
                     ),
                   }}
-                  sx={{ "& .MuiInputBase-root": { backgroundColor: "#fff !important" }, width: 850 }}
-                  required
+                  sx={{
+                    "& .MuiInputBase-root": { backgroundColor: "#fff !important" },
+                    "& .MuiFormHelperText-root": {
+                      color: "#2563eb", 
+                      fontWeight: 500,
+                    },
+                    "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#2563eb", 
+                    },
+                    "& .MuiFormLabel-root.Mui-error": {
+                      color: "#2563eb", 
+                    },
+                    width: 850,
+                  }}
                 />
               )}
             />
@@ -123,7 +162,7 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
             </>
           )}
 
-          {/* Resto de campos editables */}
+          {/* Campos editables */}
           <Grid item xs={4}>
             <InputValidated
               name="project_association_role_item_code"
@@ -148,8 +187,17 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
               restriction={"cantAfterToday"}
               validations={[
                 (value) => {
-                  if (value && formData.project_association_end_date_participation && new Date(value) > new Date(formData.project_association_end_date_participation)) {
+                  const selectedDate = parseDateWithoutTimezone(value);
+                  const endParticipation= parseDateWithoutTimezone(formData.project_association_end_date_participation);
+                  const startProject = parseDateWithoutTimezone(selectedProject.project_start_date);
+                  const endProject = parseDateWithoutTimezone(selectedProject.project_end_date);
+                  
+                  if (selectedDate && formData.project_association_end_date_participation && selectedDate > endParticipation) {
                     return "La fecha de inicio debe ser menor a la fecha final.";
+                  }
+                  
+                  if (selectedDate < startProject || selectedDate > endProject) {
+                    return "La fecha de participación debe estar dentro del rango del proyecto.";
                   }
                   return null;
                 }
@@ -169,8 +217,16 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
               restriction={"cantAfterToday"}
               validations={[
                 (value) => {
-                  if (value && formData.project_association_start_date_participation && new Date(value) < new Date(formData.project_association_start_date_participation)) {
+                  const selectedDate = parseDateWithoutTimezone(value);
+                  const startParticipation= parseDateWithoutTimezone(formData.project_association_start_date_participation);
+                  const startProject = parseDateWithoutTimezone(selectedProject.project_start_date);
+                  const endProject = parseDateWithoutTimezone(selectedProject.project_end_date);
+
+                  if (selectedDate && formData.project_association_start_date_participation && selectedDate < startParticipation) {
                     return "La fecha final debe ser mayor a la fecha de inicio.";
+                  }
+                  if (selectedDate < startProject || selectedDate > endProject) {
+                    return "La fecha de participación debe estar dentro del rango del proyecto.";
                   }
                   return null;
                 }
@@ -195,7 +251,12 @@ const FormAssociationProject = ({ projects, rolesTypes, onSubmit }) => {
         </Grid>
 
         <Box sx={{ display: "flex", justifyContent: "center", mt: 3, gap: 2 }}>
-          <Button text="Guardar Proyecto" onClick={handleSubmit} type="submit" />
+          <Button 
+            text="Guardar Proyecto" 
+            onClick={handleSubmit} 
+            type="submit" 
+            disabled={hasErrors || loading} 
+          />
         </Box>
       </form>
     </Box>

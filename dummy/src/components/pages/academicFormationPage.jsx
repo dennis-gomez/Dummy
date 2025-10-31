@@ -23,6 +23,8 @@ const AcademicFormationPage = (
 
         handleSubmitAcademicTraining, 
         handleEditAcademicTraining, 
+
+        openPDF, 
     } = useAcademicTraining(personCod);
 
     return(
@@ -58,6 +60,7 @@ const AcademicFormationPage = (
                     setShowFormAcademicTraining(!showFormAcademicTraining);
                     setErrorAcademicTraining(null);
                 }}
+                openPDF={openPDF}
             />
         </div>
     );

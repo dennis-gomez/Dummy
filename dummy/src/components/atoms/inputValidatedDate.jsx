@@ -17,30 +17,31 @@ function InputValidatedDate({
 }) {
     const [error, setError] = useState("");
 
-const runValidation = (val) => {
-  const normalizedVal = val || "";
-  const err = ValidateValues({
-    type: "date",
-    value: normalizedVal,
-    required,
-    validations,
-    restriction,
-    allValues: formValues,
-  });
+    const runValidation = (val) => {
+        const normalizedVal = val || "";
+        const err = ValidateValues({
+            type: "date",
+            value: normalizedVal,
+            required,
+            validations,
+            restriction,
+            allValues: { ...formValues, fieldName: name },
+        });
 
-  // Solo actualiza si cambió
-  setError((prev) => {
-    if (prev === err) return prev;
-    return err;
-  });
 
-  if (onError) {
-    // Solo llama si cambió
-    if (error !== err) onError(name, err);
-  }
+        // Solo actualiza si cambió
+        setError((prev) => {
+            if (prev === err) return prev;
+            return err;
+        });
 
-  return err;
-};
+        if (onError) {
+            // Solo llama si cambió
+            if (error !== err) onError(name, err);
+        }
+
+        return err;
+    };
 
 
     const handleChange = (e) => {
@@ -49,10 +50,10 @@ const runValidation = (val) => {
         if (onChange) onChange(e);
     };
 
-useEffect(() => {
-  runValidation(value);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [value]);
+    useEffect(() => {
+        runValidation(value);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [value]);
 
 
     // Calcular minDate y maxDate según la restricción

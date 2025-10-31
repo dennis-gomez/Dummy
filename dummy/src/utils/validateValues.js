@@ -126,8 +126,18 @@ export function ValidateValues({
         err = "Fecha inválida";
       } else {
         // Restricción: no permitir fechas futuras
-        if (restriction === "cantAfterToday" && inputDate > today) {
-          err = "No se permiten fechas futuras";
+        if (restriction === "cantBeforeToday" && inputDate < today) {
+          const fieldName = allValues?.fieldName;
+          const originalValue = fieldName
+            ? allValues?.originalData?.[fieldName]
+            : null;
+          const isEditing = allValues?.isEditing || false;
+
+          if (isEditing && originalValue === value) {
+            err = ""; // No marcar error si está editando y la fecha no cambió
+          } else {
+            err = "No se permiten fechas pasadas";
+          }
         } else if (restriction === "cantBeforeToday" && inputDate < today) {
           err = "No se permiten fechas pasadas";
         } else if (restriction === "betweenManufactureAndToday") {
@@ -142,12 +152,24 @@ export function ValidateValues({
         }
         // ✅ Nueva validación: training_validity > training_end_date
         else if (
+          allValues &&
           allValues["training_end_date"] &&
           allValues["training_validity"] === value
         ) {
           const endDate = new Date(allValues["training_end_date"]);
+
           if (inputDate <= endDate) {
             err = "La validez debe ser posterior a la fecha de finalización";
+          }
+        } else if (
+          allValues &&
+          allValues["training_start_date"] &&
+          allValues["training_end_date"] === value
+        ) {
+          const startDate = new Date(allValues["training_start_date"]);
+          if (inputDate <= startDate) {
+            err =
+              "La fecha de finalización debe ser posterior a la fecha de inicio";
           }
         }
         // Restricción por defecto: solo permitir fechas futuras
@@ -171,7 +193,6 @@ export function ValidateValues({
       }
     }
     if (value && restriction === "filePath") {
-      console.log("Validando ruta de archivo:", value);
       if (Array.isArray(value)) {
         // Si es un arreglo, revisamos que todos los archivos sean PDF
         const invalidFile = value.find(
@@ -182,11 +203,18 @@ export function ValidateValues({
         }
       } else if (value) {
         // Si es un solo archivo
-        if (!value.toLowerCase().endsWith(".pdf")) {
-          err = "La ruta del archivo debe ser un PDF.";
+        if (value instanceof File) {
+          if (value.type !== "application/pdf") {
+            err = "Solo se permiten archivos PDF.";
+          }
+        } else if (typeof value === "string") {
+          if (!value.toLowerCase().endsWith(".pdf")) {
+            err = "La ruta del archivo debe terminar en .pdf";
+          }
+        } else {
+          err = "No se ha proporcionado un archivo válido.";
         }
       } else {
-        // Si value no tiene formato esperado
         err = "No se ha proporcionado un archivo válido.";
       }
     }

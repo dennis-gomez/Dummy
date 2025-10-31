@@ -7,7 +7,9 @@ import Swal from "sweetalert2";
 import Button from "../atoms/button";
 import { CircularProgress } from "@mui/material";
 import InputValidated from "../atoms/inputValidated";
+import InputValidatedFile from "../atoms/inputValidatedFile"; 
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 
 const TableAcademicTrainning = ({
     academicTrainings, 
@@ -22,10 +24,13 @@ const TableAcademicTrainning = ({
     isLoading: isLoadingAcademicTraining, 
 
     handleEdit: handleEditAcademicTraining, 
+
+    openPDF, 
 }) => {
     const [editingId, setEditingId] = useState(null);
     const [editData, setEditData] = useState({});
     const [editErrors, setEditErrors] = useState({});
+    const [isUnique, setIsUnique] = useState(true);
 
     /*
     * cambiar inputs a modo edicion
@@ -126,26 +131,47 @@ const TableAcademicTrainning = ({
                                     return (
                                         <td key={f.name} className="py-4 px-6 text-center">
                                         {isEditing && fieldEdit ? (
-                                            <InputValidated
-                                            name={fieldEdit.name}
-                                            type={fieldEdit.type || "text"}
-                                            value={editData[fieldEdit.name] || ""}
-                                            placeholder={fieldEdit.placeholder}
-                                            options={fieldEdit.options || []}
-                                            restriction={fieldEdit.restriction}
-                                            validations={fieldEdit.validations}
-                                            required={fieldEdit.required}
-                                            onError={handleError}
-                                            currentId={editingId}
-                                            onChange={(e) =>
-                                                setEditData({ ...editData, [fieldEdit.name]: e.target.value })
-                                            }
-                                            sx={{
-                                                "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
-                                                ...(fieldEdit.width ? { width: fieldEdit.width } : {}),
-                                            }}
-                                            formValues={editData}
-                                            />
+
+                                            fieldEdit.type === "file" ? (
+                                                <InputValidatedFile
+                                                    name={fieldEdit.name}
+                                                    value={editData["academic_training_pdf_path"] || null}
+                                                    setIsUnique={setIsUnique}
+                                                    restriction={fieldEdit.restriction}
+                                                    currentId={editingId}
+                                                    onError={handleError}
+                                                    onChange={file => {
+                                                        setEditData({ ...editData, [f.name]: file.target.files[0] });
+                                                        setEditErrors(prev => ({ ...prev, [f.name]: !file ? "Campo obligatorio" : "" }));
+                                                    }}
+                                                    sx={{
+                                                        "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                                        ...(fieldEdit.width ? { width: fieldEdit.width } : {}),
+                                                    }}
+                                                />
+                                            ):( 
+                                                <InputValidated
+                                                    name={fieldEdit.name}
+                                                    type={fieldEdit.type || "text"}
+                                                    value={editData[fieldEdit.name] || null}
+                                                    placeholder={fieldEdit.placeholder}
+                                                    options={fieldEdit.options || []}
+                                                    setIsUnique={setIsUnique}
+                                                    restriction={fieldEdit.restriction}
+                                                    validations={fieldEdit.validations}
+                                                    required={fieldEdit.required}
+                                                    onError={handleError}
+                                                    currentId={editingId}
+                                                    onChange={(e) =>
+                                                        setEditData({ ...editData, [fieldEdit.name]: e.target.value })
+                                                    }
+                                                    sx={{
+                                                        "& .MuiInputBase-input": { backgroundColor: "#fff !important" },
+                                                        ...(fieldEdit.width ? { width: fieldEdit.width } : {}),
+                                                    }}
+                                                    formValues={editData}
+                                                />
+                                            )
                                         ) : (
                                             f.name === "academic_training_title_item_code" ? 
                                                 titlesTypes.find(t => t.value === per.academic_training_title_item_code)?.label || per.academic_training_title_item_code: 
@@ -155,7 +181,19 @@ const TableAcademicTrainning = ({
                                                 formatDateDDMMYYYY(per[f.name]) :
                                             f.name === "academic_training_date_obtaining" ?
                                                 formatDateDDMMYYYY(per[f.name]) :
-                                            per[f.name]
+                                            f.name === "academic_training_pdf_path" ? (
+                                                per.academic_training_pdf_path && (
+                                                    <button
+                                                        onClick={() => openPDF(per.academic_training_pdf_path)}
+                                                        className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-blue-50 transition"
+                                                        title="Ver PDF"
+                                                    >
+                                                        <LibraryBooksIcon />
+                                                    </button>
+                                                )
+                                            ): (
+                                                per[f.name]
+                                            )
                                         )}
                                         </td>
                                     );
@@ -165,7 +203,7 @@ const TableAcademicTrainning = ({
                                         <>
                                             <button
                                                 onClick={handleSaveEdit}
-                                                disabled={Object.values(editErrors).some(err => err)}
+                                                disabled={Object.values(editErrors).some(err => err) || !isUnique}
                                                 className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`} >
                                                 <SaveIcon className="mr-1" fontSize="small" /> Guardar
                                             </button>

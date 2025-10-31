@@ -40,20 +40,20 @@ function PersonalFormation({ person, handleCloseFormation }) {
 
                 <Grid item xs={12} md="auto">
                     <Typography variant="body2">
-                        <strong>País de residencia:</strong> {person.personal_country_of_residence}
+                        <strong>País de Residencia:</strong> {person.personal_country_of_residence}
                     </Typography>
                 </Grid>
 
                 <Grid item xs={12} md="auto">
                     <Typography variant="body2">
-                        <strong>Fecha de nacimiento:</strong>{" "}
+                        <strong>Fecha de Nacimiento:</strong>{" "}
                         {new Date(person.personal_birth_date).toLocaleDateString("es-CR")}
                     </Typography>
                 </Grid>
 
                 <Grid item xs={12} md="auto">
                     <Typography variant="body2">
-                        <strong>Firma digital:</strong>{" "}
+                        <strong>Firma Digital:</strong>{" "}
                         {person.personal_has_digital_signature ? "Sí" : "No"}
                     </Typography>
                 </Grid>
@@ -73,8 +73,6 @@ function PersonalFormation({ person, handleCloseFormation }) {
             <ProfilePage
                 personCod={person.personal_cod}
             />
-
-            {/*  Aqui ingresa los perfiles y componentes de idiomas y etc pa  */}
         </div>
     );
 }

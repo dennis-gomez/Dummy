@@ -9,12 +9,14 @@ const ResumeTableLicitationPage = () => {
     profileSummaries,
 
     fetchProfileSummary,
+    fetchFilteredPersonalSummary,
 
     loading,
     page,
     totalPages,
     setPage,
     personFields,
+    contextOptions,
 
     selectedPerson,
     selectedProfile,
@@ -26,7 +28,6 @@ const ResumeTableLicitationPage = () => {
 
   // Estado para expandir filas (mostrar perfiles, por ejemplo)
   const [expandedRows, setExpandedRows] = useState({});
-  const [profilesByPerson, setProfilesByPerson] = useState({});
 
   // 🔽 Manejo de expandir/cerrar fila
   const handleExpand = (personCod) => {
@@ -46,6 +47,7 @@ const ResumeTableLicitationPage = () => {
   return (
     <ResumeTableLicitationTable
       fields={personFields}
+      contextOptions={contextOptions}
       data={personal}
       isLoading={loading}
       profileSummaries={profileSummaries}
@@ -59,6 +61,7 @@ const ResumeTableLicitationPage = () => {
       setSelectedProfile={setSelectedProfile}
 
       fetchProfileSummary={fetchProfileSummary}
+      fetchFilteredPersonalSummary={fetchFilteredPersonalSummary}
 
       page={page}
       totalPages={totalPages}
