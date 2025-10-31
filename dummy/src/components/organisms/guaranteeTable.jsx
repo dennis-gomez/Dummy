@@ -123,7 +123,6 @@ const GuaranteesTable = ({
           ? new Date(rawValue).toISOString().split("T")[0]
           : "";
 
-      console.log("la data es:", data)
 
       return (
         <InputValidatedDate

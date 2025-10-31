@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCallback } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -62,9 +63,6 @@ const SpecializedTrainingTable = ({
     if (onStartEdit) onStartEdit();
 
 
-    console.log("SpecializedTrainingTable: handleEditClick called with row:", row
-    );
-
     const id = row[fields[0].name];
     setEditingId(id);
     if (setEditingIdProp) setEditingIdProp(id); // levantar al padre si es necesario
@@ -88,6 +86,13 @@ const SpecializedTrainingTable = ({
     setEditData({});
     setEditErrors({});
   };
+
+  const handleError = useCallback((name, errorMessage) => {
+    setEditErrors((prev) => {
+      if (prev[name] === errorMessage) return prev;
+      return { ...prev, [name]: errorMessage };
+    });
+  }, []);
 
 
   return (
@@ -129,24 +134,24 @@ const SpecializedTrainingTable = ({
       {isLoading ? (
         <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
           <CircularProgress size={24} />
-          <span>Cargando {tableName}...</span>
+          <span>Cargando formaciones académicas...</span>
         </div>
       ) : data.length === 0 ? (
         <div className="text-center py-8 text-gray-500 italic bg-gray-50 rounded-lg">
-          No hay {tableName} registrados
+          No hay {tableName} Registradas
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl shadow-lg">
           <table className="min-w-full table-auto">
             <thead>
               <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl w-12">#</th>
+                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl w-12">#</th>
                 {fields.slice(1).map(f => (
-                  <th key={f.name} className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider" style={{ minWidth: "150px" }}>
+                  <th key={f.name} className="py-4 px-6 text-center font-semibold text-md tracking-wider" style={{ minWidth: "150px" }}>
                     {f.label}
                   </th>
                 ))}
-                <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tr-xl w-32">Acciones</th>
+                <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tr-xl w-32">Acciones</th>
               </tr>
             </thead>
 
@@ -185,10 +190,13 @@ const SpecializedTrainingTable = ({
                           ) : (f.type === "file" ? (
                             <InputValidatedFile
                               name={f.name}
-                              value={editData["training_pdf_path"] || null}
+                              value={editData[f.name] || null}
                               setIsUnique={setIsUnique}
                               restriction={f.restriction}
                               currentId={editingId}
+                              onError={handleError}
+                              accept={f.accept}
+
                               onChange={file => {
                                 setEditData({ ...editData, [f.name]: file.target.files[0] });
                                 setEditErrors(prev => ({ ...prev, [f.name]: !file ? "Campo obligatorio" : "" }));
@@ -279,7 +287,7 @@ const SpecializedTrainingTable = ({
                         <div className="flex justify-center gap-2">
                           <button
                             onClick={handleSaveEdit}
-                            disabled={Object.values(editErrors).some(err => err) || !isUnique}
+                            disabled={Object.values(editErrors).some(err => err)}
                             className={`bg-blue-600 text-white rounded-lg px-4 py-2 flex items-center ${Object.values(editErrors).some(err => err) || !isUnique ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"}`}
                           >
                             <SaveIcon className="mr-1" fontSize="small" /> Guardar

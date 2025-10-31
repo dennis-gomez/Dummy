@@ -8,6 +8,7 @@ import Form from "../organisms/form";
 import { useLanguage } from "../../utils/useLenguajes";
 import { useEffect } from "react";
 import InputValidated from "../atoms/inputValidated";
+import { CircularProgress } from "@mui/material";
 
 
 const lenguajeSection = ({ personCod }) => {
@@ -99,10 +100,9 @@ const lenguajeSection = ({ personCod }) => {
       ) : (
         loading ? (
 
-          <div className="flex justify-center items-center h-32">
-            <h1 className="text-2xl font-bold text-gray-800 mb-0">
-              Cargando...
-            </h1>
+          <div className="flex flex-wrap items-center gap-3 bg-white shadow-md rounded-2xl px-4 py-3 w-full max-w-3xl mx-auto">
+            <CircularProgress size={24} />
+            <span>Cargando formaciones académicas...</span>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-7xl mx-auto mt-6">
