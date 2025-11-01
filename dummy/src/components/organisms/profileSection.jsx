@@ -24,6 +24,7 @@ const profileSection = ({
   setSeeProjectExperience,
   selectedProfile,
   personCod,
+  getProfiles,
 
   //props de specialized training
   specializedTrainingData,
@@ -129,10 +130,28 @@ const profileSection = ({
               key={prof.profile_cod}
               text={
                 getRoleLabel(prof) +
-                " (Años de Experiencia: " +
-                prof.profile_years_of_experience +
+                " (Experiencia: " +
+                (
+                  (prof.profile_years_of_experience > 0 || prof.profile_months_of_experience > 0)
+                    ? (
+                      (prof.profile_years_of_experience > 0
+                        ? prof.profile_years_of_experience +
+                        " " +
+                        (prof.profile_years_of_experience === 1 ? "año" : "años")
+                        : ""
+                      ) +
+                      (prof.profile_months_of_experience > 0
+                        ? (prof.profile_years_of_experience > 0 ? " y " : "") +
+                        prof.profile_months_of_experience +
+                        " " +
+                        (prof.profile_months_of_experience === 1 ? "mes" : "meses")
+                        : "")
+                    )
+                    : "Sin experiencia"
+                ) +
                 ")"
               }
+
               sx={{ minWidth: 450 }}
               onClick={() => saveRollName(prof)}
             />
@@ -195,7 +214,9 @@ const profileSection = ({
 
           {seeProjectExperience && (
             <div className="w-full">
-              <AssociationProjectPage profileCod={selectedProfile.profile_cod} />
+              <AssociationProjectPage perfilCod={selectedProfile.profile_cod}
+                getProfiles={getProfiles}
+              />
             </div>
           )}
         </div>

@@ -4,6 +4,7 @@ import {
   getAvailableRoles,
   createProfile,
   deleteProfile,
+  getProfilesByProfileCod,
 } from "../services/profileService";
 import ModalAlert from "../components/molecules/modalAlert";
 import { getItems } from "../services/itemService";
@@ -39,6 +40,17 @@ export const useProfile = () => {
   const refreshProfile = (codPerson) => {
     getProfiles(codPerson);
     fetchAvailableRoles(codPerson);
+  };
+
+  const getProfileByProfileCode = async (profileCod) => {
+    try {
+      const data = await getProfilesByProfileCod(profileCod);
+      setProfiles(data);
+      return data;
+    } catch (error) {
+      ModalAlert("Error", "No se pudo cargar el perfil.", "error");
+      return null;
+    }
   };
 
   const refreshAll = (codPerson) => {
@@ -409,6 +421,7 @@ export const useProfile = () => {
     setSeeProjectExperience,
     selectedProfile,
     refreshProfile,
+    getProfileByProfileCode,
 
     //de aqui para abajo es de specialized training
     specializedTrainingData,

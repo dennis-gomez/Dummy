@@ -3,29 +3,28 @@ import { Box } from "@mui/material";
 import TableAssociationProject from "../organisms/tableAssociationProject";
 import { useAssociationProject } from "../../utils/useAssociationProject";
 
-const AssociationProjectPage = (
-    perfilCod
-) => {
+const AssociationProjectPage = ({ perfilCod, getProfiles }) => {
+    console.log("Rendering AssociationProjectPage with perfilCod:", perfilCod);
     const {
         associations,
         rolesTypes,
-        projects,  
+        projects,
 
-        fieldsAssociation, 
-        editFieldsAssociation, 
+        fieldsAssociation,
+        editFieldsAssociation,
         errorAssociations,
         setErrorAssociations,
 
-        showFormAssociations, 
-        setShowFormAssociations, 
+        showFormAssociations,
+        setShowFormAssociations,
 
-        isLoadingAssociation, 
+        isLoadingAssociation,
 
-        handleSubmitAssociation, 
-        handleEditAssociation, 
+        handleSubmitAssociation,
+        handleEditAssociation,
 
         searchText,
-        searchFeature, 
+        searchFeature,
         setSearchText,
         setSearchFeature,
 
@@ -36,22 +35,32 @@ const AssociationProjectPage = (
         totalPages,
     } = useAssociationProject(perfilCod);
 
+    const handleAdd = async (formData) => {
+        const profile = await handleSubmitAssociation(formData);
+        await getProfiles(perfilCod);
+    }
+
+    const handleEdit = async (formData) => {
+        await handleEditAssociation(formData);
+        await getProfiles(perfilCod);
+    }
+
     return (
         <div style={{ padding: 24 }}>
             {showFormAssociations && (
                 <Box
-                sx={{
-                    maxWidth: 900,
-                    margin: "20px auto",
-                    p: 3,
-                    boxShadow: 3,
-                    borderRadius: 2,
-                    backgroundColor: "#d9d9d9",
-                    textAlign: "center",
-                }}
+                    sx={{
+                        maxWidth: 900,
+                        margin: "20px auto",
+                        p: 3,
+                        boxShadow: 3,
+                        borderRadius: 2,
+                        backgroundColor: "#d9d9d9",
+                        textAlign: "center",
+                    }}
                 >
-                    <FormAssociationProject 
-                        onSubmit={handleSubmitAssociation}
+                    <FormAssociationProject
+                        onSubmit={handleAdd}
                         projects={projects}
                         associations={associations}
                         rolesTypes={rolesTypes}
@@ -59,7 +68,7 @@ const AssociationProjectPage = (
                 </Box>
             )}
 
-            <TableAssociationProject 
+            <TableAssociationProject
                 associations={associations}
                 rolesTypes={rolesTypes}
 
@@ -69,8 +78,8 @@ const AssociationProjectPage = (
                 showFormAssociations={showFormAssociations}
 
                 isLoadingAssociation={isLoadingAssociation}
-                handleEditAssociation={handleEditAssociation}
-                
+                handleEditAssociation={handleEdit}
+
                 onToggleForm={() => {
                     setShowFormAssociations(!showFormAssociations);
                     setErrorAssociations(null);
@@ -80,7 +89,7 @@ const AssociationProjectPage = (
                 searchFeature={searchFeature}
                 setSearchText={setSearchText}
                 setSearchFeature={setSearchFeature}
-        
+
                 handleSearch={handleSearch}
 
                 totalPages={totalPages}
