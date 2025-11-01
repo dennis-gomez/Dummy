@@ -3,7 +3,7 @@ import { Box, Grid, CircularProgress, TextField, Autocomplete } from "@mui/mater
 import Button from "../atoms/button";
 import InputValidated from "../atoms/inputValidated";
 import InputValidatedDate from "../atoms/inputValidatedDate";
-import { parseDateWithoutTimezone } from "../../utils/generalUtilities";
+import { parseDateWithoutTimezone, formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
 const FormAssociationProject = ({ 
   associations, 
@@ -83,7 +83,7 @@ const FormAssociationProject = ({
             <Autocomplete
               options={projects}
               getOptionLabel={(option) =>
-                `${option.project_client_name} - ${option.project_company}`
+                `${option.placeholder}`
               }
               value={selectedProject}
               onChange={handleProjectSelect}
@@ -197,7 +197,7 @@ const FormAssociationProject = ({
                   }
                   
                   if (selectedDate < startProject || selectedDate > endProject) {
-                    return "La fecha de participación debe estar dentro del rango del proyecto.";
+                    return `La fecha de participación debe estar dentro del rango del proyecto (desde ${formatDateDDMMYYYY(selectedProject.project_start_date)} hasta ${formatDateDDMMYYYY(selectedProject.project_end_date)}).`;
                   }
                   return null;
                 }
@@ -226,7 +226,7 @@ const FormAssociationProject = ({
                     return "La fecha final debe ser mayor a la fecha de inicio.";
                   }
                   if (selectedDate < startProject || selectedDate > endProject) {
-                    return "La fecha de participación debe estar dentro del rango del proyecto.";
+                    return `La fecha de participación debe estar dentro del rango del proyecto (desde ${formatDateDDMMYYYY(selectedProject.project_start_date)} hasta ${formatDateDDMMYYYY(selectedProject.project_end_date)}).`;
                   }
                   return null;
                 }

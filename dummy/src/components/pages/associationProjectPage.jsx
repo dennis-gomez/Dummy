@@ -22,6 +22,17 @@ const AssociationProjectPage = ({ perfilCod, getProfiles }) => {
 
         handleSubmitAssociation,
         handleEditAssociation,
+
+        searchText,
+        searchFeature,
+        setSearchText,
+        setSearchFeature,
+
+        handleSearch,
+
+        onPageChange,
+        page,
+        totalPages,
     } = useAssociationProject(perfilCod);
 
     const handleAdd = async (formData) => {
@@ -73,6 +84,17 @@ const AssociationProjectPage = ({ perfilCod, getProfiles }) => {
                     setShowFormAssociations(!showFormAssociations);
                     setErrorAssociations(null);
                 }}
+
+                searchText={searchText}
+                searchFeature={searchFeature}
+                setSearchText={setSearchText}
+                setSearchFeature={setSearchFeature}
+
+                handleSearch={handleSearch}
+
+                totalPages={totalPages}
+                currentPage={page}
+                onPageChange={onPageChange}
             />
         </div>
     );

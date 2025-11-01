@@ -254,10 +254,10 @@ function MaintenanceTable({
             <table className="min-w-full">
                 <thead>
                 <tr className="bg-gradient-to-r from-blue-600 to-blue-500 text-white">
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider rounded-tl-xl">#</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Vehículo</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">Tipo Mantenimiento</th>
-                    <th className="py-4 px-6 text-center font-semibold text-md capitalize tracking-wider">
+                    <th className="py-4 px-6 text-center font-semibold text-md tracking-wider rounded-tl-xl">#</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Vehículo</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">Tipo de Mantenimiento</th>
+                    <th className="py-4 px-6 text-center font-semibold text-md tracking-wider">
                         Fecha de Mantenimiento
                         <button 
                             onClick={() => toggleSort()} 

@@ -3,17 +3,28 @@ import {
   addAssociationProject,
   getAssociationProject,
   updateAssociationProject,
+  findAssociationProject,
 } from "../services/associationProjectService";
 import projectService from "../services/projectService";
 import ModalAlert from "../components/molecules/modalAlert";
 import Swal from "sweetalert2";
 import { getItems } from "../services/itemService";
-import { parseDateWithoutTimezone } from "../utils/generalUtilities";
+import {
+  parseDateWithoutTimezone,
+  formatDateDDMMYYYY,
+} from "../utils/generalUtilities";
 
 export const useAssociationProject = (profileCod) => {
   const [associations, setAssociations] = useState([]); //lista de fromaciones academicas
   const [rolesTypes, setRolesTypes] = useState([]); //listado de titulo o grados academicas
   const [projects, setProjects] = useState([]); //listado de proyectos
+
+  /*
+   * Variables de paginacion
+   */
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(2);
 
   /*
    * Estados para manejo de formularios (muestra, errores y carga)
@@ -140,7 +151,9 @@ export const useAssociationProject = (profileCod) => {
             return "La fecha de inicio debe ser menor a la fecha final.";
           }
           if (selectedDate < startProject || selectedDate > endProject) {
-            return "La fecha de participación debe estar dentro del rango del proyecto.";
+            return `La fecha de participación debe estar dentro del rango del proyecto (desde ${formatDateDDMMYYYY(
+              project.project_start_date
+            )} hasta ${formatDateDDMMYYYY(project.project_end_date)}).`;
           }
           return null;
         },
@@ -175,7 +188,9 @@ export const useAssociationProject = (profileCod) => {
             return "La fecha final debe ser mayor a la fecha de inicio.";
           }
           if (selectedDate < startProject || selectedDate > endProject) {
-            return "La fecha de participación debe estar dentro del rango del proyecto.";
+            return `La fecha de participación debe estar dentro del rango del proyecto (desde ${formatDateDDMMYYYY(
+              project.project_start_date
+            )} hasta ${formatDateDDMMYYYY(project.project_end_date)}).`;
           }
           return null;
         },
@@ -191,6 +206,23 @@ export const useAssociationProject = (profileCod) => {
   ];
 
   /*
+   * Constantes para el manejo de filtrado
+   */
+  const [searchText, setSearchText] = useState("");
+  const [searchFeature, setSearchFeature] = useState(
+    fieldsAssociation[0]?.name || ""
+  );
+
+  /*
+   * Manejo de historial para evitar busqueda con la paginacion
+   */
+  const [appliedField, setAppliedField] = useState(
+    fieldsAssociation[1]?.name || ""
+  );
+  const [appliedText, setAppliedText] = useState("");
+  const [isFiltering, setIsFiltering] = useState(false);
+
+  /*
    *  Obtener listado de roles
    */
   const fetchRoles = async () => {
@@ -203,6 +235,8 @@ export const useAssociationProject = (profileCod) => {
         typesResp.map((type) => ({
           value: type.cod_item,
           label: type.item_name,
+          placeholder: type.item_name,
+          name: type.cod_item,
         }))
       );
     } catch (err) {
@@ -215,12 +249,16 @@ export const useAssociationProject = (profileCod) => {
   /*
    *  Obtener listado de associaciones a proyectos
    */
-  const fetchAssociation = async (profileCod, loadedProjects = projects) => {
+  const fetchAssociation = async (pageNum = page, projectsData = projects) => {
     try {
       setLoadingAssociation(true);
-      const resp = await getAssociationProject(profileCod);
-      const enrichedAssociations = resp.data.map((assoc) => {
-        const project = loadedProjects.find(
+      const resp = await getAssociationProject(
+        profileCod.profileCod,
+        pageNum,
+        pageSize
+      );
+      const enriched = resp.data.data.map((assoc) => {
+        const project = projectsData.find(
           (p) => p.cod_project === assoc.cod_project
         );
         return {
@@ -231,8 +269,10 @@ export const useAssociationProject = (profileCod) => {
             project?.project_client_name || "Cliente no disponible",
         };
       });
-      setAssociations(enrichedAssociations);
-    } catch (err) {
+      setAssociations(enriched);
+      setTotalPages(resp.data.totalPages || 1);
+      setPage(resp.data.currentPage || 1);
+    } catch {
       setErrorAssociations("Error al obtener asociaciones");
       ModalAlert("Error", "Error al obtener asociaciones", "error");
     } finally {
@@ -309,12 +349,105 @@ export const useAssociationProject = (profileCod) => {
     }
   };
 
+  //busqueda de activos
+  const handleSearch = async () => {
+    try {
+      setLoadingAssociation(true);
+      setAppliedField(searchFeature);
+      setAppliedText(searchText);
+      setIsFiltering(true);
+
+      const resp = await findAssociationProject(
+        1,
+        pageSize,
+        searchFeature,
+        searchText,
+        profileCod.profileCod
+      );
+
+      const enriched = resp.data.data.map((assoc) => {
+        const project = projects.find(
+          (p) => p.cod_project === assoc.cod_project
+        );
+        return {
+          ...assoc,
+          project_name: project?.project_name || "Proyecto no encontrado",
+          project_company: project?.project_company || "Empresa no disponible",
+          project_client_name:
+            project?.project_client_name || "Cliente no disponible",
+        };
+      });
+      setAssociations(enriched);
+      setTotalPages(resp.data.totalPages || 1);
+      setPage(resp.data.currentPage || 1);
+    } catch {
+      ModalAlert("Error", "Error al filtrar asociaciones", "error");
+    } finally {
+      setLoadingAssociation(false);
+    }
+  };
+
+  /*
+   * Mantener filtro al cambiar de página
+   */
+  const findAndSetFiltered = async (pageNum = 1) => {
+    try {
+      setLoadingAssociation(true);
+      const resp = await findAssociationProject(
+        pageNum,
+        pageSize,
+        appliedField,
+        appliedText,
+        profileCod.profileCod
+      );
+      const enriched = resp.data.data.map((assoc) => {
+        const project = projects.find(
+          (p) => p.cod_project === assoc.cod_project
+        );
+        return {
+          ...assoc,
+          project_name: project?.project_name || "Proyecto no encontrado",
+          project_company: project?.project_company || "Empresa no disponible",
+          project_client_name:
+            project?.project_client_name || "Cliente no disponible",
+        };
+      });
+      setAssociations(enriched);
+      setTotalPages(resp.data.totalPages || 1);
+      setPage(resp.data.currentPage || 1);
+    } catch {
+      ModalAlert("Error", "Error al filtrar asociaciones", "error");
+    } finally {
+      setLoadingAssociation(false);
+    }
+  };
+
+  /*
+   * Cambiar página
+   */
+  const onPageChange = async (newPage) => {
+    if (isFiltering) {
+      await findAndSetFiltered(newPage);
+    } else {
+      await fetchAssociation(newPage, projects);
+    }
+  };
+
+  /*
+   * Inicialización
+   */
   useEffect(() => {
     const fetchData = async () => {
       await fetchRoles();
       const projectsData = await projectService.getAllProjects();
-      setProjects(projectsData);
-      await fetchAssociation(profileCod, projectsData);
+      const mappedProjects = projectsData.map((project) => ({
+        ...project,
+        name: project.cod_project,
+        placeholder: project.project_company,
+        value: project.cod_project,
+      }));
+      setProjects(mappedProjects);
+      await fetchAssociation(1, mappedProjects);
     };
     fetchData();
   }, []);
@@ -336,5 +469,16 @@ export const useAssociationProject = (profileCod) => {
 
     handleSubmitAssociation,
     handleEditAssociation,
+
+    searchText,
+    searchFeature,
+    setSearchText,
+    setSearchFeature,
+
+    handleSearch,
+
+    onPageChange,
+    page,
+    totalPages,
   };
 };

@@ -42,6 +42,7 @@ function Seeker({
           value={valueFeature}
           onChange={
             (e) => {
+
               onChangeFeature(e.target.value)
               onChangeText("")
             }
@@ -56,7 +57,11 @@ function Seeker({
             selectLabel={inputPlaceholder}
             fields={options}
             value={valueText}
-            onChange={(e) => onChangeText(e.target.value)}
+            onChange={(e) => {
+              console.log("HEAD ", e.target.value)
+              onChangeText(e.target.value)
+              }
+            }
           />
         </div>
 ) : type === "date" && valueFeature!=="" ? (
