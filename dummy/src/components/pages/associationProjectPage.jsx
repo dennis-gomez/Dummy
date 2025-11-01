@@ -23,6 +23,17 @@ const AssociationProjectPage = (
 
         handleSubmitAssociation, 
         handleEditAssociation, 
+
+        searchText,
+        searchFeature, 
+        setSearchText,
+        setSearchFeature,
+
+        handleSearch,
+
+        onPageChange,
+        page,
+        totalPages,
     } = useAssociationProject(perfilCod);
 
     return (
@@ -64,6 +75,17 @@ const AssociationProjectPage = (
                     setShowFormAssociations(!showFormAssociations);
                     setErrorAssociations(null);
                 }}
+
+                searchText={searchText}
+                searchFeature={searchFeature}
+                setSearchText={setSearchText}
+                setSearchFeature={setSearchFeature}
+        
+                handleSearch={handleSearch}
+
+                totalPages={totalPages}
+                currentPage={page}
+                onPageChange={onPageChange}
             />
         </div>
     );

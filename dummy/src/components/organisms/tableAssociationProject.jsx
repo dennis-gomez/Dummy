@@ -4,8 +4,14 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import Swal from "sweetalert2";
 import Button from "../atoms/button";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import InputValidated from "../atoms/inputValidated";
+import Seeker from "../molecules/seeker";
+import Pagination from '@mui/material/Pagination';
+import PaginationItem from '@mui/material/PaginationItem';
+import Stack from '@mui/material/Stack';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { formatDateDDMMYYYY } from "../../utils/generalUtilities";
 
 const TableAssociationProject = ({
@@ -17,6 +23,17 @@ const TableAssociationProject = ({
     isLoadingAssociation, 
     handleEditAssociation, 
     onToggleForm, 
+
+    searchText,
+    searchFeature, 
+    setSearchText,
+    setSearchFeature,
+
+    handleSearch,
+
+    totalPages, 
+    currentPage, 
+    onPageChange, 
 }) => {
 
     const [editingId, setEditingId] = useState(null);
@@ -74,7 +91,24 @@ const TableAssociationProject = ({
                 <h1 className="text-2xl font-bold text-gray-800 text-center flex-1">
                     Proyectos Asociados 
                 </h1>
-                <div className="absolute right-0">
+            </div>
+
+            <div className="flex items-center justify-center lg:justify-start lg:ml-9 w-full sm:w-auto">
+                <Box className="flex flex-wrap gap-3 bg-white rounded-xl p-4 flex-1">
+                    <Seeker
+                        inputName="search"
+                        inputPlaceholder="Buscar..."
+                        btnName="Buscar"
+                        selectName="Filtrar por"
+                        fields={fieldsAssociation}
+                        valueText={searchText}
+                        valueFeature={searchFeature}
+                        onChangeText={setSearchText}
+                        onChangeFeature={setSearchFeature}
+                        onClick={handleSearch}
+                    />
+                </Box>
+                <div className="p-5 h-fit">
                     <Button
                         text={showFormAssociations ? "Cancelar" : "Agregar Proyecto"}
                         onClick={onToggleForm}
@@ -189,6 +223,20 @@ const TableAssociationProject = ({
                             })}
                         </tbody>
                     </table>
+                    <Stack spacing={30 } alignItems="center" marginY={2}>
+                        <Pagination
+                            count={totalPages}
+                            page={currentPage}
+                            color="primary"
+                            onChange={(e, value) => onPageChange(value)}
+                            renderItem={(item) => (
+                            <PaginationItem
+                                slots={{ previous: ArrowBackIcon, next: ArrowForwardIcon }}
+                                {...item}
+                            />
+                            )}
+                        />
+                    </Stack>
                 </div>
             )}
         </div>

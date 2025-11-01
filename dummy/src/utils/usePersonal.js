@@ -36,11 +36,20 @@ export const usePersonal = () => {
         { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 382, validations: [(value) => value && value.length > 15 ? "El país de residencia no debe superar 15 caracteres." : null,]},
         { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 382, type: "select",
             options: [
-                { name: 1, placeholder: "Si" , value: 1, label: "Si"},
+                { name: 1, placeholder: "Sí" , value: 1, label: "Sí"},
                 { name: 0, placeholder: "No", value: 0, label: "No" }
             ]
         },
-        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 382, validations: [(value) => value && value.length > 20 ? "El número de teléfono de te no debe superar 20 caracteres." : null,] },
+        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 382, 
+            validations: [
+                (value) => {
+                    if (!value || !value.trim()) return "El teléfono es obligatorio";
+                    const phoneRegex = /^[0-9\-+()]{8,15}$/;
+                    if (!phoneRegex.test(value)) return "Entre 8 y 15 dígitos ó + - ()";
+                    return null;
+                }
+            ],
+        },
         { name: "personal_is_active", placeholder: "Estados",  type: "select",
             options: [
                 { name: 1, placeholder: "Activos" , value: 1, label: "Activos"},
@@ -61,11 +70,20 @@ export const usePersonal = () => {
         { name: "personal_country_of_residence", placeholder: "País de Residencia", width: 170, validations: [(value) => value && value.length > 15 ? "El país de residencia no debe superar 15 caracteres." : null,]},
         { name: "personal_has_digital_signature", placeholder: "Firma Digital", width: 170, type: "select",
             options: [
-                { name: 1, placeholder: "Si" , value: 1, label: "Si"},
-                { name: 0, placeholder: "No", value: 0, label: "No" }
+                { name: true, placeholder: "Sí" , value: true, label: "Sí"},
+                { name: false, placeholder: "No", value: false, label: "No" }
             ]
         },
-        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 170, validations: [(value) => value && value.length > 20 ? "El número de teléfono de te no debe superar 20 caracteres." : null,]},  
+        { name: "personal_phone_number", placeholder: "Número de Teléfono", width: 170, 
+            validations: [
+                (value) => {
+                    if (!value || !value.trim()) return "El teléfono es obligatorio";
+                    const phoneRegex = /^[0-9\-+()]{8,15}$/;
+                    if (!phoneRegex.test(value)) return "Entre 8 y 15 dígitos ó + - ()";
+                    return null;
+                }
+            ],        
+        },  
     ];
 
     /*
