@@ -5,6 +5,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ModalAlert from "../molecules/modalAlert";
+
 import ModalElimination from "../molecules/modalElimination";
 import InputValidated from "../atoms/inputValidatedSupplier";
 import projectService from "../../services/projectService";
@@ -12,28 +13,76 @@ import projectService from "../../services/projectService";
 function TableProject({ projects, onRefresh }) {
   const [editRowId, setEditRowId] = useState(null);
   const [editData, setEditData] = useState({});
+  const [errors, setErrors] = useState({});
+
+  const requiredFields = [
+    "project_name",
+    "project_company",
+    "project_client_name",
+    "project_sector",
+    "project_contact_full_name",
+    "project_contact_email",
+    "project_technologies",
+    "project_start_date"
+  ];
 
   const handleEditClick = (project) => {
     setEditRowId(project.cod_project);
     setEditData({ ...project });
+
+    // Inicializa errores
+    const initialErrors = {};
+    requiredFields.forEach((field) => {
+      initialErrors[field] = !project[field] || project[field].toString().trim() === "";
+    });
+    setErrors(initialErrors);
   };
 
   const handleCancel = () => {
     setEditRowId(null);
     setEditData({});
+    setErrors({});
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setEditData((prev) => ({ ...prev, [name]: value }));
+
+    // Validación en tiempo real de campos obligatorios
+    if (requiredFields.includes(name)) {
+      setErrors((prev) => ({ ...prev, [name]: !value || value.trim() === "" }));
+    }
+
+    // Validación adicional: la fecha de fin no puede ser anterior a la fecha de inicio
+    if (name === "project_end_date" || name === "project_start_date") {
+      const startDate = name === "project_start_date" ? value : editData.project_start_date;
+      const endDate = name === "project_end_date" ? value : editData.project_end_date;
+
+      if (startDate && endDate) {
+        const isInvalid = new Date(endDate) < new Date(startDate);
+        setErrors((prev) => ({ ...prev, project_end_date: isInvalid }));
+      }
+    }
   };
 
   const handleSave = async () => {
+    const hasErrors = Object.values(errors).some((err) => err);
+    if (hasErrors) {
+      ModalAlert(
+        "Error",
+        "Por favor completa todos los campos obligatorios o corrige los errores.",
+        "error",
+        3000
+      );
+      return;
+    }
+
     try {
       await projectService.updateProject(editRowId, editData);
       ModalAlert("Éxito", "Proyecto actualizado correctamente", "success", 2000);
       setEditRowId(null);
       setEditData({});
+      setErrors({});
       onRefresh();
     } catch (error) {
       ModalAlert("Error", error.message || "No se pudo actualizar el proyecto", "error", 3000);
@@ -60,112 +109,28 @@ function TableProject({ projects, onRefresh }) {
     }
   };
 
-  // Función para parsear tecnologías
   const parseTechnologies = (techString) => {
     if (!techString) return [];
-    return techString.split(',').map(tech => tech.trim()).filter(tech => tech.length > 0);
+    return techString
+      .split(",")
+      .map((tech) => tech.trim())
+      .filter((tech) => tech.length > 0);
   };
 
-  // Función para determinar el color del chip según la tecnología - CORREGIDA
   const getTechChipProps = (tech) => {
     const techLower = tech.toLowerCase();
-
-    if (techLower.includes('react') || techLower.includes('angular') || techLower.includes('vue') || techLower.includes('html') || techLower.includes('css')) {
-      return {
-        sx: {
-          backgroundColor: '#faf5ff',
-          color: '#6b21a8',
-          borderColor: '#d8b4fe',
-          '&:hover': {
-            backgroundColor: '#f3e8ff'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap', // Evita múltiples líneas
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
-      };
-    } else if (techLower.includes('node') || techLower.includes('.net') || techLower.includes('c#') || techLower.includes('python') || techLower.includes('java')) {
-      return {
-        sx: {
-          backgroundColor: '#f0fdf4',
-          color: '#166534',
-          borderColor: '#bbf7d0',
-          '&:hover': {
-            backgroundColor: '#dcfce7'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
-      };
-    } else if (techLower.includes('sql') || techLower.includes('mongo') || techLower.includes('database') || techLower.includes('oracle')) {
-      return {
-        sx: {
-          backgroundColor: '#fff7ed',
-          color: '#9a3412',
-          borderColor: '#fdba74',
-          '&:hover': {
-            backgroundColor: '#ffedd5'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
-      };
-    } else if (techLower.includes('aws') || techLower.includes('azure') || techLower.includes('cloud') || techLower.includes('docker')) {
-      return {
-        sx: {
-          backgroundColor: '#eff6ff',
-          color: '#1e40af',
-          borderColor: '#93c5fd',
-          '&:hover': {
-            backgroundColor: '#dbeafe'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
-      };
-    } else if (techLower.includes('windows') || techLower.includes('iis') || techLower.includes('microsoft')) {
-      return {
-        sx: {
-          backgroundColor: '#ecfeff',
-          color: '#0e7490',
-          borderColor: '#67e8f9',
-          '&:hover': {
-            backgroundColor: '#cffafe'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
-      };
+    if (techLower.includes("react") || techLower.includes("angular") || techLower.includes("vue") || techLower.includes("html") || techLower.includes("css")) {
+      return { sx: { backgroundColor: "#faf5ff", color: "#6b21a8", borderColor: "#d8b4fe", "&:hover": { backgroundColor: "#f3e8ff" }, maxWidth: "none", whiteSpace: "nowrap", height: "auto", minHeight: "32px", padding: "4px 8px" } };
+    } else if (techLower.includes("node") || techLower.includes(".net") || techLower.includes("c#") || techLower.includes("python") || techLower.includes("java")) {
+      return { sx: { backgroundColor: "#f0fdf4", color: "#166534", borderColor: "#bbf7d0", "&:hover": { backgroundColor: "#dcfce7" }, maxWidth: "none", whiteSpace: "nowrap", height: "auto", minHeight: "32px", padding: "4px 8px" } };
+    } else if (techLower.includes("sql") || techLower.includes("mongo") || techLower.includes("database") || techLower.includes("oracle")) {
+      return { sx: { backgroundColor: "#fff7ed", color: "#9a3412", borderColor: "#fdba74", "&:hover": { backgroundColor: "#ffedd5" }, maxWidth: "none", whiteSpace: "nowrap", height: "auto", minHeight: "32px", padding: "4px 8px" } };
+    } else if (techLower.includes("aws") || techLower.includes("azure") || techLower.includes("cloud") || techLower.includes("docker")) {
+      return { sx: { backgroundColor: "#eff6ff", color: "#1e40af", borderColor: "#93c5fd", "&:hover": { backgroundColor: "#dbeafe" }, maxWidth: "none", whiteSpace: "nowrap", height: "auto", minHeight: "32px", padding: "4px 8px" } };
+    } else if (techLower.includes("windows") || techLower.includes("iis") || techLower.includes("microsoft")) {
+      return { sx: { backgroundColor: "#ecfeff", color: "#0e7490", borderColor: "#67e8f9", "&:hover": { backgroundColor: "#cffafe" }, maxWidth: "none", whiteSpace: "nowrap", height: "auto", minHeight: "32px", padding: "4px 8px" } };
     } else {
-      return {
-        sx: {
-          backgroundColor: '#f9fafb',
-          color: '#374151',
-          borderColor: '#d1d5db',
-          '&:hover': {
-            backgroundColor: '#f3f4f6'
-          },
-          maxWidth: 'none',
-          whiteSpace: 'nowrap',
-          height: 'auto',
-          minHeight: '32px',
-          padding: '4px 8px',
-        }
-      };
+      return { sx: { backgroundColor: "#f9fafb", color: "#374151", borderColor: "#d1d5db", "&:hover": { backgroundColor: "#f3f4f6" }, maxWidth: "none", whiteSpace: "nowrap", height: "auto", minHeight: "32px", padding: "4px 8px" } };
     }
   };
 
@@ -213,6 +178,7 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Nombre"
                     label="Nombre"
+                    error={errors.project_name ? "Campo obligatorio" : ""}
                   />
                 ) : (
                   <span>{project.project_name}</span>
@@ -228,6 +194,7 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Empresa"
                     label="Empresa"
+                    error={errors.project_company ? "Campo obligatorio" : ""}
                   />
                 ) : (
                   <span>{project.project_company}</span>
@@ -243,6 +210,7 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Cliente"
                     label="Cliente"
+                    error={errors.project_client_name ? "Campo obligatorio" : ""}
                   />
                 ) : (
                   <span>{project.project_client_name}</span>
@@ -258,6 +226,7 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Sector"
                     label="Sector"
+                    error={errors.project_sector ? "Campo obligatorio" : ""}
                   />
                 ) : (
                   <Chip label={project.project_sector} size="small" variant="outlined" />
@@ -273,12 +242,14 @@ function TableProject({ projects, onRefresh }) {
                     onChange={handleChange}
                     placeholder="Descripción"
                     label="Descripción"
-                     multiline
+                    multiline
                   />
                 ) : (
                   <span className="block break-words">{project.project_description || "—"}</span>
                 )}
               </td>
+
+              {/* Tecnologías */}
               <td className="py-2 px-3 text-center min-w-[400px]">
                 {editRowId === project.cod_project ? (
                   <InputValidated
@@ -290,18 +261,14 @@ function TableProject({ projects, onRefresh }) {
                     multiline
                     rows={4}
                     className="min-h-[100px] resize-y"
+                    error={errors.project_technologies ? "Campo obligatorio" : ""}
                   />
                 ) : (
                   <div className="flex flex-col items-center">
                     <div className="flex flex-wrap gap-1 justify-center mb-1 w-full">
                       {parseTechnologies(project.project_technologies).slice(0, 2).map((tech, index) => (
                         <Tooltip key={index} title={tech} arrow>
-                          <Chip
-                            label={tech}
-                            size="small"
-                            variant="outlined"
-                            {...getTechChipProps(tech)}
-                          />
+                          <Chip label={tech} size="small" variant="outlined" {...getTechChipProps(tech)} />
                         </Tooltip>
                       ))}
                     </div>
@@ -321,9 +288,9 @@ function TableProject({ projects, onRefresh }) {
                                 className="m-1"
                                 sx={{
                                   ...getTechChipProps(tech).sx,
-                                  maxWidth: 'none',
-                                  overflow: 'visible',
-                                  whiteSpace: 'nowrap'
+                                  maxWidth: "none",
+                                  overflow: "visible",
+                                  whiteSpace: "nowrap",
                                 }}
                               />
                             ))}
@@ -334,12 +301,12 @@ function TableProject({ projects, onRefresh }) {
                         componentsProps={{
                           tooltip: {
                             sx: {
-                              maxWidth: 'none',
-                              backgroundColor: 'white',
-                              border: '1px solid #e5e7eb',
-                              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
-                            }
-                          }
+                              maxWidth: "none",
+                              backgroundColor: "white",
+                              border: "1px solid #e5e7eb",
+                              boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                            },
+                          },
                         }}
                       >
                         <span className="text-xs text-blue-600 cursor-pointer hover:underline">
@@ -361,6 +328,7 @@ function TableProject({ projects, onRefresh }) {
                       onChange={handleChange}
                       placeholder="Nombre contacto"
                       label="Nombre contacto"
+                      error={errors.project_contact_full_name ? "Campo obligatorio" : ""}
                     />
                     <InputValidated
                       name="project_contact_phone"
@@ -375,6 +343,7 @@ function TableProject({ projects, onRefresh }) {
                       onChange={handleChange}
                       placeholder="Email"
                       label="Email"
+                      error={errors.project_contact_email ? "Campo obligatorio" : ""}
                     />
                     <InputValidated
                       name="project_contact_position"
@@ -404,6 +373,7 @@ function TableProject({ projects, onRefresh }) {
                       value={editData.project_start_date || ""}
                       onChange={handleChange}
                       label="Inicio"
+                      error={errors.project_start_date ? "Campo obligatorio" : ""}
                     />
                     <InputValidated
                       name="project_end_date"
@@ -411,6 +381,7 @@ function TableProject({ projects, onRefresh }) {
                       value={editData.project_end_date || ""}
                       onChange={handleChange}
                       label="Fin"
+                      error={errors.project_end_date ? "No puede ser anterior a la fecha de inicio" : ""}
                     />
                   </div>
                 ) : (
@@ -455,7 +426,9 @@ function TableProject({ projects, onRefresh }) {
                       <button
                         onClick={() => handleEditClick(project)}
                         disabled={!project.project_is_active}
-                        className={`text-blue-600 hover:text-blue-800 flex items-center ${!project.project_is_active ? "opacity-50 cursor-not-allowed" : ""}`}
+                        className={`text-blue-600 hover:text-blue-800 flex items-center ${
+                          !project.project_is_active ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                       >
                         <EditIcon fontSize="medium" />
                       </button>
