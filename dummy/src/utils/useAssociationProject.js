@@ -252,11 +252,7 @@ export const useAssociationProject = (profileCod) => {
   const fetchAssociation = async (pageNum = page, projectsData = projects) => {
     try {
       setLoadingAssociation(true);
-      const resp = await getAssociationProject(
-        profileCod.profileCod,
-        pageNum,
-        pageSize
-      );
+      const resp = await getAssociationProject(profileCod, pageNum, pageSize);
       const enriched = resp.data.data.map((assoc) => {
         const project = projectsData.find(
           (p) => p.cod_project === assoc.cod_project
@@ -362,7 +358,7 @@ export const useAssociationProject = (profileCod) => {
         pageSize,
         searchFeature,
         searchText,
-        profileCod.profileCod
+        profileCod
       );
 
       const enriched = resp.data.data.map((assoc) => {
@@ -398,7 +394,7 @@ export const useAssociationProject = (profileCod) => {
         pageSize,
         appliedField,
         appliedText,
-        profileCod.profileCod
+        profileCod
       );
       const enriched = resp.data.data.map((assoc) => {
         const project = projects.find(
