@@ -18,6 +18,7 @@ const ProfilePage = ({ personCod }) => {
     setSeeProjectExperience,
     selectedProfile,
     profiles,
+    getProfileByProfileCode,
 
     //para specialized training
     specializedTrainingData,
@@ -63,6 +64,8 @@ const ProfilePage = ({ personCod }) => {
         setSeeSpecializedTraining={setSeeSpecializedTraining}
         setSeeProjectExperience={setSeeProjectExperience}
         selectedProfile={selectedProfile}
+        getProfiles={getProfileByProfileCode}
+
 
         //props de specialized training
         specializedTrainingData={specializedTrainingData}

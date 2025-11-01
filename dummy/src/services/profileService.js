@@ -18,6 +18,20 @@ export const getProfilesByPersonId = async (personal_cod) => {
   }
 };
 
+export const getProfilesByProfileCod = async (profile_cod) => {
+  try {
+    const response = await axios.get(`${API_URL}by-profile-cod`, {
+      params: { profile_cod },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const getAvailableRoles = async (personal_cod) => {
   try {
     const response = await axios.get(`${API_URL}available-roles`, {
