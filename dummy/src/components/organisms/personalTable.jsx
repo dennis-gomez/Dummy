@@ -168,7 +168,7 @@ const PersonalTable = ({
                                             <InputValidated
                                             name={fieldEdit.name}
                                             type={fieldEdit.type || "text"}
-                                            value={editData[fieldEdit.name] || ""}
+                                            value={editData[fieldEdit.name]}
                                             placeholder={fieldEdit.placeholder}
                                             options={fieldEdit.options || []}
                                             restriction={fieldEdit.restriction}
@@ -222,6 +222,7 @@ const PersonalTable = ({
                                                 </button>
 
                                                 <ModalElimination
+                                                    confirmText={"Desactivar"}
                                                     message={"¿Estás seguro de desactivarlo?"}
                                                     onClick={() => handleDelete(per.personal_cod)}
                                                 />
