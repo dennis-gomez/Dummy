@@ -133,9 +133,6 @@ export function ValidateValues({
             : null;
           const isEditing = allValues?.isEditing || false;
 
-          console.log("nombre de campo", fieldName);
-          console.log("allValuesdeOriginalData:", allValues);
-
           if (isEditing && originalValue === value) {
             err = ""; // No marcar error si está editando y la fecha no cambió
           } else {
@@ -160,8 +157,19 @@ export function ValidateValues({
           allValues["training_validity"] === value
         ) {
           const endDate = new Date(allValues["training_end_date"]);
+
           if (inputDate <= endDate) {
             err = "La validez debe ser posterior a la fecha de finalización";
+          }
+        } else if (
+          allValues &&
+          allValues["training_start_date"] &&
+          allValues["training_end_date"] === value
+        ) {
+          const startDate = new Date(allValues["training_start_date"]);
+          if (inputDate <= startDate) {
+            err =
+              "La fecha de finalización debe ser posterior a la fecha de inicio";
           }
         }
         // Restricción por defecto: solo permitir fechas futuras

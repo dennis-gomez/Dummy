@@ -70,7 +70,7 @@ function InputValidatedFile({
                   variant="contained"
                   component="span"
                   size="small"
-                  sx={{ 
+                  sx={{
                     textTransform: "none",
                     backgroundColor: "#2563eb",
                     "&:hover": {

@@ -8,7 +8,7 @@ import TableMovementTI from "../organisms/tableMovementTI";
 import FormMovementTI from "../organisms/formMovementTI";
 import Seeker from "../molecules/seeker";
 import Button from "../atoms/button";
-import ModalAlert from "../molecules/modalAlert"; 
+import ModalAlert from "../molecules/modalAlert";
 
 const MovementTI = () => {
   const [movements, setMovements] = useState([]);
@@ -40,7 +40,6 @@ const MovementTI = () => {
 
   const handleCreate = async (formData) => {
     try {
-      console.log("Crear movimiento recibido:", formData);
       setRefresh(!refresh);
       setShowForm(false);
       ModalAlert("Éxito", "Movimiento creado correctamente", "success", 2000);

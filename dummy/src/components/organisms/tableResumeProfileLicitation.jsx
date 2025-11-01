@@ -120,9 +120,6 @@ const ResumeTableLicitationTable = ({
 
   // 🔹 Manejar la búsqueda
   const handleSearch = async () => {
-    console.log("Primary:", primaryValue);
-    console.log("Secondary:", secondaryValue);
-    console.log("Dynamic:", dynamicValue);
 
     await fetchFilteredPersonalSummary({
       context: primaryValue,

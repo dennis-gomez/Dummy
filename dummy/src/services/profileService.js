@@ -6,8 +6,6 @@ const API_URL = "http://localhost:3000/profiles/";
 
 export const getProfilesByPersonId = async (personal_cod) => {
   try {
-    console.log("Llamando a la API para obtener perfiles...");
-
     const response = await axios.get(API_URL, {
       params: { personal_cod },
       headers: {
@@ -66,16 +64,18 @@ export const deleteProfile = async (profile_cod) => {
 
 export const getProfileSummary = async (personal_cod, profile_cod) => {
   try {
-    console.log("📡 Obteniendo resumen del perfil...");
-
-    const response = await axios.post(`${API_URL}summary`, {
-      personal_cod,
-      profile_cod,
-    }, {
-      headers: {
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      `${API_URL}summary`,
+      {
+        personal_cod,
+        profile_cod,
       },
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     return response.data;
   } catch (error) {
@@ -83,4 +83,3 @@ export const getProfileSummary = async (personal_cod, profile_cod) => {
     throw error;
   }
 };
-

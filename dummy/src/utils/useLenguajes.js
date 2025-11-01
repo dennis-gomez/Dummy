@@ -39,7 +39,6 @@ export const useLanguage = () => {
   const fetchLanguages = async (personCod) => {
     try {
       setLoading(true);
-      console.log("Fetching languages for personCod:", personCod);
 
       const data = await getLanguagesOfPerson(personCod);
       setLanguages(data);

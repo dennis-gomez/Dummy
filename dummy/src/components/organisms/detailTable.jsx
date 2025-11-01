@@ -12,7 +12,6 @@ const DetailsTable = ({ fields, items, onDelete, onEdit, renderDelete, centered,
   const [editData, setEditData] = useState({});
   const [editErrors, setEditErrors] = useState({}); // Estado de errores
 
-  console.log(items)
 
   const handleEditClick = (item, idx) => {
     setEditingIdx(idx);
